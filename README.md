@@ -1,0 +1,1 @@
+![Deploy](https://github.com/paulschwoerer/raqi-online-toolbox/actions/workflows/deploy.yml/badge.svg)

@@ -1,0 +1,13 @@
+name: deploy
+run-name: Deploying to Github Pages
+on:
+  push:
+    branches: ["main"]
+jobs:
+  deploy-to-gh-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: Cecilapp/GitHub-Pages-deploy@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
