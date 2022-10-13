@@ -1,0 +1,24 @@
+{
+  "name": "raqi-online-toolbox",
+  "version": "1.0.0",
+  "description": "![Deploy to GH Pages](https://github.com/paulschwoerer/raqi-online-toolbox/actions/workflows/deploy.yml/badge.svg)",
+  "main": "main.js",
+  "scripts": {
+    "test": "web-test-runner \"test/**/*.test.js\" --node-resolve",
+    "test:watch": "web-test-runner \"test/**/*.test.js\" --node-resolve --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/paulschwoerer/raqi-online-toolbox.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/paulschwoerer/raqi-online-toolbox/issues"
+  },
+  "homepage": "https://github.com/paulschwoerer/raqi-online-toolbox#readme",
+  "devDependencies": {
+    "@esm-bundle/chai": "^4.3.4-fix.0",
+    "@web/test-runner": "^0.14.0"
+  }
+}
