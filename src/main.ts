@@ -39,6 +39,12 @@ async function processFile(e: ProgressEvent<FileReader>) {
 // }
 
 // function octfilt(sampleRate) {
+//   const audioCtx = new AudioContext();
+//   const filter = audioCtx.createIIRFilter();
+//   filter.type = "bandpass";
+//   filter.frequency.
+
+
 //   const factors = [
 //     44.6683592150963,
 //     89.1250938133746,
@@ -94,11 +100,11 @@ function getMaxAbs(array: Float32Array) {
 form.addEventListener("submit", (ev) => {
   ev.preventDefault();
 
-  const reader = new FileReader();
-  reader.onload = processFile;
-  if (soundfileInput.files !== null && soundfileInput.files.length > 0) {
-    reader.readAsArrayBuffer(soundfileInput.files[0]);
-  } else {
-    console.warn("no files in input");
-  }
+  // const reader = new FileReader();
+  // reader.onload = processFile;
+  // if (soundfileInput.files !== null && soundfileInput.files.length > 0) {
+  //   reader.readAsArrayBuffer(soundfileInput.files[0]);
+  // } else {
+  //   console.warn("no files in input");
+  // }
 });
