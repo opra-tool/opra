@@ -1,9 +1,11 @@
+import { bandpass } from "./bandpass";
 import { requireElement } from "./helpers";
 
 const form = requireElement<HTMLFormElement>('form');
 const soundfileInput = requireElement<HTMLInputElement>('soundfile-input');
 const resultsBox = requireElement('results-box');
 
+console.log(bandpass(2, 44, 89, 44100));
 
 async function processFile(e: ProgressEvent<FileReader>) {
   if (!e.target) {

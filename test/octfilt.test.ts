@@ -18,6 +18,10 @@ const EXPECTED = [
 it('should work', async () => {
   const actual = await octfilt(new Float32Array(DATA), SAMPLE_RATE);
 
-  assert.equal(actual.length, EXPECTED[0].length);
-  assert.deepEqual(actual, new Float32Array(EXPECTED[0]));
+  const delta = 1.0e-5;
+  for(let i = 0; i < actual.length; i += 1) {
+    for(let ii = 0; ii < actual.length; ii += 1) {
+      expect(actual[i][ii]).to.be.closeTo(EXPECTED[i][ii], delta);
+    }
+  }
 });
