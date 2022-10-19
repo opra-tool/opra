@@ -1,4 +1,5 @@
 import { Complex, exp, multiply } from "@iamsquare/complex.js";
+import { fft } from "./fft";
 
 export function xcorr(x: Float32Array, y: Float32Array): Float32Array {
   const nx = x.length;
@@ -11,8 +12,8 @@ export function xcorr(x: Float32Array, y: Float32Array): Float32Array {
 
   // find transform length
   const m2 = findTransformLength(nx);
-  const X = fft(x, m2);
-  const Y = fft(y, m2);
+  const X = fft(x);
+  const Y = fft(y);
 
 
   console.log({

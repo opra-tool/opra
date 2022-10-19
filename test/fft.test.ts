@@ -2,7 +2,7 @@ import { expect } from '@esm-bundle/chai';
 import { Complex } from '@iamsquare/complex.js';
 import { fft } from "../src/fft";
 
-it('should calculate the discrete fourier transform', () => {
+it('should calculate the discrete fourier transform', () => {  
   const x = new Float32Array([
     1.34858447511152e-11,
     8.07409672135187e-11,
@@ -18,9 +18,18 @@ it('should calculate the discrete fourier transform', () => {
     new Complex(-8.66415141e-10, -3.09925105e-24),
     new Complex(-7.99408241e-10, -6.02116634e-10),
     new Complex(-2.97199300e-10, -1.72155859e-09)
-  ]
+  ];
 
-  const actual = fft(x.slice(0, 20));
+  // const lala = [];
+  // for (let i = 0; i < 1024; i += 1) {
+  //   lala[i] = Math.random();
+  // }
+
+  // const x = new Float32Array(lala)
+
+  const t0 = Date.now();
+  const actual = fft(x);
+  console.log("elapsed: ", Date.now() - t0);
 
   expect(actual.length).to.equal(expected.length);
   for (let i = 0; i < actual.length; i += 1) {
