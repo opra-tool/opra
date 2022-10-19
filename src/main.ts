@@ -1,6 +1,11 @@
+import * as wasm from "wasm-raqi-online-toolbox";
 import { elf } from "./elf";
 import { requireElement } from "./helpers";
 import { octfilt } from "./octfilt";
+
+
+
+console.log(wasm)
 
 const form = requireElement<HTMLFormElement>('form');
 const soundfileInput = requireElement<HTMLInputElement>('soundfile-input');

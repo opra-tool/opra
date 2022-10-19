@@ -19,6 +19,8 @@
 /_site/
 /dist/
 /out-tsc/
+/wasm/pkg/
+/wasm/target/
 
 storybook-static
 custom-elements.json

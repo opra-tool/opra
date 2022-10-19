@@ -57,9 +57,9 @@ export function fft(x: Float32Array): Complex[] {
     reshape[Math.floor(i / (N / N_min))][i % (N / N_min)] = x[i];
   }
 
-  while () {
+  // while () {
 
-  }
+  // }
 
   // dot product
   // const dot: Complex[] = new Array(N);
