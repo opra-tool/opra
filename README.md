@@ -27,3 +27,45 @@ npm run start
 ## Tooling configs
 
 For most of the tools, the configuration is in the `package.json` to reduce the amount of files in the project.
+
+## Web Assembly
+
+### Math support
+
+Both Golang and Rust have complex numbers support by default:
+* https://rust-lang-nursery.github.io/rust-cookbook/science/mathematics/complex_numbers.html
+* https://pkg.go.dev/math/cmplx
+
+Rust has some form of matrix math support [built-in](https://rust-lang-nursery.github.io/rust-cookbook/science/mathematics/linear_algebra.html).
+In Golang there is [mat](https://pkg.go.dev/gonum.org/v1/gonum/mat) and https://github.com/oelmekki/matrix.
+
+Availability of other needed low-level functions:
+
+| Function          | Rust              | Golang                                            |
+| ----------------- | ----------------- | ------------------------------------------------- |
+| fft()             | crate:fourier     | go-dsp                                            |
+| ifft()            | crate:fourier     | go-dsp                                            |
+| freqz()           | crate:fundsp?     | -                                                 |
+| polyval()         | crate:polynomials | github.com/getamis/alice@v1.0.1/crypto/polynomial |
+| xcorr()           | crate:basic_dsp   | https://gist.github.com/bemasher/7657285          |
+| weightingFilter() | -                 | -                                                 |
+| polyfit()         | crate:polyfit-rs  | github.com/openacid/slimarray/polyfit             |
+
+### Interfacing with Javascript
+
+Golang needs glue code, building from golang to wasm is easy.
+Rust wasm libraries are importable ust like an ES6 module.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
