@@ -1,12 +1,6 @@
-import initWasm, { fft } from "wasm-raqi-online-toolbox";
 import { requireElement } from "./helpers";
 import { octfilt } from "./octfilt";
 
-
-
-initWasm().then(() => {
-  fft();
-});
 
 const form = requireElement<HTMLFormElement>('form');
 const soundfileInput = requireElement<HTMLInputElement>('soundfile-input');

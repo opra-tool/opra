@@ -1,5 +1,5 @@
 import { Complex, exp, multiply } from "@iamsquare/complex.js";
-import { fft } from "./fft";
+import { fft } from "./fourier";
 
 export function xcorr(x: Float32Array, y: Float32Array): Float32Array {
   const nx = x.length;
