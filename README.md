@@ -41,15 +41,15 @@ In Golang there is [mat](https://pkg.go.dev/gonum.org/v1/gonum/mat) and https://
 
 Availability of other needed low-level functions:
 
-| Function          | Rust              | Golang                                            |
-| ----------------- | ----------------- | ------------------------------------------------- |
-| fft()             | crate:fourier     | go-dsp                                            |
-| ifft()            | crate:fourier     | go-dsp                                            |
-| freqz()           | crate:fundsp?     | -                                                 |
-| polyval()         | crate:polynomials | github.com/getamis/alice@v1.0.1/crypto/polynomial |
-| xcorr()           | crate:basic_dsp   | https://gist.github.com/bemasher/7657285          |
-| weightingFilter() | -                 | -                                                 |
-| polyfit()         | crate:polyfit-rs  | github.com/openacid/slimarray/polyfit             |
+| Function          | Rust                  | Golang                                            |
+| ----------------- | --------------------- | ------------------------------------------------- |
+| fft()             | crate:fourier,rustfft | go-dsp                                            |
+| ifft()            | crate:fourier,rustfft | go-dsp                                            |
+| freqz()           | crate:fundsp?         | -                                                 |
+| polyval()         | crate:polynomials     | github.com/getamis/alice@v1.0.1/crypto/polynomial |
+| xcorr()           | crate:basic_dsp       | https://gist.github.com/bemasher/7657285          |
+| weightingFilter() | -                     | -                                                 |
+| polyfit()         | crate:polyfit-rs      | github.com/openacid/slimarray/polyfit             |
 
 ### Interfacing with Javascript
 
