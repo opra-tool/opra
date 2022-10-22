@@ -1,12 +1,11 @@
-import initWasm, { fft as wasmFft, ifft as wasmIfft } from "wasm-raqi-online-toolbox";
 import {  Complex } from "@iamsquare/complex.js";
 
 // TODO: N + padding
-export async function fft(x: Float32Array): Promise<Complex[]> {
+export function fft(x: Float32Array): Complex[] {
   // TODO: move to a global place
-  await initWasm();
+  // await initWasm();
 
-  const result = wasmFft(x);
+  const result: number[] = []; // wasmFft(x);
 
   const ret = [];
   for (let i = 0; i < result.length; i += 2) {
@@ -16,11 +15,11 @@ export async function fft(x: Float32Array): Promise<Complex[]> {
 }
 
 // TODO: N + padding
-export async function ifft(x: Float32Array): Promise<Complex[]> {
+export function ifft(x: Float32Array): Complex[] {
   // TODO: move to a global place
-  await initWasm();
+  // await initWasm();
 
-  const result = wasmIfft(x);
+  const result: number[] = []; // wasmIfft(x);
 
   const ret = [];
   for (let i = 0; i < result.length; i += 2) {

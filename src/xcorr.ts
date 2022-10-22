@@ -1,35 +1,16 @@
-import { Complex, exp, multiply } from "@iamsquare/complex.js";
-import { fft } from "./fourier";
+import initWasm, { xcorr as wasmXcorr } from "wasm-raqi-online-toolbox";
 
-export function xcorr(x: Float32Array, y: Float32Array): Float32Array {
-  const nx = x.length;
-  const ny = y.length;
-  if (nx !== ny) {
-    throw new Error("only supports arrays of same length");
+
+export async function xcorr(x: Float32Array, y: Float32Array): Promise<Float32Array> {
+  if (x.length !== y.length) {
+    throw new Error('x and y should be of samle length');
   }
 
-  const maxlag = Math.max(nx, ny) - 1;
+  // TOOD: move to global place
+  await initWasm();
 
-  // find transform length
-  const m2 = findTransformLength(nx);
-  const X = fft(x);
-  const Y = fft(y);
-
-
-  console.log({
-    m2
-  })
-
-  // TODO: scaling??
-
-  
-
-
-
-  return new Float32Array();
+  return wasmXcorr(x, y, findTransformLength(x.length));
 }
-
-
 
 function findTransformLength(m: number): number {
   let m2 = m * 2;
