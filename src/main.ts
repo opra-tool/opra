@@ -1,6 +1,8 @@
 import { Chart, registerables } from "chart.js";
+import { parseSampleRate } from "./audio_parsing/parseSampleRate";
 import { requireElement } from "./dom/requireElement";
 import { earlyInterauralCrossCorrelation, interauralCrossCorrelation } from "./interauralCrossCorrelation";
+import { arrayMaxAbs } from "./math/arrayMaxAbs";
 import { normalizeArray } from "./math/normalizeArray";
 import { octfilt } from "./octfilt";
 
@@ -17,19 +19,18 @@ async function processFile(e: ProgressEvent<FileReader>) {
     return;
   }
 
+  
   const bytes = e.target.result;
-
   if (bytes === null || typeof bytes === "string") {
     throw new Error("invalid data read from audio file")
   }
 
+  const fs = parseSampleRate("wav", bytes);
+
   const start = Date.now();
-  
-  const audioCtx = new AudioContext({
-    sampleRate: 44100 // TODO: dynamic based on audio file
-  });
+
+  const audioCtx = new AudioContext({ sampleRate: fs });
   const audioBuffer = await audioCtx.decodeAudioData(bytes);
-  const fs = audioBuffer.sampleRate;
 
   resultsBox.innerHTML = `
     <span>Sample Rate: ${audioBuffer.sampleRate}Hz</span><br />
@@ -94,22 +95,12 @@ async function processFile(e: ProgressEvent<FileReader>) {
 }
 
 function findFirstOver20dBUnderMax(rawAudio: Float64Array) {
-  const max = getMaxAbs(rawAudio);
+  const max = arrayMaxAbs(rawAudio);
   const normalized = normalizeArray(rawAudio, max);
   return normalized.findIndex(el => Math.abs(el) > 0.1);
 }
 
-function getMaxAbs(array: Float64Array) {
-  let max = 0;
 
-  for (let i = 0; i < array.length; i += 1) {
-    if (Math.abs(array[i]) > max) {
-      max = Math.abs(array[i]);
-    }
-  }
-
-  return max;
-}
 
 form.addEventListener("submit", (ev) => {
   ev.preventDefault();
@@ -119,7 +110,7 @@ form.addEventListener("submit", (ev) => {
   if (soundfileInput.files !== null && soundfileInput.files.length > 0) {
     reader.readAsArrayBuffer(soundfileInput.files[0]);
   } else {
-    console.warn("no files in input");
+    throw new Error("no files in input");
   }
 });
 
