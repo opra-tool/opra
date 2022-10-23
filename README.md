@@ -4,7 +4,7 @@
 
 ## Staging Environment
 
-A staging environment reflecting the current state of the `main` branch is availabe [here](https://paulschwoerer.github.io/raqi-online-toolbox/).
+A staging environment reflecting the current state of the `main` branch is availabe [here](https://raqi-staging.paulschwoerer.de/).
 
 ## Development Quickstart
 
