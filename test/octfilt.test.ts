@@ -16,7 +16,7 @@ const EXPECTED = [
 ];
 
 it('should work', async () => {
-  const actual = await octfilt(new Float32Array(DATA), SAMPLE_RATE);
+  const actual = await octfilt(new Float64Array(DATA), SAMPLE_RATE);
 
   const delta = 1.0e-5;
   for(let i = 0; i < actual.length; i += 1) {

@@ -1,11 +1,11 @@
 type EarlyLateFractions = {
-  e50: Float32Array;
-  l50: Float32Array;
-  e80: Float32Array;
-  l80: Float32Array;
+  e50: Float64Array;
+  l50: Float64Array;
+  e80: Float64Array;
+  l80: Float64Array;
 };
 
-export function elf(data: Float32Array, fs: number): EarlyLateFractions {
+export function elf(data: Float64Array, fs: number): EarlyLateFractions {
   const smp50 = Math.round(0.05 * fs);
   const smp80 = Math.round(0.08 * fs);
 

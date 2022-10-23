@@ -1,7 +1,7 @@
 import initWasm, { xcorr as wasmXcorr } from "wasm-raqi-online-toolbox";
 
 
-export async function xcorr(x: Float32Array, y: Float32Array): Promise<Float32Array> {
+export async function xcorr(x: Float64Array, y: Float64Array): Promise<Float64Array> {
   if (x.length !== y.length) {
     throw new Error('x and y should be of samle length');
   }

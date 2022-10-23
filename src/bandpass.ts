@@ -1,5 +1,5 @@
 import { add, Complex, divide, multiply, pow, sqrt, subtract } from '@iamsquare/complex.js';
-import { absComplex } from './absComplex';
+import { absComplex } from './math/absComplex';
 import { freqz } from './freqz';
 
 

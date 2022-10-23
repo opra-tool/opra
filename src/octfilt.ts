@@ -76,7 +76,7 @@ import { bandpass } from "./bandpass";
  * @param fs 
  * @returns 
  */
-export async function octfilt(data: Float32Array, fs: number): Promise<Float32Array[]> {
+export async function octfilt(data: Float64Array, fs: number): Promise<Float64Array[]> {
   const F = [44.6683592150963, 89.1250938133746, 177.827941003892, 354.813389233576, 707.945784384138, 1412.53754462275, 2818.38293126445, 5623.41325190349, 11220.1845430196];
   
   const audioBuffer = new AudioBuffer({
@@ -102,7 +102,7 @@ export async function octfilt(data: Float32Array, fs: number): Promise<Float32Ar
   return Promise.all(promises);
 }
 
-function calc(buffer: AudioBuffer, f1: number, f2: number, fs: number): Promise<Float32Array> {
+function calc(buffer: AudioBuffer, f1: number, f2: number, fs: number): Promise<Float64Array> {
   const offlineCtx = new OfflineAudioContext(1, buffer.length, fs);
 
   const source = offlineCtx.createBufferSource();
@@ -130,7 +130,7 @@ function calc(buffer: AudioBuffer, f1: number, f2: number, fs: number): Promise<
 
   return new Promise((resolve) => {
     offlineCtx.startRendering().then((renderedBuffer) => {
-      resolve(renderedBuffer.getChannelData(0));
+      resolve(Float64Array.from(renderedBuffer.getChannelData(0)));
     });
   });
 }

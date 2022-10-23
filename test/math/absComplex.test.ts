@@ -1,6 +1,6 @@
 import { expect } from '@esm-bundle/chai';
 import { Complex } from '@iamsquare/complex.js';
-import { absComplex } from '../src/absComplex';
+import { absComplex } from '../../src/math/absComplex';
 
 it('should calculate the absolute of a complex number', () => {
   const num = new Complex(3, 4);

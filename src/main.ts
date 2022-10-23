@@ -1,4 +1,5 @@
-import { requireElement } from "./helpers";
+import { requireElement } from "./dom/requireElement";
+import { earlyInterauralCrossCorrelation, interauralCrossCorrelation } from "./interauralCrossCorrelation";
 import { octfilt } from "./octfilt";
 
 
@@ -16,6 +17,8 @@ async function processFile(e: ProgressEvent<FileReader>) {
   if (bytes === null || typeof bytes === "string") {
     throw new Error("invalid data read from audio file")
   }
+
+  const start = Date.now();
   
   const audioCtx = new AudioContext();
   const audioBuffer = await audioCtx.decodeAudioData(bytes);
@@ -47,14 +50,14 @@ async function processFile(e: ProgressEvent<FileReader>) {
 
     alert("monaural audio is not implemented, yet");
   } else if(audioBuffer.numberOfChannels === 2) {
-    const left = audioBuffer.getChannelData(0);
-    const right = audioBuffer.getChannelData(1);
+    const left = Float64Array.from(audioBuffer.getChannelData(0));
+    const right = Float64Array.from(audioBuffer.getChannelData(1));
 
     const toasLeft = findFirstOver20dBUnderMax(left);
     const toasRight = findFirstOver20dBUnderMax(right);
 
     // start times could be different per channel, use the shorter
-    const toas = Math.max(toasLeft, toasRight);
+    const toas = Math.min(toasLeft, toasRight);
 
     const trimmedLeft = left.slice(toas - 1);
     const trimmedRight = right.slice(toas - 1);
@@ -62,41 +65,42 @@ async function processFile(e: ProgressEvent<FileReader>) {
     const octavesLeft = await octfilt(trimmedLeft, fs);
     const octavesRight = await octfilt(trimmedRight, fs);
 
-    // TODO: IACC()
-    // TODO: EIACC()
-    // scheinbar muss nur xcorr() nachimplementiert werden
+    const crossCorrelated = await interauralCrossCorrelation(
+      octavesLeft,
+      octavesRight,
+    );
+    const earlyCrossCorrelated = await earlyInterauralCrossCorrelation(
+      octavesLeft,
+      octavesRight,
+      fs
+    );
+
+    console.log({
+      crossCorrelated,
+      earlyCrossCorrelated
+    });
   } else {
     alert("only monaural or binaural audio is supported");
   }
 
-  
+  resultsBox.innerHTML += `FINISHED, took ${Date.now() - start}ms`;
 }
 
-// function earlyLateFractions(rawAudio) {
-
-// }
-
-function starttimeDetection(rawAudio: Float32Array) {
-  const firstOver20dBUnderMax = findFirstOver20dBUnderMax(rawAudio);
-
-  return rawAudio.slice(firstOver20dBUnderMax - 1);
-}
-
-function findFirstOver20dBUnderMax(rawAudio: Float32Array) {
+function findFirstOver20dBUnderMax(rawAudio: Float64Array) {
   const max = getMaxAbs(rawAudio);
   const normalized = normalizeArray(rawAudio, max);
   return normalized.findIndex(el => Math.abs(el) > 0.1);
 }
 
-function normalizeArray(array: Float32Array, maxValue: number) {
+function normalizeArray(array: Float64Array, maxValue: number) {
   return array.map(el => el / maxValue);
 }
 
-function getMaxAbs(array: Float32Array) {
+function getMaxAbs(array: Float64Array) {
   let max = 0;
 
-  for (let i = 0; i < array.length; i++) {
-    if (max < Math.abs(array[i])) {
+  for (let i = 0; i < array.length; i += 1) {
+    if (Math.abs(array[i]) > max) {
       max = Math.abs(array[i]);
     }
   }

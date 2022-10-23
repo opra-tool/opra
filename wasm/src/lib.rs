@@ -18,7 +18,7 @@ macro_rules! console_log {
 }
 
 #[wasm_bindgen]
-pub fn xcorr(a: Vec<f32>, b: Vec<f32>, n: usize) -> Vec<f32> {
+pub fn xcorr(a: Vec<f64>, b: Vec<f64>, n: usize) -> Vec<f64> {
     utils::set_panic_hook();
     // TODO: if lists are not equal length, panic
     // this is implemented in JS, move here?
@@ -55,7 +55,7 @@ pub fn xcorr(a: Vec<f32>, b: Vec<f32>, n: usize) -> Vec<f32> {
     return [&real[n - mxl..mxl + n - mxl], &real[0..mxl + 1]].concat();
 }
 
-pub fn fft(mut x: Vec<Complex<f32>>) -> Vec<Complex<f32>> {
+pub fn fft(mut x: Vec<Complex<f64>>) -> Vec<Complex<f64>> {
     let mut planner = FftPlanner::new();
     let fft = planner.plan_fft_forward(x.len());
 
@@ -64,12 +64,12 @@ pub fn fft(mut x: Vec<Complex<f32>>) -> Vec<Complex<f32>> {
     x
 }
 
-pub fn ifft(mut x: Vec<Complex<f32>>) -> Vec<Complex<f32>> {
+pub fn ifft(mut x: Vec<Complex<f64>>) -> Vec<Complex<f64>> {
     let mut planner = FftPlanner::new();
     let ifft = planner.plan_fft_inverse(x.len());
 
     ifft.process(&mut x[..]);
 
     // normalize
-    return x.iter().map(|val| val / x.len() as f32).collect();
+    return x.iter().map(|val| val / x.len() as f64).collect();
 }
