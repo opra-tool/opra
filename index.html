@@ -1,38 +1,45 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    />
+    <meta name="Description" content="Put your description here." />
+    <base href="/" />
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="Description" content="Put your description here.">
-  <base href="/">
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+        background-color: #222;
+        color: #fff;
+      }
+    </style>
+    <title>RAQI Online Toolbox</title>
+  </head>
 
-  <style>
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: sans-serif;
-      background-color: #222;
-      color: #fff;
-    }
-  </style>
-  <title>raqi-online-toolbox</title>
-</head>
+  <body>
+    <h1>RAQI Online Toolbox</h1>
 
-<body>
-  <h1>RAQI Online Toolbox</h1>
+    Select a room response file to begin.
 
-  Select a room response file to begin.
+    <form id="form" action="post">
+      <input id="soundfile-input" type="file" />
+      <button>Analyze</button>
+    </form>
 
-  <form id="form" action="post">
-    <input id="soundfile-input" type="file">
-    <button>Analyze</button>
-  </form>
+    <button id="test-graph-button">Draw Test Graph</button>
 
-  <p id="results-box"></p>
+    <p id="results-box"></p>
 
-  <script type="module" src="./out-tsc/src/main.js"></script>
-</body>
+    <div id="chart-box">
+      <canvas id="binaural-chart" width="400" height="400"></canvas>
+    </div>
 
+    <script type="module" src="./out-tsc/src/main.js"></script>
+  </body>
 </html>

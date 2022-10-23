@@ -1,7 +1,12 @@
+import { Chart, registerables } from "chart.js";
 import { requireElement } from "./dom/requireElement";
 import { earlyInterauralCrossCorrelation, interauralCrossCorrelation } from "./interauralCrossCorrelation";
+import { normalizeArray } from "./math/normalizeArray";
 import { octfilt } from "./octfilt";
 
+// prepare chart.js library
+// TODO: only register components actually in use to reduce bundle size
+Chart.register(...registerables);
 
 const form = requireElement<HTMLFormElement>('form');
 const soundfileInput = requireElement<HTMLInputElement>('soundfile-input');
@@ -20,7 +25,9 @@ async function processFile(e: ProgressEvent<FileReader>) {
 
   const start = Date.now();
   
-  const audioCtx = new AudioContext();
+  const audioCtx = new AudioContext({
+    sampleRate: 44100 // TODO: dynamic based on audio file
+  });
   const audioBuffer = await audioCtx.decodeAudioData(bytes);
   const fs = audioBuffer.sampleRate;
 
@@ -75,7 +82,7 @@ async function processFile(e: ProgressEvent<FileReader>) {
       fs
     );
 
-    console.log({
+    drawGraph({
       crossCorrelated,
       earlyCrossCorrelated
     });
@@ -90,10 +97,6 @@ function findFirstOver20dBUnderMax(rawAudio: Float64Array) {
   const max = getMaxAbs(rawAudio);
   const normalized = normalizeArray(rawAudio, max);
   return normalized.findIndex(el => Math.abs(el) > 0.1);
-}
-
-function normalizeArray(array: Float64Array, maxValue: number) {
-  return array.map(el => el / maxValue);
 }
 
 function getMaxAbs(array: Float64Array) {
@@ -119,3 +122,42 @@ form.addEventListener("submit", (ev) => {
     console.warn("no files in input");
   }
 });
+
+function drawGraph({ crossCorrelated, earlyCrossCorrelated }: {
+  crossCorrelated: Float64Array,
+  earlyCrossCorrelated: Float64Array
+}) {
+  const canvas = requireElement<HTMLCanvasElement>("binaural-chart");
+  const ctx = canvas.getContext('2d');
+
+  if (ctx === null) {
+    throw new Error("canvas 2D context required for drawing graph");
+  }
+
+  const freqValues = [62.5, 125, 250, 500, 1000, 2000, 4000, 8000];
+  // eslint-disable-next-line no-new
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: freqValues.map(v => `${v}Hz`),
+        datasets: [{
+            label: 'Binaural Cross Correlation',
+            data: crossCorrelated,
+            fill: false,
+            borderColor: 'rgba(153, 102, 255, 0.5)',
+        }, {
+          label: 'Early Binaural Cross Correlation',
+            data: earlyCrossCorrelated,
+            fill: false,
+            borderColor: 'rgba(255, 99, 132, 0.5)',
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+  });
+}

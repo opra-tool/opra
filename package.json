@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@iamsquare/complex.js": "^1.0.4",
+    "chart.js": "^3.9.1",
     "lit": "^2.0.2",
     "wasm-raqi-online-toolbox": "file:wasm/pkg"
   },

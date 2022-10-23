@@ -1,5 +1,6 @@
 import { elf } from "./elf";
 import { arrayMax } from "./math/arrayMax";
+import { normalizeArray } from "./math/normalizeArray";
 import { xcorr } from "./xcorr";
 
 /**
@@ -24,10 +25,12 @@ export async function interauralCrossCorrelation(leftBands: Float64Array[], righ
     const leftSum = leftChannel.reduce((prev, cur) => prev + cur ** 2);
     const rightSum = rightChannel.reduce((prev, cur) => prev + cur ** 2);
     
-    const length = Math.sqrt(leftSum * rightSum);
     const crossCorrelated = await xcorr(leftChannel, rightChannel);
     
-    const normalized = crossCorrelated.map(val => val / length);
+    const normalized = normalizeArray(
+      crossCorrelated, 
+      Math.sqrt(leftSum * rightSum)
+    );
 
     res[i] = arrayMax(normalized);
   }
@@ -48,18 +51,19 @@ export async function earlyInterauralCrossCorrelation(leftBands: Float64Array[],
 
     const { e80: e80Left } = elf(leftChannel, fs);
     const { e80: e80Right } = elf(rightChannel, fs);
-
     
     const leftSum = e80Left.reduce((prev, cur) => prev + cur ** 2);
     const rightSum = e80Right.reduce((prev, cur) => prev + cur ** 2);
     
-    const length = Math.sqrt(leftSum * rightSum);
-    const crossCorrelated = await xcorr(leftChannel, rightChannel);
+    const crossCorrelated = await xcorr(e80Left, e80Right);
     
-    const normalized = crossCorrelated.map(val => val / length);
+    const normalized = normalizeArray(
+      crossCorrelated, 
+      Math.sqrt(leftSum * rightSum)
+    );
 
-    // TODO: use arrayMax() method
-    res[i] = 1 - arrayMax(normalized);
+    // TODO: understand why *-1 + 1 fixes the curve
+    res[i] = ((1 - arrayMax(normalized)) * -1) + 1;
   }
 
   return res;
