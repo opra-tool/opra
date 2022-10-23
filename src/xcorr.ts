@@ -1,13 +1,10 @@
-import initWasm, { xcorr as wasmXcorr } from "wasm-raqi-online-toolbox";
+import { xcorr as wasmXcorr } from "wasm-raqi-online-toolbox";
 
 
-export async function xcorr(x: Float64Array, y: Float64Array): Promise<Float64Array> {
+export function xcorr(x: Float64Array, y: Float64Array): Float64Array {
   if (x.length !== y.length) {
-    throw new Error('x and y should be of samle length');
+    throw new Error('x and y should be of same length');
   }
-
-  // TOOD: move to global place
-  await initWasm();
 
   return wasmXcorr(x, y, findTransformLength(x.length));
 }

@@ -1,13 +1,15 @@
 import { expect } from '@esm-bundle/chai';
+import initWasm from "wasm-raqi-online-toolbox";
 import { xcorr } from '../src/xcorr';
 
 
-it.skip('should throw error when given two arrays of different lengths', async () => {
-  // TODO: reactivate when promise based api is gone
-  // expect(xcorr(new Float64Array([1, 2, 3]), new Float64Array([1, 2]))).to.be.rej();
+it('should throw error when given two arrays of different lengths', () => {
+  expect(() => xcorr(new Float64Array([1, 2, 3]), new Float64Array([1, 2]))).to.throw();
 });
 
 it('should calculate x correlation', async () => {
+  await initWasm();
+  
   const left = new Float64Array([
     0.134858400000000,	0.807409600000000,	2.38634540000000,	5.00423740000000,	8.84944670000000,	1.52231550000000
   ]);

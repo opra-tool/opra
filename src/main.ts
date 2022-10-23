@@ -1,10 +1,13 @@
 import { Chart, registerables } from "chart.js";
+import initWasm from "wasm-raqi-online-toolbox";
 import { parseSampleRate } from "./audio_parsing/parseSampleRate";
 import { requireElement } from "./dom/requireElement";
 import { earlyInterauralCrossCorrelation, interauralCrossCorrelation } from "./interauralCrossCorrelation";
 import { arrayMaxAbs } from "./math/arrayMaxAbs";
 import { normalizeArray } from "./math/normalizeArray";
 import { octfilt } from "./octfilt";
+
+initWasm().catch(console.error);
 
 // prepare chart.js library
 // TODO: only register components actually in use to reduce bundle size
