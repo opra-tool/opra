@@ -1,6 +1,6 @@
 ## RAQI Online Toolbox
 
-![Deploy to GH Pages](https://github.com/paulschwoerer/raqi-online-toolbox/actions/workflows/deploy.yml/badge.svg)
+![CI](https://github.com/paulschwoerer/raqi-online-toolbox/actions/workflows/ci.yml/badge.svg)
 
 ## Staging Environment
 
