@@ -32,6 +32,7 @@ jobs:
         with:
           version: 'latest'
       - name: Build wasm module
+        working-directory: ./wasm
         run: wasm-pack build --target web
       - name: Setup Node
         uses: actions/setup-node@v3
