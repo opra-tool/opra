@@ -17,6 +17,7 @@ import {
   trimStarttimeBinaural,
   trimStarttimeMonaural,
 } from './starttimeDetection';
+import { arrayFilledWithZeros } from './math/arrayFilledWithZeros';
 
 // init web assembly module
 initWasm().catch(console.error);
@@ -64,18 +65,32 @@ async function processFile(e: ProgressEvent<FileReader>) {
   `;
 
   if (audioBuffer.numberOfChannels === 1) {
-    const rawAudio = Float64Array.from(audioBuffer.getChannelData(0));
-    const octaveBands = await octfilt(rawAudio, fs);
+    // TODO: rename: raw audio
+    const miror = Float64Array.from(audioBuffer.getChannelData(0));
+    // TODO: rename: starttime trimmed raw audio
+    // const mir = trimStarttimeMonaural(miror);
+    // TODO: rename: raw audio padded at its end with 10000 zeros
+    const mirf = new Float64Array([...miror, ...arrayFilledWithZeros(10000)]);
 
-    const trimmedOctaveBands = octaveBands.map(trimStarttimeMonaural);
+    // octave band filtering
+    const octaveBands = await octfilt(mirf, fs);
+    // TODO: rename: individually startime trimmed and zero-padded octave bands
+    const miro = octaveBands.map(band => {
+      const trimmedBand = trimStarttimeMonaural(band);
+      return new Float64Array([
+        ...trimmedBand,
+        ...arrayFilledWithZeros(band.length - trimmedBand.length),
+      ]);
+    });
 
     // TODO: Aweight() - weighting filter scheint recht kompliziert
     // https://www.mathworks.com/help/audio/ref/weightingfilter-system-object.html
+    // const mira = trimStarttimeMonaural(aWeight(mirf, fs));
 
-    const c50Values = new Float64Array(trimmedOctaveBands.length);
-    const c80Values = new Float64Array(trimmedOctaveBands.length);
-    for (let i = 0; i < trimmedOctaveBands.length; i += 1) {
-      const earlyLateFractions = elf(trimmedOctaveBands[i], fs);
+    const c50Values = new Float64Array(miro.length);
+    const c80Values = new Float64Array(miro.length);
+    for (let i = 0; i < miro.length; i += 1) {
+      const earlyLateFractions = elf(miro[i], fs);
       const { c50, c80 } = c50c80Calculation(earlyLateFractions);
       c50Values[i] = c50;
       c80Values[i] = c80;

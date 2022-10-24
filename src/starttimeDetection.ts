@@ -22,6 +22,8 @@ function trimAudio(audio: Float64Array, toas: number): Float64Array {
  * Performs starttime detection on the given audio.
  * Returns the audio from the point where it first had an intensity of max(audio) - 20dB.
  *
+ * TODO: rename to starttime correction?
+ *
  * @param audio Audio as Float64Array
  * @returns Trimmed audio
  */
