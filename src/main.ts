@@ -18,8 +18,11 @@ import {
   trimStarttimeMonaural,
 } from './starttimeDetection';
 import { arrayFilledWithZeros } from './math/arrayFilledWithZeros';
+import { calculateStrength } from './strength';
+import { createStrengthGraph } from './graphs/strengthGraph';
 
 // init web assembly module
+// eslint-disable-next-line no-console
 initWasm().catch(console.error);
 
 // register web components
@@ -65,6 +68,7 @@ async function processFile(e: ProgressEvent<FileReader>) {
   `;
 
   if (audioBuffer.numberOfChannels === 1) {
+    const p0 = 0.000001;
     // TODO: rename: raw audio
     const miror = Float64Array.from(audioBuffer.getChannelData(0));
     // TODO: rename: starttime trimmed raw audio
@@ -87,18 +91,30 @@ async function processFile(e: ProgressEvent<FileReader>) {
     // https://www.mathworks.com/help/audio/ref/weightingfilter-system-object.html
     // const mira = trimStarttimeMonaural(aWeight(mirf, fs));
 
+    const earlyLateFractions = miro.map(band => elf(band, fs));
+
     const c50Values = new Float64Array(miro.length);
     const c80Values = new Float64Array(miro.length);
     for (let i = 0; i < miro.length; i += 1) {
-      const earlyLateFractions = elf(miro[i], fs);
-      const { c50, c80 } = c50c80Calculation(earlyLateFractions);
+      const { c50, c80 } = c50c80Calculation(earlyLateFractions[i]);
       c50Values[i] = c50;
       c80Values[i] = c80;
     }
 
-    graphContainer.appendChild(createC50C80Graph(c50Values, c80Values));
+    const strength = calculateStrength(miro, p0);
+    const earlyStrength = calculateStrength(
+      earlyLateFractions.map(val => val.e80),
+      p0
+    );
+    const lateStrength = calculateStrength(
+      earlyLateFractions.map(val => val.l80),
+      p0
+    );
 
-    // TODO: EDT() - polyfit() wird verwendet, könnte eklig werden, sum() und cumsum() müssen auch implementiert werden
+    graphContainer.appendChild(createC50C80Graph(c50Values, c80Values));
+    graphContainer.appendChild(
+      createStrengthGraph(strength, earlyStrength, lateStrength)
+    );
   } else if (audioBuffer.numberOfChannels === 2) {
     const leftChannel = Float64Array.from(audioBuffer.getChannelData(0));
     const rightChannel = Float64Array.from(audioBuffer.getChannelData(1));
@@ -123,6 +139,7 @@ async function processFile(e: ProgressEvent<FileReader>) {
       createInterauralCrossCorrelationGraph(iacc, eiacc)
     );
   } else {
+    // eslint-disable-next-line no-alert
     alert('only monaural or binaural audio is supported');
   }
 
