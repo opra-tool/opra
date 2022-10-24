@@ -11,6 +11,10 @@ import {
 import { arrayMaxAbs } from './math/arrayMaxAbs';
 import { normalizeArray } from './math/normalizeArray';
 import { octfilt } from './octfilt';
+import { elf } from './elf';
+import { c50c80Calculation } from './c50c80Calculation';
+import { createInterauralCrossCorrelationGraph } from './graphs/interauralCrossCorrelationGraph';
+import { createC50C80Graph } from './graphs/c50c80Graph';
 
 // init web assembly module
 initWasm().catch(console.error);
@@ -31,6 +35,7 @@ Chart.register(...registerables);
 const form = requireElement<HTMLFormElement>('form');
 const soundfileInput = requireElement<HTMLInputElement>('soundfile-input');
 const resultsBox = requireElement('results-box');
+const graphContainer = requireElement('graph-container');
 
 async function processFile(e: ProgressEvent<FileReader>) {
   if (!e.target) {
@@ -49,6 +54,7 @@ async function processFile(e: ProgressEvent<FileReader>) {
   const audioCtx = new AudioContext({ sampleRate: fs });
   const audioBuffer = await audioCtx.decodeAudioData(bytes);
 
+  graphContainer.innerHTML = '';
   resultsBox.innerHTML = `
     <span>Sample Rate: ${audioBuffer.sampleRate}Hz</span><br />
     <span>Channels: ${audioBuffer.numberOfChannels}</span><br />
@@ -56,24 +62,32 @@ async function processFile(e: ProgressEvent<FileReader>) {
   `;
 
   if (audioBuffer.numberOfChannels === 1) {
-    // const rawAudio = audioBuffer.getChannelData(0);
-    // const octaveBands = await octfilt(rawAudio, fs);
+    const rawAudio = Float64Array.from(audioBuffer.getChannelData(0));
+    const octaveBands = await octfilt(rawAudio, fs);
 
-    // const trimmedOctaveBands = [];
-    // for (let i = 0; i < octaveBands.length; i += 1) {
-    //   trimmedOctaveBands[i] = starttimeDetection(octaveBands[i]);
-    // }
+    // TODO: start time detection works differently in Matlab code
+    const trimmedOctaveBands = [];
+    for (let i = 0; i < octaveBands.length; i += 1) {
+      // eslint-disable-next-line no-use-before-define
+      const toas = findFirstOver20dBUnderMax(octaveBands[i]);
+      trimmedOctaveBands[i] = octaveBands[i].slice(toas - 1);
+    }
 
     // TODO: Aweight() - weighting filter scheint recht kompliziert
     // https://www.mathworks.com/help/audio/ref/weightingfilter-system-object.html
 
-    // TODO: ELF() - recht unkompliziert
+    const c50Values = new Float64Array(trimmedOctaveBands.length);
+    const c80Values = new Float64Array(trimmedOctaveBands.length);
+    for (let i = 0; i < trimmedOctaveBands.length; i += 1) {
+      const earlyLateFractions = elf(trimmedOctaveBands[i], fs);
+      const { c50, c80 } = c50c80Calculation(earlyLateFractions);
+      c50Values[i] = c50;
+      c80Values[i] = c80;
+    }
 
-    // TODO: C5080CALC() - auch sehr entspannt
+    graphContainer.appendChild(createC50C80Graph(c50Values, c80Values));
 
     // TODO: EDT() - polyfit() wird verwendet, könnte eklig werden, sum() und cumsum() müssen auch implementiert werden
-
-    alert('monaural audio is not implemented, yet');
   } else if (audioBuffer.numberOfChannels === 2) {
     const left = Float64Array.from(audioBuffer.getChannelData(0));
     const right = Float64Array.from(audioBuffer.getChannelData(1));
@@ -92,21 +106,16 @@ async function processFile(e: ProgressEvent<FileReader>) {
     const octavesLeft = await octfilt(trimmedLeft, fs);
     const octavesRight = await octfilt(trimmedRight, fs);
 
-    const crossCorrelated = await interauralCrossCorrelation(
-      octavesLeft,
-      octavesRight
-    );
-    const earlyCrossCorrelated = await earlyInterauralCrossCorrelation(
+    const iacc = await interauralCrossCorrelation(octavesLeft, octavesRight);
+    const eiacc = await earlyInterauralCrossCorrelation(
       octavesLeft,
       octavesRight,
       fs
     );
 
-    // eslint-disable-next-line no-use-before-define
-    drawBinauralCrossCorrelationGraph({
-      crossCorrelated,
-      earlyCrossCorrelated,
-    });
+    graphContainer.appendChild(
+      createInterauralCrossCorrelationGraph(iacc, eiacc)
+    );
   } else {
     alert('only monaural or binaural audio is supported');
   }
@@ -131,34 +140,3 @@ form.addEventListener('submit', ev => {
     throw new Error('no files in input');
   }
 });
-
-function drawBinauralCrossCorrelationGraph({
-  crossCorrelated,
-  earlyCrossCorrelated,
-}: {
-  crossCorrelated: Float64Array;
-  earlyCrossCorrelated: Float64Array;
-}) {
-  const graphContainer = requireElement('graph-container');
-
-  const freqValues = [62.5, 125, 250, 500, 1000, 2000, 4000, 8000];
-  const card = document.createElement('graph-card');
-  card.title = 'Binaural Cross Correlation';
-  card.labels = freqValues.map(v => `${v}Hz`);
-  card.datasets = [
-    {
-      label: 'Binaural Cross Correlation',
-      data: crossCorrelated,
-      fill: false,
-      borderColor: 'rgba(153, 102, 255, 0.5)',
-    },
-    {
-      label: 'Early Binaural Cross Correlation',
-      data: earlyCrossCorrelated,
-      fill: false,
-      borderColor: 'rgba(255, 99, 132, 0.5)',
-    },
-  ];
-
-  graphContainer.appendChild(card);
-}

@@ -1,6 +1,7 @@
 /* eslint-disable import/extensions */
 import { elf } from './elf';
 import { arrayMax } from './math/arrayMax';
+import { arraySumSquared } from './math/arraySumSquared';
 import { normalizeArray } from './math/normalizeArray';
 import { xcorr } from './xcorr';
 
@@ -28,8 +29,8 @@ export async function interauralCrossCorrelation(
     const leftChannel = leftBands[i];
     const rightChannel = rightBands[i];
 
-    const leftSum = leftChannel.reduce((prev, cur) => prev + cur ** 2);
-    const rightSum = rightChannel.reduce((prev, cur) => prev + cur ** 2);
+    const leftSum = arraySumSquared(leftChannel);
+    const rightSum = arraySumSquared(rightChannel);
 
     const crossCorrelated = xcorr(leftChannel, rightChannel);
 
@@ -64,8 +65,8 @@ export async function earlyInterauralCrossCorrelation(
     const { e80: e80Left } = elf(leftChannel, fs);
     const { e80: e80Right } = elf(rightChannel, fs);
 
-    const leftSum = e80Left.reduce((prev, cur) => prev + cur ** 2);
-    const rightSum = e80Right.reduce((prev, cur) => prev + cur ** 2);
+    const leftSum = arraySumSquared(e80Left);
+    const rightSum = arraySumSquared(e80Right);
 
     const crossCorrelated = xcorr(e80Left, e80Right);
 

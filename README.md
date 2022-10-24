@@ -60,3 +60,4 @@ Rust wasm libraries are importable ust like an ES6 module.
 ## Remarks
 
 * The code uses double precision floating point numbers, as it is based on matlab code and matlab [uses doubles by default](https://de.mathworks.com/help/matlab/matlab_prog/floating-point-numbers.html).
+* Strange results have been observed when using `reduce()` to sum arrays. Use a for loop instead
