@@ -20,6 +20,8 @@ import {
 import { arrayFilledWithZeros } from './math/arrayFilledWithZeros';
 import { calculateStrength } from './strength';
 import { createStrengthGraph } from './graphs/strengthGraph';
+import { edt, rev } from './reverberation';
+import { createReverberationGraph } from './graphs/reverberation';
 
 // init web assembly module
 // eslint-disable-next-line no-console
@@ -111,10 +113,14 @@ async function processFile(e: ProgressEvent<FileReader>) {
       p0
     );
 
+    const edtValues = edt(miro, fs);
+    const reverbTime = rev(miro, 30, fs);
+
     graphContainer.appendChild(createC50C80Graph(c50Values, c80Values));
     graphContainer.appendChild(
       createStrengthGraph(strength, earlyStrength, lateStrength)
     );
+    graphContainer.appendChild(createReverberationGraph(edtValues, reverbTime));
   } else if (audioBuffer.numberOfChannels === 2) {
     const leftChannel = Float64Array.from(audioBuffer.getChannelData(0));
     const rightChannel = Float64Array.from(audioBuffer.getChannelData(1));
