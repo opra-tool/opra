@@ -18,6 +18,13 @@
         background-color: #222;
         color: #fff;
       }
+
+      #graph-container {
+        display: grid;
+        gap: 1rem;
+        grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+        padding: 1rem;
+      }
     </style>
     <title>RAQI Online Toolbox</title>
   </head>
@@ -34,9 +41,7 @@
 
     <p id="results-box"></p>
 
-    <div id="chart-box">
-      <canvas id="binaural-chart" width="400" height="400"></canvas>
-    </div>
+    <div id="graph-container" />
 
     <script type="module" src="./out-tsc/src/main.js"></script>
   </body>

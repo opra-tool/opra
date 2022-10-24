@@ -1,13 +1,28 @@
-import { Chart, registerables } from "chart.js";
-import initWasm from "wasm-raqi-online-toolbox";
-import { parseSampleRate } from "./audio_parsing/parseSampleRate";
-import { requireElement } from "./dom/requireElement";
-import { earlyInterauralCrossCorrelation, interauralCrossCorrelation } from "./interauralCrossCorrelation";
-import { arrayMaxAbs } from "./math/arrayMaxAbs";
-import { normalizeArray } from "./math/normalizeArray";
-import { octfilt } from "./octfilt";
+/* eslint-disable import/extensions */
+import { Chart, registerables } from 'chart.js';
+import initWasm from 'wasm-raqi-online-toolbox';
+import { GraphCard } from './components/GraphCard';
+import { parseSampleRate } from './audio_parsing/parseSampleRate';
+import { requireElement } from './dom/requireElement';
+import {
+  earlyInterauralCrossCorrelation,
+  interauralCrossCorrelation,
+} from './interauralCrossCorrelation';
+import { arrayMaxAbs } from './math/arrayMaxAbs';
+import { normalizeArray } from './math/normalizeArray';
+import { octfilt } from './octfilt';
 
+// init web assembly module
 initWasm().catch(console.error);
+
+// register web components
+declare global {
+  interface HTMLElementTagNameMap {
+    'graph-card': GraphCard;
+  }
+}
+
+customElements.define('graph-card', GraphCard);
 
 // prepare chart.js library
 // TODO: only register components actually in use to reduce bundle size
@@ -22,13 +37,12 @@ async function processFile(e: ProgressEvent<FileReader>) {
     return;
   }
 
-  
   const bytes = e.target.result;
-  if (bytes === null || typeof bytes === "string") {
-    throw new Error("invalid data read from audio file")
+  if (bytes === null || typeof bytes === 'string') {
+    throw new Error('invalid data read from audio file');
   }
 
-  const fs = parseSampleRate("wav", bytes);
+  const fs = parseSampleRate('wav', bytes);
 
   const start = Date.now();
 
@@ -40,11 +54,11 @@ async function processFile(e: ProgressEvent<FileReader>) {
     <span>Channels: ${audioBuffer.numberOfChannels}</span><br />
     <span>Duration: ${audioBuffer.duration}s</span><br />
   `;
-  
+
   if (audioBuffer.numberOfChannels === 1) {
     // const rawAudio = audioBuffer.getChannelData(0);
     // const octaveBands = await octfilt(rawAudio, fs);
-  
+
     // const trimmedOctaveBands = [];
     // for (let i = 0; i < octaveBands.length; i += 1) {
     //   trimmedOctaveBands[i] = starttimeDetection(octaveBands[i]);
@@ -59,12 +73,14 @@ async function processFile(e: ProgressEvent<FileReader>) {
 
     // TODO: EDT() - polyfit() wird verwendet, könnte eklig werden, sum() und cumsum() müssen auch implementiert werden
 
-    alert("monaural audio is not implemented, yet");
-  } else if(audioBuffer.numberOfChannels === 2) {
+    alert('monaural audio is not implemented, yet');
+  } else if (audioBuffer.numberOfChannels === 2) {
     const left = Float64Array.from(audioBuffer.getChannelData(0));
     const right = Float64Array.from(audioBuffer.getChannelData(1));
 
+    // eslint-disable-next-line no-use-before-define
     const toasLeft = findFirstOver20dBUnderMax(left);
+    // eslint-disable-next-line no-use-before-define
     const toasRight = findFirstOver20dBUnderMax(right);
 
     // start times could be different per channel, use the shorter
@@ -78,7 +94,7 @@ async function processFile(e: ProgressEvent<FileReader>) {
 
     const crossCorrelated = await interauralCrossCorrelation(
       octavesLeft,
-      octavesRight,
+      octavesRight
     );
     const earlyCrossCorrelated = await earlyInterauralCrossCorrelation(
       octavesLeft,
@@ -86,12 +102,13 @@ async function processFile(e: ProgressEvent<FileReader>) {
       fs
     );
 
-    drawGraph({
+    // eslint-disable-next-line no-use-before-define
+    drawBinauralCrossCorrelationGraph({
       crossCorrelated,
-      earlyCrossCorrelated
+      earlyCrossCorrelated,
     });
   } else {
-    alert("only monaural or binaural audio is supported");
+    alert('only monaural or binaural audio is supported');
   }
 
   resultsBox.innerHTML += `FINISHED, took ${Date.now() - start}ms`;
@@ -103,9 +120,7 @@ function findFirstOver20dBUnderMax(rawAudio: Float64Array) {
   return normalized.findIndex(el => Math.abs(el) > 0.1);
 }
 
-
-
-form.addEventListener("submit", (ev) => {
+form.addEventListener('submit', ev => {
   ev.preventDefault();
 
   const reader = new FileReader();
@@ -113,45 +128,37 @@ form.addEventListener("submit", (ev) => {
   if (soundfileInput.files !== null && soundfileInput.files.length > 0) {
     reader.readAsArrayBuffer(soundfileInput.files[0]);
   } else {
-    throw new Error("no files in input");
+    throw new Error('no files in input');
   }
 });
 
-function drawGraph({ crossCorrelated, earlyCrossCorrelated }: {
-  crossCorrelated: Float64Array,
-  earlyCrossCorrelated: Float64Array
+function drawBinauralCrossCorrelationGraph({
+  crossCorrelated,
+  earlyCrossCorrelated,
+}: {
+  crossCorrelated: Float64Array;
+  earlyCrossCorrelated: Float64Array;
 }) {
-  const canvas = requireElement<HTMLCanvasElement>("binaural-chart");
-  const ctx = canvas.getContext('2d');
-
-  if (ctx === null) {
-    throw new Error("canvas 2D context required for drawing graph");
-  }
+  const graphContainer = requireElement('graph-container');
 
   const freqValues = [62.5, 125, 250, 500, 1000, 2000, 4000, 8000];
-  // eslint-disable-next-line no-new
-  new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: freqValues.map(v => `${v}Hz`),
-        datasets: [{
-            label: 'Binaural Cross Correlation',
-            data: crossCorrelated,
-            fill: false,
-            borderColor: 'rgba(153, 102, 255, 0.5)',
-        }, {
-          label: 'Early Binaural Cross Correlation',
-            data: earlyCrossCorrelated,
-            fill: false,
-            borderColor: 'rgba(255, 99, 132, 0.5)',
-        }]
+  const card = document.createElement('graph-card');
+  card.title = 'Binaural Cross Correlation';
+  card.labels = freqValues.map(v => `${v}Hz`);
+  card.datasets = [
+    {
+      label: 'Binaural Cross Correlation',
+      data: crossCorrelated,
+      fill: false,
+      borderColor: 'rgba(153, 102, 255, 0.5)',
     },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true
-            }
-        }
-    }
-  });
+    {
+      label: 'Early Binaural Cross Correlation',
+      data: earlyCrossCorrelated,
+      fill: false,
+      borderColor: 'rgba(255, 99, 132, 0.5)',
+    },
+  ];
+
+  graphContainer.appendChild(card);
 }
