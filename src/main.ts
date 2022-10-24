@@ -8,13 +8,15 @@ import {
   earlyInterauralCrossCorrelation,
   interauralCrossCorrelation,
 } from './interauralCrossCorrelation';
-import { arrayMaxAbs } from './math/arrayMaxAbs';
-import { normalizeArray } from './math/normalizeArray';
 import { octfilt } from './octfilt';
 import { elf } from './elf';
 import { c50c80Calculation } from './c50c80Calculation';
 import { createInterauralCrossCorrelationGraph } from './graphs/interauralCrossCorrelationGraph';
 import { createC50C80Graph } from './graphs/c50c80Graph';
+import {
+  trimStarttimeBinaural,
+  trimStarttimeMonaural,
+} from './starttimeDetection';
 
 // init web assembly module
 initWasm().catch(console.error);
@@ -65,13 +67,7 @@ async function processFile(e: ProgressEvent<FileReader>) {
     const rawAudio = Float64Array.from(audioBuffer.getChannelData(0));
     const octaveBands = await octfilt(rawAudio, fs);
 
-    // TODO: start time detection works differently in Matlab code
-    const trimmedOctaveBands = [];
-    for (let i = 0; i < octaveBands.length; i += 1) {
-      // eslint-disable-next-line no-use-before-define
-      const toas = findFirstOver20dBUnderMax(octaveBands[i]);
-      trimmedOctaveBands[i] = octaveBands[i].slice(toas - 1);
-    }
+    const trimmedOctaveBands = octaveBands.map(trimStarttimeMonaural);
 
     // TODO: Aweight() - weighting filter scheint recht kompliziert
     // https://www.mathworks.com/help/audio/ref/weightingfilter-system-object.html
@@ -89,19 +85,14 @@ async function processFile(e: ProgressEvent<FileReader>) {
 
     // TODO: EDT() - polyfit() wird verwendet, könnte eklig werden, sum() und cumsum() müssen auch implementiert werden
   } else if (audioBuffer.numberOfChannels === 2) {
-    const left = Float64Array.from(audioBuffer.getChannelData(0));
-    const right = Float64Array.from(audioBuffer.getChannelData(1));
+    const leftChannel = Float64Array.from(audioBuffer.getChannelData(0));
+    const rightChannel = Float64Array.from(audioBuffer.getChannelData(1));
 
-    // eslint-disable-next-line no-use-before-define
-    const toasLeft = findFirstOver20dBUnderMax(left);
-    // eslint-disable-next-line no-use-before-define
-    const toasRight = findFirstOver20dBUnderMax(right);
-
-    // start times could be different per channel, use the shorter
-    const toas = Math.min(toasLeft, toasRight);
-
-    const trimmedLeft = left.slice(toas - 1);
-    const trimmedRight = right.slice(toas - 1);
+    const { leftChannel: trimmedLeft, rightChannel: trimmedRight } =
+      trimStarttimeBinaural({
+        leftChannel,
+        rightChannel,
+      });
 
     const octavesLeft = await octfilt(trimmedLeft, fs);
     const octavesRight = await octfilt(trimmedRight, fs);
@@ -121,12 +112,6 @@ async function processFile(e: ProgressEvent<FileReader>) {
   }
 
   resultsBox.innerHTML += `FINISHED, took ${Date.now() - start}ms`;
-}
-
-function findFirstOver20dBUnderMax(rawAudio: Float64Array) {
-  const max = arrayMaxAbs(rawAudio);
-  const normalized = normalizeArray(rawAudio, max);
-  return normalized.findIndex(el => Math.abs(el) > 0.1);
 }
 
 form.addEventListener('submit', ev => {
