@@ -1,4 +1,5 @@
 /* eslint-disable import/extensions */
+import { GRAPH_COLOR_RED, GRAPH_COLOR_BLUE } from './colors';
 import { GraphCard } from '../components/GraphCard';
 import { getFrequencyLabels } from './common';
 
@@ -14,13 +15,13 @@ export function createC50C80Graph(
       label: 'C50',
       data: c50,
       fill: false,
-      borderColor: 'rgba(255, 99, 132, 0.5)',
+      borderColor: GRAPH_COLOR_RED,
     },
     {
       label: 'C80',
       data: c80,
       fill: false,
-      borderColor: 'rgba(153, 102, 255, 0.5)',
+      borderColor: GRAPH_COLOR_BLUE,
     },
   ];
 
