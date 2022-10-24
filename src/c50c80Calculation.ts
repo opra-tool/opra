@@ -1,5 +1,6 @@
 /* eslint-disable import/extensions */
 import { arraySumSquared } from './math/arraySumSquared';
+import { safeLog10 } from './math/safeLog10';
 
 type EarlyLateFractions = {
   e50: Float64Array;
@@ -24,8 +25,8 @@ export function c50c80Calculation({
   const e80Sum = arraySumSquared(e80);
   const l80Sum = arraySumSquared(l80);
 
-  const c50 = 10 * Math.log10(e50Sum / l50Sum);
-  const c80 = 10 * Math.log10(e80Sum / l80Sum);
+  const c50 = 10 * safeLog10(e50Sum / l50Sum);
+  const c80 = 10 * safeLog10(e80Sum / l80Sum);
 
   return {
     c50,
