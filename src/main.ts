@@ -1,5 +1,6 @@
 import { Chart, registerables } from 'chart.js';
 import initWasm from 'wasm-raqi-online-toolbox';
+import { ExecutionTime } from './components/ExecutionTime';
 import { ParametersCard } from './components/ParametersCard';
 import { GraphCard } from './components/GraphCard';
 import { parseSampleRate } from './audio/parseSampleRate';
@@ -32,6 +33,7 @@ declare global {
   interface HTMLElementTagNameMap {
     'audio-info-card': AudioInfoCard;
     'base-card': BaseCard;
+    'execution-time': ExecutionTime;
     'graph-card': GraphCard;
     'parameters-card': ParametersCard;
   }
@@ -39,6 +41,7 @@ declare global {
 
 customElements.define('audio-info-card', AudioInfoCard);
 customElements.define('base-card', BaseCard);
+customElements.define('execution-time', ExecutionTime);
 customElements.define('graph-card', GraphCard);
 customElements.define('parameters-card', ParametersCard);
 
@@ -59,6 +62,8 @@ async function processFile(e: ProgressEvent<FileReader>) {
   if (bytes === null || typeof bytes === 'string') {
     throw new Error('invalid data read from audio file');
   }
+
+  const t0 = performance.now();
 
   const fs = parseSampleRate('wav', bytes);
 
@@ -180,6 +185,12 @@ async function processFile(e: ProgressEvent<FileReader>) {
     // eslint-disable-next-line no-alert
     alert('only monaural or binaural audio is supported');
   }
+
+  const t1 = performance.now();
+
+  const executionTime = new ExecutionTime();
+  executionTime.milliseconds = t1 - t0;
+  graphContainer.appendChild(executionTime);
 }
 
 form.addEventListener('submit', ev => {
