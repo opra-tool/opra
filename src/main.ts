@@ -2,7 +2,7 @@ import { Chart, registerables } from 'chart.js';
 import initWasm from 'wasm-raqi-online-toolbox';
 import { ParametersCard } from './components/ParametersCard';
 import { GraphCard } from './components/GraphCard';
-import { parseSampleRate } from './audio_parsing/parseSampleRate';
+import { parseSampleRate } from './audio/parseSampleRate';
 import { requireElement } from './dom/requireElement';
 import {
   earlyInterauralCrossCorrelation,
