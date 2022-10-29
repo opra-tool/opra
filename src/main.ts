@@ -26,6 +26,7 @@ import { aWeightAudioSignal } from './digitalFilters/aWeighting';
 import { ts } from './ts';
 import { AudioInfoCard } from './components/AudioInfoCard';
 import { BaseCard } from './components/BaseCard';
+import { createSquaredImpulseResponseGraph } from './graphs/squaredImpulseResponse';
 
 // init web assembly module
 // eslint-disable-next-line no-console
@@ -136,6 +137,9 @@ async function processFile(e: ProgressEvent<FileReader>) {
     graphContainer.appendChild(createC50C80Graph(c50Values, c80Values));
     graphContainer.appendChild(
       createStrengthGraph(strength, earlyStrength, lateStrength)
+    );
+    graphContainer.appendChild(
+      createSquaredImpulseResponseGraph(miror, fs, 100, 0.5)
     );
     const parametersCard = new ParametersCard();
     parametersCard.parameters = [
