@@ -1,6 +1,9 @@
 mod utils;
+mod wasm;
 
 use std::usize;
+
+use wasm::*;
 
 use rustfft::{num_complex::Complex, FftPlanner};
 use wasm_bindgen::prelude::*;
@@ -55,6 +58,20 @@ pub fn xcorr(a: Vec<f64>, b: Vec<f64>, n: usize) -> Vec<f64> {
     return [&real[n - mxl..mxl + n - mxl], &real[0..mxl + 1]].concat();
 }
 
+#[wasm_bindgen]
+pub fn fft_flat(values: Vec<f64>) -> Vec<f64> {
+    utils::set_panic_hook();
+
+    let buffer: Vec<Complex<f64>> = values
+        .iter()
+        .map(|x| return Complex { re: *x, im: 0_f64 })
+        .collect();
+
+    let out = fft(buffer);
+
+    return complex_object_form_to_flat_form(out);
+}
+
 pub fn fft(mut x: Vec<Complex<f64>>) -> Vec<Complex<f64>> {
     let mut planner = FftPlanner::new();
     let fft = planner.plan_fft_forward(x.len());
@@ -62,6 +79,17 @@ pub fn fft(mut x: Vec<Complex<f64>>) -> Vec<Complex<f64>> {
     fft.process(&mut x[..]);
 
     x
+}
+
+#[wasm_bindgen]
+pub fn ifft_flat(flat_input: Vec<f64>) -> Vec<f64> {
+    utils::set_panic_hook();
+
+    let input = complex_flat_form_to_object_form(flat_input);
+
+    let out = ifft(input);
+
+    return complex_object_form_to_flat_form(out);
 }
 
 pub fn ifft(mut x: Vec<Complex<f64>>) -> Vec<Complex<f64>> {
