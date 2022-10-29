@@ -59,7 +59,7 @@ export class GraphCard extends LitElement {
       <base-card .cardTitle=${this.title}>
         <!-- wrapping div is needed for proper rendering of chart -->
         <div>
-          <canvas id="canvas" width="400" height="400"></canvas>
+          <canvas id="canvas" width="400" height="250"></canvas>
         </div>
       </base-card>
     `;
