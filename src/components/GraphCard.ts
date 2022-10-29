@@ -1,5 +1,5 @@
 import { Chart, ChartDataset, ChartTypeRegistry } from 'chart.js';
-import { LitElement, html, css } from 'lit';
+import { LitElement, html } from 'lit';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { property } from 'lit/decorators.js';
 
@@ -31,37 +31,52 @@ export class GraphCard extends LitElement {
       throw new Error('canvas 2D context required for drawing graph');
     }
 
-    this.chart = new Chart(ctx, {
-      type: this.type,
-      data: {
-        labels: this.labels,
-        datasets: this.datasets,
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true,
+    try {
+      this.chart = new Chart(ctx, {
+        type: this.type,
+        data: {
+          labels: this.labels,
+          datasets: this.datasets,
+        },
+        options: {
+          scales: {
+            y: {
+              beginAtZero: true,
+            },
           },
         },
-      },
-    });
+      });
+    } catch (e) {
+      // ignore error NS_ERROR_FAILURE due to a bug in firefox
+      // https://bugzilla.mozilla.org/show_bug.cgi?id=941146
+      if (hasErrorName(e, 'NS_ERROR_FAILURE')) {
+        return;
+      }
+
+      throw e;
+    }
   }
 
   render() {
     return html`
-      <div class="graph-card">
-        <h3>${this.title}</h3>
-        <canvas id="canvas" width="400" height="400"></canvas>
-      </div>
+      <base-card>
+        <div>
+          <h3>${this.title}</h3>
+          <canvas id="canvas" width="400" height="400"></canvas>
+        </div>
+      </base-card>
     `;
   }
+}
 
-  static styles = css`
-    .graph-card {
-      padding: 1rem;
-      box-shadow: 0 12px 17px 2px rgb(0 0 0 / 14%),
-        0 5px 22px 4px rgb(0 0 0 / 12%), 0 7px 8px -4px rgb(0 0 0 / 20%);
-      border-radius: 0.5rem;
-    }
-  `;
+function hasErrorName(e: unknown, name: string): boolean {
+  if (!e) {
+    return false;
+  }
+
+  if (typeof e !== 'object') {
+    return false;
+  }
+
+  return (e as { name: string }).name === name;
 }

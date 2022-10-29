@@ -19,3 +19,14 @@ export function calculateStrength(
     })
   );
 }
+
+export function calculateStrengthOfAWeighted(
+  aWeighted: Float64Array,
+  p0: number
+): number {
+  const sumSquared = arraySumSquared(aWeighted);
+  const lf = 100;
+  const l = 10 * safeLog10(sumSquared / p0 ** 2);
+
+  return l - lf;
+}

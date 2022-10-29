@@ -25,6 +25,10 @@
         grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
         padding: 1rem;
       }
+
+      audio-info-card {
+        grid-column: span 2;
+      }
     </style>
     <title>RAQI Online Toolbox</title>
   </head>
@@ -38,8 +42,6 @@
       <input id="soundfile-input" type="file" accept=".wav" />
       <button>Analyze</button>
     </form>
-
-    <p id="results-box"></p>
 
     <div id="graph-container" />
 
