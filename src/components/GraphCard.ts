@@ -17,9 +17,6 @@ export class GraphCard extends LitElement {
     Float64Array
   >[] = [];
 
-  private chart: Chart<keyof ChartTypeRegistry, Float64Array, string> | null =
-    null;
-
   protected firstUpdated() {
     const canvas = this.renderRoot.querySelector<HTMLCanvasElement>('#canvas');
     if (canvas === null) {
@@ -32,7 +29,8 @@ export class GraphCard extends LitElement {
     }
 
     try {
-      this.chart = new Chart(ctx, {
+      // eslint-disable-next-line no-new
+      new Chart(ctx, {
         type: this.type,
         data: {
           labels: this.labels,

@@ -1,6 +1,5 @@
 import { expect } from '@esm-bundle/chai';
 import { parseSampleRate } from '../../src/audio_parsing/parseSampleRate';
-import { arrayMaxAbs } from '../../src/math/arrayMaxAbs';
 
 it('should parse a wav sample rate', () => {
   const buffer = new ArrayBuffer(45);

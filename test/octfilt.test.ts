@@ -1,4 +1,4 @@
-import { expect, assert } from '@esm-bundle/chai';
+import { expect } from '@esm-bundle/chai';
 import { octfilt } from '../src/octfilt';
 
 
