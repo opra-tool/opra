@@ -1,6 +1,5 @@
 import { expect } from '@esm-bundle/chai';
-import { bandpass } from '../src/bandpass';
-
+import { bandpass } from '../../src/filtering/bandpass';
 
 type Inputs = {
   f1: number;
@@ -8,8 +7,7 @@ type Inputs = {
   fs: number;
 };
 
-
-it('should calculate coefficients for a 6th order bandpass filter consisting of three biquad filters', () => {
+it('calculates coefficients for a 6th order bandpass filter consisting of three biquad filters', () => {
   const order = 6;
   const inputs: Inputs = {
     f1: 44.6683592150963,

@@ -32,7 +32,7 @@
       end
  */
 
-import { bandpass } from "./bandpass";
+import { bandpass } from './filtering/bandpass';
 
 // see filter_test.m for generation
 // const COEFFICIENTS = [
@@ -71,38 +71,50 @@ import { bandpass } from "./bandpass";
 // ];
 
 /**
- * 
- * @param data 
- * @param fs 
- * @returns 
+ *
+ * @param data
+ * @param fs
+ * @returns
  */
-export async function octfilt(data: Float64Array, fs: number): Promise<Float64Array[]> {
-  const F = [44.6683592150963, 89.1250938133746, 177.827941003892, 354.813389233576, 707.945784384138, 1412.53754462275, 2818.38293126445, 5623.41325190349, 11220.1845430196];
-  
+export async function octfilt(
+  data: Float64Array,
+  fs: number
+): Promise<Float64Array[]> {
+  const F = [
+    44.6683592150963, 89.1250938133746, 177.827941003892, 354.813389233576,
+    707.945784384138, 1412.53754462275, 2818.38293126445, 5623.41325190349,
+    11220.1845430196,
+  ];
+
   const audioBuffer = new AudioBuffer({
     numberOfChannels: 1,
     length: data.length,
-    sampleRate: fs
+    sampleRate: fs,
   });
-  
+
   // TODO: copyChannelData()?
   const channel = audioBuffer.getChannelData(0);
   for (let i = 0; i < data.length; i += 1) {
     channel[i] = data[i];
   }
-  
+
   const promises = [];
   for (let i = 0; i < F.length - 1; i += 1) {
     const f1 = F[i];
     const f2 = F[i + 1];
-    
+
     promises.push(calc(audioBuffer, f1, f2, fs));
   }
-  
+
   return Promise.all(promises);
 }
 
-function calc(buffer: AudioBuffer, f1: number, f2: number, fs: number): Promise<Float64Array> {
+function calc(
+  buffer: AudioBuffer,
+  f1: number,
+  f2: number,
+  fs: number
+): Promise<Float64Array> {
   const offlineCtx = new OfflineAudioContext(1, buffer.length, fs);
 
   const source = offlineCtx.createBufferSource();
@@ -125,11 +137,11 @@ function calc(buffer: AudioBuffer, f1: number, f2: number, fs: number): Promise<
     filters[ii - 1].connect(filters[ii]);
   }
   filters[filters.length - 1].connect(offlineCtx.destination);
-  
+
   source.start();
 
-  return new Promise((resolve) => {
-    offlineCtx.startRendering().then((renderedBuffer) => {
+  return new Promise(resolve => {
+    offlineCtx.startRendering().then(renderedBuffer => {
       resolve(Float64Array.from(renderedBuffer.getChannelData(0)));
     });
   });

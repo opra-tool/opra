@@ -22,7 +22,7 @@ import { calculateStrength, calculateStrengthOfAWeighted } from './strength';
 import { createStrengthGraph } from './graphs/strengthGraph';
 import { edt, rev } from './reverberation';
 import { createReverberationGraph } from './graphs/reverberation';
-import { aWeightAudioSignal } from './digitalFilters/aWeighting';
+import { aWeightAudioSignal } from './filtering/aWeighting';
 import { ts } from './ts';
 import { AudioInfoCard } from './components/AudioInfoCard';
 import { BaseCard } from './components/BaseCard';
