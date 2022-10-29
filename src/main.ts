@@ -140,6 +140,24 @@ async function processFile(e: ProgressEvent<FileReader>) {
     const parametersCard = new ParametersCard();
     parametersCard.parameters = [
       {
+        name: 'Center Time',
+        value: centerTime,
+        unit: 'sec',
+      },
+      {
+        name: 'Early Bass Strength',
+        value: earlyBassStrength,
+        unit: 'dB',
+      },
+      {
+        name: 'Bass Ratio',
+        value: bassRation,
+      },
+      {
+        name: 'Treble Ratio',
+        value: trebleRatio,
+      },
+      {
         name: 'A-weighted Strength',
         unit: 'dB',
         value: aWeightedStrength,
@@ -148,24 +166,6 @@ async function processFile(e: ProgressEvent<FileReader>) {
         name: 'C80 A-weighted',
         unit: 'dB',
         value: c80AWeighted,
-      },
-      {
-        name: 'Treble Ratio',
-        value: trebleRatio,
-      },
-      {
-        name: 'Bass Ratio',
-        value: bassRation,
-      },
-      {
-        name: 'Early Bass Strength',
-        value: earlyBassStrength,
-        unit: 'dB',
-      },
-      {
-        name: 'Center Time',
-        value: centerTime,
-        unit: 'sec',
       },
     ];
     graphContainer.appendChild(parametersCard);
