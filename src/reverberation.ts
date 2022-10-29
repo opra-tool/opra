@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import { arrayCumulativeSum } from './math/arrayCumulativeSum';
 import { arrayMax } from './math/arrayMax';
 import { arraySum } from './math/arraySum';

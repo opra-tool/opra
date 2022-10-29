@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import { Chart, registerables } from 'chart.js';
 import initWasm from 'wasm-raqi-online-toolbox';
 import { ParametersCard } from './components/ParametersCard';

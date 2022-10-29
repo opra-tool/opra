@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import { expect } from '@esm-bundle/chai';
 import { arraySum } from '../../src/math/arraySum';
 

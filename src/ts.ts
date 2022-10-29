@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import { arraySum } from './math/arraySum';
 
 export function ts(input: Float64Array, fs: number): number {

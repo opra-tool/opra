@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import { elf } from './elf';
 import { arrayMax } from './math/arrayMax';
 import { arraySumSquared } from './math/arraySumSquared';

@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import { arraySumSquared } from './math/arraySumSquared';
 import { safeLog10 } from './math/safeLog10';
 

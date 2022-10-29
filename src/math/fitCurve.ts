@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import { arraySum } from './arraySum';
 
 type Coefficients = {

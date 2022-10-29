@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import { GraphCard } from '../components/GraphCard';
 import {
   GRAPH_COLOR_BLUE,

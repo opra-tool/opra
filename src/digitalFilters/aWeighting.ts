@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import { Complex, conjugate, multiply } from '@iamsquare/complex.js';
 import { fft } from '../math/fft';
 import { ifft } from '../math/ifft';

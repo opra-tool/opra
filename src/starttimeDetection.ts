@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import { arrayMaxAbs } from './math/arrayMaxAbs';
 import { normalizeArray } from './math/normalizeArray';
 

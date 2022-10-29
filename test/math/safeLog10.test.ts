@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import { expect } from '@esm-bundle/chai';
 import { safeLog10 } from '../../src/math/safeLog10';
 

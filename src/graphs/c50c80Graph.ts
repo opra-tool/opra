@@ -1,4 +1,3 @@
-/* eslint-disable import/extensions */
 import { GRAPH_COLOR_RED, GRAPH_COLOR_BLUE } from './colors';
 import { GraphCard } from '../components/GraphCard';
 import { getFrequencyLabels } from './common';
