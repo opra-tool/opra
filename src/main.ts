@@ -132,11 +132,11 @@ async function processFile(e: ProgressEvent<FileReader>) {
     audioInfoCard.duration = audioBuffer.duration;
     audioInfoCard.channels = audioBuffer.numberOfChannels;
     graphContainer.appendChild(audioInfoCard);
+    graphContainer.appendChild(createReverberationGraph(edtValues, reverbTime));
     graphContainer.appendChild(createC50C80Graph(c50Values, c80Values));
     graphContainer.appendChild(
       createStrengthGraph(strength, earlyStrength, lateStrength)
     );
-    graphContainer.appendChild(createReverberationGraph(edtValues, reverbTime));
     const parametersCard = new ParametersCard();
     parametersCard.parameters = [
       {
