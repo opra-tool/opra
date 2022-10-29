@@ -1,5 +1,4 @@
 import { LitElement, html, css } from 'lit';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { property } from 'lit/decorators.js';
 
 type Parameter = {
@@ -12,11 +11,14 @@ export class ParametersCard extends LitElement {
   @property({ type: Array, attribute: false }) parameters: Parameter[] = [];
 
   render() {
-    return html`
-      <base-card>
-        <h3>Other Parameters</h3>
+    const paramCount = this.parameters.length;
+    const leftParams = this.parameters.slice(0, paramCount / 2);
+    const rightParams = this.parameters.slice(paramCount / 2);
+
+    function renderParams(params: Parameter[]) {
+      return html`
         <table>
-          ${this.parameters.map(
+          ${params.map(
             param => html`
               <tr>
                 <td>${param.name}</td>
@@ -26,11 +28,24 @@ export class ParametersCard extends LitElement {
             `
           )}
         </table>
+      `;
+    }
+
+    return html`
+      <base-card>
+        <h3>Other Parameters</h3>
+        <div>${renderParams(leftParams)} ${renderParams(rightParams)}</div>
       </base-card>
     `;
   }
 
   static styles = css`
+    div {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;

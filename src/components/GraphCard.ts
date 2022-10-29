@@ -1,6 +1,5 @@
 import { Chart, ChartDataset, ChartTypeRegistry } from 'chart.js';
 import { LitElement, html } from 'lit';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { property } from 'lit/decorators.js';
 
 export class GraphCard extends LitElement {
