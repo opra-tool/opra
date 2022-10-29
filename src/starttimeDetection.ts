@@ -1,10 +1,6 @@
+import { BinauralAudio } from './audio/BinauralAudio';
 import { arrayMaxAbs } from './math/arrayMaxAbs';
 import { normalizeArray } from './math/normalizeArray';
-
-type BinauralAudio = {
-  leftChannel: Float64Array;
-  rightChannel: Float64Array;
-};
 
 function findIndexOfFirstValue20dBUnderMax(audio: Float64Array): number {
   const max = arrayMaxAbs(audio);
@@ -41,17 +37,15 @@ export function trimStarttimeMonaural(audio: Float64Array): Float64Array {
  * @param channels Audio channels to be trimmed
  * @returns Trimmed audio channels
  */
-export function trimStarttimeBinaural({
-  leftChannel,
-  rightChannel,
-}: BinauralAudio): BinauralAudio {
-  const toasLeft = findIndexOfFirstValue20dBUnderMax(leftChannel);
-  const toasRight = findIndexOfFirstValue20dBUnderMax(rightChannel);
+export function trimStarttimeBinaural(audio: BinauralAudio): BinauralAudio {
+  const leftIndex = findIndexOfFirstValue20dBUnderMax(audio.getLeftChannel());
+  const rightIndex = findIndexOfFirstValue20dBUnderMax(audio.getRightChannel());
 
-  const toas = Math.min(toasLeft, toasRight);
+  const index = Math.min(leftIndex, rightIndex);
 
-  return {
-    leftChannel: trimAudio(leftChannel, toas),
-    rightChannel: trimAudio(rightChannel, toas),
-  };
+  return new BinauralAudio(
+    trimAudio(audio.getLeftChannel(), index),
+    trimAudio(audio.getRightChannel(), index),
+    audio.getSampleRate()
+  );
 }

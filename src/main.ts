@@ -4,19 +4,12 @@ import { ParametersCard } from './components/ParametersCard';
 import { GraphCard } from './components/GraphCard';
 import { parseSampleRate } from './audio/parseSampleRate';
 import { requireElement } from './dom/requireElement';
-import {
-  earlyInterauralCrossCorrelation,
-  interauralCrossCorrelation,
-} from './interauralCrossCorrelation';
 import { octfilt } from './octfilt';
-import { elf } from './elf';
+import { earlyLateFractions } from './earlyLateFractions';
 import { c50c80Calculation } from './c50c80Calculation';
 import { createInterauralCrossCorrelationGraph } from './graphs/interauralCrossCorrelationGraph';
 import { createC50C80Graph } from './graphs/c50c80Graph';
-import {
-  trimStarttimeBinaural,
-  trimStarttimeMonaural,
-} from './starttimeDetection';
+import { trimStarttimeMonaural } from './starttimeDetection';
 import { arrayFilledWithZeros } from './math/arrayFilledWithZeros';
 import { calculateStrength, calculateStrengthOfAWeighted } from './strength';
 import { createStrengthGraph } from './graphs/strengthGraph';
@@ -27,6 +20,8 @@ import { ts } from './ts';
 import { AudioInfoCard } from './components/AudioInfoCard';
 import { BaseCard } from './components/BaseCard';
 import { createSquaredImpulseResponseGraph } from './graphs/squaredImpulseResponse';
+import { BinauralAudio } from './audio/BinauralAudio';
+import { processBinauralAudio } from './binauralAudioProcessing';
 
 // init web assembly module
 // eslint-disable-next-line no-console
@@ -92,23 +87,23 @@ async function processFile(e: ProgressEvent<FileReader>) {
       ]);
     });
 
-    const earlyLateFractions = miro.map(band => elf(band, fs));
+    const fractions = miro.map(band => earlyLateFractions(band, fs));
 
     const c50Values = new Float64Array(miro.length);
     const c80Values = new Float64Array(miro.length);
     for (let i = 0; i < miro.length; i += 1) {
-      const { c50, c80 } = c50c80Calculation(earlyLateFractions[i]);
+      const { c50, c80 } = c50c80Calculation(fractions[i]);
       c50Values[i] = c50;
       c80Values[i] = c80;
     }
 
     const strength = calculateStrength(miro, p0);
     const earlyStrength = calculateStrength(
-      earlyLateFractions.map(val => val.e80),
+      fractions.map(val => val.e80),
       p0
     );
     const lateStrength = calculateStrength(
-      earlyLateFractions.map(val => val.l80),
+      fractions.map(val => val.l80),
       p0
     );
 
@@ -174,23 +169,8 @@ async function processFile(e: ProgressEvent<FileReader>) {
     ];
     graphContainer.appendChild(parametersCard);
   } else if (audioBuffer.numberOfChannels === 2) {
-    const leftChannel = Float64Array.from(audioBuffer.getChannelData(0));
-    const rightChannel = Float64Array.from(audioBuffer.getChannelData(1));
-
-    const { leftChannel: trimmedLeft, rightChannel: trimmedRight } =
-      trimStarttimeBinaural({
-        leftChannel,
-        rightChannel,
-      });
-
-    const octavesLeft = await octfilt(trimmedLeft, fs);
-    const octavesRight = await octfilt(trimmedRight, fs);
-
-    const iacc = await interauralCrossCorrelation(octavesLeft, octavesRight);
-    const eiacc = await earlyInterauralCrossCorrelation(
-      octavesLeft,
-      octavesRight,
-      fs
+    const { iacc, eiacc } = await processBinauralAudio(
+      BinauralAudio.fromAudioBuffer(audioBuffer)
     );
 
     graphContainer.appendChild(

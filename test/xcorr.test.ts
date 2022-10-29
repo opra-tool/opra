@@ -1,23 +1,26 @@
 import { expect } from '@esm-bundle/chai';
-import initWasm from "wasm-raqi-online-toolbox";
+import initWasm from 'wasm-raqi-online-toolbox';
 import { xcorr } from '../src/xcorr';
 
-
 it('should throw error when given two arrays of different lengths', () => {
-  expect(() => xcorr(new Float64Array([1, 2, 3]), new Float64Array([1, 2]))).to.throw();
+  expect(() =>
+    xcorr(new Float64Array([1, 2, 3]), new Float64Array([1, 2]))
+  ).to.throw();
 });
 
 it('should calculate x correlation', async () => {
   await initWasm();
-  
+
   const left = new Float64Array([
-    0.134858400000000,	0.807409600000000,	2.38634540000000,	5.00423740000000,	8.84944670000000,	1.52231550000000
+    0.1348584, 0.8074096, 2.3863454, 5.0042374, 8.8494467, 1.5223155,
   ]);
   const right = new Float64Array([
-    0.137858400000000,	1.00740960000000,	2.39834540000000,	5.74237400000000,	8.84944670000000,	1.72231550000000
+    0.1378584, 1.0074096, 2.3983454, 5.742374, 8.8494467, 1.7223155,
   ]);
   const expected = new Float64Array([
-    0.232268712625209,	2.58403629177608,	12.0295752608836,	34.6965969824716,	75.3018638901365,	116.226081271593,	78.8057077315741,	35.3360292886176,	13.2559320982262,	2.75356581187609,	0.209863979125207
+    0.232268712625209, 2.58403629177608, 12.0295752608836, 34.6965969824716,
+    75.3018638901365, 116.226081271593, 78.8057077315741, 35.3360292886176,
+    13.2559320982262, 2.75356581187609, 0.209863979125207,
   ]);
 
   const actual = await xcorr(left, right);

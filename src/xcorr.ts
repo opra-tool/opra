@@ -1,5 +1,4 @@
-import { xcorr as wasmXcorr } from "wasm-raqi-online-toolbox";
-
+import { xcorr as wasmXcorr } from 'wasm-raqi-online-toolbox';
 
 export function xcorr(x: Float64Array, y: Float64Array): Float64Array {
   if (x.length !== y.length) {
@@ -12,9 +11,9 @@ export function xcorr(x: Float64Array, y: Float64Array): Float64Array {
 function findTransformLength(m: number): number {
   let m2 = m * 2;
 
-  while(true) {
+  while (true) {
     let r = m2;
-    for(const p of [2, 3, 5, 7]) {
+    for (const p of [2, 3, 5, 7]) {
       while (r > 1 && mod(r, p) === 0) {
         r /= p;
       }
