@@ -32,8 +32,7 @@ export class ParametersCard extends LitElement {
     }
 
     return html`
-      <base-card>
-        <h3>Other Parameters</h3>
+      <base-card cardTitle="Other Parameters">
         <div>${renderParams(leftParams)} ${renderParams(rightParams)}</div>
       </base-card>
     `;
