@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="sl-theme-dark">
   <head>
     <meta charset="utf-8" />
     <meta
@@ -8,6 +8,11 @@
     />
     <meta name="Description" content="Put your description here." />
     <base href="/" />
+
+    <link
+      rel="stylesheet"
+      href="node_modules/@shoelace-style/shoelace/dist/themes/dark.css"
+    />
 
     <style>
       html,
@@ -38,12 +43,7 @@
   <body>
     <h1>RAQI Online Toolbox</h1>
 
-    Select a room response file to begin.
-
-    <form id="form" action="post">
-      <input id="soundfile-input" type="file" accept=".wav" />
-      <button>Analyze</button>
-    </form>
+    <file-drop id="file-drop"></file-drop>
 
     <div id="graph-container" />
 

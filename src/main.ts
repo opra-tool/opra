@@ -23,6 +23,7 @@ import { BaseCard } from './components/BaseCard';
 import { createSquaredImpulseResponseGraph } from './graphs/squaredImpulseResponse';
 import { BinauralAudio } from './audio/BinauralAudio';
 import { processBinauralAudio } from './binauralAudioProcessing';
+import { FileDrop } from './components/FileDrop';
 
 // init web assembly module
 // eslint-disable-next-line no-console
@@ -34,6 +35,7 @@ declare global {
     'audio-info-card': AudioInfoCard;
     'base-card': BaseCard;
     'execution-time': ExecutionTime;
+    'file-drop': FileDrop;
     'graph-card': GraphCard;
     'parameters-card': ParametersCard;
   }
@@ -42,6 +44,7 @@ declare global {
 customElements.define('audio-info-card', AudioInfoCard);
 customElements.define('base-card', BaseCard);
 customElements.define('execution-time', ExecutionTime);
+customElements.define('file-drop', FileDrop);
 customElements.define('graph-card', GraphCard);
 customElements.define('parameters-card', ParametersCard);
 
@@ -49,8 +52,7 @@ customElements.define('parameters-card', ParametersCard);
 // TODO: only register components actually in use to reduce bundle size
 Chart.register(...registerables);
 
-const form = requireElement<HTMLFormElement>('form');
-const soundfileInput = requireElement<HTMLInputElement>('soundfile-input');
+const fileDrop = requireElement<FileDrop>('file-drop');
 const graphContainer = requireElement('graph-container');
 
 async function processFile(e: ProgressEvent<FileReader>) {
@@ -193,14 +195,8 @@ async function processFile(e: ProgressEvent<FileReader>) {
   graphContainer.appendChild(executionTime);
 }
 
-form.addEventListener('submit', ev => {
-  ev.preventDefault();
-
+fileDrop.addEventListener('change', ev => {
   const reader = new FileReader();
   reader.onload = processFile;
-  if (soundfileInput.files !== null && soundfileInput.files.length > 0) {
-    reader.readAsArrayBuffer(soundfileInput.files[0]);
-  } else {
-    throw new Error('no files in input');
-  }
+  reader.readAsArrayBuffer((ev as CustomEvent<{ file: File }>).detail.file);
 });
