@@ -1,30 +1,22 @@
 import { Chart, registerables } from 'chart.js';
 import initWasm from 'wasm-raqi-online-toolbox';
-import { ExecutionTime } from './components/ExecutionTime';
-import { ParametersCard } from './components/ParametersCard';
-import { GraphCard } from './components/GraphCard';
+import { BinauralAudio } from './audio/BinauralAudio';
 import { parseSampleRate } from './audio/parseSampleRate';
-import { requireElement } from './dom/requireElement';
-import { octfilt } from './octfilt';
-import { earlyLateFractions } from './earlyLateFractions';
-import { c50c80Calculation } from './c50c80Calculation';
-import { createInterauralCrossCorrelationGraph } from './graphs/interauralCrossCorrelationGraph';
-import { createC50C80Graph } from './graphs/c50c80Graph';
-import { trimStarttimeMonaural } from './starttimeDetection';
-import { arrayFilledWithZeros } from './math/arrayFilledWithZeros';
-import { calculateStrength, calculateStrengthOfAWeighted } from './strength';
-import { createStrengthGraph } from './graphs/strengthGraph';
-import { edt, rev } from './reverberation';
-import { createReverberationGraph } from './graphs/reverberation';
-import { aWeightAudioSignal } from './filtering/aWeighting';
-import { ts } from './ts';
+import { processBinauralAudio } from './binauralAudioProcessing';
 import { AudioInfoCard } from './components/AudioInfoCard';
 import { BaseCard } from './components/BaseCard';
-import { createSquaredImpulseResponseGraph } from './graphs/squaredImpulseResponse';
-import { BinauralAudio } from './audio/BinauralAudio';
-import { processBinauralAudio } from './binauralAudioProcessing';
+import { ExecutionTime } from './components/ExecutionTime';
 import { FileDrop } from './components/FileDrop';
+import { GraphCard } from './components/GraphCard';
+import { ParametersCard } from './components/ParametersCard';
 import { ProgressIndicator } from './components/ProgressIndicator';
+import { requireElement } from './dom/requireElement';
+import { createC50C80Graph } from './graphs/c50c80Graph';
+import { createInterauralCrossCorrelationGraph } from './graphs/interauralCrossCorrelationGraph';
+import { createReverberationGraph } from './graphs/reverberation';
+import { createSquaredImpulseResponseGraph } from './graphs/squaredImpulseResponse';
+import { createStrengthGraph } from './graphs/strengthGraph';
+import { processMonauralAudio } from './monauralAudioProcessing';
 
 // init web assembly module
 // eslint-disable-next-line no-console
@@ -70,68 +62,30 @@ async function processFile(e: ProgressEvent<FileReader>) {
 
   const t0 = performance.now();
 
-  const fs = parseSampleRate('wav', bytes);
-
-  const audioCtx = new AudioContext({ sampleRate: fs });
+  const sampleRate = parseSampleRate('wav', bytes);
+  const audioCtx = new AudioContext({ sampleRate });
   const audioBuffer = await audioCtx.decodeAudioData(bytes);
 
   graphContainer.innerHTML = '<progress-indicator></progress-indicator>';
 
   if (audioBuffer.numberOfChannels === 1) {
-    const p0 = 0.000001;
-    // TODO: rename: raw audio
-    const miror = Float64Array.from(audioBuffer.getChannelData(0));
-    // TODO: rename: starttime trimmed raw audio
-    const mir = trimStarttimeMonaural(miror);
-    // TODO: rename: raw audio padded at its end with 10000 zeros
-    const mirf = new Float64Array([...miror, ...arrayFilledWithZeros(10000)]);
+    const audio = new Float64Array(audioBuffer.getChannelData(0));
 
-    // octave band filtering
-    const octaveBands = await octfilt(mirf, fs);
-    // TODO: rename: individually startime trimmed and zero-padded octave bands
-    const miro = octaveBands.map(band => {
-      const trimmedBand = trimStarttimeMonaural(band);
-      return new Float64Array([
-        ...trimmedBand,
-        ...arrayFilledWithZeros(band.length - trimmedBand.length),
-      ]);
-    });
-
-    const fractions = miro.map(band => earlyLateFractions(band, fs));
-
-    const c50Values = new Float64Array(miro.length);
-    const c80Values = new Float64Array(miro.length);
-    for (let i = 0; i < miro.length; i += 1) {
-      const { c50, c80 } = c50c80Calculation(fractions[i]);
-      c50Values[i] = c50;
-      c80Values[i] = c80;
-    }
-
-    const strength = calculateStrength(miro, p0);
-    const earlyStrength = calculateStrength(
-      fractions.map(val => val.e80),
-      p0
-    );
-    const lateStrength = calculateStrength(
-      fractions.map(val => val.l80),
-      p0
-    );
-
-    const mira = trimStarttimeMonaural(aWeightAudioSignal(mirf, fs));
-    const aWeightedStrength = calculateStrengthOfAWeighted(mira, p0);
-    const c80AWeighted =
-      (c80Values[3] + c80Values[4]) / 2 - 0.62 * aWeightedStrength;
-
-    const edtValues = edt(miro, fs);
-    const reverbTime = rev(miro, 30, fs);
-
-    const trebleRatio =
-      lateStrength[6] - (lateStrength[4] + lateStrength[5]) / 2;
-    const bassRation =
-      (reverbTime[1] + reverbTime[2]) / (reverbTime[3] + reverbTime[4]);
-    const earlyBassStrength =
-      (earlyStrength[1] + earlyStrength[2] + earlyStrength[3]) / 3;
-    const centerTime = ts(mir, fs);
+    const {
+      edtValues,
+      reverbTime,
+      c50Values,
+      c80Values,
+      strength,
+      earlyStrength,
+      lateStrength,
+      centerTime,
+      earlyBassStrength,
+      bassRatio,
+      trebleRatio,
+      aWeightedStrength,
+      aWeightedC80,
+    } = await processMonauralAudio(audio, audioBuffer.sampleRate);
 
     graphContainer.innerHTML = '';
 
@@ -146,7 +100,7 @@ async function processFile(e: ProgressEvent<FileReader>) {
       createStrengthGraph(strength, earlyStrength, lateStrength)
     );
     graphContainer.appendChild(
-      createSquaredImpulseResponseGraph(miror, fs, 100, 0.5)
+      createSquaredImpulseResponseGraph(audio, sampleRate, 100, 0.5)
     );
     const parametersCard = new ParametersCard();
     parametersCard.parameters = [
@@ -162,7 +116,7 @@ async function processFile(e: ProgressEvent<FileReader>) {
       },
       {
         name: 'Bass Ratio',
-        value: bassRation,
+        value: bassRatio,
       },
       {
         name: 'Treble Ratio',
@@ -176,7 +130,7 @@ async function processFile(e: ProgressEvent<FileReader>) {
       {
         name: 'C80 A-weighted',
         unit: 'dB',
-        value: c80AWeighted,
+        value: aWeightedC80,
       },
     ];
     graphContainer.appendChild(parametersCard);
