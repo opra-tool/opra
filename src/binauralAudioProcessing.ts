@@ -6,14 +6,14 @@ import {
 import { octfiltBinaural } from './octfilt';
 import { trimStarttimeBinaural } from './starttimeDetection';
 
-type InterauralCrossCorrelation = {
+export type BinauralAnalyzeResults = {
   iacc: Float64Array;
   eiacc: Float64Array;
 };
 
 export async function processBinauralAudio(
   audio: BinauralAudio
-): Promise<InterauralCrossCorrelation> {
+): Promise<BinauralAnalyzeResults> {
   const trimmed = trimStarttimeBinaural(audio);
 
   const octaves = await octfiltBinaural(trimmed);

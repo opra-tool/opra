@@ -9,12 +9,10 @@ export class GraphCard extends LitElement {
   // TODO: validate if valid chart type or hardcode type
   @property({ type: String }) type: keyof ChartTypeRegistry = 'line';
 
-  @property({ type: Array, attribute: false }) labels: string[] = [];
+  @property({ type: Array }) labels: string[] = [];
 
-  @property({ type: Array, attribute: false }) datasets: ChartDataset<
-    'line',
-    Float64Array
-  >[] = [];
+  @property({ type: Array }) datasets: ChartDataset<'line', Float64Array>[] =
+    [];
 
   protected firstUpdated() {
     const canvas = this.renderRoot.querySelector<HTMLCanvasElement>('#canvas');

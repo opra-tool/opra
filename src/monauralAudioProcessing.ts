@@ -8,7 +8,12 @@ import { trimStarttimeMonaural } from './starttimeDetection';
 import { calculateStrength, calculateStrengthOfAWeighted } from './strength';
 import { ts } from './ts';
 
-type MonauralResults = {
+type Point = {
+  x: number;
+  y: number;
+};
+
+export type MonauralAnalyzeResults = {
   edtValues: Float64Array;
   reverbTime: Float64Array;
   c50Values: Float64Array;
@@ -22,16 +27,19 @@ type MonauralResults = {
   trebleRatio: number;
   aWeightedStrength: number;
   aWeightedC80: number;
+  squaredImpulseResponse: Point[];
 };
 
 // currently only applicable to RAVEN generated
 // room impulse responses
 const PRESSURE_FITTING = 0.000001;
+const SQUARED_IMPULSE_RESPONSE_MAX_X = 0.5;
+const SQUARED_IMPULSE_RESPONSE_STEP = 20;
 
 export async function processMonauralAudio(
   audio: Float64Array,
   sampleRate: number
-): Promise<MonauralResults> {
+): Promise<MonauralAnalyzeResults> {
   // TODO: rename: starttime trimmed raw audio
   const mir = trimStarttimeMonaural(audio);
   const endZeroPaddedAudio = new Float64Array([
@@ -90,6 +98,21 @@ export async function processMonauralAudio(
     (earlyStrength[1] + earlyStrength[2] + earlyStrength[3]) / 3;
   const centerTime = ts(mir, sampleRate);
 
+  // TODO: extract into method
+  const squaredImpulseResponse = [];
+  for (let i = 0; i < audio.length; i += SQUARED_IMPULSE_RESPONSE_STEP) {
+    const x = (i + 1) / sampleRate;
+
+    if (x > SQUARED_IMPULSE_RESPONSE_MAX_X) {
+      break;
+    }
+
+    squaredImpulseResponse.push({
+      x,
+      y: Math.abs(audio[i]),
+    });
+  }
+
   return {
     edtValues,
     reverbTime,
@@ -104,5 +127,6 @@ export async function processMonauralAudio(
     trebleRatio,
     aWeightedStrength,
     aWeightedC80,
+    squaredImpulseResponse,
   };
 }
