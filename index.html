@@ -31,9 +31,19 @@
         padding: 1rem;
       }
 
+      header {
+        padding: 0 1rem;
+      }
+
+      header h1 {
+        font-size: 1.4rem;
+        text-transform: uppercase;
+      }
+
       audio-info-card,
       parameters-card,
-      execution-time {
+      execution-time,
+      progress-indicator {
         grid-column: 1 / -1;
       }
     </style>
@@ -41,9 +51,11 @@
   </head>
 
   <body>
-    <h1>RAQI Online Toolbox</h1>
+    <header>
+      <h1>RAQI Online Toolbox</h1>
 
-    <file-drop id="file-drop"></file-drop>
+      <file-drop id="file-drop"></file-drop>
+    </header>
 
     <div id="graph-container" />
 

@@ -24,6 +24,7 @@ import { createSquaredImpulseResponseGraph } from './graphs/squaredImpulseRespon
 import { BinauralAudio } from './audio/BinauralAudio';
 import { processBinauralAudio } from './binauralAudioProcessing';
 import { FileDrop } from './components/FileDrop';
+import { ProgressIndicator } from './components/ProgressIndicator';
 
 // init web assembly module
 // eslint-disable-next-line no-console
@@ -38,6 +39,7 @@ declare global {
     'file-drop': FileDrop;
     'graph-card': GraphCard;
     'parameters-card': ParametersCard;
+    'progress-indicator': ProgressIndicator;
   }
 }
 
@@ -47,6 +49,7 @@ customElements.define('execution-time', ExecutionTime);
 customElements.define('file-drop', FileDrop);
 customElements.define('graph-card', GraphCard);
 customElements.define('parameters-card', ParametersCard);
+customElements.define('progress-indicator', ProgressIndicator);
 
 // prepare chart.js library
 // TODO: only register components actually in use to reduce bundle size
@@ -72,7 +75,7 @@ async function processFile(e: ProgressEvent<FileReader>) {
   const audioCtx = new AudioContext({ sampleRate: fs });
   const audioBuffer = await audioCtx.decodeAudioData(bytes);
 
-  graphContainer.innerHTML = '';
+  graphContainer.innerHTML = '<progress-indicator></progress-indicator>';
 
   if (audioBuffer.numberOfChannels === 1) {
     const p0 = 0.000001;
@@ -130,6 +133,8 @@ async function processFile(e: ProgressEvent<FileReader>) {
       (earlyStrength[1] + earlyStrength[2] + earlyStrength[3]) / 3;
     const centerTime = ts(mir, fs);
 
+    graphContainer.innerHTML = '';
+
     const audioInfoCard = new AudioInfoCard();
     audioInfoCard.sampleRate = audioBuffer.sampleRate;
     audioInfoCard.duration = audioBuffer.duration;
@@ -179,6 +184,8 @@ async function processFile(e: ProgressEvent<FileReader>) {
     const { iacc, eiacc } = await processBinauralAudio(
       BinauralAudio.fromAudioBuffer(audioBuffer)
     );
+
+    graphContainer.innerHTML = '';
 
     graphContainer.appendChild(
       createInterauralCrossCorrelationGraph(iacc, eiacc)
