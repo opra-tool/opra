@@ -33,8 +33,6 @@ export type MonauralAnalyzeResults = {
 // currently only applicable to RAVEN generated
 // room impulse responses
 const PRESSURE_FITTING = 0.000001;
-const SQUARED_IMPULSE_RESPONSE_MAX_X = 0.5;
-const SQUARED_IMPULSE_RESPONSE_STEP = 20;
 
 export async function processMonauralAudio(
   audio: Float64Array,
@@ -100,15 +98,9 @@ export async function processMonauralAudio(
 
   // TODO: extract into method
   const squaredImpulseResponse = [];
-  for (let i = 0; i < audio.length; i += SQUARED_IMPULSE_RESPONSE_STEP) {
-    const x = (i + 1) / sampleRate;
-
-    if (x > SQUARED_IMPULSE_RESPONSE_MAX_X) {
-      break;
-    }
-
+  for (let i = 0; i < audio.length; i += 1) {
     squaredImpulseResponse.push({
-      x,
+      x: (i + 1) / sampleRate,
       y: Math.abs(audio[i]),
     });
   }

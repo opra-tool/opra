@@ -1,4 +1,4 @@
-import { Chart, ChartDataset, ChartTypeRegistry } from 'chart.js';
+import { Chart, ChartDataset, ChartOptions } from 'chart.js';
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
@@ -7,13 +7,11 @@ export class GraphCard extends LitElement {
   // TODO: how to deal with required properties without initialization?
   @property({ type: String }) title: string = 'no title defined';
 
-  // TODO: validate if valid chart type or hardcode type
-  @property({ type: String }) type: keyof ChartTypeRegistry = 'line';
+  @property({ type: Array }) labels: string[] | undefined;
 
-  @property({ type: Array }) labels: string[] = [];
+  @property({ type: Array }) datasets: ChartDataset<'line'>[] = [];
 
-  @property({ type: Array }) datasets: ChartDataset<'line', Float64Array>[] =
-    [];
+  @property({ type: Object }) options: ChartOptions | undefined;
 
   protected firstUpdated() {
     const canvas = this.renderRoot.querySelector<HTMLCanvasElement>('#canvas');
@@ -29,18 +27,12 @@ export class GraphCard extends LitElement {
     try {
       // eslint-disable-next-line no-new
       new Chart(ctx, {
-        type: this.type,
+        type: 'line',
         data: {
           labels: this.labels,
           datasets: this.datasets,
         },
-        options: {
-          scales: {
-            y: {
-              beginAtZero: true,
-            },
-          },
-        },
+        options: this.options,
       });
     } catch (e) {
       // ignore error NS_ERROR_FAILURE due to a bug in firefox
