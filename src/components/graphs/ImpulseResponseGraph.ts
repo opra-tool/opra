@@ -1,4 +1,3 @@
-import { ChartOptions } from 'chart.js';
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { GRAPH_COLOR_BLUE } from './colors';
@@ -27,20 +26,22 @@ export class ImpulseResponseGraph extends LitElement {
       },
     ];
 
-    const options: ChartOptions = {
-      indexAxis: 'x',
+    const options = {
       scales: {
         y: {
           beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Energy relative to sample rate',
+          },
         },
         x: {
           type: 'linear',
-          max: MAX_X,
-          ticks: {
-            // Disabled rotation for performance
-            maxRotation: 0,
-            autoSkip: true,
+          title: {
+            display: true,
+            text: 'Time [s]',
           },
+          max: MAX_X,
         },
       },
       parsing: false,

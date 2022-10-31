@@ -37,11 +37,29 @@ export class StrengthGraph extends LitElement {
       },
     ];
 
+    const options = {
+      scales: {
+        y: {
+          title: {
+            display: true,
+            text: 'dB',
+          },
+        },
+        x: {
+          title: {
+            display: true,
+            text: 'Frequency (Hz)',
+          },
+        },
+      },
+    };
+
     return html`
       <graph-card
         title="Strengths"
         .labels=${getFrequencyLabels()}
         .datasets=${datasets}
+        .options=${options}
       ></graph-card>
     `;
   }

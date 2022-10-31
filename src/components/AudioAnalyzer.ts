@@ -245,6 +245,8 @@ export class AudioAnalyzer extends LitElement {
       display: grid;
       gap: 1rem;
       padding: 1rem;
+      margin: 0 auto;
+      max-width: 1400px;
     }
 
     header h1 {
@@ -265,7 +267,7 @@ export class AudioAnalyzer extends LitElement {
     .graphs {
       display: grid;
       gap: 1rem;
-      grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
     }
   `;
 }

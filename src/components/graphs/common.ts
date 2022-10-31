@@ -3,5 +3,5 @@ function getFrequencyValues(): number[] {
 }
 
 export function getFrequencyLabels(): string[] {
-  return getFrequencyValues().map(v => `${v}Hz`);
+  return getFrequencyValues().map(v => v.toString());
 }

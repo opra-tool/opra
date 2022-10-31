@@ -28,11 +28,29 @@ export class ReverberationGraph extends LitElement {
       },
     ];
 
+    const options = {
+      scales: {
+        y: {
+          title: {
+            display: true,
+            text: 'Time [s]',
+          },
+        },
+        x: {
+          title: {
+            display: true,
+            text: 'Frequency [Hz]',
+          },
+        },
+      },
+    };
+
     return html`
       <graph-card
         title="Reverberation"
         .labels=${getFrequencyLabels()}
         .datasets=${datasets}
+        .options=${options}
       ></graph-card>
     `;
   }

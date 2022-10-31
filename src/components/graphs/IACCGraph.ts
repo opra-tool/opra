@@ -25,11 +25,23 @@ export class IACCGraph extends LitElement {
       },
     ];
 
+    const options = {
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Frequency (Hz)',
+          },
+        },
+      },
+    };
+
     return html`
       <graph-card
         title="Interaural Cross Correlation"
         .labels=${getFrequencyLabels()}
         .datasets=${datasets}
+        .options=${options}
       ></graph-card>
     `;
   }

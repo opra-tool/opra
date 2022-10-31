@@ -1,4 +1,4 @@
-import { Chart, ChartDataset, ChartOptions } from 'chart.js';
+import { Chart, ChartDataset, ChartOptions, Point } from 'chart.js';
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
@@ -9,7 +9,10 @@ export class GraphCard extends LitElement {
 
   @property({ type: Array }) labels: string[] | undefined;
 
-  @property({ type: Array }) datasets: ChartDataset<'line'>[] = [];
+  @property({ type: Array }) datasets: ChartDataset<
+    'line',
+    Float64Array | Point[]
+  >[] = [];
 
   @property({ type: Object }) options: ChartOptions | undefined;
 
