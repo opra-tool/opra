@@ -1,7 +1,8 @@
 import { Chart, ChartDataset, ChartTypeRegistry } from 'chart.js';
 import { LitElement, html } from 'lit';
-import { property } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 
+@customElement('graph-card')
 export class GraphCard extends LitElement {
   // TODO: how to deal with required properties without initialization?
   @property({ type: String }) title: string = 'no title defined';

@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { property } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 
 type Parameter = {
   name: string;
@@ -7,6 +7,7 @@ type Parameter = {
   unit?: string;
 };
 
+@customElement('parameters-card')
 export class ParametersCard extends LitElement {
   @property({ type: Array, attribute: false }) parameters: Parameter[] = [];
 

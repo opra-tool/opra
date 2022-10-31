@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit';
-import { property } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 
+@customElement('base-card')
 export class BaseCard extends LitElement {
   @property({ type: String }) cardTitle: string | undefined;
 

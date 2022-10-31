@@ -1,5 +1,5 @@
 import { LitElement, html } from 'lit';
-import { property } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { GRAPH_COLOR_BLUE } from './colors';
 
 type Point = {
@@ -7,6 +7,7 @@ type Point = {
   y: number;
 };
 
+@customElement('impulse-response-graph')
 export class ImpulseResponseGraph extends LitElement {
   @property({ type: Array }) squaredIR: Point[] = [];
 

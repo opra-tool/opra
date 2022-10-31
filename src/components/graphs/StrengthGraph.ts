@@ -1,5 +1,5 @@
 import { LitElement, html } from 'lit';
-import { property } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import {
   GRAPH_COLOR_BLUE,
   GRAPH_COLOR_RED,
@@ -7,6 +7,7 @@ import {
 } from './colors';
 import { getFrequencyLabels } from './common';
 
+@customElement('strength-graph')
 export class StrengthGraph extends LitElement {
   @property({ type: Object }) strength: Float64Array = new Float64Array();
 

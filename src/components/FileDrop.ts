@@ -1,8 +1,9 @@
 import { LitElement, html, css } from 'lit';
-import { query, state } from 'lit/decorators.js';
+import { customElement, query, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
 
+@customElement('file-drop')
 export class FileDrop extends LitElement {
   @state()
   private isDraggingOver = false;

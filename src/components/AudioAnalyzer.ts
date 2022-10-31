@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { state } from 'lit/decorators.js';
+import { customElement, state } from 'lit/decorators.js';
 import {
   BinauralAnalyzeResults,
   processBinauralAudio,
@@ -27,6 +27,7 @@ type Results =
       values: BinauralAnalyzeResults;
     };
 
+@customElement('audio-analyzer')
 export class AudioAnalyzer extends LitElement {
   @state()
   private isProcessing: boolean = false;
@@ -102,12 +103,7 @@ export class AudioAnalyzer extends LitElement {
     iacc,
     eiacc,
   }: BinauralAnalyzeResults) {
-    return html`
-      <interaural-cross-correlation-graph
-        .iacc=${iacc}
-        .eiacc=${eiacc}
-      ></interaural-cross-correlation-graph>
-    `;
+    return html` <iacc-graph .iacc=${iacc} .eiacc=${eiacc}></iacc-graph> `;
   }
 
   private static renderMonauralResults({

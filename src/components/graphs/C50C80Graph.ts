@@ -1,8 +1,9 @@
 import { LitElement, html } from 'lit';
-import { property } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { GRAPH_COLOR_BLUE, GRAPH_COLOR_RED } from './colors';
 import { getFrequencyLabels } from './common';
 
+@customElement('c50c80-graph')
 export class C50C80Graph extends LitElement {
   @property({ type: Object }) c50: Float64Array = new Float64Array();
 

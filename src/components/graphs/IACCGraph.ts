@@ -1,9 +1,10 @@
 import { LitElement, html } from 'lit';
-import { property } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { GRAPH_COLOR_BLUE, GRAPH_COLOR_RED } from './colors';
 import { getFrequencyLabels } from './common';
 
-export class InterauralCrossCorrelationGraph extends LitElement {
+@customElement('iacc-graph')
+export class IACCGraph extends LitElement {
   @property({ type: Object }) iacc: Float64Array = new Float64Array();
 
   @property({ type: Object }) eiacc: Float64Array = new Float64Array();

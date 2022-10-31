@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit';
-import { property } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 
+@customElement('audio-info-card')
 export class AudioInfoCard extends LitElement {
   @property({ type: Number }) channelCount: number = 1;
 

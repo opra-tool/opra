@@ -1,8 +1,9 @@
 import { LitElement, html } from 'lit';
-import { property } from 'lit/decorators.js';
+import { customElement, property } from 'lit/decorators.js';
 import { GRAPH_COLOR_BLUE, GRAPH_COLOR_RED } from './colors';
 import { getFrequencyLabels } from './common';
 
+@customElement('reverberation-graph')
 export class ReverberationGraph extends LitElement {
   @property({ type: Object }) energyDecayCurve: Float64Array =
     new Float64Array();

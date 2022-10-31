@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit';
-import { property } from 'lit/decorators.js';
+import { property, customElement } from 'lit/decorators.js';
 
+@customElement('execution-time')
 export class ExecutionTime extends LitElement {
   @property({ type: Number }) milliseconds: number = 0;
 
