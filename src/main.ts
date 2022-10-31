@@ -23,3 +23,4 @@ initWasm().catch(console.error);
 // prepare chart.js library
 // TODO: only register components actually in use to reduce bundle size
 Chart.register(...registerables);
+Chart.defaults.font.size = 15;
