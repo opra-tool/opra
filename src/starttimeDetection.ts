@@ -6,7 +6,7 @@ function findIndexOfFirstValue20dBUnderMax(audio: Float64Array): number {
   const max = arrayMaxAbs(audio);
   const normalized = normalizeArray(audio, max);
 
-  return normalized.findIndex(el => Math.abs(el) > 0.1);
+  return normalized.findIndex(el => Math.abs(el) > 0.01);
 }
 
 function trimAudio(audio: Float64Array, toas: number): Float64Array {
