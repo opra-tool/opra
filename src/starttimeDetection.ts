@@ -1,12 +1,10 @@
 import { BinauralAudio } from './audio/BinauralAudio';
 import { arrayMaxAbs } from './math/arrayMaxAbs';
-import { normalizeArray } from './math/normalizeArray';
 
 function findIndexOfFirstValue20dBUnderMax(audio: Float64Array): number {
   const max = arrayMaxAbs(audio);
-  const normalized = normalizeArray(audio, max);
 
-  return normalized.findIndex(el => Math.abs(el) > 0.01);
+  return audio.findIndex(el => Math.abs(el) > 0.01 * max);
 }
 
 function trimAudio(audio: Float64Array, toas: number): Float64Array {
