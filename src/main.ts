@@ -1,4 +1,11 @@
-import { Chart, registerables } from 'chart.js';
+import {
+  Chart,
+  LineController,
+  LineElement,
+  LinearScale,
+  CategoryScale,
+  PointElement,
+} from 'chart.js';
 import initWasm from 'wasm-raqi-online-toolbox';
 
 // register web components
@@ -21,6 +28,11 @@ import './components/graphs/StrengthGraph';
 initWasm().catch(console.error);
 
 // prepare chart.js library
-// TODO: only register components actually in use to reduce bundle size
-Chart.register(...registerables);
+Chart.register(
+  LineController,
+  LineElement,
+  LinearScale,
+  CategoryScale,
+  PointElement
+);
 Chart.defaults.font.size = 15;
