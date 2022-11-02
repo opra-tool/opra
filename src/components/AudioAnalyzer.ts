@@ -10,6 +10,7 @@ import {
   processMonauralAudio,
 } from '../monauralAudioProcessing';
 import { BinauralAudio } from '../audio/BinauralAudio';
+import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 
 type AudioInfo = {
   channelCount: number;
@@ -41,6 +42,9 @@ export class AudioAnalyzer extends LitElement {
   @state()
   private audioInfo: AudioInfo | null = null;
 
+  @state()
+  private error: Error | null = null;
+
   render() {
     return html`
       <section>
@@ -51,8 +55,22 @@ export class AudioAnalyzer extends LitElement {
         </header>
         ${this.renderAudioInfo()}
         ${this.isProcessing ? this.renderProgress() : this.renderResults()}
-        ${this.renderExecutionTime()}
+        ${this.renderExecutionTime()} ${this.renderError()}
       </section>
+    `;
+  }
+
+  private renderError() {
+    if (!this.error) {
+      return null;
+    }
+
+    return html`
+      <div class="error">
+        <sl-icon name="exclamation-octagon"></sl-icon>
+        <strong>An error occured</strong>
+        ${this.error.message}
+      </div>
     `;
   }
 
@@ -174,15 +192,13 @@ export class AudioAnalyzer extends LitElement {
   }
 
   private clearState() {
+    this.error = null;
     this.audioInfo = null;
     this.results = null;
     this.executionTimeMs = null;
   }
 
-  private async analyzeFile(bytes: ArrayBuffer) {
-    this.clearState();
-
-    this.isProcessing = true;
+  private async calculateResults(bytes: ArrayBuffer) {
     const t0 = performance.now();
 
     const sampleRate = parseSampleRate('wav', bytes);
@@ -210,28 +226,39 @@ export class AudioAnalyzer extends LitElement {
         ),
       };
     } else {
-      // TODO: use proper error message
-      // eslint-disable-next-line no-alert
-      alert('only monaural or binaural audio is supported');
+      throw new Error('only monaural or binaural audio is supported');
     }
 
-    this.isProcessing = false;
     this.executionTimeMs = performance.now() - t0;
   }
 
-  private onFileRead = (e: ProgressEvent<FileReader>) => {
-    if (!e.target) {
+  private async analyzeFile(bytes: ArrayBuffer) {
+    this.clearState();
+
+    this.isProcessing = true;
+
+    this.calculateResults(bytes).catch(err => {
+      if (err instanceof Error) {
+        this.error = err;
+      } else if (typeof err === 'string') {
+        this.error = new Error(err);
+      }
+    });
+
+    this.isProcessing = false;
+  }
+
+  private onFileRead = (ev: ProgressEvent<FileReader>) => {
+    if (!ev.target) {
       return;
     }
 
-    const bytes = e.target.result;
+    const bytes = ev.target.result;
     if (bytes === null || typeof bytes === 'string') {
       throw new Error('invalid data read from audio file');
     }
 
-    // TODO: open modal
-    // eslint-disable-next-line no-console
-    this.analyzeFile(bytes).catch(console.error);
+    this.analyzeFile(bytes);
   };
 
   private onFileSelected = (ev: CustomEvent<{ file: File }>) => {
@@ -268,6 +295,19 @@ export class AudioAnalyzer extends LitElement {
       display: grid;
       gap: 1rem;
       grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+    }
+
+    .error {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      padding: 10vh 2rem 2rem 2rem;
+      color: var(--sl-color-danger-300);
+    }
+
+    .error sl-icon {
+      font-size: 4rem;
     }
   `;
 }
