@@ -1,5 +1,6 @@
 import nodeResolve from '@rollup/plugin-node-resolve';
 import babel from '@rollup/plugin-babel';
+import copy from 'rollup-plugin-copy';
 import html from '@web/rollup-plugin-html';
 import { importMetaAssets } from '@web/rollup-plugin-import-meta-assets';
 import { terser } from 'rollup-plugin-terser';
@@ -30,6 +31,18 @@ export default {
     terser(),
     /** Bundle assets references via import.meta.url */
     importMetaAssets(),
+    /** Copy shoelace-related assets */
+    copy({
+      targets: [
+        {
+          src: path.resolve(
+            __dirname,
+            'node_modules/@shoelace-style/shoelace/dist/assets'
+          ),
+          dest: path.resolve(__dirname, 'dist/shoelace'),
+        },
+      ],
+    }),
     /** Compile JS to a lower language target */
     babel({
       babelHelpers: 'bundled',

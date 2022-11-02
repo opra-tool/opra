@@ -7,6 +7,7 @@ import {
   PointElement,
 } from 'chart.js';
 import initWasm from 'wasm-raqi-online-toolbox';
+import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
 
 // register web components
 import './components/graphs/IACCGraph';
@@ -26,6 +27,8 @@ import './components/graphs/StrengthGraph';
 // init web assembly module
 // eslint-disable-next-line no-console
 initWasm().catch(console.error);
+
+setBasePath('/shoelace');
 
 // prepare chart.js library
 Chart.register(
