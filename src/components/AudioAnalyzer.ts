@@ -138,44 +138,44 @@ export class AudioAnalyzer extends LitElement {
     aWeightedStrength,
   }: MonauralAnalyzeResults) {
     return html`
-      <div class="graphs">
+      <div class="grid">
         <reverberation-graph
           .energyDecayCurve=${edtValues}
           .reverberationTime=${reverbTime}
         ></reverberation-graph>
         <c50c80-graph .c50=${c50Values} .c80=${c80Values}></c50c80-graph>
-        <strengths-card
-          .bands=${bands}
-          .e80Bands=${e80Bands}
-          .l80Bands=${l80Bands}
-        ></strengths-card>
         <impulse-response-graph
           .squaredIR=${squaredImpulseResponse}
         ></impulse-response-graph>
+        <parameters-card
+          .parameters=${[
+            {
+              name: 'Center Time',
+              value: centerTime,
+              unit: 'sec',
+            },
+            {
+              name: 'Bass Ratio',
+              value: bassRatio,
+            },
+            {
+              name: 'A-weighted Strength',
+              unit: 'dB',
+              value: aWeightedStrength,
+            },
+            {
+              name: 'C80 A-weighted',
+              unit: 'dB',
+              value: aWeightedC80,
+            },
+          ]}
+        ></parameters-card>
       </div>
-      <parameters-card
-        .parameters=${[
-          {
-            name: 'Center Time',
-            value: centerTime,
-            unit: 'sec',
-          },
-          {
-            name: 'Bass Ratio',
-            value: bassRatio,
-          },
-          {
-            name: 'A-weighted Strength',
-            unit: 'dB',
-            value: aWeightedStrength,
-          },
-          {
-            name: 'C80 A-weighted',
-            unit: 'dB',
-            value: aWeightedC80,
-          },
-        ]}
-      ></parameters-card>
+      <strengths-card
+        .bands=${bands}
+        .e80Bands=${e80Bands}
+        .l80Bands=${l80Bands}
+      ></strengths-card>
     `;
   }
 
@@ -269,7 +269,6 @@ export class AudioAnalyzer extends LitElement {
       text-transform: uppercase;
     }
 
-    parameters-card,
     execution-time {
       grid-column: 1 / -1;
     }
@@ -279,7 +278,7 @@ export class AudioAnalyzer extends LitElement {
       gap: 1rem;
     }
 
-    .graphs {
+    .grid {
       display: grid;
       gap: 1rem;
       grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));

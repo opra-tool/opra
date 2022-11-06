@@ -12,40 +12,31 @@ export class ParametersCard extends LitElement {
   @property({ type: Array, attribute: false }) parameters: Parameter[] = [];
 
   render() {
-    const paramCount = this.parameters.length;
-    const leftParams = this.parameters.slice(0, paramCount / 2);
-    const rightParams = this.parameters.slice(paramCount / 2);
+    function renderUnit(unit: string | undefined) {
+      if (!unit) {
+        return null;
+      }
 
-    function renderParams(params: Parameter[]) {
-      return html`
-        <table>
-          ${params.map(
-            param => html`
-              <tr>
-                <td>${param.name}</td>
-                <td class="value">${param.value.toFixed(2)}</td>
-                ${param.unit && html`<td class="unit">[${param.unit}]</td>`}
-              </tr>
-            `
-          )}
-        </table>
-      `;
+      return `[${unit}]`;
     }
 
     return html`
       <base-card cardTitle="Other Parameters">
-        <div>${renderParams(leftParams)} ${renderParams(rightParams)}</div>
+        <table>
+          ${this.parameters.map(
+            param => html`
+              <tr>
+                <td>${param.name} ${renderUnit(param.unit)}</td>
+                <td class="value">${param.value.toFixed(2)}</td>
+              </tr>
+            `
+          )}
+        </table>
       </base-card>
     `;
   }
 
   static styles = css`
-    div {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2rem;
-    }
-
     table {
       width: 100%;
       border-collapse: collapse;
@@ -60,13 +51,6 @@ export class ParametersCard extends LitElement {
     }
 
     .value {
-      font-weight: bold;
-      text-align: right;
-    }
-
-    .unit {
-      opacity: 0.75;
-      padding-inline-start: 0.5rem;
       text-align: right;
     }
   `;

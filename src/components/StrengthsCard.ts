@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, state, query, property } from 'lit/decorators.js';
+import { customElement, state, property } from 'lit/decorators.js';
 import '@shoelace-style/shoelace/dist/components/input/input.js';
+import '@shoelace-style/shoelace/dist/components/divider/divider.js';
 import {
   calculateEarlyBassStrength,
   calculateStrength,
@@ -21,30 +22,28 @@ export class StrengthsCard extends LitElement {
 
   @property({ type: Array }) l80Bands: Float64Array[] = [];
 
-  @query('#p0-input')
-  private p0Input!: HTMLInputElement;
-
   @state()
-  private p0: number | undefined;
+  private p0Value: string = '';
 
   @state()
   private strengths: Strengths | undefined;
 
   render() {
     return html`
-      <base-card cardTitle="Strengths">
-        ${this.renderP0Input()} ${this.renderCardContent()}
-      </base-card>
+      <base-card cardTitle="Strengths"> ${this.renderCardContent()} </base-card>
     `;
   }
 
   private renderCardContent() {
-    if (!this.p0) {
-      return html`<p>Enter a value for p0 to calculate strengths</p>`;
-    }
-
     if (!this.strengths) {
-      return html`<sl-spinner></sl-spinner>`;
+      return html`
+        <div class="intro">
+          <p>
+            A value for <i>p0</i> is required to calculate absolute strengths.
+          </p>
+          ${this.renderP0Input()}
+        </div>
+      `;
     }
 
     const { strength, earlyStrength, lateStrength } = this.strengths;
@@ -57,16 +56,22 @@ export class StrengthsCard extends LitElement {
           .lateStrength=${lateStrength}
         ></strength-graph>
 
-        <table>
-          <tr>
-            <td>Treble Ratio</td>
-            <td>${calculateTrebleRatio(lateStrength).toFixed(2)}</td>
-          </tr>
-          <tr>
-            <td>Early Bass Strength</td>
-            <td>${calculateEarlyBassStrength(earlyStrength).toFixed(2)}dB</td>
-          </tr>
-        </table>
+        <sl-divider vertical></sl-divider>
+
+        <aside>
+          ${this.renderP0Input()}
+
+          <table>
+            <tr>
+              <td>Treble Ratio</td>
+              <td>${calculateTrebleRatio(lateStrength).toFixed(2)}</td>
+            </tr>
+            <tr>
+              <td>Early Bass Strength [dB]</td>
+              <td>${calculateEarlyBassStrength(earlyStrength).toFixed(2)}</td>
+            </tr>
+          </table>
+        </aside>
       </div>
     `;
   }
@@ -74,26 +79,40 @@ export class StrengthsCard extends LitElement {
   private renderP0Input() {
     return html`
       <form @submit=${this.onSubmit}>
-        <sl-input id="p0-input" type="number" min="0" step="any"></sl-input>
+        <sl-input
+          type="number"
+          filled
+          min="0"
+          step="any"
+          required
+          .value=${this.p0Value}
+          @sl-input=${(ev: CustomEvent) => {
+            if (ev.target) {
+              this.p0Value = (ev.target as HTMLInputElement).value;
+            }
+          }}
+        ></sl-input>
+        <sl-button type="submit"
+          >${this.strengths ? 'Recalculate' : 'Calculate'}</sl-button
+        >
       </form>
     `;
   }
 
   private onSubmit(ev: SubmitEvent) {
     ev.preventDefault();
-    this.p0 = parseFloat(this.p0Input.value);
 
-    this.calculateStrengths();
-  }
-
-  private calculateStrengths() {
-    if (!this.p0) {
-      throw new Error('expected p0 to be defined for strength calculation');
+    if (!this.p0Value || Number.isNaN(parseFloat(this.p0Value))) {
+      return;
     }
 
-    const strength = calculateStrength(this.bands, this.p0);
-    const earlyStrength = calculateStrength(this.e80Bands, this.p0);
-    const lateStrength = calculateStrength(this.l80Bands, this.p0);
+    this.calculateStrengths(parseFloat(this.p0Value));
+  }
+
+  private calculateStrengths(p0: number) {
+    const strength = calculateStrength(this.bands, p0);
+    const earlyStrength = calculateStrength(this.e80Bands, p0);
+    const lateStrength = calculateStrength(this.l80Bands, p0);
 
     this.strengths = {
       strength,
@@ -105,8 +124,39 @@ export class StrengthsCard extends LitElement {
   static styles = css`
     .content {
       display: grid;
+      grid-template-columns: 2fr auto 1fr;
+    }
+
+    .intro {
+      display: grid;
+      justify-content: center;
+      align-items: center;
+      max-width: 14rem;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    aside {
+      display: flex;
+      flex-direction: column;
+      padding: 0 1rem;
+    }
+
+    form {
+      display: grid;
       gap: 1rem;
-      padding: 1rem;
+    }
+
+    table {
+      margin-top: auto;
+    }
+
+    td {
+      padding: 0.25rem 0;
+    }
+
+    td:last-child {
+      text-align: right;
     }
   `;
 }

@@ -21,6 +21,8 @@ export class BaseCard extends LitElement {
       box-shadow: 0 6px 12px 2px rgb(0 0 0 / 14%),
         0 3px 11px 2px rgb(0 0 0 / 12%), 0 3px 4px -2px rgb(0 0 0 / 20%);
       border-radius: 0.5rem;
+      box-sizing: border-box;
+      height: 100%;
     }
 
     h3 {
