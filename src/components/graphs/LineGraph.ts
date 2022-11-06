@@ -1,6 +1,12 @@
-import { Chart, ChartDataset, ChartOptions, Point } from 'chart.js';
+import {
+  Chart,
+  ChartDataset,
+  ChartOptions,
+  ChartTypeRegistry,
+  Point,
+} from 'chart.js';
 import { LitElement, html } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { customElement, property, query } from 'lit/decorators.js';
 
 export type GraphConfig = {
   labels?: string[];
@@ -10,26 +16,29 @@ export type GraphConfig = {
 
 @customElement('line-graph')
 export class LineGraph extends LitElement {
+  private chart: Chart<
+    keyof ChartTypeRegistry,
+    Float64Array | Point[],
+    string
+  > | null = null;
+
   @property({ type: Object }) config: GraphConfig | undefined;
 
+  @query('#canvas')
+  private canvas!: HTMLCanvasElement;
+
   protected firstUpdated() {
-    const canvas = this.renderRoot.querySelector<HTMLCanvasElement>('#canvas');
-    if (canvas === null) {
-      throw new Error('canvas required for drawing graph');
-    }
-
-    const ctx = canvas.getContext('2d');
-    if (ctx === null) {
-      throw new Error('canvas 2D context required for drawing graph');
-    }
-
     if (!this.config) {
       throw new Error('expected a graph config to be supplied');
     }
 
+    const ctx = this.canvas.getContext('2d');
+    if (ctx === null) {
+      throw new Error('canvas 2D context required for drawing graph');
+    }
+
     try {
-      // eslint-disable-next-line no-new
-      new Chart(ctx, {
+      this.chart = new Chart(ctx, {
         type: 'line',
         data: {
           labels: this.config.labels,
@@ -45,6 +54,23 @@ export class LineGraph extends LitElement {
       }
 
       throw e;
+    }
+  }
+
+  protected updated(): void {
+    if (!this.config) {
+      throw new Error('expected a graph config to be supplied');
+    }
+
+    if (this.chart) {
+      this.chart.data = {
+        labels: this.config.labels,
+        datasets: this.config.datasets,
+      };
+      if (this.config.options) {
+        this.chart.options = this.config.options;
+      }
+      this.chart.update();
     }
   }
 
