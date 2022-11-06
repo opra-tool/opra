@@ -5,6 +5,7 @@ import {
   LinearScale,
   CategoryScale,
   PointElement,
+  Legend,
 } from 'chart.js';
 import initWasm from 'wasm-raqi-online-toolbox';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
@@ -38,6 +39,7 @@ Chart.register(
   LineElement,
   LinearScale,
   CategoryScale,
-  PointElement
+  PointElement,
+  Legend
 );
 Chart.defaults.font.size = 15;
