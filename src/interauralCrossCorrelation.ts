@@ -6,8 +6,7 @@ import { normalizeArray } from './math/normalizeArray';
 import { xcorr } from './xcorr';
 
 /**
- * Performs interaural cross correlation on binaural audio,
- * which previously has been separated into its octave bands.
+ * Performs interaural cross correlation on binaural octave bands.
  *
  * @param octaves Binaural octave bands
  * @returns
@@ -37,8 +36,7 @@ export async function interauralCrossCorrelation(
 }
 
 /**
- * Performs early interaural cross correlation on binaural audio,
- * which previously has been separated into its octave bands.
+ * Performs early interaural cross correlation on binaural octave bands.
  *
  * @param octaves Binaural octave bands
  * @returns
