@@ -29,3 +29,13 @@ export function calculateStrengthOfAWeighted(
 
   return l - lf;
 }
+
+export function calculateTrebleRatio(lateStrength: Float64Array): number {
+  return lateStrength[6] - (lateStrength[4] + lateStrength[5]) / 2;
+}
+
+export function calculateEarlyBassStrength(
+  earlyStrength: Float64Array
+): number {
+  return (earlyStrength[1] + earlyStrength[2] + earlyStrength[3]) / 3;
+}

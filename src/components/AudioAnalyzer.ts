@@ -50,7 +50,6 @@ export class AudioAnalyzer extends LitElement {
       <section>
         <header>
           <h1>RAQI Online Toolbox</h1>
-
           <file-drop @change=${this.onFileSelected}></file-drop>
         </header>
         ${this.renderAudioInfo()}
@@ -125,20 +124,18 @@ export class AudioAnalyzer extends LitElement {
   }
 
   private static renderMonauralResults({
+    bands,
+    e80Bands,
+    l80Bands,
     edtValues,
     reverbTime,
     c50Values,
     c80Values,
-    strength,
-    earlyStrength,
-    lateStrength,
+    bassRatio,
+    centerTime,
     squaredImpulseResponse,
     aWeightedC80,
     aWeightedStrength,
-    bassRatio,
-    centerTime,
-    earlyBassStrength,
-    trebleRatio,
   }: MonauralAnalyzeResults) {
     return html`
       <div class="graphs">
@@ -147,11 +144,11 @@ export class AudioAnalyzer extends LitElement {
           .reverberationTime=${reverbTime}
         ></reverberation-graph>
         <c50c80-graph .c50=${c50Values} .c80=${c80Values}></c50c80-graph>
-        <strength-graph
-          .strength=${strength}
-          .earlyStrength=${earlyStrength}
-          .lateStrength=${lateStrength}
-        ></strength-graph>
+        <strengths-card
+          .bands=${bands}
+          .e80Bands=${e80Bands}
+          .l80Bands=${l80Bands}
+        ></strengths-card>
         <impulse-response-graph
           .squaredIR=${squaredImpulseResponse}
         ></impulse-response-graph>
@@ -164,17 +161,8 @@ export class AudioAnalyzer extends LitElement {
             unit: 'sec',
           },
           {
-            name: 'Early Bass Strength',
-            value: earlyBassStrength,
-            unit: 'dB',
-          },
-          {
             name: 'Bass Ratio',
             value: bassRatio,
-          },
-          {
-            name: 'Treble Ratio',
-            value: trebleRatio,
           },
           {
             name: 'A-weighted Strength',

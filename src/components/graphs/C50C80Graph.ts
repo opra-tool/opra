@@ -1,5 +1,6 @@
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { GraphConfig } from './LineGraph';
 import { GRAPH_COLOR_BLUE, GRAPH_COLOR_RED } from './colors';
 import { getFrequencyLabels } from './common';
 
@@ -10,45 +11,42 @@ export class C50C80Graph extends LitElement {
   @property({ type: Object }) c80: Float64Array = new Float64Array();
 
   render() {
-    const datasets = [
-      {
-        label: 'C50',
-        data: this.c50,
-        fill: false,
-        borderColor: GRAPH_COLOR_RED,
-      },
-      {
-        label: 'C80',
-        data: this.c80,
-        fill: false,
-        borderColor: GRAPH_COLOR_BLUE,
-      },
-    ];
-
-    const options = {
-      scales: {
-        y: {
-          title: {
-            display: true,
-            text: 'dB',
-          },
+    const config: GraphConfig = {
+      labels: getFrequencyLabels(),
+      datasets: [
+        {
+          label: 'C50',
+          data: this.c50,
+          fill: false,
+          borderColor: GRAPH_COLOR_RED,
         },
-        x: {
-          title: {
-            display: true,
-            text: 'Frequency [Hz]',
+        {
+          label: 'C80',
+          data: this.c80,
+          fill: false,
+          borderColor: GRAPH_COLOR_BLUE,
+        },
+      ],
+      options: {
+        scales: {
+          y: {
+            title: {
+              display: true,
+              text: 'dB',
+            },
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Frequency [Hz]',
+            },
           },
         },
       },
     };
 
     return html`
-      <graph-card
-        title="C50 / C80"
-        .labels=${getFrequencyLabels()}
-        .datasets=${datasets}
-        .options=${options}
-      ></graph-card>
+      <graph-card title="C50 / C80" .config=${config}></graph-card>
     `;
   }
 }

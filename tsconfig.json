@@ -16,8 +16,6 @@
     "inlineSources": true,
     "rootDir": "./",
     "incremental": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true
   },
   "include": ["**/*.ts"]
 }

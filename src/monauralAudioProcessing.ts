@@ -5,7 +5,7 @@ import { arrayFilledWithZeros } from './math/arrayFilledWithZeros';
 import { octfilt } from './octfilt';
 import { edt, rev } from './reverberation';
 import { trimStarttimeMonaural } from './starttimeDetection';
-import { calculateStrength, calculateStrengthOfAWeighted } from './strength';
+import { calculateStrengthOfAWeighted } from './strength';
 import { ts } from './ts';
 
 type Point = {
@@ -14,17 +14,15 @@ type Point = {
 };
 
 export type MonauralAnalyzeResults = {
+  bands: Float64Array[];
+  e80Bands: Float64Array[];
+  l80Bands: Float64Array[];
   edtValues: Float64Array;
   reverbTime: Float64Array;
   c50Values: Float64Array;
   c80Values: Float64Array;
-  strength: Float64Array;
-  earlyStrength: Float64Array;
-  lateStrength: Float64Array;
   centerTime: number;
-  earlyBassStrength: number;
   bassRatio: number;
-  trebleRatio: number;
   aWeightedStrength: number;
   aWeightedC80: number;
   squaredImpulseResponse: Point[];
@@ -32,7 +30,7 @@ export type MonauralAnalyzeResults = {
 
 // currently only applicable to RAVEN generated
 // room impulse responses
-const PRESSURE_FITTING = 0.000001;
+const RAVEN_PRESSURE_FITTING = 0.000001;
 
 export async function processMonauralAudio(
   audio: Float64Array,
@@ -45,55 +43,41 @@ export async function processMonauralAudio(
     ...arrayFilledWithZeros(10000),
   ]);
 
-  // octave band filtering
-  const octaveBands = await octfilt(endZeroPaddedAudio, sampleRate);
-  // TODO: rename: individually startime trimmed and zero-padded octave bands
-  const miro = octaveBands.map(band => {
-    const trimmedBand = trimStarttimeMonaural(band);
-    return new Float64Array([
-      ...trimmedBand,
-      ...arrayFilledWithZeros(band.length - trimmedBand.length),
-    ]);
-  });
+  const octaveBands = await getStarttimeTrimmedAndPaddedOctaveBands(
+    endZeroPaddedAudio,
+    sampleRate
+  );
 
-  const fractions = miro.map(band => earlyLateFractions(band, sampleRate));
+  const fractions = octaveBands.map(band =>
+    earlyLateFractions(band, sampleRate)
+  );
 
-  const c50Values = new Float64Array(miro.length);
-  const c80Values = new Float64Array(miro.length);
-  for (let i = 0; i < miro.length; i += 1) {
+  const c50Values = new Float64Array(octaveBands.length);
+  const c80Values = new Float64Array(octaveBands.length);
+  for (let i = 0; i < octaveBands.length; i += 1) {
     const { c50, c80 } = c50c80Calculation(fractions[i]);
     c50Values[i] = c50;
     c80Values[i] = c80;
   }
 
-  const strength = calculateStrength(miro, PRESSURE_FITTING);
-  const earlyStrength = calculateStrength(
-    fractions.map(val => val.e80),
-    PRESSURE_FITTING
-  );
-  const lateStrength = calculateStrength(
-    fractions.map(val => val.l80),
-    PRESSURE_FITTING
-  );
+  const e80Bands = fractions.map(val => val.e80);
+  const l80Bands = fractions.map(val => val.l80);
 
   const mira = trimStarttimeMonaural(
     aWeightAudioSignal(endZeroPaddedAudio, sampleRate)
   );
   const aWeightedStrength = calculateStrengthOfAWeighted(
     mira,
-    PRESSURE_FITTING
+    RAVEN_PRESSURE_FITTING
   );
   const aWeightedC80 =
     (c80Values[3] + c80Values[4]) / 2 - 0.62 * aWeightedStrength;
 
-  const edtValues = edt(miro, sampleRate);
-  const reverbTime = rev(miro, 30, sampleRate);
+  const edtValues = edt(octaveBands, sampleRate);
+  const reverbTime = rev(octaveBands, 30, sampleRate);
 
-  const trebleRatio = lateStrength[6] - (lateStrength[4] + lateStrength[5]) / 2;
   const bassRatio =
     (reverbTime[1] + reverbTime[2]) / (reverbTime[3] + reverbTime[4]);
-  const earlyBassStrength =
-    (earlyStrength[1] + earlyStrength[2] + earlyStrength[3]) / 3;
   const centerTime = ts(mir, sampleRate);
 
   // TODO: extract into method
@@ -106,19 +90,32 @@ export async function processMonauralAudio(
   }
 
   return {
+    bands: octaveBands,
+    e80Bands,
+    l80Bands,
     edtValues,
     reverbTime,
     c50Values,
     c80Values,
-    strength,
-    earlyStrength,
-    lateStrength,
-    centerTime,
-    earlyBassStrength,
     bassRatio,
-    trebleRatio,
+    centerTime,
     aWeightedStrength,
     aWeightedC80,
     squaredImpulseResponse,
   };
+}
+
+async function getStarttimeTrimmedAndPaddedOctaveBands(
+  audio: Float64Array,
+  sampleRate: number
+): Promise<Float64Array[]> {
+  const rawBands = await octfilt(audio, sampleRate);
+
+  return rawBands.map(band => {
+    const trimmedBand = trimStarttimeMonaural(band);
+    return new Float64Array([
+      ...trimmedBand,
+      ...arrayFilledWithZeros(band.length - trimmedBand.length),
+    ]);
+  });
 }

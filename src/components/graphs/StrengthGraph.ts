@@ -6,6 +6,7 @@ import {
   GRAPH_COLOR_YELLOW,
 } from './colors';
 import { getFrequencyLabels } from './common';
+import { GraphConfig } from './LineGraph';
 
 @customElement('strength-graph')
 export class StrengthGraph extends LitElement {
@@ -16,51 +17,48 @@ export class StrengthGraph extends LitElement {
   @property({ type: Object }) lateStrength: Float64Array = new Float64Array();
 
   render() {
-    const datasets = [
-      {
-        label: 'Strength',
-        data: this.strength,
-        fill: false,
-        borderColor: GRAPH_COLOR_BLUE,
-      },
-      {
-        label: 'Early Strength',
-        data: this.earlyStrength,
-        fill: false,
-        borderColor: GRAPH_COLOR_RED,
-      },
-      {
-        label: 'Late Strength',
-        data: this.lateStrength,
-        fill: false,
-        borderColor: GRAPH_COLOR_YELLOW,
-      },
-    ];
-
-    const options = {
-      scales: {
-        y: {
-          title: {
-            display: true,
-            text: 'dB',
-          },
+    const config: GraphConfig = {
+      labels: getFrequencyLabels(),
+      datasets: [
+        {
+          label: 'Strength',
+          data: this.strength,
+          fill: false,
+          borderColor: GRAPH_COLOR_BLUE,
         },
-        x: {
-          title: {
-            display: true,
-            text: 'Frequency (Hz)',
+        {
+          label: 'Early Strength',
+          data: this.earlyStrength,
+          fill: false,
+          borderColor: GRAPH_COLOR_RED,
+        },
+        {
+          label: 'Late Strength',
+          data: this.lateStrength,
+          fill: false,
+          borderColor: GRAPH_COLOR_YELLOW,
+        },
+      ],
+      options: {
+        scales: {
+          y: {
+            title: {
+              display: true,
+              text: 'dB',
+            },
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Frequency (Hz)',
+            },
           },
         },
       },
     };
 
     return html`
-      <graph-card
-        title="Strengths"
-        .labels=${getFrequencyLabels()}
-        .datasets=${datasets}
-        .options=${options}
-      ></graph-card>
+      <line-graph title="Strengths" .config=${config}></line-graph>
     `;
   }
 }

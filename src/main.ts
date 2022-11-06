@@ -10,19 +10,21 @@ import initWasm from 'wasm-raqi-online-toolbox';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
 
 // register web components
-import './components/graphs/IACCGraph';
-import './components/graphs/ImpulseResponseGraph';
-import './components/graphs/ReverberationGraph';
 import './components/AudioAnalyzer';
 import './components/AudioInfoCard';
 import './components/BaseCard';
 import './components/ExecutionTime';
 import './components/FileDrop';
 import './components/GraphCard';
+import './components/graphs/C50C80Graph';
+import './components/graphs/IACCGraph';
+import './components/graphs/ImpulseResponseGraph';
+import './components/graphs/LineGraph';
+import './components/graphs/ReverberationGraph';
+import './components/graphs/StrengthGraph';
 import './components/ParametersCard';
 import './components/ProgressIndicator';
-import './components/graphs/C50C80Graph';
-import './components/graphs/StrengthGraph';
+import './components/StrengthsCard';
 
 // init web assembly module
 // eslint-disable-next-line no-console
