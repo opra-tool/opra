@@ -1,5 +1,6 @@
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { UNIT_DECIBELS, UNIT_HERTZ } from '../../units';
 import {
   GRAPH_COLOR_BLUE,
   GRAPH_COLOR_RED,
@@ -44,13 +45,13 @@ export class StrengthGraph extends LitElement {
           y: {
             title: {
               display: true,
-              text: 'dB',
+              text: UNIT_DECIBELS,
             },
           },
           x: {
             title: {
               display: true,
-              text: 'Frequency (Hz)',
+              text: `Frequency [${UNIT_HERTZ}]`,
             },
           },
         },

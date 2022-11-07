@@ -3,6 +3,7 @@ import { customElement, property } from 'lit/decorators.js';
 import { GraphConfig } from './LineGraph';
 import { GRAPH_COLOR_BLUE, GRAPH_COLOR_RED } from './colors';
 import { getFrequencyLabels } from './common';
+import { UNIT_DECIBELS, UNIT_HERTZ } from '../../units';
 
 @customElement('c50c80-graph')
 export class C50C80Graph extends LitElement {
@@ -32,13 +33,13 @@ export class C50C80Graph extends LitElement {
           y: {
             title: {
               display: true,
-              text: 'dB',
+              text: UNIT_DECIBELS,
             },
           },
           x: {
             title: {
               display: true,
-              text: 'Frequency [Hz]',
+              text: `Frequency [${UNIT_HERTZ}]`,
             },
           },
         },

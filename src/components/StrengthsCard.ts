@@ -9,6 +9,7 @@ import {
   calculateTrebleRatio,
 } from '../strength';
 import { Parameter } from './ParametersTable';
+import { UNIT_DECIBELS } from '../units';
 
 type Strengths = {
   strength: Float64Array;
@@ -58,7 +59,7 @@ export class StrengthsCard extends LitElement {
         name: 'Averaged Strength',
         description: 'according to ISO 3382-1 Table A.2',
         value: calculateAveragedFrequencyStrength(strength),
-        unit: 'dB',
+        unit: UNIT_DECIBELS,
       },
       {
         name: 'Treble Ratio',
@@ -67,7 +68,7 @@ export class StrengthsCard extends LitElement {
       {
         name: 'Early Bass Strength',
         value: calculateEarlyBassStrength(earlyStrength),
-        unit: 'dB',
+        unit: UNIT_DECIBELS,
       },
     ];
 

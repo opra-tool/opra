@@ -1,5 +1,6 @@
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { UNIT_HERTZ } from '../../units';
 import { GRAPH_COLOR_BLUE, GRAPH_COLOR_RED } from './colors';
 import { getFrequencyLabels } from './common';
 import { GraphConfig } from './LineGraph';
@@ -32,7 +33,7 @@ export class IACCGraph extends LitElement {
           x: {
             title: {
               display: true,
-              text: 'Frequency (Hz)',
+              text: `Frequency (${UNIT_HERTZ})`,
             },
           },
         },

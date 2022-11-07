@@ -12,6 +12,7 @@ import {
 import { BinauralAudio } from '../audio/BinauralAudio';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import { Parameter } from './ParametersTable';
+import { UNIT_DECIBELS, UNIT_SECONDS } from '../units';
 
 type AudioInfo = {
   channelCount: number;
@@ -141,7 +142,7 @@ export class AudioAnalyzer extends LitElement {
     const parameters: Parameter[] = [
       {
         name: 'Center Time',
-        unit: 's', // TODO: use ms?
+        unit: UNIT_SECONDS, // TODO: use ms?
         value: centerTime,
       },
       {
@@ -150,12 +151,12 @@ export class AudioAnalyzer extends LitElement {
       },
       {
         name: 'A-weighted Strength',
-        unit: 'dB',
+        unit: UNIT_DECIBELS,
         value: aWeightedStrength,
       },
       {
         name: 'C80 A-weighted',
-        unit: 'dB',
+        unit: UNIT_DECIBELS,
         value: aWeightedC80,
       },
     ];

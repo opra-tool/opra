@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { UNIT_HERTZ, UNIT_SECONDS } from '../units';
 
 @customElement('audio-info-card')
 export class AudioInfoCard extends LitElement {
@@ -17,8 +18,8 @@ export class AudioInfoCard extends LitElement {
       <base-card>
         <div>
           <p class="type">${audioType}</p>
-          <p>${this.sampleRate}Hz</p>
-          <p>${this.durationSeconds.toFixed(2)}sec</p>
+          <p>${this.sampleRate}${UNIT_HERTZ}</p>
+          <p>${this.durationSeconds.toFixed(2)}${UNIT_SECONDS}</p>
         </div>
       </base-card>
     `;
