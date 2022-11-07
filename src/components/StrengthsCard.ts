@@ -139,7 +139,7 @@ export class StrengthsCard extends LitElement {
     aside {
       display: flex;
       flex-direction: column;
-      padding: 0 1rem;
+      padding: 1rem;
     }
 
     form {
