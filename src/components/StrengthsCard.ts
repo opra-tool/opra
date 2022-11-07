@@ -16,11 +16,14 @@ type Strengths = {
 
 @customElement('strengths-card')
 export class StrengthsCard extends LitElement {
-  @property({ type: Array }) bands: Float64Array[] = [];
+  @property({ type: Object }) bandsSquaredSum: Float64Array =
+    new Float64Array();
 
-  @property({ type: Array }) e80Bands: Float64Array[] = [];
+  @property({ type: Object }) e80BandsSquaredSum: Float64Array =
+    new Float64Array();
 
-  @property({ type: Array }) l80Bands: Float64Array[] = [];
+  @property({ type: Object }) l80BandsSquaredSum: Float64Array =
+    new Float64Array();
 
   @state()
   private p0Value: string = '';
@@ -110,9 +113,9 @@ export class StrengthsCard extends LitElement {
   }
 
   private calculateStrengths(p0: number) {
-    const strength = calculateStrength(this.bands, p0);
-    const earlyStrength = calculateStrength(this.e80Bands, p0);
-    const lateStrength = calculateStrength(this.l80Bands, p0);
+    const strength = calculateStrength(this.bandsSquaredSum, p0);
+    const earlyStrength = calculateStrength(this.e80BandsSquaredSum, p0);
+    const lateStrength = calculateStrength(this.l80BandsSquaredSum, p0);
 
     this.strengths = {
       strength,

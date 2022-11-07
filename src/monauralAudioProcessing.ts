@@ -2,6 +2,7 @@ import { c50c80Calculation } from './c50c80Calculation';
 import { earlyLateFractions } from './earlyLateFractions';
 import { aWeightAudioSignal } from './filtering/aWeighting';
 import { arrayFilledWithZeros } from './math/arrayFilledWithZeros';
+import { arraySumSquared } from './math/arraySumSquared';
 import { octfilt } from './octfilt';
 import { edt, rev } from './reverberation';
 import { trimStarttimeMonaural } from './starttimeDetection';
@@ -14,9 +15,9 @@ type Point = {
 };
 
 export type MonauralAnalyzeResults = {
-  bands: Float64Array[];
-  e80Bands: Float64Array[];
-  l80Bands: Float64Array[];
+  bandsSquaredSum: Float64Array;
+  e80BandsSquaredSum: Float64Array;
+  l80BandsSquaredSum: Float64Array;
   edtValues: Float64Array;
   reverbTime: Float64Array;
   c50Values: Float64Array;
@@ -60,9 +61,6 @@ export async function processMonauralAudio(
     c80Values[i] = c80;
   }
 
-  const e80Bands = fractions.map(val => val.e80);
-  const l80Bands = fractions.map(val => val.l80);
-
   const mira = trimStarttimeMonaural(
     aWeightAudioSignal(endZeroPaddedAudio, sampleRate)
   );
@@ -89,10 +87,19 @@ export async function processMonauralAudio(
     });
   }
 
+  const bandsSquaredSum = new Float64Array(octaveBands.map(arraySumSquared));
+
+  const e80Bands = fractions.map(val => val.e80);
+  const l80Bands = fractions.map(val => val.l80);
+
+  const e80BandsSquaredSum = new Float64Array(e80Bands.map(arraySumSquared));
+
+  const l80BandsSquaredSum = new Float64Array(l80Bands.map(arraySumSquared));
+
   return {
-    bands: octaveBands,
-    e80Bands,
-    l80Bands,
+    bandsSquaredSum,
+    e80BandsSquaredSum,
+    l80BandsSquaredSum,
     edtValues,
     reverbTime,
     c50Values,

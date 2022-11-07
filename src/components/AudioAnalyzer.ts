@@ -124,9 +124,9 @@ export class AudioAnalyzer extends LitElement {
   }
 
   private static renderMonauralResults({
-    bands,
-    e80Bands,
-    l80Bands,
+    bandsSquaredSum,
+    e80BandsSquaredSum,
+    l80BandsSquaredSum,
     edtValues,
     reverbTime,
     c50Values,
@@ -172,9 +172,9 @@ export class AudioAnalyzer extends LitElement {
         ></parameters-card>
       </div>
       <strengths-card
-        .bands=${bands}
-        .e80Bands=${e80Bands}
-        .l80Bands=${l80Bands}
+        .bandsSquaredSum=${bandsSquaredSum}
+        .e80BandsSquaredSum=${e80BandsSquaredSum}
+        .l80BandsSquaredSum=${l80BandsSquaredSum}
       ></strengths-card>
     `;
   }
