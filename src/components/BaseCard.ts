@@ -18,8 +18,7 @@ export class BaseCard extends LitElement {
     .card {
       background-color: var(--sl-color-neutral-50);
       padding: 1rem;
-      box-shadow: 0 6px 12px 2px rgb(0 0 0 / 14%),
-        0 3px 11px 2px rgb(0 0 0 / 12%), 0 3px 4px -2px rgb(0 0 0 / 20%);
+      box-shadow: var(--sl-shadow-medium);
       border-radius: 0.5rem;
       box-sizing: border-box;
       height: 100%;
