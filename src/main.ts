@@ -24,7 +24,7 @@ import './components/graphs/ImpulseResponseGraph';
 import './components/graphs/LineGraph';
 import './components/graphs/ReverberationGraph';
 import './components/graphs/StrengthGraph';
-import './components/ParametersCard';
+import './components/ParametersTable';
 import './components/ProgressIndicator';
 import './components/StrengthsCard';
 

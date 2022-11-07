@@ -11,6 +11,7 @@ import {
 } from '../monauralAudioProcessing';
 import { BinauralAudio } from '../audio/BinauralAudio';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
+import { Parameter } from './ParametersTable';
 
 type AudioInfo = {
   channelCount: number;
@@ -137,6 +138,28 @@ export class AudioAnalyzer extends LitElement {
     aWeightedC80,
     aWeightedStrength,
   }: MonauralAnalyzeResults) {
+    const parameters: Parameter[] = [
+      {
+        name: 'Center Time',
+        unit: 's', // TODO: use ms?
+        value: centerTime,
+      },
+      {
+        name: 'Bass Ratio',
+        value: bassRatio,
+      },
+      {
+        name: 'A-weighted Strength',
+        unit: 'dB',
+        value: aWeightedStrength,
+      },
+      {
+        name: 'C80 A-weighted',
+        unit: 'dB',
+        value: aWeightedC80,
+      },
+    ];
+
     return html`
       <div class="grid">
         <reverberation-graph
@@ -147,29 +170,9 @@ export class AudioAnalyzer extends LitElement {
         <impulse-response-graph
           .squaredIR=${squaredImpulseResponse}
         ></impulse-response-graph>
-        <parameters-card
-          .parameters=${[
-            {
-              name: 'Center Time',
-              value: centerTime,
-              unit: 'sec',
-            },
-            {
-              name: 'Bass Ratio',
-              value: bassRatio,
-            },
-            {
-              name: 'A-weighted Strength',
-              unit: 'dB',
-              value: aWeightedStrength,
-            },
-            {
-              name: 'C80 A-weighted',
-              unit: 'dB',
-              value: aWeightedC80,
-            },
-          ]}
-        ></parameters-card>
+        <base-card cardTitle="Other Parameters">
+          <parameters-table .parameters=${parameters}></parameters-table>
+        </base-card>
       </div>
       <strengths-card
         .bandsSquaredSum=${bandsSquaredSum}

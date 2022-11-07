@@ -26,6 +26,12 @@ export function calculateStrengthOfAWeighted(
   return l - lf;
 }
 
+export function calculateAveragedFrequencyStrength(
+  strength: Float64Array
+): number {
+  return (strength[3] + strength[4]) / 2;
+}
+
 export function calculateTrebleRatio(lateStrength: Float64Array): number {
   return lateStrength[6] - (lateStrength[4] + lateStrength[5]) / 2;
 }

@@ -3,10 +3,12 @@ import { customElement, state, property } from 'lit/decorators.js';
 import '@shoelace-style/shoelace/dist/components/input/input.js';
 import '@shoelace-style/shoelace/dist/components/divider/divider.js';
 import {
+  calculateAveragedFrequencyStrength,
   calculateEarlyBassStrength,
   calculateStrength,
   calculateTrebleRatio,
 } from '../strength';
+import { Parameter } from './ParametersTable';
 
 type Strengths = {
   strength: Float64Array;
@@ -51,6 +53,24 @@ export class StrengthsCard extends LitElement {
 
     const { strength, earlyStrength, lateStrength } = this.strengths;
 
+    const parameters: Parameter[] = [
+      {
+        name: 'Averaged Strength',
+        description: 'according to ISO 3382-1 Table A.2',
+        value: calculateAveragedFrequencyStrength(strength),
+        unit: 'dB',
+      },
+      {
+        name: 'Treble Ratio',
+        value: calculateTrebleRatio(lateStrength),
+      },
+      {
+        name: 'Early Bass Strength',
+        value: calculateEarlyBassStrength(earlyStrength),
+        unit: 'dB',
+      },
+    ];
+
     return html`
       <div class="content">
         <strength-graph
@@ -64,16 +84,7 @@ export class StrengthsCard extends LitElement {
         <aside>
           ${this.renderP0Input()}
 
-          <table>
-            <tr>
-              <td>Treble Ratio</td>
-              <td>${calculateTrebleRatio(lateStrength).toFixed(2)}</td>
-            </tr>
-            <tr>
-              <td>Early Bass Strength [dB]</td>
-              <td>${calculateEarlyBassStrength(earlyStrength).toFixed(2)}</td>
-            </tr>
-          </table>
+          <parameters-table .parameters=${parameters}></parameters-table>
         </aside>
       </div>
     `;
@@ -150,16 +161,8 @@ export class StrengthsCard extends LitElement {
       gap: 1rem;
     }
 
-    table {
+    parameters-table {
       margin-top: auto;
-    }
-
-    td {
-      padding: 0.25rem 0;
-    }
-
-    td:last-child {
-      text-align: right;
     }
   `;
 }
