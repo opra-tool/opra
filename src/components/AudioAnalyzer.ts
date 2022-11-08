@@ -47,6 +47,9 @@ export class AudioAnalyzer extends LitElement {
   @state()
   private error: Error | null = null;
 
+  @state()
+  private fileName: string | null = null;
+
   render() {
     return html`
       <section>
@@ -94,6 +97,7 @@ export class AudioAnalyzer extends LitElement {
 
     return html`
       <audio-info-card
+        .fileName=${this.fileName || ''}
         .channelCount=${this.audioInfo.channelCount}
         .durationSeconds=${this.audioInfo.durationSeconds}
         .sampleRate=${this.audioInfo.sampleRate}
@@ -160,17 +164,15 @@ export class AudioAnalyzer extends LitElement {
 
     return html`
       <div class="grid">
+        <parameters-card .parameters=${parameters}></parameters-card>
+        <impulse-response-graph
+          .squaredIR=${squaredImpulseResponse}
+        ></impulse-response-graph>
         <reverberation-graph
           .energyDecayCurve=${edtValues}
           .reverberationTime=${reverbTime}
         ></reverberation-graph>
         <c50c80-graph .c50=${c50Values} .c80=${c80Values}></c50c80-graph>
-        <impulse-response-graph
-          .squaredIR=${squaredImpulseResponse}
-        ></impulse-response-graph>
-        <base-card cardTitle="Other Parameters">
-          <parameters-table .parameters=${parameters}></parameters-table>
-        </base-card>
       </div>
       <strengths-card
         .bandsSquaredSum=${bandsSquaredSum}
@@ -254,6 +256,7 @@ export class AudioAnalyzer extends LitElement {
     const reader = new FileReader();
     reader.onload = this.onFileRead;
     reader.readAsArrayBuffer(ev.detail.file);
+    this.fileName = ev.detail.file.name;
   };
 
   static styles = css`
@@ -270,6 +273,8 @@ export class AudioAnalyzer extends LitElement {
       text-transform: uppercase;
     }
 
+    impulse-response-graph,
+    parameters-card,
     execution-time {
       grid-column: 1 / -1;
     }

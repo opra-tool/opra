@@ -4,6 +4,8 @@ import { UNIT_HERTZ, UNIT_SECONDS } from '../units';
 
 @customElement('audio-info-card')
 export class AudioInfoCard extends LitElement {
+  @property({ type: String }) fileName: string = 'unknown';
+
   @property({ type: Number }) channelCount: number = 1;
 
   @property({ type: Number }) sampleRate: number = 0;
@@ -14,13 +16,16 @@ export class AudioInfoCard extends LitElement {
     const audioType =
       this.channelCount === 1 ? 'Monaural Audio' : 'Binaural Audio';
 
+    const sampleRate = `${this.sampleRate}${UNIT_HERTZ}`;
+    const duration = `${this.durationSeconds.toFixed(2)}${UNIT_SECONDS}`;
+
     return html`
       <base-card>
-        <div>
-          <p class="type">${audioType}</p>
-          <p>${this.sampleRate}${UNIT_HERTZ}</p>
-          <p>${this.durationSeconds.toFixed(2)}${UNIT_SECONDS}</p>
-        </div>
+        <small
+          ><b>${this.fileName}</b> • ${audioType} • ${sampleRate} •
+          ${duration}</small
+        >
+        <div></div>
       </base-card>
     `;
   }

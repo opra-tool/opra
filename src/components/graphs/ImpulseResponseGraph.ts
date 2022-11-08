@@ -58,7 +58,11 @@ export class ImpulseResponseGraph extends LitElement {
     };
 
     return html`
-      <graph-card title="Impulse Response" .config=${config}></graph-card>
+      <graph-card
+        title="Impulse Response"
+        .config=${config}
+        height="100"
+      ></graph-card>
     `;
   }
 }

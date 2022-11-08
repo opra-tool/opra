@@ -24,6 +24,10 @@ export class LineGraph extends LitElement {
 
   @property({ type: Object }) config: GraphConfig | undefined;
 
+  @property({ type: String }) width: string = '400';
+
+  @property({ type: String }) height: string = '250';
+
   @query('#canvas')
   private canvas!: HTMLCanvasElement;
 
@@ -78,7 +82,7 @@ export class LineGraph extends LitElement {
     return html`
       <!-- wrapping div is needed for proper rendering of chart -->
       <div>
-        <canvas id="canvas" width="400" height="250"></canvas>
+        <canvas id="canvas" width=${this.width} height=${this.height}></canvas>
       </div>
     `;
   }
