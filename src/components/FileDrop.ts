@@ -13,28 +13,30 @@ export class FileDrop extends LitElement {
 
   render() {
     return html`
-      <div
-        class=${classMap({
-          'drop-target': true,
-          'dragging-over': this.isDraggingOver,
-        })}
-        @drop=${this.onDrop}
-        @dragenter=${this.onDragEnter}
-        @dragleave=${this.onDragLeave}
-        @dragover=${this.onDragOver}
-      >
-        <span>Drop a room response file here</span>
-        <span>or</span>
-        <sl-button @click=${this.onFileUploadButtonCLicked}
-          >Choose a file</sl-button
+      <base-card noPadding>
+        <div
+          class=${classMap({
+            'drop-target': true,
+            'dragging-over': this.isDraggingOver,
+          })}
+          @drop=${this.onDrop}
+          @dragenter=${this.onDragEnter}
+          @dragleave=${this.onDragLeave}
+          @dragover=${this.onDragOver}
         >
-        <input
-          id="file-input"
-          type="file"
-          accept=".wav"
-          @change=${this.onFileInputChange}
-        />
-      </div>
+          <span>Drop a room response file here</span>
+          <span>or</span>
+          <sl-button @click=${this.onFileUploadButtonCLicked}>
+            Choose a file
+          </sl-button>
+          <input
+            id="file-input"
+            type="file"
+            accept=".wav"
+            @change=${this.onFileInputChange}
+          />
+        </div>
+      </base-card>
     `;
   }
 
@@ -99,9 +101,7 @@ export class FileDrop extends LitElement {
       flex-direction: column;
       align-items: center;
       gap: 1rem;
-      padding: 2rem;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      border-radius: 0.5rem;
+      padding: 1.5rem;
       text-align: center;
     }
 

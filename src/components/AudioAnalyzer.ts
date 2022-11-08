@@ -50,10 +50,7 @@ export class AudioAnalyzer extends LitElement {
   render() {
     return html`
       <section>
-        <header>
-          <h1>RAQI Online Toolbox</h1>
-          <file-drop @change=${this.onFileSelected}></file-drop>
-        </header>
+        <file-drop @change=${this.onFileSelected}></file-drop>
         ${this.renderAudioInfo()}
         ${this.isProcessing ? this.renderProgress() : this.renderResults()}
         ${this.renderExecutionTime()} ${this.renderError()}
