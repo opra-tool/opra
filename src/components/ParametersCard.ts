@@ -45,7 +45,7 @@ export class ParametersCard extends LitElement {
   static styles = css`
     .wrapper {
       display: flex;
-      justify-content: space-between;
+      justify-content: space-around;
     }
 
     .parameter {

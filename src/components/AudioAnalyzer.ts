@@ -130,6 +130,7 @@ export class AudioAnalyzer extends LitElement {
     bandsSquaredSum,
     e80BandsSquaredSum,
     l80BandsSquaredSum,
+    aWeightedSquaredSum,
     edtValues,
     reverbTime,
     c50Values,
@@ -137,8 +138,6 @@ export class AudioAnalyzer extends LitElement {
     bassRatio,
     centerTime,
     squaredImpulseResponse,
-    aWeightedC80,
-    aWeightedStrength,
   }: MonauralAnalyzeResults) {
     const parameters: Parameter[] = [
       {
@@ -149,16 +148,6 @@ export class AudioAnalyzer extends LitElement {
       {
         name: 'Bass Ratio',
         value: bassRatio,
-      },
-      {
-        name: 'A-weighted Strength',
-        unit: UNIT_DECIBELS,
-        value: aWeightedStrength,
-      },
-      {
-        name: 'C80 A-weighted',
-        unit: UNIT_DECIBELS,
-        value: aWeightedC80,
       },
     ];
 
@@ -178,6 +167,8 @@ export class AudioAnalyzer extends LitElement {
         .bandsSquaredSum=${bandsSquaredSum}
         .e80BandsSquaredSum=${e80BandsSquaredSum}
         .l80BandsSquaredSum=${l80BandsSquaredSum}
+        .aWeightedSquaredSum=${aWeightedSquaredSum}
+        .c80Values=${c80Values}
       ></strengths-card>
     `;
   }

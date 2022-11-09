@@ -76,6 +76,7 @@ export class ParametersTable extends LitElement {
 
     .unit {
       margin-inline-start: 1ch;
+      color: var(--sl-color-neutral-600);
     }
   `;
 }

@@ -6,7 +6,6 @@ import { arraySumSquared } from './math/arraySumSquared';
 import { octfilt } from './octfilt';
 import { edt, rev } from './reverberation';
 import { trimStarttimeMonaural } from './starttimeDetection';
-import { calculateStrengthOfAWeighted } from './strength';
 import { ts } from './ts';
 
 type Point = {
@@ -18,20 +17,15 @@ export type MonauralAnalyzeResults = {
   bandsSquaredSum: Float64Array;
   e80BandsSquaredSum: Float64Array;
   l80BandsSquaredSum: Float64Array;
+  aWeightedSquaredSum: number;
   edtValues: Float64Array;
   reverbTime: Float64Array;
   c50Values: Float64Array;
   c80Values: Float64Array;
   centerTime: number;
   bassRatio: number;
-  aWeightedStrength: number;
-  aWeightedC80: number;
   squaredImpulseResponse: Point[];
 };
-
-// currently only applicable to RAVEN generated
-// room impulse responses
-const RAVEN_PRESSURE_FITTING = 0.000001;
 
 export async function processMonauralAudio(
   audio: Float64Array,
@@ -64,12 +58,6 @@ export async function processMonauralAudio(
   const mira = trimStarttimeMonaural(
     aWeightAudioSignal(endZeroPaddedAudio, sampleRate)
   );
-  const aWeightedStrength = calculateStrengthOfAWeighted(
-    mira,
-    RAVEN_PRESSURE_FITTING
-  );
-  const aWeightedC80 =
-    (c80Values[3] + c80Values[4]) / 2 - 0.62 * aWeightedStrength;
 
   const edtValues = edt(octaveBands, sampleRate);
   const reverbTime = rev(octaveBands, 30, sampleRate);
@@ -96,18 +84,19 @@ export async function processMonauralAudio(
 
   const l80BandsSquaredSum = new Float64Array(l80Bands.map(arraySumSquared));
 
+  const aWeightedSquaredSum = arraySumSquared(mira);
+
   return {
     bandsSquaredSum,
     e80BandsSquaredSum,
     l80BandsSquaredSum,
+    aWeightedSquaredSum,
     edtValues,
     reverbTime,
     c50Values,
     c80Values,
     bassRatio,
     centerTime,
-    aWeightedStrength,
-    aWeightedC80,
     squaredImpulseResponse,
   };
 }

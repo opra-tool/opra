@@ -6,6 +6,7 @@ import {
   calculateAveragedFrequencyStrength,
   calculateEarlyBassStrength,
   calculateStrength,
+  calculateStrengthOfAWeighted,
   calculateTrebleRatio,
 } from '../strength';
 import { Parameter } from './ParametersTable';
@@ -15,6 +16,8 @@ type Strengths = {
   strength: Float64Array;
   earlyStrength: Float64Array;
   lateStrength: Float64Array;
+  aWeighted: number;
+  aWeightedC80: number;
 };
 
 @customElement('strengths-card')
@@ -27,6 +30,10 @@ export class StrengthsCard extends LitElement {
 
   @property({ type: Object }) l80BandsSquaredSum: Float64Array =
     new Float64Array();
+
+  @property({ type: Object }) c80Values: Float64Array = new Float64Array();
+
+  @property({ type: Number }) aWeightedSquaredSum: number = 0;
 
   @state()
   private p0Value: string = '';
@@ -52,11 +59,12 @@ export class StrengthsCard extends LitElement {
       `;
     }
 
-    const { strength, earlyStrength, lateStrength } = this.strengths;
+    const { strength, earlyStrength, lateStrength, aWeighted, aWeightedC80 } =
+      this.strengths;
 
     const parameters: Parameter[] = [
       {
-        name: 'Averaged Strength',
+        name: 'Avg. Strength',
         description: 'according to ISO 3382-1 Table A.2',
         value: calculateAveragedFrequencyStrength(strength),
         unit: UNIT_DECIBELS,
@@ -68,6 +76,16 @@ export class StrengthsCard extends LitElement {
       {
         name: 'Early Bass Strength',
         value: calculateEarlyBassStrength(earlyStrength),
+        unit: UNIT_DECIBELS,
+      },
+      {
+        name: 'A-Weighted Avg. Strength',
+        value: aWeighted,
+        unit: UNIT_DECIBELS,
+      },
+      {
+        name: 'A-Weighted Avg. C80',
+        value: aWeightedC80,
         unit: UNIT_DECIBELS,
       },
     ];
@@ -128,11 +146,19 @@ export class StrengthsCard extends LitElement {
     const strength = calculateStrength(this.bandsSquaredSum, p0);
     const earlyStrength = calculateStrength(this.e80BandsSquaredSum, p0);
     const lateStrength = calculateStrength(this.l80BandsSquaredSum, p0);
+    const aWeighted = calculateStrengthOfAWeighted(
+      this.aWeightedSquaredSum,
+      p0
+    );
+    const aWeightedC80 =
+      (this.c80Values[3] + this.c80Values[4]) / 2 - 0.62 * aWeighted;
 
     this.strengths = {
       strength,
       earlyStrength,
       lateStrength,
+      aWeighted,
+      aWeightedC80,
     };
   }
 
