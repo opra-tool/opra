@@ -220,15 +220,17 @@ export class AudioAnalyzer extends LitElement {
 
     this.isProcessing = true;
 
-    this.calculateResults(bytes).catch(err => {
-      if (err instanceof Error) {
-        this.error = err;
-      } else if (typeof err === 'string') {
-        this.error = new Error(err);
-      }
-    });
-
-    this.isProcessing = false;
+    this.calculateResults(bytes)
+      .catch(err => {
+        if (err instanceof Error) {
+          this.error = err;
+        } else if (typeof err === 'string') {
+          this.error = new Error(err);
+        }
+      })
+      .finally(() => {
+        this.isProcessing = false;
+      });
   }
 
   private onFileRead = (ev: ProgressEvent<FileReader>) => {
