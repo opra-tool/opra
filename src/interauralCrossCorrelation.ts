@@ -16,13 +16,12 @@ export async function interauralCrossCorrelation(
 ): Promise<Float64Array> {
   const res = new Float64Array(octaves.length);
   for (let i = 0; i < octaves.length; i += 1) {
-    const leftChannel = octaves[i].getLeftChannel();
-    const rightChannel = octaves[i].getRightChannel();
+    const { leftSamples, rightSamples } = octaves[i];
 
-    const leftSum = arraySumSquared(leftChannel);
-    const rightSum = arraySumSquared(rightChannel);
+    const leftSum = arraySumSquared(leftSamples);
+    const rightSum = arraySumSquared(rightSamples);
 
-    const crossCorrelated = xcorr(leftChannel, rightChannel);
+    const crossCorrelated = xcorr(leftSamples, rightSamples);
 
     const normalized = normalizeArray(
       crossCorrelated,
@@ -46,16 +45,10 @@ export async function earlyInterauralCrossCorrelation(
 ): Promise<Float64Array> {
   const res = new Float64Array(octaves.length);
   for (let i = 0; i < octaves.length; i += 1) {
-    const octave = octaves[i];
+    const { leftSamples, rightSamples, sampleRate } = octaves[i];
 
-    const { e80: e80Left } = earlyLateFractions(
-      octave.getLeftChannel(),
-      octave.getSampleRate()
-    );
-    const { e80: e80Right } = earlyLateFractions(
-      octave.getRightChannel(),
-      octave.getSampleRate()
-    );
+    const { e80: e80Left } = earlyLateFractions(leftSamples, sampleRate);
+    const { e80: e80Right } = earlyLateFractions(rightSamples, sampleRate);
 
     const leftSum = arraySumSquared(e80Left);
     const rightSum = arraySumSquared(e80Right);

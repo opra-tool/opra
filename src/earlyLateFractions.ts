@@ -5,6 +5,7 @@ type EarlyLateFractions = {
   l80: Float64Array;
 };
 
+// TODO: separate into e50(), e80() and l50(), l80()
 export function earlyLateFractions(
   audio: Float64Array,
   fs: number

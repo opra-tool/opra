@@ -9,10 +9,10 @@ import {
   MonauralAnalyzeResults,
   processMonauralAudio,
 } from '../monauralAudioProcessing';
-import { BinauralAudio } from '../audio/BinauralAudio';
+import { binauralAudioFromBuffer } from '../audio/BinauralAudio';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import { Parameter } from './ParametersTable';
-import { UNIT_DECIBELS, UNIT_SECONDS } from '../units';
+import { UNIT_SECONDS } from '../units';
 
 type AudioInfo = {
   channelCount: number;
@@ -204,7 +204,7 @@ export class AudioAnalyzer extends LitElement {
       this.results = {
         type: 'binaural',
         values: await processBinauralAudio(
-          BinauralAudio.fromAudioBuffer(audioBuffer)
+          binauralAudioFromBuffer(audioBuffer)
         ),
       };
     } else {

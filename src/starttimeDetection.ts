@@ -35,15 +35,19 @@ export function trimStarttimeMonaural(audio: Float64Array): Float64Array {
  * @param channels Audio channels to be trimmed
  * @returns Trimmed audio channels
  */
-export function trimStarttimeBinaural(audio: BinauralAudio): BinauralAudio {
-  const leftIndex = findIndexOfFirstValue20dBUnderMax(audio.getLeftChannel());
-  const rightIndex = findIndexOfFirstValue20dBUnderMax(audio.getRightChannel());
+export function trimStarttimeBinaural({
+  leftSamples,
+  rightSamples,
+  sampleRate,
+}: BinauralAudio): BinauralAudio {
+  const leftIndex = findIndexOfFirstValue20dBUnderMax(leftSamples);
+  const rightIndex = findIndexOfFirstValue20dBUnderMax(rightSamples);
 
   const index = Math.min(leftIndex, rightIndex);
 
   return new BinauralAudio(
-    trimAudio(audio.getLeftChannel(), index),
-    trimAudio(audio.getRightChannel(), index),
-    audio.getSampleRate()
+    trimAudio(leftSamples, index),
+    trimAudio(rightSamples, index),
+    sampleRate
   );
 }
