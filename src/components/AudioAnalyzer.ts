@@ -122,8 +122,20 @@ export class AudioAnalyzer extends LitElement {
   private static renderBinauralResults({
     iacc,
     eiacc,
+    ...monauralMeans
   }: BinauralAnalyzeResults) {
-    return html` <iacc-graph .iacc=${iacc} .eiacc=${eiacc}></iacc-graph> `;
+    return html`
+      <iacc-graph .iacc=${iacc} .eiacc=${eiacc}></iacc-graph>
+      <base-card>
+        <p>
+          The following values and graphs are calculated by taking the
+          arithmetic mean of separate calculations for the left and right
+          channel. Keep in mind that the head-related transfer function might
+          influence these results.
+        </p>
+      </base-card>
+      ${this.renderMonauralResults(monauralMeans)}
+    `;
   }
 
   private static renderMonauralResults({

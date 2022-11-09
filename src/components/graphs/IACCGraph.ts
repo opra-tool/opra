@@ -44,6 +44,7 @@ export class IACCGraph extends LitElement {
       <graph-card
         title="Interaural Cross Correlation"
         .config=${config}
+        height="150"
       ></graph-card>
     `;
   }
