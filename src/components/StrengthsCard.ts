@@ -114,6 +114,7 @@ export class StrengthsCard extends LitElement {
       <form @submit=${this.onSubmit}>
         <sl-input
           type="number"
+          placeholder="e.g. 0.015 or 1e-6"
           filled
           min="0"
           step="any"
