@@ -5,7 +5,7 @@ import { arrayFilledWithZeros } from './math/arrayFilledWithZeros';
 import { arraySumSquared } from './math/arraySumSquared';
 import { octfilt } from './octfilt';
 import { edt, rev } from './reverberation';
-import { trimStarttimeMonaural } from './starttimeDetection';
+import { correctStarttimeMonaural } from './starttime';
 import { ts } from './ts';
 
 type Point = {
@@ -32,7 +32,7 @@ export async function processMonauralAudio(
   sampleRate: number
 ): Promise<MonauralAnalyzeResults> {
   // TODO: rename: starttime trimmed raw audio
-  const mir = trimStarttimeMonaural(audio);
+  const mir = correctStarttimeMonaural(audio);
   const endZeroPaddedAudio = new Float64Array([
     ...audio,
     ...arrayFilledWithZeros(10000),
@@ -55,7 +55,7 @@ export async function processMonauralAudio(
     c80Values[i] = c80;
   }
 
-  const mira = trimStarttimeMonaural(
+  const mira = correctStarttimeMonaural(
     aWeightAudioSignal(endZeroPaddedAudio, sampleRate)
   );
 
@@ -108,7 +108,7 @@ async function getStarttimeTrimmedAndPaddedOctaveBands(
   const rawBands = await octfilt(audio, sampleRate);
 
   return rawBands.map(band => {
-    const trimmedBand = trimStarttimeMonaural(band);
+    const trimmedBand = correctStarttimeMonaural(band);
     return new Float64Array([
       ...trimmedBand,
       ...arrayFilledWithZeros(band.length - trimmedBand.length),

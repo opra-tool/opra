@@ -9,7 +9,7 @@ import {
   processMonauralAudio,
 } from './monauralAudioProcessing';
 import { octfiltBinaural } from './octfilt';
-import { trimStarttimeBinaural } from './starttimeDetection';
+import { correctStarttimeBinaural } from './starttime';
 
 export type BinauralAnalyzeResults = MonauralAnalyzeResults & {
   iacc: Float64Array;
@@ -19,7 +19,7 @@ export type BinauralAnalyzeResults = MonauralAnalyzeResults & {
 export async function processBinauralAudio(
   audio: BinauralAudio
 ): Promise<BinauralAnalyzeResults> {
-  const trimmed = trimStarttimeBinaural(audio);
+  const trimmed = correctStarttimeBinaural(audio);
 
   const octaves = await octfiltBinaural(trimmed);
 
