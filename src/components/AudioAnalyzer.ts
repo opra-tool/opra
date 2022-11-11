@@ -12,7 +12,7 @@ import {
 import { binauralAudioFromBuffer } from '../audio/BinauralAudio';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import { Parameter } from './ParametersTable';
-import { UNIT_SECONDS } from '../units';
+import { UNIT_MILLISECONDS } from '../units';
 
 type AudioInfo = {
   channelCount: number;
@@ -154,7 +154,7 @@ export class AudioAnalyzer extends LitElement {
     const parameters: Parameter[] = [
       {
         name: 'Center Time',
-        unit: UNIT_SECONDS, // TODO: use ms?
+        unit: UNIT_MILLISECONDS,
         value: centerTime,
       },
       {

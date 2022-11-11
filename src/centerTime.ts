@@ -3,11 +3,11 @@ import { correctStarttimeMonaural } from './starttime';
 
 /**
  * TODO:
- * Calculates the center time in seconds as defined in ...
+ * Calculates the center time in milliseconds as defined in ...
  *
  * @param samples The samples of the audio signal.
  * @param sampleRate The sample rate of the audio signal.
- * @returns The center time in seconds.
+ * @returns The center time in milliseconds.
  */
 export function calculateCenterTime(
   samples: Float64Array,
@@ -20,5 +20,5 @@ export function calculateCenterTime(
     out += (i / sampleRate) * trimmedSamples[i];
   }
 
-  return out / arraySum(trimmedSamples);
+  return (out / arraySum(trimmedSamples)) * 1000;
 }
