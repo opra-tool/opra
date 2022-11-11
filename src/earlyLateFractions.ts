@@ -15,7 +15,7 @@ type EarlyLateFractions = {
 export function e50(samples: Float64Array, sampleRate: number): Float64Array {
   const index = Math.round(0.05 * sampleRate);
 
-  return samples.slice(0, index);
+  return samples.subarray(0, index);
 }
 
 /**
@@ -28,7 +28,7 @@ export function e50(samples: Float64Array, sampleRate: number): Float64Array {
 export function l50(samples: Float64Array, sampleRate: number): Float64Array {
   const index = Math.round(0.05 * sampleRate);
 
-  return samples.slice(index);
+  return samples.subarray(index);
 }
 
 /**
@@ -41,7 +41,7 @@ export function l50(samples: Float64Array, sampleRate: number): Float64Array {
 export function e80(samples: Float64Array, sampleRate: number): Float64Array {
   const index = Math.round(0.08 * sampleRate);
 
-  return samples.slice(0, index);
+  return samples.subarray(0, index);
 }
 
 /**
@@ -54,7 +54,7 @@ export function e80(samples: Float64Array, sampleRate: number): Float64Array {
 export function l80(samples: Float64Array, sampleRate: number): Float64Array {
   const index = Math.round(0.08 * sampleRate);
 
-  return samples.slice(index);
+  return samples.subarray(index);
 }
 
 /**
