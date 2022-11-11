@@ -190,7 +190,6 @@ export class AudioAnalyzer extends LitElement {
     this.audioInfo = null;
     this.results = null;
     this.executionTimeMs = null;
-    this.fileName = null;
   }
 
   private async calculateResults(bytes: ArrayBuffer) {
