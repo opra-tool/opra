@@ -1,8 +1,6 @@
 import { BinauralAudio } from './audio/BinauralAudio';
-import {
-  earlyInterauralCrossCorrelation,
-  interauralCrossCorrelation,
-} from './interauralCrossCorrelation';
+import { e80 } from './earlyLateFractions';
+import { interauralCrossCorrelation } from './interauralCrossCorrelation';
 import { arraysMean, mean } from './math/mean';
 import {
   MonauralAnalyzeResults,
@@ -21,10 +19,20 @@ export async function processBinauralAudio(
 ): Promise<BinauralAnalyzeResults> {
   const trimmed = correctStarttimeBinaural(audio);
 
-  const octaves = await octfiltBinaural(trimmed);
+  const bands = await octfiltBinaural(trimmed);
 
-  const iacc = await interauralCrossCorrelation(octaves);
-  const eiacc = await earlyInterauralCrossCorrelation(octaves);
+  const iacc = new Float64Array(bands.length);
+  const eiacc = new Float64Array(bands.length);
+  for (let i = 0; i < bands.length; i += 1) {
+    const earlyBand = new BinauralAudio(
+      e80(bands[i].leftSamples, bands[i].sampleRate),
+      e80(bands[i].rightSamples, bands[i].sampleRate),
+      bands[i].sampleRate
+    );
+
+    iacc[i] = interauralCrossCorrelation(bands[i]);
+    eiacc[i] = interauralCrossCorrelation(earlyBand);
+  }
 
   const resultsLeft = await processMonauralAudio(
     audio.leftSamples,
