@@ -28,7 +28,6 @@ export function correctStarttimeMonaural(samples: Float64Array): Float64Array {
 export function correctStarttimeBinaural({
   leftSamples,
   rightSamples,
-  sampleRate,
 }: BinauralAudio): BinauralAudio {
   const leftIndex = findIndexOfFirstSample20dBBelowMax(leftSamples);
   const rightIndex = findIndexOfFirstSample20dBBelowMax(rightSamples);
@@ -37,8 +36,7 @@ export function correctStarttimeBinaural({
 
   return new BinauralAudio(
     trimSamples(leftSamples, index),
-    trimSamples(rightSamples, index),
-    sampleRate
+    trimSamples(rightSamples, index)
   );
 }
 

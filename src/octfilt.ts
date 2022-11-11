@@ -13,17 +13,16 @@ const FREQUENCIES_IEC61672 = [
  *
  * @param audio
  */
-export async function octfiltBinaural({
-  leftSamples,
-  rightSamples,
-  sampleRate,
-}: BinauralAudio): Promise<BinauralAudio[]> {
+export async function octfiltBinaural(
+  { leftSamples, rightSamples }: BinauralAudio,
+  sampleRate: number
+): Promise<BinauralAudio[]> {
   const leftOctaves = await octfilt(leftSamples, sampleRate);
   const rightOctaves = await octfilt(rightSamples, sampleRate);
 
   const res = [];
   for (let i = 0; i < leftOctaves.length; i += 1) {
-    res.push(new BinauralAudio(leftOctaves[i], rightOctaves[i], sampleRate));
+    res.push(new BinauralAudio(leftOctaves[i], rightOctaves[i]));
   }
 
   return res;

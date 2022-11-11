@@ -31,34 +31,32 @@ export async function processMonauralAudio(
   samples: Float64Array,
   sampleRate: number
 ): Promise<MonauralAnalyzeResults> {
-  const endZeroPaddedAudio = new Float64Array([
+  const zeroPadded = new Float64Array([
     ...samples,
     ...arrayFilledWithZeros(10000),
   ]);
 
-  const octaveBands = await getStarttimeTrimmedAndPaddedOctaveBands(
-    endZeroPaddedAudio,
+  const bands = await getStarttimeTrimmedAndPaddedOctaveBands(
+    zeroPadded,
     sampleRate
   );
 
-  const fractions = octaveBands.map(band =>
-    earlyLateFractions(band, sampleRate)
-  );
+  const fractions = bands.map(band => earlyLateFractions(band, sampleRate));
 
-  const c50Values = new Float64Array(octaveBands.length);
-  const c80Values = new Float64Array(octaveBands.length);
-  for (let i = 0; i < octaveBands.length; i += 1) {
+  const c50Values = new Float64Array(bands.length);
+  const c80Values = new Float64Array(bands.length);
+  for (let i = 0; i < bands.length; i += 1) {
     const { c50, c80 } = c50c80(fractions[i]);
     c50Values[i] = c50;
     c80Values[i] = c80;
   }
 
   const mira = correctStarttimeMonaural(
-    aWeightAudioSignal(endZeroPaddedAudio, sampleRate)
+    aWeightAudioSignal(zeroPadded, sampleRate)
   );
 
-  const edtValues = edt(octaveBands, sampleRate);
-  const reverbTime = rev(octaveBands, 30, sampleRate);
+  const edtValues = edt(bands, sampleRate);
+  const reverbTime = rev(bands, 30, sampleRate);
 
   const bassRatio =
     (reverbTime[1] + reverbTime[2]) / (reverbTime[3] + reverbTime[4]);
@@ -73,7 +71,7 @@ export async function processMonauralAudio(
     });
   }
 
-  const bandsSquaredSum = new Float64Array(octaveBands.map(arraySumSquared));
+  const bandsSquaredSum = new Float64Array(bands.map(arraySumSquared));
 
   const e80Bands = fractions.map(val => val.e80);
   const l80Bands = fractions.map(val => val.l80);

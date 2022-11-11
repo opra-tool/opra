@@ -216,7 +216,8 @@ export class AudioAnalyzer extends LitElement {
       this.results = {
         type: 'binaural',
         values: await processBinauralAudio(
-          binauralAudioFromBuffer(audioBuffer)
+          binauralAudioFromBuffer(audioBuffer),
+          audioBuffer.sampleRate
         ),
       };
     } else {

@@ -15,32 +15,29 @@ export type BinauralAnalyzeResults = MonauralAnalyzeResults & {
 };
 
 export async function processBinauralAudio(
-  audio: BinauralAudio
+  audio: BinauralAudio,
+  sampleRate: number
 ): Promise<BinauralAnalyzeResults> {
   const trimmed = correctStarttimeBinaural(audio);
 
-  const bands = await octfiltBinaural(trimmed);
+  const bands = await octfiltBinaural(trimmed, sampleRate);
 
   const iacc = new Float64Array(bands.length);
   const eiacc = new Float64Array(bands.length);
   for (let i = 0; i < bands.length; i += 1) {
     const earlyBand = new BinauralAudio(
-      e80(bands[i].leftSamples, bands[i].sampleRate),
-      e80(bands[i].rightSamples, bands[i].sampleRate),
-      bands[i].sampleRate
+      e80(bands[i].leftSamples, sampleRate),
+      e80(bands[i].rightSamples, sampleRate)
     );
 
     iacc[i] = interauralCrossCorrelation(bands[i]);
     eiacc[i] = interauralCrossCorrelation(earlyBand);
   }
 
-  const resultsLeft = await processMonauralAudio(
-    audio.leftSamples,
-    audio.sampleRate
-  );
+  const resultsLeft = await processMonauralAudio(audio.leftSamples, sampleRate);
   const resultsRight = await processMonauralAudio(
     audio.rightSamples,
-    audio.sampleRate
+    sampleRate
   );
 
   const meanResults: MonauralAnalyzeResults = {
