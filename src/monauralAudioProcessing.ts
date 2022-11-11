@@ -1,4 +1,4 @@
-import { c50c80Calculation } from './c50c80Calculation';
+import { c50c80 } from './c50c80';
 import { earlyLateFractions } from './earlyLateFractions';
 import { aWeightAudioSignal } from './filtering/aWeighting';
 import { arrayFilledWithZeros } from './math/arrayFilledWithZeros';
@@ -50,7 +50,7 @@ export async function processMonauralAudio(
   const c50Values = new Float64Array(octaveBands.length);
   const c80Values = new Float64Array(octaveBands.length);
   for (let i = 0; i < octaveBands.length; i += 1) {
-    const { c50, c80 } = c50c80Calculation(fractions[i]);
+    const { c50, c80 } = c50c80(fractions[i]);
     c50Values[i] = c50;
     c80Values[i] = c80;
   }

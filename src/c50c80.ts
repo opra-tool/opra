@@ -13,12 +13,13 @@ type C50C80 = {
   c80: number;
 };
 
-export function c50c80Calculation({
-  e50,
-  l50,
-  e80,
-  l80,
-}: EarlyLateFractions): C50C80 {
+/**
+ * Calculate C50 and C80 according to ISO 3382-1.
+ *
+ * @param earlyLateFractions An object containing E50, L50, E80 and L80
+ * @returns An object containing c50 and c80
+ */
+export function c50c80({ e50, l50, e80, l80 }: EarlyLateFractions): C50C80 {
   const e50Sum = arraySumSquared(e50);
   const l50Sum = arraySumSquared(l50);
   const e80Sum = arraySumSquared(e80);
