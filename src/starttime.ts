@@ -49,5 +49,5 @@ function findIndexOfFirstSample20dBBelowMax(samples: Float64Array): number {
 }
 
 function trimSamples(samples: Float64Array, index: number): Float64Array {
-  return samples.slice(index);
+  return samples.subarray(index);
 }
