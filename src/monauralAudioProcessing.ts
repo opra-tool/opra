@@ -1,4 +1,5 @@
 import { c50c80 } from './c50c80';
+import { calculateCenterTime } from './centerTime';
 import { earlyLateFractions } from './earlyLateFractions';
 import { aWeightAudioSignal } from './filtering/aWeighting';
 import { arrayFilledWithZeros } from './math/arrayFilledWithZeros';
@@ -6,7 +7,6 @@ import { arraySumSquared } from './math/arraySumSquared';
 import { octfilt } from './octfilt';
 import { edt, rev } from './reverberation';
 import { correctStarttimeMonaural } from './starttime';
-import { ts } from './ts';
 
 type Point = {
   x: number;
@@ -28,13 +28,11 @@ export type MonauralAnalyzeResults = {
 };
 
 export async function processMonauralAudio(
-  audio: Float64Array,
+  samples: Float64Array,
   sampleRate: number
 ): Promise<MonauralAnalyzeResults> {
-  // TODO: rename: starttime trimmed raw audio
-  const mir = correctStarttimeMonaural(audio);
   const endZeroPaddedAudio = new Float64Array([
-    ...audio,
+    ...samples,
     ...arrayFilledWithZeros(10000),
   ]);
 
@@ -64,14 +62,14 @@ export async function processMonauralAudio(
 
   const bassRatio =
     (reverbTime[1] + reverbTime[2]) / (reverbTime[3] + reverbTime[4]);
-  const centerTime = ts(mir, sampleRate);
+  const centerTime = calculateCenterTime(samples, sampleRate);
 
   // TODO: extract into method
   const squaredImpulseResponse = [];
-  for (let i = 0; i < audio.length; i += 1) {
+  for (let i = 0; i < samples.length; i += 1) {
     squaredImpulseResponse.push({
       x: (i + 1) / sampleRate,
-      y: Math.abs(audio[i]),
+      y: Math.abs(samples[i]),
     });
   }
 
