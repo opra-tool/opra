@@ -1,5 +1,4 @@
 import { LitElement, html, css } from 'lit';
-import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 import { customElement } from 'lit/decorators.js';
 
 @customElement('progress-indicator')

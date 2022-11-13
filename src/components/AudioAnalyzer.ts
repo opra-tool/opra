@@ -10,7 +10,6 @@ import {
   processMonauralAudio,
 } from '../monauralAudioProcessing';
 import { binauralAudioFromBuffer } from '../audio/BinauralAudio';
-import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import { Parameter } from './ParametersTable';
 import { UNIT_MILLISECONDS } from '../units';
 

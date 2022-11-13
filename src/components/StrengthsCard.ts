@@ -1,7 +1,5 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, state, property } from 'lit/decorators.js';
-import '@shoelace-style/shoelace/dist/components/input/input.js';
-import '@shoelace-style/shoelace/dist/components/divider/divider.js';
 import {
   calculateAveragedFrequencyStrength,
   calculateEarlyBassStrength,
