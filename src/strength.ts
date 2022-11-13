@@ -1,19 +1,17 @@
 import { arraySumSquared } from './math/arraySumSquared';
 import { safeLog10 } from './math/safeLog10';
 
-// taken from matlab raqi toolbox FILTCHECK()
-const LPE10 = [72.9, 75.9, 78.9, 81.8, 84.8, 87.8, 90.6, 92.8];
-
 export function calculateStrength(
   bandsSquaredSum: Float64Array,
-  p0: number
+  p0: number,
+  lpe10: number[]
 ): number[] {
   const strength = [];
 
   for (let i = 0; i < bandsSquaredSum.length; i += 1) {
     const lpe = 10 * safeLog10(bandsSquaredSum[i] / p0 ** 2);
 
-    strength.push(lpe - LPE10[i]);
+    strength.push(lpe - lpe10[i]);
   }
 
   return strength;

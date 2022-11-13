@@ -20,6 +20,7 @@ import '@shoelace-style/shoelace/dist/components/button/button.js';
 import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
 
 // register web components
+import './components/AirValuesDialog';
 import './components/AudioAnalyzer';
 import './components/AudioInfoCard';
 import './components/BaseCard';

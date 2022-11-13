@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, state, property } from 'lit/decorators.js';
+import { customElement, state, property, query } from 'lit/decorators.js';
 import {
   calculateAveragedFrequencyStrength,
   calculateEarlyBassStrength,
@@ -8,7 +8,11 @@ import {
   calculateTrebleRatio,
 } from '../strength';
 import { Parameter } from './ParametersTable';
-import { UNIT_DECIBELS } from '../units';
+import { UNIT_CELCIUS, UNIT_DECIBELS } from '../units';
+import { calculateLpe10 } from '../lpe10';
+import { calculateSoundDampingInAir } from '../dampening';
+import { getFrequencyValues } from './graphs/common';
+import { AirValuesDialog, AirDialogUpdateEventDetail } from './AirValuesDialog';
 
 type Strengths = {
   strength: number[];
@@ -17,6 +21,9 @@ type Strengths = {
   aWeighted: number;
   aWeightedC80: number;
 };
+
+const DEFAULT_RELATIVE_HUMIDITY = 50;
+const DEFAULT_TEMPERATURE = 20;
 
 @customElement('strengths-card')
 export class StrengthsCard extends LitElement {
@@ -34,10 +41,19 @@ export class StrengthsCard extends LitElement {
   @property({ type: Number }) aWeightedSquaredSum: number = 0;
 
   @state()
-  private p0Value: string = '';
+  private p0: number | null = null;
 
   @state()
   private strengths: Strengths | undefined;
+
+  @state()
+  private relativeHumidity = DEFAULT_RELATIVE_HUMIDITY;
+
+  @state()
+  private temperature = DEFAULT_TEMPERATURE;
+
+  @query('.air-values-dialog', true)
+  private airValuesDialog!: AirValuesDialog;
 
   render() {
     return html`
@@ -101,8 +117,23 @@ export class StrengthsCard extends LitElement {
         <aside>
           ${this.renderP0Input()}
 
+          <div class="air-notice">
+            <p>
+              An air temperature of ${this.temperature}${UNIT_CELCIUS} and
+              humidity of ${this.relativeHumidity}% is assumed.
+              <a href="#" @click=${this.showAirDialog}>Change</a>
+            </p>
+          </div>
+
           <parameters-table .parameters=${parameters}></parameters-table>
         </aside>
+
+        <air-values-dialog
+          relativeHumidity=${this.relativeHumidity}
+          temperature=${this.temperature}
+          class="air-values-dialog"
+          @air-values-change=${this.saveAirDialogValues}
+        ></air-values-dialog>
       </div>
     `;
   }
@@ -117,10 +148,10 @@ export class StrengthsCard extends LitElement {
           min="0"
           step="any"
           required
-          .value=${this.p0Value}
+          value=${this.p0 ? this.p0.toString() : ''}
           @sl-input=${(ev: CustomEvent) => {
             if (ev.target) {
-              this.p0Value = (ev.target as HTMLInputElement).value;
+              this.p0 = parseFloat((ev.target as HTMLInputElement).value);
             }
           }}
         ></sl-input>
@@ -131,23 +162,56 @@ export class StrengthsCard extends LitElement {
     `;
   }
 
+  private showAirDialog(ev: PointerEvent) {
+    ev.preventDefault();
+
+    this.airValuesDialog.show();
+  }
+
+  private saveAirDialogValues(ev: CustomEvent<AirDialogUpdateEventDetail>) {
+    ev.preventDefault();
+
+    this.temperature = ev.detail.temperature;
+    this.relativeHumidity = ev.detail.relativeHumidity;
+
+    this.airValuesDialog.hide();
+
+    this.calculateStrengths();
+  }
+
   private onSubmit(ev: SubmitEvent) {
     ev.preventDefault();
 
-    if (!this.p0Value || Number.isNaN(parseFloat(this.p0Value))) {
-      return;
-    }
-
-    this.calculateStrengths(parseFloat(this.p0Value));
+    this.calculateStrengths();
   }
 
-  private calculateStrengths(p0: number) {
-    const strength = calculateStrength(this.bandsSquaredSum, p0);
-    const earlyStrength = calculateStrength(this.e80BandsSquaredSum, p0);
-    const lateStrength = calculateStrength(this.l80BandsSquaredSum, p0);
+  private async calculateStrengths() {
+    if (!this.p0) {
+      throw new Error('expected p0 to be defined');
+    }
+
+    const airCoeffs = getFrequencyValues().map(frequency =>
+      calculateSoundDampingInAir(
+        this.temperature,
+        this.relativeHumidity,
+        frequency
+      )
+    );
+    const lpe10 = await calculateLpe10(airCoeffs);
+    const strength = calculateStrength(this.bandsSquaredSum, this.p0, lpe10);
+    const earlyStrength = calculateStrength(
+      this.e80BandsSquaredSum,
+      this.p0,
+      lpe10
+    );
+    const lateStrength = calculateStrength(
+      this.l80BandsSquaredSum,
+      this.p0,
+      lpe10
+    );
     const aWeighted = calculateStrengthOfAWeighted(
       this.aWeightedSquaredSum,
-      p0
+      this.p0
     );
     const aWeightedC80 =
       (this.c80Values[3] + this.c80Values[4]) / 2 - 0.62 * aWeighted;
