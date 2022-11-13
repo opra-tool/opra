@@ -31,24 +31,24 @@ export async function octfiltBinaural(
 /**
  *  Perform octave band filtering as specified in IEC 61672.
  *
- * @param data
- * @param fs
+ * @param samples
+ * @param sampleRate
  * @returns
  */
 export async function octfilt(
-  data: Float64Array,
-  fs: number
-): Promise<Float64Array[]> {
+  samples: Float32Array,
+  sampleRate: number
+): Promise<Float32Array[]> {
   const audioBuffer = new AudioBuffer({
     numberOfChannels: 1,
-    length: data.length,
-    sampleRate: fs,
+    length: samples.length,
+    sampleRate,
   });
 
   // TODO: copyChannelData()?
   const channel = audioBuffer.getChannelData(0);
-  for (let i = 0; i < data.length; i += 1) {
-    channel[i] = data[i];
+  for (let i = 0; i < samples.length; i += 1) {
+    channel[i] = samples[i];
   }
 
   const promises = [];
@@ -56,7 +56,7 @@ export async function octfilt(
     const f1 = FREQUENCIES_IEC61672[i];
     const f2 = FREQUENCIES_IEC61672[i + 1];
 
-    promises.push(calc(audioBuffer, f1, f2, fs));
+    promises.push(calc(audioBuffer, f1, f2, sampleRate));
   }
 
   return Promise.all(promises);
@@ -67,7 +67,7 @@ function calc(
   f1: number,
   f2: number,
   fs: number
-): Promise<Float64Array> {
+): Promise<Float32Array> {
   const offlineCtx = new OfflineAudioContext(1, buffer.length, fs);
 
   const source = offlineCtx.createBufferSource();
@@ -95,7 +95,7 @@ function calc(
 
   return new Promise(resolve => {
     offlineCtx.startRendering().then(renderedBuffer => {
-      resolve(Float64Array.from(renderedBuffer.getChannelData(0)));
+      resolve(renderedBuffer.getChannelData(0));
     });
   });
 }

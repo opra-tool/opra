@@ -1,11 +1,16 @@
 import { xcorr as wasmXcorr } from 'wasm-raqi-online-toolbox';
 
-export function xcorr(x: Float64Array, y: Float64Array): Float64Array {
+export function xcorr(x: Float32Array, y: Float32Array): Float64Array {
   if (x.length !== y.length) {
     throw new Error('x and y should be of same length');
   }
 
-  return wasmXcorr(x, y, findTransformLength(x.length));
+  // TODO: convert wasm function to f32?
+  return wasmXcorr(
+    new Float64Array(x),
+    new Float64Array(y),
+    findTransformLength(x.length)
+  );
 }
 
 function findTransformLength(m: number): number {

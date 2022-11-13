@@ -7,9 +7,9 @@ import { UNIT_DECIBELS, UNIT_HERTZ } from '../../units';
 
 @customElement('c50c80-graph')
 export class C50C80Graph extends LitElement {
-  @property({ type: Object }) c50: Float64Array = new Float64Array();
+  @property({ type: Array }) c50: number[] = [];
 
-  @property({ type: Object }) c80: Float64Array = new Float64Array();
+  @property({ type: Array }) c80: number[] = [];
 
   render() {
     const config: GraphConfig = {

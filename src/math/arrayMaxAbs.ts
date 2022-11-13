@@ -1,4 +1,4 @@
-export function arrayMaxAbs(array: Float64Array): number {
+export function arrayMaxAbs(array: Float32Array | Float64Array): number {
   let max = 0;
 
   for (let i = 0; i < array.length; i += 1) {

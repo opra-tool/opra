@@ -13,9 +13,9 @@ import { Parameter } from './ParametersTable';
 import { UNIT_DECIBELS } from '../units';
 
 type Strengths = {
-  strength: Float64Array;
-  earlyStrength: Float64Array;
-  lateStrength: Float64Array;
+  strength: number[];
+  earlyStrength: number[];
+  lateStrength: number[];
   aWeighted: number;
   aWeightedC80: number;
 };

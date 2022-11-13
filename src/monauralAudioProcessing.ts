@@ -14,24 +14,24 @@ type Point = {
 };
 
 export type MonauralAnalyzeResults = {
-  bandsSquaredSum: Float64Array;
-  e80BandsSquaredSum: Float64Array;
-  l80BandsSquaredSum: Float64Array;
+  bandsSquaredSum: number[];
+  e80BandsSquaredSum: number[];
+  l80BandsSquaredSum: number[];
   aWeightedSquaredSum: number;
-  edtValues: Float64Array;
-  reverbTime: Float64Array;
-  c50Values: Float64Array;
-  c80Values: Float64Array;
+  edtValues: number[];
+  reverbTime: number[];
+  c50Values: number[];
+  c80Values: number[];
   centerTime: number;
   bassRatio: number;
   squaredImpulseResponse: Point[];
 };
 
 export async function processMonauralAudio(
-  samples: Float64Array,
+  samples: Float32Array,
   sampleRate: number
 ): Promise<MonauralAnalyzeResults> {
-  const zeroPadded = new Float64Array([
+  const zeroPadded = new Float32Array([
     ...samples,
     ...arrayFilledWithZeros(10000),
   ]);
@@ -43,16 +43,17 @@ export async function processMonauralAudio(
 
   const fractions = bands.map(band => earlyLateFractions(band, sampleRate));
 
-  const c50Values = new Float64Array(bands.length);
-  const c80Values = new Float64Array(bands.length);
+  const c50Values = [];
+  const c80Values = [];
   for (let i = 0; i < bands.length; i += 1) {
     const { c50, c80 } = c50c80(fractions[i]);
-    c50Values[i] = c50;
-    c80Values[i] = c80;
+    c50Values.push(c50);
+    c80Values.push(c80);
   }
 
   const mira = correctStarttimeMonaural(
-    aWeightAudioSignal(zeroPadded, sampleRate)
+    // TODO: make prettier
+    new Float32Array(aWeightAudioSignal(zeroPadded, sampleRate))
   );
 
   const edtValues = edt(bands, sampleRate);
@@ -71,14 +72,14 @@ export async function processMonauralAudio(
     });
   }
 
-  const bandsSquaredSum = new Float64Array(bands.map(arraySumSquared));
+  const bandsSquaredSum = bands.map(arraySumSquared);
 
   const e80Bands = fractions.map(val => val.e80);
   const l80Bands = fractions.map(val => val.l80);
 
-  const e80BandsSquaredSum = new Float64Array(e80Bands.map(arraySumSquared));
+  const e80BandsSquaredSum = e80Bands.map(arraySumSquared);
 
-  const l80BandsSquaredSum = new Float64Array(l80Bands.map(arraySumSquared));
+  const l80BandsSquaredSum = l80Bands.map(arraySumSquared);
 
   const aWeightedSquaredSum = arraySumSquared(mira);
 
@@ -98,14 +99,14 @@ export async function processMonauralAudio(
 }
 
 async function getStarttimeTrimmedAndPaddedOctaveBands(
-  audio: Float64Array,
+  samples: Float32Array,
   sampleRate: number
-): Promise<Float64Array[]> {
-  const rawBands = await octfilt(audio, sampleRate);
+): Promise<Float32Array[]> {
+  const rawBands = await octfilt(samples, sampleRate);
 
   return rawBands.map(band => {
     const trimmedBand = correctStarttimeMonaural(band);
-    return new Float64Array([
+    return new Float32Array([
       ...trimmedBand,
       ...arrayFilledWithZeros(band.length - trimmedBand.length),
     ]);

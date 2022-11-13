@@ -10,7 +10,7 @@ import { arrayMaxAbs } from './math/arrayMaxAbs';
  * @param samples Samples of an audio signal
  * @returns Trimmed samples
  */
-export function correctStarttimeMonaural(samples: Float64Array): Float64Array {
+export function correctStarttimeMonaural(samples: Float32Array): Float32Array {
   const index = findIndexOfFirstSample20dBBelowMax(samples);
 
   return trimSamples(samples, index);
@@ -40,12 +40,12 @@ export function correctStarttimeBinaural({
   );
 }
 
-function findIndexOfFirstSample20dBBelowMax(samples: Float64Array): number {
+function findIndexOfFirstSample20dBBelowMax(samples: Float32Array): number {
   const max = arrayMaxAbs(samples);
 
   return samples.findIndex(el => Math.abs(el) > 0.01 * max);
 }
 
-function trimSamples(samples: Float64Array, index: number): Float64Array {
+function trimSamples(samples: Float32Array, index: number): Float32Array {
   return samples.subarray(index);
 }

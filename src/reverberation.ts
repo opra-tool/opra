@@ -20,15 +20,15 @@ function trimBetween(
 }
 
 function performCalculation(
-  octaveBands: Float64Array[],
+  octaveBands: Float32Array[],
   min: number,
   max: number,
   fs: number
-): Float64Array {
-  const res = new Float64Array(octaveBands.length);
+): number[] {
+  const res = [];
 
-  for (let i = 0; i < octaveBands.length; i += 1) {
-    const squared = octaveBands[i].map(v => v ** 2);
+  for (const band of octaveBands) {
+    const squared = band.map(v => v ** 2);
     const a1 = arraySum(squared);
     const b1 = arrayCumulativeSum(squared);
 
@@ -44,20 +44,20 @@ function performCalculation(
     }
 
     const { b } = fitCurve(tseg, trimmed);
-    res[i] = 60 / Math.abs(b);
+    res.push(60 / Math.abs(b));
   }
 
   return res;
 }
 
-export function edt(octaveBands: Float64Array[], fs: number): Float64Array {
+export function edt(octaveBands: Float32Array[], fs: number): number[] {
   return performCalculation(octaveBands, -10, 0, fs);
 }
 
 export function rev(
-  octaveBands: Float64Array[],
+  octaveBands: Float32Array[],
   tc: number,
   fs: number
-): Float64Array {
+): number[] {
   return performCalculation(octaveBands, -(5 + tc), -5, fs);
 }

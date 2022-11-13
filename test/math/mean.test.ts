@@ -6,16 +6,14 @@ it('should return the average of an arbitrary count of numbers', () => {
 });
 
 it('should throw when given arrays of different lengths', () => {
-  expect(() =>
-    arraysMean(new Float64Array([1]), new Float64Array([1, 2]))
-  ).to.throw();
+  expect(() => arraysMean([1], [1, 2])).to.throw();
 });
 
 it('should return an array of averages from two arrays', () => {
-  const array1 = new Float64Array([1, 2, 3, 4]);
-  const array2 = new Float64Array([2, 4, 6, 8]);
+  const array1 = [1, 2, 3, 4];
+  const array2 = [2, 4, 6, 8];
 
   const result = arraysMean(array1, array2);
 
-  expect(result).to.deep.equal(new Float64Array([1.5, 3, 4.5, 6]));
+  expect(result).to.deep.equal([1.5, 3, 4.5, 6]);
 });

@@ -31,12 +31,12 @@ export function mean(...values: number[]) {
  * @param b
  * @returns The array of means
  */
-export function arraysMean(a: Float64Array, b: Float64Array) {
+export function arraysMean(a: number[], b: number[]) {
   if (a.length !== b.length) {
     throw new Error('expected arrays to have the same length');
   }
 
-  const res = new Float64Array(a.length);
+  const res = new Array(a.length);
   for (let i = 0; i < a.length; i += 1) {
     res[i] = (a[i] + b[i]) / 2;
   }

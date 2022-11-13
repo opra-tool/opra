@@ -206,11 +206,12 @@ export class AudioAnalyzer extends LitElement {
     };
 
     if (audioBuffer.numberOfChannels === 1) {
-      const audio = new Float64Array(audioBuffer.getChannelData(0));
-
       this.results = {
         type: 'monaural',
-        values: await processMonauralAudio(audio, audioBuffer.sampleRate),
+        values: await processMonauralAudio(
+          audioBuffer.getChannelData(0),
+          audioBuffer.sampleRate
+        ),
       };
     } else if (audioBuffer.numberOfChannels === 2) {
       this.results = {

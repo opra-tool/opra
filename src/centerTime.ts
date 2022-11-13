@@ -10,7 +10,7 @@ import { correctStarttimeMonaural } from './starttime';
  * @returns The center time in milliseconds.
  */
 export function calculateCenterTime(
-  samples: Float64Array,
+  samples: Float32Array,
   sampleRate: number
 ): number {
   const trimmedSamples = correctStarttimeMonaural(samples);

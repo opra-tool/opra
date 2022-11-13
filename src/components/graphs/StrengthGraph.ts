@@ -11,11 +11,11 @@ import { GraphConfig } from './LineGraph';
 
 @customElement('strength-graph')
 export class StrengthGraph extends LitElement {
-  @property({ type: Object }) strength: Float64Array = new Float64Array();
+  @property({ type: Array }) strength: number[] = [];
 
-  @property({ type: Object }) earlyStrength: Float64Array = new Float64Array();
+  @property({ type: Array }) earlyStrength: number[] = [];
 
-  @property({ type: Object }) lateStrength: Float64Array = new Float64Array();
+  @property({ type: Array }) lateStrength: number[] = [];
 
   render() {
     const config: GraphConfig = {

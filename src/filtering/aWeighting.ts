@@ -3,14 +3,14 @@ import { fft } from '../math/fft';
 import { ifft } from '../math/ifft';
 
 export function aWeightAudioSignal(
-  audio: Float64Array,
+  samples: Float32Array,
   fs: number
 ): Float64Array {
-  const len = audio.length;
+  const len = samples.length;
 
   const numUniquePoints = Math.ceil((len + 1) / 2);
 
-  const x = fft(audio);
+  const x = fft(new Float64Array(samples));
 
   const X = x.slice(0, numUniquePoints);
 

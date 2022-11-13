@@ -1,8 +1,8 @@
 type EarlyLateFractions = {
-  e50: Float64Array;
-  l50: Float64Array;
-  e80: Float64Array;
-  l80: Float64Array;
+  e50: Float32Array;
+  l50: Float32Array;
+  e80: Float32Array;
+  l80: Float32Array;
 };
 
 /**
@@ -12,7 +12,7 @@ type EarlyLateFractions = {
  * @param sampleRate Sample rate of the audio.
  * @returns Samples before the 50ms mark.
  */
-export function e50(samples: Float64Array, sampleRate: number): Float64Array {
+export function e50(samples: Float32Array, sampleRate: number): Float32Array {
   const index = Math.round(0.05 * sampleRate);
 
   return samples.subarray(0, index);
@@ -25,7 +25,7 @@ export function e50(samples: Float64Array, sampleRate: number): Float64Array {
  * @param sampleRate Sample rate of the audio.
  * @returns Samples after the 50ms mark.
  */
-export function l50(samples: Float64Array, sampleRate: number): Float64Array {
+export function l50(samples: Float32Array, sampleRate: number): Float32Array {
   const index = Math.round(0.05 * sampleRate);
 
   return samples.subarray(index);
@@ -38,7 +38,7 @@ export function l50(samples: Float64Array, sampleRate: number): Float64Array {
  * @param sampleRate Sample rate of the audio.
  * @returns Samples before the 80ms mark.
  */
-export function e80(samples: Float64Array, sampleRate: number): Float64Array {
+export function e80(samples: Float32Array, sampleRate: number): Float32Array {
   const index = Math.round(0.08 * sampleRate);
 
   return samples.subarray(0, index);
@@ -51,7 +51,7 @@ export function e80(samples: Float64Array, sampleRate: number): Float64Array {
  * @param sampleRate Sample rate of the audio.
  * @returns Samples after the 80ms mark.
  */
-export function l80(samples: Float64Array, sampleRate: number): Float64Array {
+export function l80(samples: Float32Array, sampleRate: number): Float32Array {
   const index = Math.round(0.08 * sampleRate);
 
   return samples.subarray(index);
@@ -65,7 +65,7 @@ export function l80(samples: Float64Array, sampleRate: number): Float64Array {
  * @returns An object containing E50, L50, E80 and L80.
  */
 export function earlyLateFractions(
-  samples: Float64Array,
+  samples: Float32Array,
   sampleRate: number
 ): EarlyLateFractions {
   return {

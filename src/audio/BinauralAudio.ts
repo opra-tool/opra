@@ -1,9 +1,9 @@
 export class BinauralAudio {
-  readonly leftSamples: Float64Array;
+  readonly leftSamples: Float32Array;
 
-  readonly rightSamples: Float64Array;
+  readonly rightSamples: Float32Array;
 
-  constructor(leftSamples: Float64Array, rightSamples: Float64Array) {
+  constructor(leftSamples: Float32Array, rightSamples: Float32Array) {
     if (leftSamples.length !== rightSamples.length) {
       throw new Error('expected left and right samples to be of equal length');
     }
@@ -14,8 +14,8 @@ export class BinauralAudio {
 }
 
 export function binauralAudioFromBuffer(buffer: AudioBuffer) {
-  const leftChannel = new Float64Array(buffer.getChannelData(0));
-  const rightChannel = new Float64Array(buffer.getChannelData(1));
+  const leftChannel = buffer.getChannelData(0);
+  const rightChannel = buffer.getChannelData(1);
 
   return new BinauralAudio(leftChannel, rightChannel);
 }

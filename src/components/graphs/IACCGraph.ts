@@ -7,9 +7,9 @@ import { GraphConfig } from './LineGraph';
 
 @customElement('iacc-graph')
 export class IACCGraph extends LitElement {
-  @property({ type: Object }) iacc: Float64Array = new Float64Array();
+  @property({ type: Array }) iacc: number[] = [];
 
-  @property({ type: Object }) eiacc: Float64Array = new Float64Array();
+  @property({ type: Array }) eiacc: number[] = [];
 
   render() {
     const config: GraphConfig = {

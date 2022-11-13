@@ -7,11 +7,9 @@ import { GraphConfig } from './LineGraph';
 
 @customElement('reverberation-graph')
 export class ReverberationGraph extends LitElement {
-  @property({ type: Object }) energyDecayCurve: Float64Array =
-    new Float64Array();
+  @property({ type: Array }) energyDecayCurve: number[] = [];
 
-  @property({ type: Object }) reverberationTime: Float64Array =
-    new Float64Array();
+  @property({ type: Array }) reverberationTime: number[] = [];
 
   render() {
     const config: GraphConfig = {

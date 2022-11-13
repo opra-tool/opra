@@ -2,10 +2,10 @@ import { arraySumSquared } from './math/arraySumSquared';
 import { safeLog10 } from './math/safeLog10';
 
 type EarlyLateFractions = {
-  e50: Float64Array;
-  l50: Float64Array;
-  e80: Float64Array;
-  l80: Float64Array;
+  e50: Float32Array;
+  l50: Float32Array;
+  e80: Float32Array;
+  l80: Float32Array;
 };
 
 type C50C80 = {

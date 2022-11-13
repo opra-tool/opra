@@ -10,8 +10,8 @@ import { octfiltBinaural } from './octfilt';
 import { correctStarttimeBinaural } from './starttime';
 
 export type BinauralAnalyzeResults = MonauralAnalyzeResults & {
-  iacc: Float64Array;
-  eiacc: Float64Array;
+  iacc: number[];
+  eiacc: number[];
 };
 
 export async function processBinauralAudio(
@@ -22,16 +22,16 @@ export async function processBinauralAudio(
 
   const bands = await octfiltBinaural(trimmed, sampleRate);
 
-  const iacc = new Float64Array(bands.length);
-  const eiacc = new Float64Array(bands.length);
-  for (let i = 0; i < bands.length; i += 1) {
+  const iacc = [];
+  const eiacc = [];
+  for (const band of bands) {
     const earlyBand = new BinauralAudio(
-      e80(bands[i].leftSamples, sampleRate),
-      e80(bands[i].rightSamples, sampleRate)
+      e80(band.leftSamples, sampleRate),
+      e80(band.rightSamples, sampleRate)
     );
 
-    iacc[i] = interauralCrossCorrelation(bands[i]);
-    eiacc[i] = interauralCrossCorrelation(earlyBand);
+    iacc.push(interauralCrossCorrelation(band));
+    eiacc.push(interauralCrossCorrelation(earlyBand));
   }
 
   const resultsLeft = await processMonauralAudio(audio.leftSamples, sampleRate);

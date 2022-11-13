@@ -10,7 +10,7 @@ import { customElement, property, query } from 'lit/decorators.js';
 
 export type GraphConfig = {
   labels?: string[];
-  datasets: ChartDataset<'line', Float64Array | Point[]>[];
+  datasets: ChartDataset<'line', number[] | Point[]>[];
   options?: ChartOptions;
 };
 
@@ -18,7 +18,7 @@ export type GraphConfig = {
 export class LineGraph extends LitElement {
   private chart: Chart<
     keyof ChartTypeRegistry,
-    Float64Array | Point[],
+    number[] | Point[],
     string
   > | null = null;
 
