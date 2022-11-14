@@ -41,10 +41,13 @@ export class AudioAnalyzer extends LitElement {
   private executionTimeMs: number | null = null;
 
   @state()
-  private results: Results | null = null;
+  private selectedFileIndex = 0;
 
   @state()
-  private audioInfo: AudioInfo | null = null;
+  private results: Results[] = [];
+
+  @state()
+  private audioInfo: AudioInfo[] = [];
 
   @state()
   private error: Error | null = null;
@@ -53,7 +56,7 @@ export class AudioAnalyzer extends LitElement {
     return html`
       <section>
         <file-drop @change=${this.onFileDropChanged}></file-drop>
-        ${this.renderAudioInfo()}
+        ${this.renderFileSelect()} ${this.renderAudioInfo()}
         ${this.isProcessing ? this.renderProgress() : this.renderResults()}
         ${this.renderExecutionTime()} ${this.renderError()}
       </section>
@@ -89,31 +92,62 @@ export class AudioAnalyzer extends LitElement {
     `;
   }
 
-  private renderAudioInfo() {
-    if (!this.audioInfo) {
+  private renderFileSelect() {
+    if (!this.audioInfo.length) {
       return null;
     }
 
     return html`
+      <sl-select
+        filled
+        value=${this.selectedFileIndex.toString()}
+        @sl-change=${(ev: InputEvent) => {
+          if (ev.target) {
+            this.selectedFileIndex = parseInt(
+              (ev.target as HTMLSelectElement).value,
+              10
+            );
+          }
+        }}
+      >
+        ${this.audioInfo.map(
+          ({ fileName }, i) => html`
+            <sl-menu-item value=${i}>${fileName}</sl-menu-item>
+          `
+        )}
+      </sl-select>
+    `;
+  }
+
+  private renderAudioInfo() {
+    if (!this.audioInfo.length) {
+      return null;
+    }
+
+    const info = this.audioInfo[this.selectedFileIndex];
+
+    return html`
       <audio-info-card
-        .fileName=${this.audioInfo.fileName}
-        .channelCount=${this.audioInfo.channelCount}
-        .durationSeconds=${this.audioInfo.durationSeconds}
-        .sampleRate=${this.audioInfo.sampleRate}
+        .fileName=${info.fileName}
+        .channelCount=${info.channelCount}
+        .durationSeconds=${info.durationSeconds}
+        .sampleRate=${info.sampleRate}
       ></audio-info-card>
     `;
   }
 
   private renderResults() {
-    if (!this.results) {
+    if (!this.results.length) {
       return null;
     }
 
+    const results = this.results[this.selectedFileIndex];
+
     return html`
       <div class="results">
-        ${this.results.type === 'monaural'
-          ? AudioAnalyzer.renderMonauralResults(this.results.values)
-          : AudioAnalyzer.renderBinauralResults(this.results.values)}
+        ${results.type === 'monaural'
+          ? AudioAnalyzer.renderMonauralResults(results.values)
+          : AudioAnalyzer.renderBinauralResults(results.values)}
       </div>
     `;
   }
@@ -186,62 +220,72 @@ export class AudioAnalyzer extends LitElement {
 
   private clearState() {
     this.error = null;
-    this.audioInfo = null;
-    this.results = null;
+    this.audioInfo = [];
+    this.results = [];
     this.executionTimeMs = null;
   }
 
   private async analyzeFile(audioFile: File) {
-    const t0 = performance.now();
-
     const audioBuffer = await readAudioFile(audioFile);
 
-    this.audioInfo = {
-      fileName: audioFile.name,
-      channelCount: audioBuffer.numberOfChannels,
-      durationSeconds: audioBuffer.duration,
-      sampleRate: audioBuffer.sampleRate,
-    };
+    this.audioInfo = [
+      ...this.audioInfo,
+      {
+        fileName: audioFile.name,
+        channelCount: audioBuffer.numberOfChannels,
+        durationSeconds: audioBuffer.duration,
+        sampleRate: audioBuffer.sampleRate,
+      },
+    ];
 
     if (audioBuffer.numberOfChannels === 1) {
-      this.results = {
-        type: 'monaural',
-        values: await processMonauralAudio(
-          audioBuffer.getChannelData(0),
-          audioBuffer.sampleRate
-        ),
-      };
+      this.results = [
+        ...this.results,
+        {
+          type: 'monaural',
+          values: await processMonauralAudio(
+            audioBuffer.getChannelData(0),
+            audioBuffer.sampleRate
+          ),
+        },
+      ];
     } else if (audioBuffer.numberOfChannels === 2) {
-      this.results = {
-        type: 'binaural',
-        values: await processBinauralAudio(
-          binauralAudioFromBuffer(audioBuffer),
-          audioBuffer.sampleRate
-        ),
-      };
+      this.results = [
+        ...this.results,
+        {
+          type: 'binaural',
+          values: await processBinauralAudio(
+            binauralAudioFromBuffer(audioBuffer),
+            audioBuffer.sampleRate
+          ),
+        },
+      ];
     } else {
       throw new Error('only monaural or binaural audio is supported');
     }
-
-    this.executionTimeMs = performance.now() - t0;
   }
 
   private async analyzeFiles(files: FileList) {
     this.clearState();
 
     this.isProcessing = true;
+    const start = performance.now();
 
-    this.analyzeFile(files[0])
-      .catch(err => {
+    for (let i = 0; i < files.length; i += 1) {
+      try {
+        // eslint-disable-next-line no-await-in-loop
+        await this.analyzeFile(files[i]);
+      } catch (err) {
         if (err instanceof Error) {
           this.error = err;
         } else if (typeof err === 'string') {
           this.error = new Error(err);
         }
-      })
-      .finally(() => {
-        this.isProcessing = false;
-      });
+      }
+    }
+
+    this.executionTimeMs = performance.now() - start;
+    this.isProcessing = false;
   }
 
   private onFileDropChanged(ev: FileDropChangeEvent) {

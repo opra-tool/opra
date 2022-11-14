@@ -1,4 +1,4 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, PropertyValueMap, PropertyValues } from 'lit';
 import { customElement, state, property, query } from 'lit/decorators.js';
 import {
   calculateAveragedFrequencyStrength,
@@ -90,6 +90,20 @@ export class StrengthsCard extends LitElement {
   protected firstUpdated() {
     if (this.p0 !== null) {
       this.calculateStrengths();
+    }
+  }
+
+  protected updated(changedProperties: PropertyValues<this>) {
+    if (
+      changedProperties.has('bandsSquaredSum') ||
+      changedProperties.has('e80BandsSquaredSum') ||
+      changedProperties.has('l80BandsSquaredSum') ||
+      changedProperties.has('c80Values') ||
+      changedProperties.has('aWeightedSquaredSum')
+    ) {
+      if (this.p0) {
+        this.calculateStrengths();
+      }
     }
   }
 

@@ -7,7 +7,7 @@ export class ProgressIndicator extends LitElement {
     return html`
       <div>
         <sl-spinner></sl-spinner>
-        <p>Analyzing file ...</p>
+        <p>Analyzing file(s) ...</p>
       </div>
     `;
   }
