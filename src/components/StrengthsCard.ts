@@ -22,8 +22,43 @@ type Strengths = {
   aWeightedC80: number;
 };
 
+const P0_STORAGE_KEY = 'strengths-p0';
+const TEMPERATURE_STORAGE_KEY = 'strengths-temperature';
+const HUMIDITY_STORAGE_KEY = 'strengths-humidity';
+
 const DEFAULT_RELATIVE_HUMIDITY = 50;
 const DEFAULT_TEMPERATURE = 20;
+
+function getStoredValueOrDefault(key: string, defaultValue: number): number {
+  const stored = localStorage.getItem(key);
+
+  if (stored === null) {
+    return defaultValue;
+  }
+
+  return parseFloat(stored);
+}
+
+function getStoredOrDefaultHumidity(): number {
+  return getStoredValueOrDefault(
+    HUMIDITY_STORAGE_KEY,
+    DEFAULT_RELATIVE_HUMIDITY
+  );
+}
+
+function getStoredOrDefaultTemperature(): number {
+  return getStoredValueOrDefault(TEMPERATURE_STORAGE_KEY, DEFAULT_TEMPERATURE);
+}
+
+function getStoredOrNoP0(): number | null {
+  const stored = localStorage.getItem(P0_STORAGE_KEY);
+
+  if (stored === null) {
+    return null;
+  }
+
+  return parseFloat(stored);
+}
 
 @customElement('strengths-card')
 export class StrengthsCard extends LitElement {
@@ -41,19 +76,25 @@ export class StrengthsCard extends LitElement {
   @property({ type: Number }) aWeightedSquaredSum: number = 0;
 
   @state()
-  private p0: number | null = null;
-
-  @state()
   private strengths: Strengths | undefined;
 
   @state()
-  private relativeHumidity = DEFAULT_RELATIVE_HUMIDITY;
+  private p0 = getStoredOrNoP0();
 
   @state()
-  private temperature = DEFAULT_TEMPERATURE;
+  private relativeHumidity = getStoredOrDefaultHumidity();
+
+  @state()
+  private temperature = getStoredOrDefaultTemperature();
 
   @query('.air-values-dialog', true)
   private airValuesDialog!: AirValuesDialog;
+
+  protected firstUpdated() {
+    if (this.p0 !== null) {
+      this.calculateStrengths();
+    }
+  }
 
   render() {
     return html`
@@ -149,17 +190,19 @@ export class StrengthsCard extends LitElement {
           step="any"
           required
           value=${this.p0 ? this.p0.toString() : ''}
-          @sl-input=${(ev: CustomEvent) => {
-            if (ev.target) {
-              this.p0 = parseFloat((ev.target as HTMLInputElement).value);
-            }
-          }}
+          @sl-input=${this.onP0Input}
         ></sl-input>
         <sl-button type="submit"
           >${this.strengths ? 'Recalculate' : 'Calculate'}</sl-button
         >
       </form>
     `;
+  }
+
+  private onP0Input(ev: CustomEvent) {
+    if (ev.target) {
+      this.p0 = parseFloat((ev.target as HTMLInputElement).value);
+    }
   }
 
   private showAirDialog(ev: PointerEvent) {
@@ -174,6 +217,12 @@ export class StrengthsCard extends LitElement {
     this.temperature = ev.detail.temperature;
     this.relativeHumidity = ev.detail.relativeHumidity;
 
+    localStorage.setItem(TEMPERATURE_STORAGE_KEY, this.temperature.toString());
+    localStorage.setItem(
+      HUMIDITY_STORAGE_KEY,
+      this.relativeHumidity.toString()
+    );
+
     this.airValuesDialog.hide();
 
     this.calculateStrengths();
@@ -183,6 +232,13 @@ export class StrengthsCard extends LitElement {
     ev.preventDefault();
 
     this.calculateStrengths();
+    this.persistP0();
+  }
+
+  private persistP0() {
+    if (this.p0 !== null) {
+      localStorage.setItem(P0_STORAGE_KEY, this.p0.toString());
+    }
   }
 
   private async calculateStrengths() {
