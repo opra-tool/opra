@@ -2,6 +2,12 @@ import { LitElement, html, css } from 'lit';
 import { customElement, query, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 
+type EventDetail = {
+  files: FileList;
+};
+
+export type FileDropChangeEvent = CustomEvent<EventDetail>;
+
 @customElement('file-drop')
 export class FileDrop extends LitElement {
   @state()
@@ -23,15 +29,16 @@ export class FileDrop extends LitElement {
           @dragleave=${this.onDragLeave}
           @dragover=${this.onDragOver}
         >
-          <span>Drop a room response file here</span>
+          <span>Drop room response files here</span>
           <span>or</span>
           <sl-button @click=${this.onFileUploadButtonCLicked}>
-            Choose a file
+            Choose file(s)
           </sl-button>
           <input
             id="file-input"
             type="file"
             accept=".wav"
+            multiple
             @change=${this.onFileInputChange}
           />
         </div>
@@ -76,9 +83,9 @@ export class FileDrop extends LitElement {
     }
 
     this.dispatchEvent(
-      new CustomEvent<{ file: File }>('change', {
+      new CustomEvent<EventDetail>('change', {
         detail: {
-          file: files[0],
+          files,
         },
         bubbles: true,
         composed: true,

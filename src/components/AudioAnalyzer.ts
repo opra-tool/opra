@@ -12,8 +12,11 @@ import {
 import { binauralAudioFromBuffer } from '../audio/BinauralAudio';
 import { Parameter } from './ParametersTable';
 import { UNIT_MILLISECONDS } from '../units';
+import { FileDropChangeEvent } from './FileDrop';
+import { readAudioFile } from '../audio/readAudioFile';
 
 type AudioInfo = {
+  fileName: string;
   channelCount: number;
   durationSeconds: number;
   sampleRate: number;
@@ -46,13 +49,10 @@ export class AudioAnalyzer extends LitElement {
   @state()
   private error: Error | null = null;
 
-  @state()
-  private fileName: string | null = null;
-
   render() {
     return html`
       <section>
-        <file-drop @change=${this.onFileSelected}></file-drop>
+        <file-drop @change=${this.onFileDropChanged}></file-drop>
         ${this.renderAudioInfo()}
         ${this.isProcessing ? this.renderProgress() : this.renderResults()}
         ${this.renderExecutionTime()} ${this.renderError()}
@@ -96,7 +96,7 @@ export class AudioAnalyzer extends LitElement {
 
     return html`
       <audio-info-card
-        .fileName=${this.fileName || ''}
+        .fileName=${this.audioInfo.fileName}
         .channelCount=${this.audioInfo.channelCount}
         .durationSeconds=${this.audioInfo.durationSeconds}
         .sampleRate=${this.audioInfo.sampleRate}
@@ -191,14 +191,13 @@ export class AudioAnalyzer extends LitElement {
     this.executionTimeMs = null;
   }
 
-  private async calculateResults(bytes: ArrayBuffer) {
+  private async analyzeFile(audioFile: File) {
     const t0 = performance.now();
 
-    const sampleRate = parseSampleRate('wav', bytes);
-    const audioCtx = new AudioContext({ sampleRate });
-    const audioBuffer = await audioCtx.decodeAudioData(bytes);
+    const audioBuffer = await readAudioFile(audioFile);
 
     this.audioInfo = {
+      fileName: audioFile.name,
       channelCount: audioBuffer.numberOfChannels,
       durationSeconds: audioBuffer.duration,
       sampleRate: audioBuffer.sampleRate,
@@ -227,12 +226,12 @@ export class AudioAnalyzer extends LitElement {
     this.executionTimeMs = performance.now() - t0;
   }
 
-  private async analyzeFile(bytes: ArrayBuffer) {
+  private async analyzeFiles(files: FileList) {
     this.clearState();
 
     this.isProcessing = true;
 
-    this.calculateResults(bytes)
+    this.analyzeFile(files[0])
       .catch(err => {
         if (err instanceof Error) {
           this.error = err;
@@ -245,25 +244,9 @@ export class AudioAnalyzer extends LitElement {
       });
   }
 
-  private onFileRead = (ev: ProgressEvent<FileReader>) => {
-    if (!ev.target) {
-      return;
-    }
-
-    const bytes = ev.target.result;
-    if (bytes === null || typeof bytes === 'string') {
-      throw new Error('invalid data read from audio file');
-    }
-
-    this.analyzeFile(bytes);
-  };
-
-  private onFileSelected = (ev: CustomEvent<{ file: File }>) => {
-    const reader = new FileReader();
-    reader.onload = this.onFileRead;
-    reader.readAsArrayBuffer(ev.detail.file);
-    this.fileName = ev.detail.file.name;
-  };
+  private onFileDropChanged(ev: FileDropChangeEvent) {
+    this.analyzeFiles(ev.detail.files);
+  }
 
   static styles = css`
     section {
