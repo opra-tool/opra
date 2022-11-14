@@ -1,8 +1,7 @@
-import { arraySumSquared } from './math/arraySumSquared';
 import { safeLog10 } from './math/safeLog10';
 
 export function calculateStrength(
-  bandsSquaredSum: Float64Array,
+  bandsSquaredSum: number[],
   p0: number,
   lpe10: number[]
 ): number[] {

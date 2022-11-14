@@ -62,16 +62,13 @@ function getStoredOrNoP0(): number | null {
 
 @customElement('strengths-card')
 export class StrengthsCard extends LitElement {
-  @property({ type: Object }) bandsSquaredSum: Float64Array =
-    new Float64Array();
+  @property({ type: Array }) bandsSquaredSum: number[] = [];
 
-  @property({ type: Object }) e80BandsSquaredSum: Float64Array =
-    new Float64Array();
+  @property({ type: Array }) e80BandsSquaredSum: number[] = [];
 
-  @property({ type: Object }) l80BandsSquaredSum: Float64Array =
-    new Float64Array();
+  @property({ type: Array }) l80BandsSquaredSum: number[] = [];
 
-  @property({ type: Object }) c80Values: Float64Array = new Float64Array();
+  @property({ type: Array }) c80Values: number[] = [];
 
   @property({ type: Number }) aWeightedSquaredSum: number = 0;
 
