@@ -70,6 +70,7 @@
       "@typescript-eslint/no-unused-vars": "off",
       "import/no-unresolved": "off",
       "import/extensions": "off",
+      "max-classes-per-file": "off",
       "no-use-before-define": [
         "error",
         {

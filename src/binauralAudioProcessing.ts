@@ -3,13 +3,13 @@ import { e80 } from './earlyLateFractions';
 import { interauralCrossCorrelation } from './interauralCrossCorrelation';
 import { arraysMean, mean } from './math/mean';
 import {
-  MonauralAnalyzeResults,
+  MonauralResults,
   processMonauralAudio,
 } from './monauralAudioProcessing';
 import { octfiltBinaural } from './octfilt';
 import { correctStarttimeBinaural } from './starttime';
 
-export type BinauralAnalyzeResults = MonauralAnalyzeResults & {
+export type BinauralResults = MonauralResults & {
   iacc: number[];
   eiacc: number[];
 };
@@ -17,7 +17,7 @@ export type BinauralAnalyzeResults = MonauralAnalyzeResults & {
 export async function processBinauralAudio(
   audio: BinauralAudio,
   sampleRate: number
-): Promise<BinauralAnalyzeResults> {
+): Promise<BinauralResults> {
   const trimmed = correctStarttimeBinaural(audio);
 
   const bands = await octfiltBinaural(trimmed, sampleRate);
@@ -40,7 +40,7 @@ export async function processBinauralAudio(
     sampleRate
   );
 
-  const meanResults: MonauralAnalyzeResults = {
+  const meanResults: MonauralResults = {
     bassRatio: mean(resultsLeft.bassRatio, resultsRight.bassRatio),
     aWeightedSquaredSum: mean(
       resultsLeft.aWeightedSquaredSum,

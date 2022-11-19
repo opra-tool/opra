@@ -1,44 +1,47 @@
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { UNIT_DECIBELS, UNIT_HERTZ } from '../../units';
-import {
-  GRAPH_COLOR_BLUE,
-  GRAPH_COLOR_RED,
-  GRAPH_COLOR_YELLOW,
-} from './colors';
 import { getFrequencyLabels } from './common';
 import { GraphConfig } from './LineGraph';
+import { DASH_STYLE_DOTTED, DASH_STYLE_DASHED } from './graphStyles';
+
+type MultiValue = {
+  color: string;
+  values: number[];
+};
 
 @customElement('strength-graph')
 export class StrengthGraph extends LitElement {
-  @property({ type: Array }) strength: number[] = [];
+  @property({ type: Array }) strengths: MultiValue[] = [];
 
-  @property({ type: Array }) earlyStrength: number[] = [];
+  @property({ type: Array }) earlyStrengths: MultiValue[] = [];
 
-  @property({ type: Array }) lateStrength: number[] = [];
+  @property({ type: Array }) lateStrengths: MultiValue[] = [];
 
   render() {
     const config: GraphConfig = {
       labels: getFrequencyLabels(),
       datasets: [
-        {
+        ...this.strengths.map(({ color, values }) => ({
           label: 'Strength',
-          data: this.strength,
+          data: values,
           fill: false,
-          borderColor: GRAPH_COLOR_BLUE,
-        },
-        {
+          borderColor: color,
+        })),
+        ...this.earlyStrengths.map(({ color, values }) => ({
           label: 'Early Strength',
-          data: this.earlyStrength,
+          data: values,
           fill: false,
-          borderColor: GRAPH_COLOR_RED,
-        },
-        {
+          borderColor: color,
+          borderDash: DASH_STYLE_DASHED,
+        })),
+        ...this.lateStrengths.map(({ color, values }) => ({
           label: 'Late Strength',
-          data: this.lateStrength,
+          data: values,
           fill: false,
-          borderColor: GRAPH_COLOR_YELLOW,
-        },
+          borderColor: color,
+          borderDash: DASH_STYLE_DOTTED,
+        })),
       ],
       options: {
         scales: {

@@ -1,21 +1,13 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { classMap } from 'lit/directives/class-map.js';
 
 @customElement('base-card')
 export class BaseCard extends LitElement {
   @property({ type: String }) cardTitle: string | undefined;
 
-  @property({ type: Boolean }) noPadding: boolean = false;
-
   render() {
-    const classes = classMap({
-      card: true,
-      'no-padding': this.noPadding,
-    });
-
     return html`
-      <div class=${classes}>
+      <div class="card">
         ${this.cardTitle && html`<h3>${this.cardTitle}</h3>`}
         <slot></slot>
       </div>
@@ -30,10 +22,6 @@ export class BaseCard extends LitElement {
       border-radius: 0.5rem;
       box-sizing: border-box;
       height: 100%;
-    }
-
-    .card.no-padding {
-      padding: 0;
     }
 
     h3 {

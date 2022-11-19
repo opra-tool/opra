@@ -1,6 +1,5 @@
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { GRAPH_COLOR_BLUE } from './colors';
 import { GraphConfig } from './LineGraph';
 
 type Point = {
@@ -8,25 +7,28 @@ type Point = {
   y: number;
 };
 
+type ColoredPoints = {
+  color: string;
+  points: Point[];
+};
+
 const MAX_X = 0.5;
 const DECIMATION_SAMPLES = 500;
 
 @customElement('impulse-response-graph')
 export class ImpulseResponseGraph extends LitElement {
-  @property({ type: Array }) squaredIR: Point[] = [];
+  @property({ type: Array }) squaredIR: ColoredPoints[] = [];
 
   render() {
     const config: GraphConfig = {
-      datasets: [
-        {
-          label: 'Squared IR',
-          data: this.squaredIR,
-          fill: false,
-          borderColor: GRAPH_COLOR_BLUE,
-          borderWidth: 1,
-          pointRadius: 0,
-        },
-      ],
+      datasets: this.squaredIR.map(({ color, points }) => ({
+        label: 'Squared IR',
+        data: points,
+        fill: false,
+        borderColor: color,
+        borderWidth: 1,
+        pointRadius: 0,
+      })),
       options: {
         scales: {
           y: {

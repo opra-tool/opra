@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, query, state } from 'lit/decorators.js';
+import { customElement, property, query, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 
 type EventDetail = {
@@ -18,31 +18,29 @@ export class FileDrop extends LitElement {
 
   render() {
     return html`
-      <base-card noPadding>
-        <div
-          class=${classMap({
-            'drop-target': true,
-            'dragging-over': this.isDraggingOver,
-          })}
-          @drop=${this.onDrop}
-          @dragenter=${this.onDragEnter}
-          @dragleave=${this.onDragLeave}
-          @dragover=${this.onDragOver}
-        >
-          <span>Drop room response files here</span>
-          <span>or</span>
-          <sl-button @click=${this.onFileUploadButtonCLicked}>
-            Choose file(s)
-          </sl-button>
-          <input
-            id="file-input"
-            type="file"
-            accept=".wav"
-            multiple
-            @change=${this.onFileInputChange}
-          />
-        </div>
-      </base-card>
+      <section
+        class=${classMap({
+          'file-drop': true,
+          'dragging-over': this.isDraggingOver,
+        })}
+        @drop=${this.onDrop}
+        @dragenter=${this.onDragEnter}
+        @dragleave=${this.onDragLeave}
+        @dragover=${this.onDragOver}
+      >
+        <span>Drop room response files here</span>
+        <span>or</span>
+        <sl-button @click=${this.onFileUploadButtonCLicked}>
+          Choose file(s)
+        </sl-button>
+        <input
+          id="file-input"
+          type="file"
+          accept=".wav"
+          multiple
+          @change=${this.onFileInputChange}
+        />
+      </section>
     `;
   }
 
@@ -102,17 +100,25 @@ export class FileDrop extends LitElement {
   }
 
   static styles = css`
-    .drop-target {
+    .file-drop {
       display: flex;
       flex-direction: column;
+      justify-content: center;
       align-items: center;
       gap: 1rem;
+
+      box-sizing: border-box;
+      height: 100%;
+
       padding: 1.5rem;
-      text-align: center;
+
+      outline: 2px dashed var(--sl-color-neutral-200);
+      transition: outline-color 0.15s, background-color 0.15s;
     }
 
     .dragging-over {
-      background-color: rgba(255, 255, 255, 0.05);
+      background-color: var(--sl-color-neutral-100);
+      outline-color: var(--sl-color-neutral-500);
     }
 
     #file-input {

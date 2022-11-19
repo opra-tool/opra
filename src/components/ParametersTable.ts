@@ -2,27 +2,73 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 
+type ResponseValue = {
+  fileName: string;
+  color: string;
+  value: number;
+};
+
 export type Parameter = {
   name: string;
   description?: string;
   unit?: string;
-  value: number;
+  responseValues: ResponseValue[];
 };
 
+/**
+ * TODO: set a max-width of (100 - 20) / numResponses in percent
+ * TODO: set a max-width of the table to a sensible value depending on numResponses
+ */
 @customElement('parameters-table')
 export class ParametersTable extends LitElement {
   @property({ type: Array, attribute: false }) parameters: Parameter[] = [];
 
   render() {
+    if (!this.parameters.length) {
+      return null;
+    }
+
+    const { responseValues: firstResponseValues } = this.parameters[0];
+
     return html`
-      <table>
-        ${this.parameters.map(param => this.renderParameter(param))}
-      </table>
+      <div class="scroll-container">
+        <table>
+          ${firstResponseValues.length > 1
+            ? html`
+                <thead>
+                  <tr>
+                    <th></th>
+                    ${firstResponseValues.map(ParametersTable.renderLegend)}
+                  </tr>
+                </thead>
+              `
+            : null}
+          <tbody>
+            ${this.parameters.map(ParametersTable.renderParameter)}
+          </tbody>
+        </table>
+      </div>
     `;
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  private renderParameter({ name, description, unit, value }: Parameter) {
+  private static renderLegend({ fileName, color }: ResponseValue) {
+    return html`
+      <th title=${fileName}>
+        <small class="legend-label">${fileName}</small>
+        <span
+          class="legend-color"
+          .style=${`background-color: ${color}`}
+        ></span>
+      </th>
+    `;
+  }
+
+  private static renderParameter({
+    name,
+    description,
+    unit,
+    responseValues: coloredValues,
+  }: Parameter) {
     const classes = classMap({
       'has-description': !!description,
     });
@@ -30,7 +76,7 @@ export class ParametersTable extends LitElement {
     return html`
       <tr class=${classes}>
         <td>
-          <span>${name}${this.renderUnit(unit)}</span>
+          <span>${name}${ParametersTable.renderUnit(unit)}</span>
           ${description
             ? html`
                 <br />
@@ -38,13 +84,14 @@ export class ParametersTable extends LitElement {
               `
             : null}
         </td>
-        <td class="value">${value.toFixed(2)}</td>
+        ${coloredValues.map(
+          ({ value }) => html`<td class="value">${value.toFixed(2)}</td>`
+        )}
       </tr>
     `;
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  private renderUnit(unit: string | undefined) {
+  private static renderUnit(unit: string | undefined) {
     if (!unit) {
       return null;
     }
@@ -53,9 +100,15 @@ export class ParametersTable extends LitElement {
   }
 
   static styles = css`
+    .scroll-container {
+      overflow-x: auto;
+      max-width: 100%;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
+      table-layout: fixed;
     }
 
     tr:not(:last-child) {
@@ -68,6 +121,34 @@ export class ParametersTable extends LitElement {
 
     tr.has-description > td {
       padding: 0.5rem;
+    }
+
+    td:first-child {
+      white-space: nowrap;
+    }
+
+    th,
+    td {
+      padding-inline: 0.5rem;
+    }
+
+    th {
+      font-weight: normal;
+    }
+
+    .legend-label {
+      display: inline-block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+
+    .legend-color {
+      display: block;
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      margin-top: 4px;
     }
 
     .value {

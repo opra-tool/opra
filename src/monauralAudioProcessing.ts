@@ -13,7 +13,7 @@ type Point = {
   y: number;
 };
 
-export type MonauralAnalyzeResults = {
+export type MonauralResults = {
   bandsSquaredSum: number[];
   e80BandsSquaredSum: number[];
   l80BandsSquaredSum: number[];
@@ -30,7 +30,7 @@ export type MonauralAnalyzeResults = {
 export async function processMonauralAudio(
   samples: Float32Array,
   sampleRate: number
-): Promise<MonauralAnalyzeResults> {
+): Promise<MonauralResults> {
   const zeroPadded = new Float32Array([
     ...samples,
     ...arrayFilledWithZeros(10000),

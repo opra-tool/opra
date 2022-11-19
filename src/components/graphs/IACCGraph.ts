@@ -1,32 +1,38 @@
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { UNIT_HERTZ } from '../../units';
-import { GRAPH_COLOR_BLUE, GRAPH_COLOR_RED } from './colors';
 import { getFrequencyLabels } from './common';
 import { GraphConfig } from './LineGraph';
+import { DASH_STYLE_DASHED } from './graphStyles';
+
+type ColoredBandValues = {
+  color: string;
+  bandValues: number[];
+};
 
 @customElement('iacc-graph')
 export class IACCGraph extends LitElement {
-  @property({ type: Array }) iacc: number[] = [];
+  @property({ type: Array }) iacc: ColoredBandValues[] = [];
 
-  @property({ type: Array }) eiacc: number[] = [];
+  @property({ type: Array }) eiacc: ColoredBandValues[] = [];
 
   render() {
     const config: GraphConfig = {
       labels: getFrequencyLabels(),
       datasets: [
-        {
+        ...this.iacc.map(({ color, bandValues: values }) => ({
           label: 'Interaural Cross Correlation',
-          data: this.iacc,
+          data: values,
           fill: false,
-          borderColor: GRAPH_COLOR_BLUE,
-        },
-        {
+          borderColor: color,
+        })),
+        ...this.eiacc.map(({ color, bandValues: values }) => ({
           label: 'Early Interaural Cross Correlation',
-          data: this.eiacc,
+          data: values,
           fill: false,
-          borderColor: GRAPH_COLOR_RED,
-        },
+          borderColor: color,
+          borderDash: DASH_STYLE_DASHED,
+        })),
       ],
       options: {
         scales: {

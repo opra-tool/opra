@@ -1,33 +1,39 @@
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { UNIT_HERTZ, UNIT_SECONDS } from '../../units';
-import { GRAPH_COLOR_BLUE, GRAPH_COLOR_RED } from './colors';
 import { getFrequencyLabels } from './common';
 import { GraphConfig } from './LineGraph';
+import { DASH_STYLE_DASHED } from './graphStyles';
 
-@customElement('reverberation-graph')
-export class ReverberationGraph extends LitElement {
-  @property({ type: Array }) energyDecayCurve: number[] = [];
+type ColoredBandValues = {
+  color: string;
+  bandValues: number[];
+};
 
-  @property({ type: Array }) reverberationTime: number[] = [];
+@customElement('reverb-graph')
+export class ReverbGraph extends LitElement {
+  @property({ type: Array }) edt: ColoredBandValues[] = [];
+
+  @property({ type: Array }) reverbTime: ColoredBandValues[] = [];
 
   render() {
     const config: GraphConfig = {
       labels: getFrequencyLabels(),
       datasets: [
-        {
+        ...this.edt.map(({ color, bandValues: values }) => ({
           label: 'Energy Decay Curve',
-          data: this.energyDecayCurve,
+          data: values,
           fill: false,
-          borderColor: GRAPH_COLOR_RED,
-        },
-        {
+          borderColor: color,
+        })),
+        ...this.reverbTime.map(({ color, bandValues: values }) => ({
           // TODO: is this T30? 30 is passed into the matlab method when calculations are made
           label: 'Reverb Time (T20)',
-          data: this.reverberationTime,
+          data: values,
           fill: false,
-          borderColor: GRAPH_COLOR_BLUE,
-        },
+          borderColor: color,
+          borderDash: DASH_STYLE_DASHED,
+        })),
       ],
       options: {
         scales: {

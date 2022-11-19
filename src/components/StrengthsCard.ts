@@ -1,4 +1,4 @@
-import { LitElement, html, css, PropertyValueMap, PropertyValues } from 'lit';
+import { LitElement, html, css, PropertyValues } from 'lit';
 import { customElement, state, property, query } from 'lit/decorators.js';
 import {
   calculateAveragedFrequencyStrength,
@@ -20,6 +20,16 @@ type Strengths = {
   lateStrength: number[];
   aWeighted: number;
   aWeightedC80: number;
+};
+
+type Input = {
+  fileName: string;
+  color: string;
+  bandsSquaredSum: number[];
+  e80BandsSquaredSum: number[];
+  l80BandsSquaredSum: number[];
+  c80Bands: number[];
+  aWeightedSquaredSum: number;
 };
 
 const P0_STORAGE_KEY = 'strengths-p0';
@@ -62,21 +72,16 @@ function getStoredOrNoP0(): number | null {
 
 @customElement('strengths-card')
 export class StrengthsCard extends LitElement {
-  @property({ type: Array }) bandsSquaredSum: number[] = [];
-
-  @property({ type: Array }) e80BandsSquaredSum: number[] = [];
-
-  @property({ type: Array }) l80BandsSquaredSum: number[] = [];
-
-  @property({ type: Array }) c80Values: number[] = [];
-
-  @property({ type: Number }) aWeightedSquaredSum: number = 0;
+  @property({ type: Array }) inputs: Input[] = [];
 
   @state()
-  private strengths: Strengths | undefined;
+  private strengths: Strengths[] = [];
 
   @state()
   private p0 = getStoredOrNoP0();
+
+  @state()
+  private p0InputValue = this.p0 ? this.p0.toString() : '';
 
   @state()
   private relativeHumidity = getStoredOrDefaultHumidity();
@@ -93,14 +98,14 @@ export class StrengthsCard extends LitElement {
     }
   }
 
+  protected willUpdate(changedProperties: PropertyValues<this>) {
+    if (changedProperties.has('inputs')) {
+      this.strengths = [];
+    }
+  }
+
   protected updated(changedProperties: PropertyValues<this>) {
-    if (
-      changedProperties.has('bandsSquaredSum') ||
-      changedProperties.has('e80BandsSquaredSum') ||
-      changedProperties.has('l80BandsSquaredSum') ||
-      changedProperties.has('c80Values') ||
-      changedProperties.has('aWeightedSquaredSum')
-    ) {
+    if (changedProperties.has('inputs')) {
       if (this.p0) {
         this.calculateStrengths();
       }
@@ -109,12 +114,12 @@ export class StrengthsCard extends LitElement {
 
   render() {
     return html`
-      <base-card cardTitle="Strengths"> ${this.renderCardContent()} </base-card>
+      <base-card cardTitle="Strengths">${this.renderCardContent()}</base-card>
     `;
   }
 
   private renderCardContent() {
-    if (!this.strengths) {
+    if (!this.p0) {
       return html`
         <div class="intro">
           <p>
@@ -125,43 +130,29 @@ export class StrengthsCard extends LitElement {
       `;
     }
 
-    const { strength, earlyStrength, lateStrength, aWeighted, aWeightedC80 } =
-      this.strengths;
-
-    const parameters: Parameter[] = [
-      {
-        name: 'Avg. Strength',
-        description: 'according to ISO 3382-1 Table A.2',
-        value: calculateAveragedFrequencyStrength(strength),
-        unit: UNIT_DECIBELS,
-      },
-      {
-        name: 'Treble Ratio',
-        value: calculateTrebleRatio(lateStrength),
-      },
-      {
-        name: 'Early Bass Strength',
-        value: calculateEarlyBassStrength(earlyStrength),
-        unit: UNIT_DECIBELS,
-      },
-      {
-        name: 'A-Weighted Avg. Strength',
-        value: aWeighted,
-        unit: UNIT_DECIBELS,
-      },
-      {
-        name: 'A-Weighted Avg. C80',
-        value: aWeightedC80,
-        unit: UNIT_DECIBELS,
-      },
-    ];
+    if (!this.strengths.length) {
+      return html`<sl-spinner></sl-spinner>`;
+    }
 
     return html`
       <div class="content">
         <strength-graph
-          .strength=${strength}
-          .earlyStrength=${earlyStrength}
-          .lateStrength=${lateStrength}
+          .strengths=${this.strengths.map(({ strength: values }, i) => ({
+            color: this.inputs[i].color,
+            values,
+          }))}
+          .earlyStrengths=${this.strengths.map(
+            ({ earlyStrength: values }, i) => ({
+              color: this.inputs[i].color,
+              values,
+            })
+          )}
+          .lateStrengths=${this.strengths.map(
+            ({ lateStrength: values }, i) => ({
+              color: this.inputs[i].color,
+              values,
+            })
+          )}
         ></strength-graph>
 
         <sl-divider vertical></sl-divider>
@@ -177,8 +168,10 @@ export class StrengthsCard extends LitElement {
             </p>
           </div>
 
-          <parameters-table .parameters=${parameters}></parameters-table>
+          ${this.strengths.length === 1 ? this.renderParamsTable() : null}
         </aside>
+
+        ${this.strengths.length > 1 ? this.renderParamsTable() : null}
 
         <air-values-dialog
           relativeHumidity=${this.relativeHumidity}
@@ -190,9 +183,61 @@ export class StrengthsCard extends LitElement {
     `;
   }
 
+  private renderParamsTable() {
+    const params: Parameter[] = [
+      {
+        name: 'Avg. Strength',
+        description: 'according to ISO 3382-1 Table A.2',
+        responseValues: this.strengths.map(({ strength }, i) => ({
+          fileName: this.inputs[i].fileName,
+          color: this.inputs[i].color,
+          value: calculateAveragedFrequencyStrength(strength),
+        })),
+        unit: UNIT_DECIBELS,
+      },
+      {
+        name: 'Treble Ratio',
+        responseValues: this.strengths.map(({ lateStrength }, i) => ({
+          fileName: this.inputs[i].fileName,
+          color: this.inputs[i].color,
+          value: calculateTrebleRatio(lateStrength),
+        })),
+      },
+      {
+        name: 'Early Bass Strength',
+        responseValues: this.strengths.map(({ earlyStrength }, i) => ({
+          fileName: this.inputs[i].fileName,
+          color: this.inputs[i].color,
+          value: calculateEarlyBassStrength(earlyStrength),
+        })),
+        unit: UNIT_DECIBELS,
+      },
+      {
+        name: 'A-Weighted Avg. Strength',
+        responseValues: this.strengths.map(({ aWeighted }, i) => ({
+          fileName: this.inputs[i].fileName,
+          color: this.inputs[i].color,
+          value: aWeighted,
+        })),
+        unit: UNIT_DECIBELS,
+      },
+      {
+        name: 'A-Weighted Avg. C80',
+        responseValues: this.strengths.map(({ aWeightedC80 }, i) => ({
+          fileName: this.inputs[i].fileName,
+          color: this.inputs[i].color,
+          value: aWeightedC80,
+        })),
+        unit: UNIT_DECIBELS,
+      },
+    ];
+
+    return html`<parameters-table .parameters=${params}></parameters-table>`;
+  }
+
   private renderP0Input() {
     return html`
-      <form @submit=${this.onSubmit}>
+      <form @submit=${this.onSubmitP0}>
         <sl-input
           type="number"
           placeholder="e.g. 0.015 or 1e-6"
@@ -200,11 +245,11 @@ export class StrengthsCard extends LitElement {
           min="0"
           step="any"
           required
-          value=${this.p0 ? this.p0.toString() : ''}
+          value=${this.p0InputValue}
           @sl-input=${this.onP0Input}
         ></sl-input>
         <sl-button type="submit"
-          >${this.strengths ? 'Recalculate' : 'Calculate'}</sl-button
+          >${this.strengths.length ? 'Recalculate' : 'Calculate'}</sl-button
         >
       </form>
     `;
@@ -212,7 +257,7 @@ export class StrengthsCard extends LitElement {
 
   private onP0Input(ev: CustomEvent) {
     if (ev.target) {
-      this.p0 = parseFloat((ev.target as HTMLInputElement).value);
+      this.p0InputValue = (ev.target as HTMLInputElement).value;
     }
   }
 
@@ -239,21 +284,20 @@ export class StrengthsCard extends LitElement {
     this.calculateStrengths();
   }
 
-  private onSubmit(ev: SubmitEvent) {
+  private onSubmitP0(ev: SubmitEvent) {
     ev.preventDefault();
 
-    this.calculateStrengths();
-    this.persistP0();
-  }
-
-  private persistP0() {
-    if (this.p0 !== null) {
+    if (this.p0InputValue !== '') {
+      this.p0 = parseFloat(this.p0InputValue);
       localStorage.setItem(P0_STORAGE_KEY, this.p0.toString());
+
+      this.calculateStrengths();
     }
   }
 
   private async calculateStrengths() {
-    if (!this.p0) {
+    const { p0 } = this;
+    if (!p0) {
       throw new Error('expected p0 to be defined');
     }
 
@@ -265,36 +309,32 @@ export class StrengthsCard extends LitElement {
       )
     );
     const lpe10 = await calculateLpe10(airCoeffs);
-    const strength = calculateStrength(this.bandsSquaredSum, this.p0, lpe10);
-    const earlyStrength = calculateStrength(
-      this.e80BandsSquaredSum,
-      this.p0,
-      lpe10
-    );
-    const lateStrength = calculateStrength(
-      this.l80BandsSquaredSum,
-      this.p0,
-      lpe10
-    );
-    const aWeighted = calculateStrengthOfAWeighted(
-      this.aWeightedSquaredSum,
-      this.p0
-    );
-    const aWeightedC80 =
-      (this.c80Values[3] + this.c80Values[4]) / 2 - 0.62 * aWeighted;
 
-    this.strengths = {
-      strength,
-      earlyStrength,
-      lateStrength,
-      aWeighted,
-      aWeightedC80,
-    };
+    this.strengths = this.inputs.map(
+      ({
+        bandsSquaredSum,
+        e80BandsSquaredSum,
+        l80BandsSquaredSum,
+        aWeightedSquaredSum,
+        c80Bands,
+      }) => {
+        const aWeighted = calculateStrengthOfAWeighted(aWeightedSquaredSum, p0);
+
+        return {
+          strength: calculateStrength(bandsSquaredSum, p0, lpe10),
+          earlyStrength: calculateStrength(e80BandsSquaredSum, p0, lpe10),
+          lateStrength: calculateStrength(l80BandsSquaredSum, p0, lpe10),
+          aWeighted,
+          aWeightedC80: (c80Bands[3] + c80Bands[4]) / 2 - 0.62 * aWeighted,
+        };
+      }
+    );
   }
 
   static styles = css`
     .content {
       display: grid;
+      row-gap: 2rem;
       grid-template-columns: 2fr auto 1fr;
     }
 
@@ -320,6 +360,9 @@ export class StrengthsCard extends LitElement {
 
     parameters-table {
       margin-top: auto;
+      grid-column: 1 / -1;
+      /* prevent stretching of parent */
+      min-width: 0;
     }
   `;
 }

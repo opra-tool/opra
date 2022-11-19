@@ -26,8 +26,19 @@
         font-size: 15px;
       }
 
+      .wrapper {
+        padding: 1rem;
+        margin: 0 auto;
+        max-width: 1400px;
+      }
+
       header {
         padding-inline: 1rem;
+      }
+
+      header h1 {
+        font-size: 1.4rem;
+        text-transform: uppercase;
       }
 
       a {
@@ -38,10 +49,14 @@
   </head>
 
   <body>
-    <header>
-      <h1>RAQI Online Toolbox</h1>
-    </header>
+    <div class="wrapper">
+      <header>
+        <h1>RAQI Online Toolbox</h1>
+      </header>
 
-    <audio-analyzer></audio-analyzer>
+      <content>
+        <audio-analyzer></audio-analyzer>
+      </content>
+    </div>
   </body>
 </html>

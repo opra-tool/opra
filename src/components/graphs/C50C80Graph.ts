@@ -1,32 +1,38 @@
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { DASH_STYLE_DASHED } from './graphStyles';
 import { GraphConfig } from './LineGraph';
-import { GRAPH_COLOR_BLUE, GRAPH_COLOR_RED } from './colors';
 import { getFrequencyLabels } from './common';
 import { UNIT_DECIBELS, UNIT_HERTZ } from '../../units';
 
+type ColoredBandValues = {
+  color: string;
+  bandValues: number[];
+};
+
 @customElement('c50c80-graph')
 export class C50C80Graph extends LitElement {
-  @property({ type: Array }) c50: number[] = [];
+  @property({ type: Array }) c50: ColoredBandValues[] = [];
 
-  @property({ type: Array }) c80: number[] = [];
+  @property({ type: Array }) c80: ColoredBandValues[] = [];
 
   render() {
     const config: GraphConfig = {
       labels: getFrequencyLabels(),
       datasets: [
-        {
+        ...this.c50.map(({ color, bandValues: values }) => ({
           label: 'C50',
-          data: this.c50,
+          data: values,
           fill: false,
-          borderColor: GRAPH_COLOR_RED,
-        },
-        {
+          borderColor: color,
+        })),
+        ...this.c80.map(({ color, bandValues: values }) => ({
           label: 'C80',
-          data: this.c80,
+          data: values,
           fill: false,
-          borderColor: GRAPH_COLOR_BLUE,
-        },
+          borderColor: color,
+          borderDash: DASH_STYLE_DASHED,
+        })),
       ],
       options: {
         scales: {
