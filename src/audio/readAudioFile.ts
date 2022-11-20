@@ -1,6 +1,6 @@
 import { parseSampleRate } from './parseSampleRate';
 
-const FILE_TYPE_WAV = 'audio/x-wav';
+const ALLOWED_FILE_TYPES = ['audio/wav', 'audio/x-wav'];
 
 function readFile(file: File): Promise<ArrayBuffer> {
   return new Promise((resolve, reject) => {
@@ -26,8 +26,8 @@ function readFile(file: File): Promise<ArrayBuffer> {
 }
 
 export async function readAudioFile(file: File): Promise<AudioBuffer> {
-  if (file.type !== FILE_TYPE_WAV) {
-    throw new Error(`expected file to be of type ${FILE_TYPE_WAV}`);
+  if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+    throw new Error(`expected file to be of type ${ALLOWED_FILE_TYPES}`);
   }
 
   const bytes = await readFile(file);
