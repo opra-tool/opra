@@ -1,7 +1,7 @@
 use rustfft::num_complex::Complex;
 
-pub fn complex_object_form_to_flat_form(object_form: Vec<Complex<f64>>) -> Vec<f64> {
-    let mut flat_form: Vec<f64> = Vec::with_capacity(object_form.len() * 2);
+pub fn complex_object_form_to_flat_form(object_form: Vec<Complex<f32>>) -> Vec<f32> {
+    let mut flat_form: Vec<f32> = Vec::with_capacity(object_form.len() * 2);
 
     for num in object_form {
         flat_form.push(num.re.clone());
@@ -11,9 +11,9 @@ pub fn complex_object_form_to_flat_form(object_form: Vec<Complex<f64>>) -> Vec<f
     flat_form
 }
 
-pub fn complex_flat_form_to_object_form(flat_form: Vec<f64>) -> Vec<Complex<f64>> {
+pub fn complex_flat_form_to_object_form(flat_form: Vec<f32>) -> Vec<Complex<f32>> {
     let new_len = flat_form.len() / 2;
-    let mut object_form: Vec<Complex<f64>> = Vec::with_capacity(new_len);
+    let mut object_form: Vec<Complex<f32>> = Vec::with_capacity(new_len);
 
     for i in 0..new_len {
         object_form.push(Complex {

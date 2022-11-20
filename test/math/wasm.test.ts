@@ -14,7 +14,7 @@ it('transforms a complex array from object form into flat form', () => {
 });
 
 it('transforms a complex array from flat form into object form', () => {
-  const array = new Float64Array([1, 2, 2, 2, 10, 11]);
+  const array = new Float32Array([1, 2, 2, 2, 10, 11]);
 
   const objectForm = complexFlatFormIntoObjectForm(array);
 

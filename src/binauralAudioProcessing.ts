@@ -1,6 +1,6 @@
 import { BinauralAudio } from './audio/BinauralAudio';
 import { e80 } from './earlyLateFractions';
-import { interauralCrossCorrelation } from './interauralCrossCorrelation';
+import { calculateIacc } from './iacc';
 import { arraysMean, mean } from './math/mean';
 import {
   MonauralResults,
@@ -30,8 +30,8 @@ export async function processBinauralAudio(
       e80(band.rightSamples, sampleRate)
     );
 
-    iacc.push(interauralCrossCorrelation(band));
-    eiacc.push(interauralCrossCorrelation(earlyBand));
+    iacc.push(calculateIacc(band));
+    eiacc.push(calculateIacc(earlyBand));
   }
 
   const resultsLeft = await processMonauralAudio(audio.leftSamples, sampleRate);

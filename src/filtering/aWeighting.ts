@@ -10,7 +10,7 @@ export function aWeightAudioSignal(
 
   const numUniquePoints = Math.ceil((len + 1) / 2);
 
-  const x = fft(new Float64Array(samples));
+  const x = fft(samples);
 
   const X = x.slice(0, numUniquePoints);
 
