@@ -27,7 +27,6 @@ import '@shoelace-style/shoelace/dist/components/menu-item/menu-item.js';
 import './components/AirValuesDialog';
 import './components/AudioAnalyzer';
 import './components/BaseCard';
-import './components/ExecutionTime';
 import './components/FileDrop';
 import './components/FileList';
 import './components/GraphCard';
