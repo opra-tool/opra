@@ -5,7 +5,7 @@ import { ifft } from '../math/ifft';
 export function aWeightAudioSignal(
   samples: Float32Array,
   fs: number
-): Float64Array {
+): Float32Array {
   const len = samples.length;
 
   const numUniquePoints = Math.ceil((len + 1) / 2);
@@ -40,5 +40,5 @@ export function aWeightAudioSignal(
 
   const XAFull = [...XA, ...XA.slice(0, -1).reverse().map(conjugate)];
 
-  return new Float64Array(ifft(XAFull).map(v => v.getRe()));
+  return new Float32Array(ifft(XAFull).map(v => v.getRe()));
 }

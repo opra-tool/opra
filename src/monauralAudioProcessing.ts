@@ -52,8 +52,7 @@ export async function processMonauralAudio(
   }
 
   const mira = correctStarttimeMonaural(
-    // TODO: make prettier
-    new Float32Array(aWeightAudioSignal(zeroPadded, sampleRate))
+    aWeightAudioSignal(zeroPadded, sampleRate)
   );
 
   const edtValues = edt(bands, sampleRate);
