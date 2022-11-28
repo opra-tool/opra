@@ -56,7 +56,7 @@ export async function processMonauralAudio(
   );
 
   const edtValues = edt(bands, sampleRate);
-  const reverbTime = rev(bands, 30, sampleRate);
+  const reverbTime = rev(bands, 20, sampleRate);
 
   const bassRatio =
     (reverbTime[1] + reverbTime[2]) / (reverbTime[3] + reverbTime[4]);

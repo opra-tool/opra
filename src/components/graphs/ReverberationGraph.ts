@@ -27,7 +27,6 @@ export class ReverbGraph extends LitElement {
           borderColor: color,
         })),
         ...this.reverbTime.map(({ color, bandValues: values }) => ({
-          // TODO: is this T30? 30 is passed into the matlab method when calculations are made
           label: 'Reverb Time (T20)',
           data: values,
           fill: false,
