@@ -45,11 +45,7 @@ export async function octfilt(
     sampleRate,
   });
 
-  // TODO: copyChannelData()?
-  const channel = audioBuffer.getChannelData(0);
-  for (let i = 0; i < samples.length; i += 1) {
-    channel[i] = samples[i];
-  }
+  audioBuffer.copyToChannel(samples, 0);
 
   const promises = [];
   for (let i = 0; i < FREQUENCIES_IEC61672.length - 1; i += 1) {
