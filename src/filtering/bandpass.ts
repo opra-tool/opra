@@ -8,7 +8,7 @@ import {
   subtract,
 } from '@iamsquare/complex.js';
 import { absComplex } from '../math/absComplex';
-import { frequencyResponse } from './frequencyResponse';
+import { frequencyResponse } from './frequency-response';
 
 type Coefficients = {
   feedbacks: number[][];

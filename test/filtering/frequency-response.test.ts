@@ -1,5 +1,5 @@
 import { expect } from '@esm-bundle/chai';
-import { frequencyResponse } from '../../src/filtering/frequencyResponse';
+import { frequencyResponse } from '../../src/filtering/frequency-response';
 
 it('calculates the frequency response vector of a digital filter at specfied frequencies', () => {
   const sampleRate = 44100;
@@ -7,10 +7,7 @@ it('calculates the frequency response vector of a digital filter at specfied fre
   const numerator = [1, 0, -1];
   const denominator = [1, -2, 1];
 
-  const t0 = performance.now();
   const h = frequencyResponse(numerator, denominator, frequencies, sampleRate);
-  const t1 = performance.now();
-  console.log(`It took ${t1 - t0}ms`);
 
   const acceptedError = 1e-15;
 
