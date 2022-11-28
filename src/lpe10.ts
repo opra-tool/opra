@@ -16,9 +16,7 @@ export async function calculateLpe10(
   return bands.map((band, i) => {
     const sumSquared = arraySumSquared(band);
     const dodb = 10 * safeLog10(sumSquared);
-    const rel = 100 + dodb - 10 * airCoefficients[i];
 
-    // TODO: is rounding to one decimal place desired?
-    return Math.round(rel * 10) / 10;
+    return 100 + dodb - 10 * airCoefficients[i];
   });
 }

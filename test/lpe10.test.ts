@@ -7,5 +7,7 @@ it('calculates LPE10 when given air attenuation coefficients', async () => {
 
   const lpe10 = await calculateLpe10(airCoeffs);
 
-  expect(lpe10).deep.equal(expected);
+  const roundedLpe10 = lpe10.map(v => Math.round(v * 10) / 10);
+
+  expect(roundedLpe10).deep.equal(expected);
 });
