@@ -2,14 +2,8 @@ import { LitElement, html, css } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
 import { FileListToggleEvent, FileListRemoveEvent } from './FileList';
 import { RoomImpulseFile } from '../audio/RoomImpulseFile';
-import {
-  BinauralResults,
-  processBinauralAudio,
-} from '../binauralAudioProcessing';
-import {
-  MonauralResults,
-  processMonauralAudio,
-} from '../monauralAudioProcessing';
+import { BinauralResults, processBinauralAudio } from '../binaural-processing';
+import { MonauralResults, processMonauralAudio } from '../monaural-processing';
 import { binauralAudioFromBuffer } from '../audio/BinauralAudio';
 import { Parameter } from './ParametersTable';
 import { UNIT_MILLISECONDS } from '../units';

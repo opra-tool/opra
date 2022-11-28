@@ -2,10 +2,7 @@ import { BinauralAudio } from './audio/BinauralAudio';
 import { e80 } from './earlyLateFractions';
 import { calculateIacc } from './iacc';
 import { arraysMean, mean } from './math/mean';
-import {
-  MonauralResults,
-  processMonauralAudio,
-} from './monauralAudioProcessing';
+import { MonauralResults, processMonauralAudio } from './monaural-processing';
 import { octfiltBinaural } from './octfilt';
 import { correctStarttimeBinaural } from './starttime';
 
