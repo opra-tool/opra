@@ -1,5 +1,5 @@
 import { c50c80 } from './c50c80';
-import { calculateCenterTime } from './centerTime';
+import { calculateSchwerpunktzeit } from './schwerpunktzeit';
 import { earlyLateFractions } from './earlyLateFractions';
 import { aWeightAudioSignal } from './filtering/aWeighting';
 import { arrayFilledWithZeros } from './math/arrayFilledWithZeros';
@@ -22,7 +22,7 @@ export type MonauralResults = {
   reverbTime: number[];
   c50Values: number[];
   c80Values: number[];
-  centerTime: number;
+  schwerpunktzeit: number;
   bassRatio: number;
   squaredImpulseResponse: Point[];
 };
@@ -60,7 +60,7 @@ export async function processMonauralAudio(
 
   const bassRatio =
     (reverbTime[1] + reverbTime[2]) / (reverbTime[3] + reverbTime[4]);
-  const centerTime = calculateCenterTime(samples, sampleRate);
+  const schwerpunktzeit = calculateSchwerpunktzeit(samples, sampleRate);
 
   // TODO: extract into method
   const squaredImpulseResponse = [];
@@ -92,7 +92,7 @@ export async function processMonauralAudio(
     c50Values,
     c80Values,
     bassRatio,
-    centerTime,
+    schwerpunktzeit,
     squaredImpulseResponse,
   };
 }

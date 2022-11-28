@@ -209,10 +209,10 @@ export class AudioAnalyzer extends LitElement {
 
     const parameters: Parameter[] = [
       {
-        name: 'Center Time',
+        name: 'Schwerpunktzeit',
         unit: UNIT_MILLISECONDS,
         responseValues: results.map(
-          ({ fileName, color, centerTime: value }) => ({
+          ({ fileName, color, schwerpunktzeit: value }) => ({
             fileName,
             color,
             value,

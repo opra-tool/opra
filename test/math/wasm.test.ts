@@ -10,7 +10,7 @@ it('transforms a complex array from object form into flat form', () => {
 
   const flattened = complexObjectFormIntoFlatForm(array);
 
-  expect(flattened).to.deep.equal(new Float64Array([1, 2, 2, 2, 10, 11]));
+  expect(flattened).to.deep.equal(new Float32Array([1, 2, 2, 2, 10, 11]));
 });
 
 it('transforms a complex array from flat form into object form', () => {

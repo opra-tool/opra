@@ -46,7 +46,10 @@ export async function processBinauralAudio(
       resultsLeft.aWeightedSquaredSum,
       resultsRight.aWeightedSquaredSum
     ),
-    centerTime: mean(resultsLeft.centerTime, resultsRight.centerTime),
+    schwerpunktzeit: mean(
+      resultsLeft.schwerpunktzeit,
+      resultsRight.schwerpunktzeit
+    ),
     reverbTime: arraysMean(resultsLeft.reverbTime, resultsRight.reverbTime),
     bandsSquaredSum: arraysMean(
       resultsLeft.bandsSquaredSum,
