@@ -1,31 +1,32 @@
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { GraphConfig } from './LineGraph';
+import { ResponseDetail } from '../../audio/response-detail';
+import { GraphConfig } from './line-graph';
 
 type Point = {
   x: number;
   y: number;
 };
 
-type ColoredPoints = {
-  color: string;
-  points: Point[];
-};
+type Points = Point[];
 
 const MAX_X = 0.5;
 const DECIMATION_SAMPLES = 500;
 
 @customElement('impulse-response-graph')
 export class ImpulseResponseGraph extends LitElement {
-  @property({ type: Array }) squaredIR: ColoredPoints[] = [];
+  @property({ type: Array })
+  responseDetails: ResponseDetail[] = [];
+
+  @property({ type: Array }) squaredIR: Points[] = [];
 
   render() {
     const config: GraphConfig = {
-      datasets: this.squaredIR.map(({ color, points }) => ({
+      datasets: this.squaredIR.map((points, index) => ({
         label: 'Squared IR',
         data: points,
         fill: false,
-        borderColor: color,
+        borderColor: this.responseDetails[index].color,
         borderWidth: 1,
         pointRadius: 0,
       })),

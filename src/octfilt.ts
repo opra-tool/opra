@@ -1,4 +1,4 @@
-import { BinauralAudio } from './audio/BinauralAudio';
+import { BinauralAudio } from './audio/binaural-audio';
 import { bandpass } from './filtering/bandpass';
 
 const FREQUENCIES_IEC61672 = [

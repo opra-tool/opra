@@ -1,4 +1,4 @@
-import { parseSampleRate } from './parseSampleRate';
+import { parseSampleRate } from './sample-rate-parsing';
 
 const ALLOWED_FILE_TYPES = ['audio/wav', 'audio/x-wav'];
 

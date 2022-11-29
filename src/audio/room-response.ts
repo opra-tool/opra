@@ -1,10 +1,10 @@
-export type RoomImpulseFile = {
+export type RoomResponse = {
   id: string;
+  color: string;
   fileName: string;
-  channelCount: number;
+  numberOfChannels: number;
   durationSeconds: number;
   sampleRate: number;
   isProcessing: boolean;
   isEnabled: boolean;
-  color: string;
 };

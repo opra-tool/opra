@@ -1,18 +1,13 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-
-type ResponseValue = {
-  fileName: string;
-  color: string;
-  value: number;
-};
+import { ResponseDetail } from '../audio/response-detail';
 
 export type Parameter = {
   name: string;
   description?: string;
   unit?: string;
-  responseValues: ResponseValue[];
+  responseValues: number[];
 };
 
 /**
@@ -21,7 +16,11 @@ export type Parameter = {
  */
 @customElement('parameters-table')
 export class ParametersTable extends LitElement {
-  @property({ type: Array, attribute: false }) parameters: Parameter[] = [];
+  @property({ type: Array })
+  responseDetails: ResponseDetail[] = [];
+
+  @property({ type: Array, attribute: false })
+  parameters: Parameter[] = [];
 
   render() {
     if (!this.parameters.length) {
@@ -38,7 +37,9 @@ export class ParametersTable extends LitElement {
                 <thead>
                   <tr>
                     <th></th>
-                    ${firstResponseValues.map(ParametersTable.renderLegend)}
+                    ${firstResponseValues.map((_, index) =>
+                      this.renderLegend(index)
+                    )}
                   </tr>
                 </thead>
               `
@@ -51,7 +52,9 @@ export class ParametersTable extends LitElement {
     `;
   }
 
-  private static renderLegend({ fileName, color }: ResponseValue) {
+  private renderLegend(currentIndex: number) {
+    const { color, fileName } = this.responseDetails[currentIndex];
+
     return html`
       <th title=${fileName}>
         <small class="legend-label">${fileName}</small>
@@ -85,7 +88,7 @@ export class ParametersTable extends LitElement {
             : null}
         </td>
         ${coloredValues.map(
-          ({ value }) => html`<td class="value">${value.toFixed(2)}</td>`
+          value => html`<td class="value">${value.toFixed(2)}</td>`
         )}
       </tr>
     `;

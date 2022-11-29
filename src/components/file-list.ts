@@ -2,8 +2,8 @@ import { SlSwitch } from '@shoelace-style/shoelace';
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { when } from 'lit/directives/when.js';
-import { formatFileDetails } from '../audio/formatFileDetails';
-import { RoomImpulseFile } from '../audio/RoomImpulseFile';
+import { formatResponseSummary } from '../presentation/room-response-format';
+import { RoomResponse } from '../audio/room-response';
 
 export class FileListToggleEvent extends CustomEvent<{
   id: string;
@@ -15,7 +15,7 @@ export class FileListRemoveEvent extends CustomEvent<{
 
 @customElement('file-list')
 export class FileList extends LitElement {
-  @property({ type: Array }) files: RoomImpulseFile[] = [];
+  @property({ type: Array }) files: RoomResponse[] = [];
 
   protected render() {
     const enabledCount = this.files.reduce(
@@ -31,14 +31,7 @@ export class FileList extends LitElement {
   }
 
   private renderFile(
-    {
-      id,
-      fileName,
-      isProcessing,
-      isEnabled,
-      color,
-      ...details
-    }: RoomImpulseFile,
+    { id, fileName, isProcessing, isEnabled, color, ...details }: RoomResponse,
     enabledCount: number
   ) {
     const cannotToggle = isEnabled && enabledCount === 1;
@@ -64,7 +57,7 @@ export class FileList extends LitElement {
         </div>
         <div>
           <p>${fileName}</p>
-          <small>${formatFileDetails(details)}</small>
+          <small>${formatResponseSummary(details)}</small>
         </div>
 
         <div class="color" .style=${`background-color: ${color}`}></div>

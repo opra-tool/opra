@@ -1,10 +1,10 @@
 import { expect } from '@esm-bundle/chai';
-import { formatFileDetails } from '../../src/audio/formatFileDetails';
+import { formatResponseSummary } from '../../src/presentation/room-response-format';
 
 it('formats monaural file details', () => {
   expect(
-    formatFileDetails({
-      channelCount: 1,
+    formatResponseSummary({
+      numberOfChannels: 1,
       durationSeconds: 1,
       sampleRate: 44100,
     })
@@ -13,8 +13,8 @@ it('formats monaural file details', () => {
 
 it('formats binaural file details', () => {
   expect(
-    formatFileDetails({
-      channelCount: 2,
+    formatResponseSummary({
+      numberOfChannels: 2,
       durationSeconds: 1,
       sampleRate: 44100,
     })

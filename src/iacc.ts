@@ -1,5 +1,5 @@
 import { iacc as wasmIacc } from 'wasm-raqi-online-toolbox';
-import { BinauralAudio } from './audio/BinauralAudio';
+import { BinauralAudio } from './audio/binaural-audio';
 
 /**
  * Calculates the interaural cross correlation on binaural audio as defined in ISO 3382-1.

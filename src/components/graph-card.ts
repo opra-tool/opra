@@ -1,12 +1,11 @@
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
-import { GraphConfig } from './graphs/LineGraph';
+import { GraphConfig } from './graphs/line-graph';
 
 @customElement('graph-card')
 export class GraphCard extends LitElement {
-  // TODO: how to deal with required properties without initialization?
-  @property({ type: String }) title: string = 'no title defined';
+  @property({ type: String }) title: string = '';
 
   @property({ type: Object }) config: GraphConfig | undefined;
 

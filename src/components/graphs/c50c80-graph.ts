@@ -1,36 +1,37 @@
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { DASH_STYLE_DASHED } from './graphStyles';
-import { GraphConfig } from './LineGraph';
+import { DASH_STYLE_DASHED } from './graph-styles';
+import { GraphConfig } from './line-graph';
 import { getFrequencyLabels } from './common';
 import { UNIT_DECIBELS, UNIT_HERTZ } from '../../units';
+import { ResponseDetail } from '../../audio/response-detail';
 
-type ColoredBandValues = {
-  color: string;
-  bandValues: number[];
-};
+type BandValues = number[];
 
 @customElement('c50c80-graph')
 export class C50C80Graph extends LitElement {
-  @property({ type: Array }) c50: ColoredBandValues[] = [];
+  @property({ type: Array })
+  responseDetails: ResponseDetail[] = [];
 
-  @property({ type: Array }) c80: ColoredBandValues[] = [];
+  @property({ type: Array }) c50: BandValues[] = [];
+
+  @property({ type: Array }) c80: BandValues[] = [];
 
   render() {
     const config: GraphConfig = {
       labels: getFrequencyLabels(),
       datasets: [
-        ...this.c50.map(({ color, bandValues: values }) => ({
+        ...this.c50.map((bandValues, index) => ({
           label: 'C50',
-          data: values,
+          data: bandValues,
           fill: false,
-          borderColor: color,
+          borderColor: this.responseDetails[index].color,
         })),
-        ...this.c80.map(({ color, bandValues: values }) => ({
+        ...this.c80.map((bandValues, index) => ({
           label: 'C80',
-          data: values,
+          data: bandValues,
           fill: false,
-          borderColor: color,
+          borderColor: this.responseDetails[index].color,
           borderDash: DASH_STYLE_DASHED,
         })),
       ],

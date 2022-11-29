@@ -13,7 +13,6 @@ import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.j
 
 // shoelace components
 import '@shoelace-style/shoelace/dist/components/input/input.js';
-import '@shoelace-style/shoelace/dist/components/divider/divider.js';
 import '@shoelace-style/shoelace/dist/components/dialog/dialog.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import '@shoelace-style/shoelace/dist/components/switch/switch.js';
@@ -24,22 +23,24 @@ import '@shoelace-style/shoelace/dist/components/select/select.js';
 import '@shoelace-style/shoelace/dist/components/menu-item/menu-item.js';
 
 // register web components
-import './components/AirValuesDialog';
-import './components/AudioAnalyzer';
-import './components/BaseCard';
-import './components/FileDrop';
-import './components/FileList';
-import './components/GraphCard';
-import './components/graphs/C50C80Graph';
-import './components/graphs/IACCGraph';
-import './components/graphs/ImpulseResponseGraph';
-import './components/graphs/LineGraph';
-import './components/graphs/ReverberationGraph';
-import './components/graphs/StrengthGraph';
-import './components/ParametersCard';
-import './components/ParametersTable';
-import './components/ProgressIndicator';
-import './components/StrengthsCard';
+import './components/audio-analyzer';
+import './components/base-card';
+import './components/file-drop';
+import './components/file-list';
+import './components/graph-card';
+import './components/graphs/c50c80-graph';
+import './components/graphs/iacc-graph';
+import './components/graphs/impulse-response-graph';
+import './components/graphs/line-graph';
+import './components/graphs/reverb-graph';
+import './components/graphs/strengths-graph';
+import './components/p0-dialog';
+import './components/p0-notice';
+import './components/p0-setting';
+import './components/parameters-card';
+import './components/parameters-table';
+import './components/progress-indicator';
+import './components/strengths-card';
 
 // init web assembly module
 // eslint-disable-next-line no-console

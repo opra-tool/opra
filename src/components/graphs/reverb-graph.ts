@@ -2,35 +2,38 @@ import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { UNIT_HERTZ, UNIT_SECONDS } from '../../units';
 import { getFrequencyLabels } from './common';
-import { GraphConfig } from './LineGraph';
-import { DASH_STYLE_DASHED } from './graphStyles';
+import { GraphConfig } from './line-graph';
+import { DASH_STYLE_DASHED } from './graph-styles';
+import { ResponseDetail } from '../../audio/response-detail';
 
-type ColoredBandValues = {
-  color: string;
-  bandValues: number[];
-};
+type BandValues = number[];
 
 @customElement('reverb-graph')
 export class ReverbGraph extends LitElement {
-  @property({ type: Array }) edt: ColoredBandValues[] = [];
+  @property({ type: Array })
+  responseDetails: ResponseDetail[] = [];
 
-  @property({ type: Array }) reverbTime: ColoredBandValues[] = [];
+  @property({ type: Array })
+  edt: BandValues[] = [];
+
+  @property({ type: Array })
+  reverbTime: BandValues[] = [];
 
   render() {
     const config: GraphConfig = {
       labels: getFrequencyLabels(),
       datasets: [
-        ...this.edt.map(({ color, bandValues: values }) => ({
+        ...this.edt.map((bandValues, index) => ({
           label: 'Energy Decay Curve',
-          data: values,
+          data: bandValues,
           fill: false,
-          borderColor: color,
+          borderColor: this.responseDetails[index].color,
         })),
-        ...this.reverbTime.map(({ color, bandValues: values }) => ({
+        ...this.reverbTime.map((bandValues, index) => ({
           label: 'Reverb Time (T20)',
-          data: values,
+          data: bandValues,
           fill: false,
-          borderColor: color,
+          borderColor: this.responseDetails[index].color,
           borderDash: DASH_STYLE_DASHED,
         })),
       ],

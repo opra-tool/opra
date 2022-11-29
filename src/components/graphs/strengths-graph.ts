@@ -2,44 +2,41 @@ import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { UNIT_DECIBELS, UNIT_HERTZ } from '../../units';
 import { getFrequencyLabels } from './common';
-import { GraphConfig } from './LineGraph';
-import { DASH_STYLE_DOTTED, DASH_STYLE_DASHED } from './graphStyles';
+import { GraphConfig } from './line-graph';
+import { DASH_STYLE_DOTTED, DASH_STYLE_DASHED } from './graph-styles';
+import { Strengths } from '../../strength';
+import { ResponseDetail } from '../../audio/response-detail';
 
-type MultiValue = {
-  color: string;
-  values: number[];
-};
-
-@customElement('strength-graph')
+@customElement('strengths-graph')
 export class StrengthGraph extends LitElement {
-  @property({ type: Array }) strengths: MultiValue[] = [];
+  @property({ type: Array })
+  responseDetails: ResponseDetail[] = [];
 
-  @property({ type: Array }) earlyStrengths: MultiValue[] = [];
-
-  @property({ type: Array }) lateStrengths: MultiValue[] = [];
+  @property({ type: Array })
+  strengths: Strengths[] = [];
 
   render() {
     const config: GraphConfig = {
       labels: getFrequencyLabels(),
       datasets: [
-        ...this.strengths.map(({ color, values }) => ({
+        ...this.strengths.map(({ strength }, index) => ({
           label: 'Strength',
-          data: values,
+          data: strength,
           fill: false,
-          borderColor: color,
+          borderColor: this.responseDetails[index].color,
         })),
-        ...this.earlyStrengths.map(({ color, values }) => ({
+        ...this.strengths.map(({ earlyStrength }, index) => ({
           label: 'Early Strength',
-          data: values,
+          data: earlyStrength,
           fill: false,
-          borderColor: color,
+          borderColor: this.responseDetails[index].color,
           borderDash: DASH_STYLE_DASHED,
         })),
-        ...this.lateStrengths.map(({ color, values }) => ({
+        ...this.strengths.map(({ lateStrength }, index) => ({
           label: 'Late Strength',
-          data: values,
+          data: lateStrength,
           fill: false,
-          borderColor: color,
+          borderColor: this.responseDetails[index].color,
           borderDash: DASH_STYLE_DOTTED,
         })),
       ],

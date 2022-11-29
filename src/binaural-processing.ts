@@ -1,5 +1,5 @@
-import { BinauralAudio } from './audio/BinauralAudio';
-import { e80 } from './earlyLateFractions';
+import { BinauralAudio } from './audio/binaural-audio';
+import { e80 } from './early-late-fractions';
 import { calculateIacc } from './iacc';
 import { arraysMean, mean } from './math/mean';
 import { MonauralResults, processMonauralAudio } from './monaural-processing';
@@ -7,8 +7,8 @@ import { octfiltBinaural } from './octfilt';
 import { correctStarttimeBinaural } from './starttime';
 
 export type BinauralResults = MonauralResults & {
-  iacc: number[];
-  eiacc: number[];
+  iaccBands: number[];
+  eiaccBands: number[];
 };
 
 export async function processBinauralAudio(
@@ -47,7 +47,10 @@ export async function processBinauralAudio(
       resultsLeft.schwerpunktzeit,
       resultsRight.schwerpunktzeit
     ),
-    reverbTime: arraysMean(resultsLeft.reverbTime, resultsRight.reverbTime),
+    reverbTimeBands: arraysMean(
+      resultsLeft.reverbTimeBands,
+      resultsRight.reverbTimeBands
+    ),
     bandsSquaredSum: arraysMean(
       resultsLeft.bandsSquaredSum,
       resultsRight.bandsSquaredSum
@@ -60,9 +63,9 @@ export async function processBinauralAudio(
       resultsLeft.l80BandsSquaredSum,
       resultsRight.l80BandsSquaredSum
     ),
-    c50Values: arraysMean(resultsLeft.c50Values, resultsRight.c50Values),
-    c80Values: arraysMean(resultsLeft.c80Values, resultsRight.c80Values),
-    edtValues: arraysMean(resultsLeft.edtValues, resultsRight.edtValues),
+    c50Bands: arraysMean(resultsLeft.c50Bands, resultsRight.c50Bands),
+    c80Bands: arraysMean(resultsLeft.c80Bands, resultsRight.c80Bands),
+    edtBands: arraysMean(resultsLeft.edtBands, resultsRight.edtBands),
     squaredImpulseResponse: resultsLeft.squaredImpulseResponse.map(
       ({ x, y }, i) => ({
         x,
@@ -72,8 +75,8 @@ export async function processBinauralAudio(
   };
 
   return {
-    iacc,
-    eiacc,
+    iaccBands: iacc,
+    eiaccBands: eiacc,
     ...meanResults,
   };
 }

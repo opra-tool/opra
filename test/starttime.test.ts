@@ -1,5 +1,5 @@
 import { expect } from '@esm-bundle/chai';
-import { BinauralAudio } from '../src/audio/BinauralAudio';
+import { BinauralAudio } from '../src/audio/binaural-audio';
 import {
   correctStarttimeBinaural,
   correctStarttimeMonaural,

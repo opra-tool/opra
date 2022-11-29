@@ -2,11 +2,9 @@ import { LitElement, html, css } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 
-type EventDetail = {
+export class FileDropChangeEvent extends CustomEvent<{
   files: FileList;
-};
-
-export type FileDropChangeEvent = CustomEvent<EventDetail>;
+}> {}
 
 @customElement('file-drop')
 export class FileDrop extends LitElement {
@@ -30,7 +28,7 @@ export class FileDrop extends LitElement {
       >
         <span>Drop room response files here</span>
         <span>or</span>
-        <sl-button @click=${this.onFileUploadButtonCLicked}>
+        <sl-button variant="primary" @click=${this.onFileUploadButtonCLicked}>
           Choose file(s)
         </sl-button>
         <input
@@ -81,7 +79,7 @@ export class FileDrop extends LitElement {
     }
 
     this.dispatchEvent(
-      new CustomEvent<EventDetail>('change', {
+      new FileDropChangeEvent('change', {
         detail: {
           files,
         },
