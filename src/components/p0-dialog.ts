@@ -43,43 +43,48 @@ export class P0Dialog extends LitElement {
     return html`
       <sl-dialog ?open=${false} class="dialog">
         <span slot="label">Set ${P0_VAR} and air parameters</span>
-        <form @submit=${this.onSubmit}>
-          <sl-input
-            type="number"
-            min="0"
-            step="any"
-            filled
-            required
-            value=${this.p0 ? formatP0(this.p0) : ''}
-            class="p0-input"
-          >
-            <span slot="label">${P0_VAR}</span>
-          </sl-input>
+        <section>
+          <form @submit=${this.onSubmit}>
+            <sl-input
+              type="number"
+              min="0"
+              step="any"
+              filled
+              required
+              value=${this.p0 ? formatP0(this.p0) : ''}
+              class="p0-input"
+            >
+              <span slot="label">${P0_VAR}</span>
+            </sl-input>
 
-          <sl-input
-            label=${`Air Temperature in ${UNIT_CELCIUS}`}
-            type="number"
-            min=${MIN_TEMPERATURE}
-            max=${MAX_TEMPERATURE}
-            filled
-            required
-            value=${this.temperature.toString()}
-            class="temperature-input"
-          ></sl-input>
+            <sl-input
+              label=${`Air Temperature in ${UNIT_CELCIUS}`}
+              type="number"
+              min=${MIN_TEMPERATURE}
+              max=${MAX_TEMPERATURE}
+              filled
+              required
+              value=${this.temperature.toString()}
+              class="temperature-input"
+            ></sl-input>
 
-          <sl-input
-            label="Relative humidity in percent"
-            type="number"
-            min=${MIN_HUMIDITY}
-            max=${MAX_HUMIDITY}
-            filled
-            required
-            value=${this.relativeHumidity.toString()}
-            class="humidity-input"
-          ></sl-input>
+            <sl-input
+              label="Relative humidity in percent"
+              type="number"
+              min=${MIN_HUMIDITY}
+              max=${MAX_HUMIDITY}
+              filled
+              required
+              value=${this.relativeHumidity.toString()}
+              class="humidity-input"
+            ></sl-input>
 
-          <sl-button type="submit">Update</sl-button>
-        </form>
+            <sl-button type="submit">Update</sl-button>
+          </form>
+        </section>
+        <section class="persistence-notice">
+          <small>Values are stored for your next visit.</small>
+        </section>
       </sl-dialog>
     `;
   }
@@ -120,6 +125,11 @@ export class P0Dialog extends LitElement {
     form {
       display: grid;
       gap: 1rem;
+    }
+
+    .persistence-notice {
+      display: block;
+      margin-top: 1rem;
     }
   `;
 }
