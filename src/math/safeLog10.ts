@@ -4,7 +4,7 @@
  */
 export function safeLog10(num: number): number {
   if (num < 0) {
-    throw new Error('expected num to be negative');
+    throw new Error('expected input to be positive');
   }
 
   return Math.log10(num);
