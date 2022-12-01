@@ -126,8 +126,16 @@ export class AudioAnalyzer extends LitElement {
         ${this.renderError()}
       </section>
 
+      ${this.responses.length > 0
+        ? html`<file-dropdown
+            .files=${this.responses}
+            @toggle-file=${this.onToggleFile}
+            @remove-file=${this.onRemoveFile}
+          ></file-dropdown>`
+        : null}
+
       <p0-dialog
-        p0=${this.p0}
+        .p0=${this.p0}
         relativeHumidity=${this.relativeHumidity}
         temperature=${this.temperature}
         class="p0-dialog"
@@ -415,6 +423,7 @@ export class AudioAnalyzer extends LitElement {
     section.audio-analyzer {
       display: grid;
       gap: 1rem;
+      margin-block-end: 2.5rem;
     }
 
     section.files {

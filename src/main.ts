@@ -14,6 +14,7 @@ import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.j
 // shoelace components
 import '@shoelace-style/shoelace/dist/components/input/input.js';
 import '@shoelace-style/shoelace/dist/components/dialog/dialog.js';
+import '@shoelace-style/shoelace/dist/components/dropdown/dropdown.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
 import '@shoelace-style/shoelace/dist/components/switch/switch.js';
 import '@shoelace-style/shoelace/dist/components/button/button.js';
@@ -26,6 +27,7 @@ import '@shoelace-style/shoelace/dist/components/menu-item/menu-item.js';
 import './components/audio-analyzer';
 import './components/base-card';
 import './components/file-drop';
+import './components/file-dropdown';
 import './components/file-list';
 import './components/graph-card';
 import './components/graphs/c50c80-graph';
