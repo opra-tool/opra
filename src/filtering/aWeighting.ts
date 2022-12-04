@@ -40,5 +40,5 @@ export function aWeightAudioSignal(
 
   const XAFull = [...XA, ...XA.slice(0, -1).reverse().map(conjugate)];
 
-  return new Float32Array(ifft(XAFull).map(v => v.getRe()));
+  return ifft(XAFull, samples.length * 2);
 }

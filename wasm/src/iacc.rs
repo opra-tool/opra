@@ -1,7 +1,18 @@
 mod iacc {
-  use rustfft::num_complex::Complex;
   use wasm_bindgen::prelude::wasm_bindgen;
   use crate::{fft, ifft, utils};
+
+  #[wasm_bindgen]
+  extern "C" {
+    #[wasm_bindgen(js_namespace = console)]
+    fn log(s: &str);
+  }
+
+  macro_rules! console_log {
+    // Note that this is using the `log` function imported above during
+    // `bare_bones`
+    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
+}
 
   #[wasm_bindgen]
   pub fn iacc(left_channel: Vec<f32>, right_channel: Vec<f32>) -> f32 {
@@ -18,7 +29,6 @@ mod iacc {
       left_sum += (left_channel[i] as f64).powf(2.0);
       right_sum += (right_channel[i] as f64).powf(2.0);
     }
-
 
     let transform_length = find_transform_length(left_channel.len());
     let correlated = x_correlate(left_channel, right_channel, transform_length);
@@ -55,12 +65,12 @@ mod iacc {
   }
 
   fn x_correlate(a: Vec<f32>, b: Vec<f32>, n: usize) -> Vec<f32> {
-    let mut a_padded = vec![Complex { re: 0.0, im: 0.0 }; n];
-    let mut b_padded = vec![Complex { re: 0.0, im: 0.0 }; n];
+    let mut a_padded = vec![0.0; n];
+    let mut b_padded = vec![0.0; n];
 
     for i in 0..a.len() {
-      a_padded[i] = Complex { re: a[i], im: 0.0 };
-      b_padded[i] = Complex { re: b[i], im: 0.0 };
+      a_padded[i] = a[i];
+      b_padded[i] = b[i];
     }
 
     let a_fft = fft(a_padded);
@@ -70,15 +80,10 @@ mod iacc {
     for (i, _) in a_fft.iter().enumerate() {
       multiplied.push(a_fft[i] * b_fft[i].conj());
     }
-    let ifft = ifft(multiplied);
-
-    let mut real = Vec::with_capacity(ifft.len());
-    for val in ifft {
-      real.push(val.re);
-    }
+    let ifft = ifft(multiplied, n);
 
     let mxl = a.len() - 1;
-    return [&real[n - mxl..mxl + n - mxl], &real[0..mxl + 1]].concat();
+    return [&ifft[n - mxl..n], &ifft[0..a.len()]].concat();
   }
 }
 

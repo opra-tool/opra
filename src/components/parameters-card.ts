@@ -61,11 +61,13 @@ export class ParametersCard extends LitElement {
       });
       parameters.push({
         name: 'A-Weighted Avg. Strength',
+        description: 'parameter is currently not reliably calculated',
         responseValues: aWeighted,
         unit: UNIT_DECIBELS,
       });
       parameters.push({
         name: 'A-Weighted Avg. C80',
+        description: 'parameter is currently not reliably calculated',
         responseValues: aWeightedC80,
         unit: UNIT_DECIBELS,
       });

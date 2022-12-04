@@ -1,14 +1,9 @@
 import { Complex } from '@iamsquare/complex.js';
 import { ifft_flat as wasmIfftFlat } from 'wasm-raqi-online-toolbox';
-import {
-  complexObjectFormIntoFlatForm,
-  complexFlatFormIntoObjectForm,
-} from './wasm';
+import { complexObjectFormIntoFlatForm } from './wasm';
 
-export function ifft(x: Complex[]): Complex[] {
+export function ifft(x: Complex[], length: number): Float32Array {
   const flatInput = complexObjectFormIntoFlatForm(x);
 
-  const flatOutput = wasmIfftFlat(flatInput);
-
-  return complexFlatFormIntoObjectForm(flatOutput);
+  return wasmIfftFlat(flatInput, length);
 }

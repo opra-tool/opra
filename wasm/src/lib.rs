@@ -2,11 +2,8 @@ mod utils;
 mod wasm;
 mod iacc;
 
-use std::usize;
-
+use realfft::{RealFftPlanner, num_complex::Complex};
 use wasm::*;
-
-use rustfft::{num_complex::Complex, FftPlanner};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -25,42 +22,43 @@ macro_rules! console_log {
 pub fn fft_flat(values: Vec<f32>) -> Vec<f32> {
     utils::set_panic_hook();
 
-    let buffer: Vec<Complex<f32>> = values
+    /*let buffer: Vec<Complex<f32>> = values
         .iter()
         .map(|x| return Complex { re: *x, im: 0.0 })
-        .collect();
+        .collect();*/
 
-    let out = fft(buffer);
+    let out = fft(values);
 
     return complex_object_form_to_flat_form(out);
 }
 
-pub fn fft(mut x: Vec<Complex<f32>>) -> Vec<Complex<f32>> {
-    let mut planner = FftPlanner::new();
+pub fn fft(mut x: Vec<f32>) -> Vec<Complex<f32>> {
+    let mut planner = RealFftPlanner::<f32>::new();
     let fft = planner.plan_fft_forward(x.len());
 
-    fft.process(&mut x[..]);
+    let mut out = fft.make_output_vec();
 
-    return x;
+    fft.process(&mut x, &mut out).unwrap();
+
+    return out;
 }
 
 #[wasm_bindgen]
-pub fn ifft_flat(flat_input: Vec<f32>) -> Vec<f32> {
+pub fn ifft_flat(flat_input: Vec<f32>, length: usize) -> Vec<f32> {
     utils::set_panic_hook();
 
     let input = complex_flat_form_to_object_form(flat_input);
 
-    let out = ifft(input);
-
-    return complex_object_form_to_flat_form(out);
+    return ifft(input, length);
 }
 
-pub fn ifft(mut x: Vec<Complex<f32>>) -> Vec<Complex<f32>> {
-    let mut planner = FftPlanner::new();
-    let ifft = planner.plan_fft_inverse(x.len());
+pub fn ifft(mut input: Vec<Complex<f32>>, length: usize) -> Vec<f32> {
+    let mut planner = RealFftPlanner::<f32>::new();
+    let ifft = planner.plan_fft_inverse(length);
+    let mut out = ifft.make_output_vec();
 
-    ifft.process(&mut x[..]);
+    ifft.process(&mut input, &mut out).unwrap();
 
     // normalize
-    return x.iter().map(|val| val / x.len() as f32).collect();
+    return out.iter().map(|val| val / length as f32).collect();
 }
