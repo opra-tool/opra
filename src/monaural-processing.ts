@@ -60,7 +60,9 @@ export async function processMonauralAudio(
 
   const bassRatio =
     (reverbTime[1] + reverbTime[2]) / (reverbTime[3] + reverbTime[4]);
-  const schwerpunktzeit = calculateSchwerpunktzeit(samples, sampleRate);
+
+  const trimmedSamples = correctStarttimeMonaural(samples);
+  const schwerpunktzeit = calculateSchwerpunktzeit(trimmedSamples, sampleRate);
 
   // TODO: extract into method
   const squaredImpulseResponse = [];

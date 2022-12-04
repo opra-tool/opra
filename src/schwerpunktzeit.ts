@@ -1,12 +1,9 @@
-import { arraySum } from './math/arraySum';
-import { correctStarttimeMonaural } from './starttime';
-
 const SECONDS_TO_MILLIS = 1000;
 
 /**
  * Calculates Schwerpunktzeit in milliseconds as defined in ISO 3382-1.
  *
- * @param samples Samples of the audio signal.
+ * @param samples Starttime corrected samples of the audio signal.
  * @param sampleRate Sample rate of the audio signal in Hz.
  * @returns Schwerpunktzeit in milliseconds.
  */
@@ -14,13 +11,12 @@ export function calculateSchwerpunktzeit(
   samples: Float32Array,
   sampleRate: number
 ): number {
-  // TODO: is this already done outside of function?
-  const trimmedSamples = correctStarttimeMonaural(samples);
-
-  let sum = 0;
-  for (let i = 0; i < trimmedSamples.length; i += 1) {
-    sum += (i / sampleRate) * trimmedSamples[i];
+  let sum1 = 0;
+  let sum2 = 0;
+  for (let i = 0; i < samples.length; i += 1) {
+    sum1 += (i / sampleRate) * samples[i] ** 2;
+    sum2 += samples[i] ** 2;
   }
 
-  return (sum / arraySum(trimmedSamples)) * SECONDS_TO_MILLIS;
+  return (sum1 / sum2) * SECONDS_TO_MILLIS;
 }
