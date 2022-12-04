@@ -1,9 +1,5 @@
-import { LitElement, html } from 'lit';
+import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { UNIT_HERTZ } from '../../units';
-import { getFrequencyLabels } from './common';
-import { GraphConfig } from './line-graph';
-import { DASH_STYLE_DASHED } from './graph-styles';
 import { ResponseDetail } from '../../audio/response-detail';
 
 type BandValues = number[];
@@ -18,41 +14,29 @@ export class IACCGraph extends LitElement {
   @property({ type: Array }) eiacc: BandValues[] = [];
 
   render() {
-    const config: GraphConfig = {
-      labels: getFrequencyLabels(),
-      datasets: [
-        ...this.iacc.map((values, index) => ({
-          label: 'Interaural Cross Correlation',
-          data: values,
-          fill: false,
-          borderColor: this.responseDetails[index].color,
+    const params = [
+      {
+        key: 'iacc',
+        label: 'Interaural Cross Correlation',
+        datasets: this.iacc.map((values, index) => ({
+          color: this.responseDetails[index].color,
+          values,
         })),
-        ...this.eiacc.map((values, index) => ({
-          label: 'Early Interaural Cross Correlation',
-          data: values,
-          fill: false,
-          borderColor: this.responseDetails[index].color,
-          borderDash: DASH_STYLE_DASHED,
-        })),
-      ],
-      options: {
-        scales: {
-          x: {
-            title: {
-              display: true,
-              text: `Frequency (${UNIT_HERTZ})`,
-            },
-          },
-        },
       },
-    };
+      {
+        key: 'eiacc',
+        label: 'Early Interaural Cross Correlation',
+        datasets: this.eiacc.map((values, index) => ({
+          color: this.responseDetails[index].color,
+          values,
+        })),
+      },
+    ];
 
     return html`
-      <graph-card
-        title="Interaural Cross Correlation"
-        .config=${config}
-        height="150"
-      ></graph-card>
+      <base-card cardTitle="Interaural Cross Correlation">
+        <octave-bands-graph .params=${params}></octave-bands-graph>
+      </base-card>
     `;
   }
 }

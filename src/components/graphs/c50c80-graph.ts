@@ -1,10 +1,7 @@
-import { LitElement, html } from 'lit';
+import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { DASH_STYLE_DASHED } from './graph-styles';
-import { GraphConfig } from './line-graph';
-import { getFrequencyLabels } from './common';
-import { UNIT_DECIBELS, UNIT_HERTZ } from '../../units';
 import { ResponseDetail } from '../../audio/response-detail';
+import { UNIT_DECIBELS } from '../../units';
 
 type BandValues = number[];
 
@@ -18,43 +15,32 @@ export class C50C80Graph extends LitElement {
   @property({ type: Array }) c80: BandValues[] = [];
 
   render() {
-    const config: GraphConfig = {
-      labels: getFrequencyLabels(),
-      datasets: [
-        ...this.c50.map((bandValues, index) => ({
-          label: 'C50',
-          data: bandValues,
-          fill: false,
-          borderColor: this.responseDetails[index].color,
+    const params = [
+      {
+        key: 'c50',
+        label: 'C50',
+        datasets: this.c50.map((values, index) => ({
+          color: this.responseDetails[index].color,
+          values,
         })),
-        ...this.c80.map((bandValues, index) => ({
-          label: 'C80',
-          data: bandValues,
-          fill: false,
-          borderColor: this.responseDetails[index].color,
-          borderDash: DASH_STYLE_DASHED,
-        })),
-      ],
-      options: {
-        scales: {
-          y: {
-            title: {
-              display: true,
-              text: UNIT_DECIBELS,
-            },
-          },
-          x: {
-            title: {
-              display: true,
-              text: `Frequency [${UNIT_HERTZ}]`,
-            },
-          },
-        },
       },
-    };
+      {
+        key: 'c80',
+        label: 'C80',
+        datasets: this.c80.map((values, index) => ({
+          color: this.responseDetails[index].color,
+          values,
+        })),
+      },
+    ];
 
     return html`
-      <graph-card title="C50 / C80" .config=${config}></graph-card>
+      <base-card cardTitle="C50 / C80">
+        <octave-bands-graph
+          .params=${params}
+          .yAxisLabel=${UNIT_DECIBELS}
+        ></octave-bands-graph>
+      </base-card>
     `;
   }
 }

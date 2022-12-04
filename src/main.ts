@@ -5,7 +5,6 @@ import {
   LinearScale,
   CategoryScale,
   PointElement,
-  Legend,
   Tooltip,
 } from 'chart.js';
 import initWasm from 'wasm-raqi-online-toolbox';
@@ -13,6 +12,7 @@ import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.j
 
 // shoelace components
 import '@shoelace-style/shoelace/dist/components/input/input.js';
+import '@shoelace-style/shoelace/dist/components/checkbox/checkbox.js';
 import '@shoelace-style/shoelace/dist/components/dialog/dialog.js';
 import '@shoelace-style/shoelace/dist/components/dropdown/dropdown.js';
 import '@shoelace-style/shoelace/dist/components/icon/icon.js';
@@ -29,11 +29,11 @@ import './components/base-card';
 import './components/file-drop';
 import './components/file-dropdown';
 import './components/file-list';
-import './components/graph-card';
 import './components/graphs/c50c80-graph';
 import './components/graphs/iacc-graph';
 import './components/graphs/impulse-response-graph';
 import './components/graphs/line-graph';
+import './components/graphs/octave-bands-graph';
 import './components/graphs/reverb-graph';
 import './components/graphs/strengths-graph';
 import './components/p0-dialog';
@@ -57,7 +57,6 @@ Chart.register(
   LinearScale,
   CategoryScale,
   PointElement,
-  Legend,
   Tooltip
 );
 Chart.defaults.font.size = 15;
