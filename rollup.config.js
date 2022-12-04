@@ -31,15 +31,15 @@ export default {
     terser(),
     /** Bundle assets references via import.meta.url */
     importMetaAssets(),
-    /** Copy shoelace-related assets */
+    /** Copy required shoelace assets */
     copy({
       targets: [
         {
           src: path.resolve(
             __dirname,
-            'node_modules/@shoelace-style/shoelace/dist/assets'
+            'node_modules/@shoelace-style/shoelace/dist/assets/icons/trash.svg'
           ),
-          dest: path.resolve(__dirname, 'dist/shoelace'),
+          dest: path.resolve(__dirname, 'dist/assets/icons'),
         },
       ],
     }),
