@@ -283,7 +283,7 @@ export class AudioAnalyzer extends LitElement {
 
     const id = AudioAnalyzer.randomId();
     const fileName = audioFile.name;
-    const color = FILE_COLORS[this.responses.length];
+    const color = this.findAvailableColor();
 
     this.responses = [
       ...this.responses,
@@ -331,6 +331,19 @@ export class AudioAnalyzer extends LitElement {
       ...file,
       isProcessing: file.id === id ? false : file.isProcessing,
     }));
+  }
+
+  private findAvailableColor(): string {
+    const takenColors = this.responses.map(r => r.color);
+    const color = FILE_COLORS.find(c => !takenColors.includes(c));
+
+    if (!color) {
+      throw new Error(
+        `could not find available color takenColors=${takenColors}`
+      );
+    }
+
+    return color;
   }
 
   private async recalculateStrengths() {
