@@ -14,6 +14,11 @@ import { P0Dialog, P0DialogChangeEvent } from './p0-dialog';
 import { mapArrayParam } from '../arrays';
 import { toast } from './toast';
 import { P0_VAR } from '../presentation/p0-format';
+import {
+  persistValue,
+  retrieveValue,
+  retrieveValueOrDefault,
+} from '../persistence';
 
 const COLOR_WHITE = 'rgba(255, 255, 255, 0.75)';
 const COLOR_BLUE = 'rgba(153, 102, 255, 0.5)';
@@ -46,47 +51,22 @@ const HUMIDITY_STORAGE_KEY = 'strengths-humidity';
 const DEFAULT_RELATIVE_HUMIDITY = 50;
 const DEFAULT_TEMPERATURE = 20;
 
-function getStoredValueOrDefault(key: string, defaultValue: number): number {
-  const stored = localStorage.getItem(key);
-
-  if (stored === null) {
-    return defaultValue;
-  }
-
-  return parseFloat(stored);
-}
-
-function getStoredOrDefaultHumidity(): number {
-  return getStoredValueOrDefault(
-    HUMIDITY_STORAGE_KEY,
-    DEFAULT_RELATIVE_HUMIDITY
-  );
-}
-
-function getStoredOrDefaultTemperature(): number {
-  return getStoredValueOrDefault(TEMPERATURE_STORAGE_KEY, DEFAULT_TEMPERATURE);
-}
-
-function getStoredOrNoP0(): number | null {
-  const stored = localStorage.getItem(P0_STORAGE_KEY);
-
-  if (stored === null) {
-    return null;
-  }
-
-  return parseFloat(stored);
-}
-
 @customElement('audio-analyzer')
 export class AudioAnalyzer extends LitElement {
   @state()
-  private p0 = getStoredOrNoP0();
+  private p0 = retrieveValue(P0_STORAGE_KEY);
 
   @state()
-  private temperature = getStoredOrDefaultTemperature();
+  private temperature = retrieveValueOrDefault(
+    TEMPERATURE_STORAGE_KEY,
+    DEFAULT_TEMPERATURE
+  );
 
   @state()
-  private relativeHumidity = getStoredOrDefaultHumidity();
+  private relativeHumidity = retrieveValueOrDefault(
+    HUMIDITY_STORAGE_KEY,
+    DEFAULT_RELATIVE_HUMIDITY
+  );
 
   @state()
   private responses: RoomResponse[] = [];
@@ -408,7 +388,7 @@ export class AudioAnalyzer extends LitElement {
 
       this.recalculateStrengths();
 
-      localStorage.setItem(P0_STORAGE_KEY, p0.toString());
+      persistValue(P0_STORAGE_KEY, p0);
     }, 0);
   }
 
@@ -430,15 +410,9 @@ export class AudioAnalyzer extends LitElement {
 
       this.recalculateStrengths();
 
-      localStorage.setItem(P0_STORAGE_KEY, p0.toString());
-      localStorage.setItem(
-        TEMPERATURE_STORAGE_KEY,
-        this.temperature.toString()
-      );
-      localStorage.setItem(
-        HUMIDITY_STORAGE_KEY,
-        this.relativeHumidity.toString()
-      );
+      persistValue(P0_STORAGE_KEY, p0);
+      persistValue(TEMPERATURE_STORAGE_KEY, this.temperature);
+      persistValue(HUMIDITY_STORAGE_KEY, this.relativeHumidity);
     }, 0);
   }
 
