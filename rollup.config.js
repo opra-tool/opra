@@ -39,7 +39,7 @@ export default {
             __dirname,
             'node_modules/@shoelace-style/shoelace/dist/assets/icons/trash.svg'
           ),
-          dest: path.resolve(__dirname, 'dist/assets/icons'),
+          dest: path.resolve(__dirname, 'dist/shoelace/assets/icons'),
         },
       ],
     }),

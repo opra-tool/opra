@@ -48,7 +48,7 @@ import './components/strengths-card';
 // eslint-disable-next-line no-console
 initWasm().catch(console.error);
 
-setBasePath('/');
+setBasePath('/shoelace');
 
 // prepare chart.js library
 Chart.register(
