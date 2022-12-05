@@ -374,7 +374,11 @@ export class AudioAnalyzer extends LitElement {
     this.p0 = p0;
 
     setTimeout(() => {
-      toast(html`Successfully set ${P0_VAR}=${p0}`, 'success', 'check2-circle');
+      toast(
+        html`Successfully set ${P0_VAR} = ${p0}`,
+        'success',
+        'check2-circle'
+      );
 
       this.recalculateStrengths();
 
@@ -392,7 +396,7 @@ export class AudioAnalyzer extends LitElement {
     setTimeout(() => {
       this.p0Dialog.hide();
       toast(
-        html`Successfully set ${P0_VAR}=${p0}, ${temperature}${UNIT_CELCIUS},
+        html`Successfully set ${P0_VAR} = ${p0}, ${temperature}${UNIT_CELCIUS},
         ${relativeHumidity}%`,
         'success',
         'check2-circle'
