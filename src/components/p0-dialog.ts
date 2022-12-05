@@ -100,7 +100,11 @@ export class P0Dialog extends LitElement {
   private onSubmit(ev: SubmitEvent) {
     ev.preventDefault();
 
-    if (this.humidityInput.invalid || this.temperatureInput.invalid) {
+    if (
+      this.p0Input.invalid ||
+      this.humidityInput.invalid ||
+      this.temperatureInput.invalid
+    ) {
       return;
     }
 

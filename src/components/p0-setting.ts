@@ -1,3 +1,4 @@
+import SlInput from '@shoelace-style/shoelace/dist/components/input/input.js';
 import { LitElement, html, css } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { formatP0, P0_VAR } from '../presentation/p0-format';
@@ -12,7 +13,7 @@ export class P0Setting extends LitElement {
   p0: number | null = null;
 
   @query('.p0-input')
-  private p0Input!: HTMLInputElement;
+  private p0Input!: SlInput;
 
   protected render() {
     return html`
@@ -39,7 +40,7 @@ export class P0Setting extends LitElement {
   private onSubmitP0(ev: SubmitEvent) {
     ev.preventDefault();
 
-    if (this.p0Input.value !== '') {
+    if (!this.p0Input.invalid) {
       this.dispatchEvent(
         new P0SettingChangeEvent('change', {
           detail: {
