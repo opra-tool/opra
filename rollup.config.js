@@ -7,6 +7,13 @@ import { terser } from 'rollup-plugin-terser';
 import { generateSW } from 'rollup-plugin-workbox';
 import path from 'path';
 
+function iconPath(iconName) {
+  return path.resolve(
+    __dirname,
+    `node_modules/@shoelace-style/shoelace/dist/assets/icons/${iconName}.svg`
+  );
+}
+
 export default {
   input: 'index.html',
   output: {
@@ -35,10 +42,7 @@ export default {
     copy({
       targets: [
         {
-          src: path.resolve(
-            __dirname,
-            'node_modules/@shoelace-style/shoelace/dist/assets/icons/trash.svg'
-          ),
+          src: [iconPath('trash'), iconPath('check2-circle')],
           dest: path.resolve(__dirname, 'dist/shoelace/assets/icons'),
         },
       ],

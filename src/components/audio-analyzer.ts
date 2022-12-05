@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, query, state } from 'lit/decorators.js';
+import { UNIT_CELCIUS } from '../units';
 import { FileListToggleEvent, FileListRemoveEvent } from './file-list';
 import { RoomResponse } from '../audio/room-response';
 import { BinauralResults, processBinauralAudio } from '../binaural-processing';
@@ -11,6 +12,8 @@ import { P0SettingChangeEvent } from './p0-setting';
 import { calculateStrengths, Strengths } from '../strength';
 import { P0Dialog, P0DialogChangeEvent } from './p0-dialog';
 import { mapArrayParam } from '../arrays';
+import { toast } from './toast';
+import { P0_VAR } from '../presentation/p0-format';
 
 const COLOR_WHITE = 'rgba(255, 255, 255, 0.75)';
 const COLOR_BLUE = 'rgba(153, 102, 255, 0.5)';
@@ -119,7 +122,10 @@ export class AudioAnalyzer extends LitElement {
               : null}
           </section>
           <section class="settings">
-            <p0-setting .p0=${this.p0} @change=${this.onP0Change}></p0-setting>
+            <p0-setting
+              .p0=${this.p0}
+              @change=${this.onP0SettingChange}
+            ></p0-setting>
           </section>
         </base-card>
         ${isProcessing ? this.renderProgress() : this.renderResults()}
@@ -251,7 +257,7 @@ export class AudioAnalyzer extends LitElement {
           <p0-setting
             slot="p0-setting"
             .p0=${this.p0}
-            @change=${this.onP0Change}
+            @change=${this.onP0SettingChange}
           ></p0-setting>
         </strengths-card>
       </section>
@@ -364,11 +370,16 @@ export class AudioAnalyzer extends LitElement {
     }
   }
 
-  private onP0Change({ detail: { p0 } }: P0SettingChangeEvent) {
+  private onP0SettingChange({ detail: { p0 } }: P0SettingChangeEvent) {
     this.p0 = p0;
-    localStorage.setItem(P0_STORAGE_KEY, p0.toString());
 
-    this.recalculateStrengths();
+    setTimeout(() => {
+      toast(html`Successfully set ${P0_VAR}=${p0}`, 'success', 'check2-circle');
+
+      this.recalculateStrengths();
+
+      localStorage.setItem(P0_STORAGE_KEY, p0.toString());
+    }, 0);
   }
 
   private onP0DialogChange({
@@ -378,16 +389,27 @@ export class AudioAnalyzer extends LitElement {
     this.relativeHumidity = relativeHumidity;
     this.temperature = temperature;
 
-    this.p0Dialog.hide();
+    setTimeout(() => {
+      this.p0Dialog.hide();
+      toast(
+        html`Successfully set ${P0_VAR}=${p0}, ${temperature}${UNIT_CELCIUS},
+        ${relativeHumidity}%`,
+        'success',
+        'check2-circle'
+      );
 
-    this.recalculateStrengths();
+      this.recalculateStrengths();
 
-    localStorage.setItem(P0_STORAGE_KEY, p0.toString());
-    localStorage.setItem(TEMPERATURE_STORAGE_KEY, this.temperature.toString());
-    localStorage.setItem(
-      HUMIDITY_STORAGE_KEY,
-      this.relativeHumidity.toString()
-    );
+      localStorage.setItem(P0_STORAGE_KEY, p0.toString());
+      localStorage.setItem(
+        TEMPERATURE_STORAGE_KEY,
+        this.temperature.toString()
+      );
+      localStorage.setItem(
+        HUMIDITY_STORAGE_KEY,
+        this.relativeHumidity.toString()
+      );
+    }, 0);
   }
 
   private onShowP0Dialog() {
