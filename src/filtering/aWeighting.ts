@@ -40,5 +40,8 @@ export function aWeightAudioSignal(
 
   const XAFull = [...XA, ...XA.slice(0, -1).reverse().map(conjugate)];
 
-  return ifft(XAFull, samples.length * 2);
+  return ifft(
+    XAFull,
+    samples.length % 2 === 0 ? samples.length * 2 : samples.length * 2 - 1
+  );
 }
