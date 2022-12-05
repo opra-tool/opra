@@ -29,6 +29,8 @@ const FILE_COLORS = [
   COLOR_GREEN,
 ];
 
+const MAX_FILE_COUNT = FILE_COLORS.length;
+
 type Results = MonauralResults | BinauralResults;
 
 function isBinauralResults(results: Results): results is BinauralResults & {
@@ -281,6 +283,12 @@ export class AudioAnalyzer extends LitElement {
   }
 
   private async analyzeFile(audioFile: File) {
+    if (this.responses.length >= MAX_FILE_COUNT) {
+      toast(
+        `Maximum file count (${MAX_FILE_COUNT}) reached. Skipping file ${audioFile.name}`
+      );
+    }
+
     const audioBuffer = await readAudioFile(audioFile);
 
     const id = AudioAnalyzer.randomId();
