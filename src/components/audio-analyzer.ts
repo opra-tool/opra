@@ -159,7 +159,9 @@ export class AudioAnalyzer extends LitElement {
       <div class="error">
         <sl-icon name="exclamation-octagon"></sl-icon>
         <strong>An error occured</strong>
-        ${this.error.message}
+        <sl-details summary="Technical details">
+          <code> ${this.error} </code>
+        </sl-details>
       </div>
     `;
   }
@@ -374,6 +376,9 @@ export class AudioAnalyzer extends LitElement {
         // eslint-disable-next-line no-await-in-loop
         await this.analyzeFile(files[i]);
       } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(err);
+
         if (err instanceof Error) {
           this.error = err;
         } else if (typeof err === 'string') {
