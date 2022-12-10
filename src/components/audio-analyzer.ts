@@ -265,6 +265,7 @@ export class AudioAnalyzer extends LitElement {
       toast(
         `Maximum file count (${MAX_FILE_COUNT}) reached. Skipping file ${audioFile.name}`
       );
+      return;
     }
 
     const audioBuffer = await readAudioFile(audioFile);
