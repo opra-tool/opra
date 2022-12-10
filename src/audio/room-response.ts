@@ -1,8 +1,8 @@
 export type RoomResponse = {
+  type: 'monaural' | 'binaural';
   id: string;
   color: string;
   fileName: string;
-  numberOfChannels: number;
   durationSeconds: number;
   sampleRate: number;
   isProcessing: boolean;

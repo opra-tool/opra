@@ -15,7 +15,10 @@ import { mapArrayParam } from '../arrays';
 import { toastSuccess, toastWarning } from './toast';
 import { P0_VAR } from '../presentation/p0-format';
 import {
+  getResponses,
+  persistResponse,
   persistValue,
+  removeResponse,
   retrieveValue,
   retrieveValueOrDefault,
 } from '../persistence';
@@ -80,6 +83,21 @@ export class AudioAnalyzer extends LitElement {
 
   @query('.p0-dialog', true)
   private p0Dialog!: P0Dialog;
+
+  protected firstUpdated() {
+    getResponses().then(responses => {
+      for (const response of responses) {
+        this.results.set(response.id, response.results);
+      }
+
+      this.responses = responses.map(r => ({
+        ...r,
+        isProcessing: false,
+      }));
+
+      this.recalculateStrengths();
+    });
+  }
 
   render() {
     const isProcessing = this.responses.length
@@ -268,46 +286,53 @@ export class AudioAnalyzer extends LitElement {
       return;
     }
 
-    const audioBuffer = await readAudioFile(audioFile);
+    const buffer = await readAudioFile(audioFile);
 
-    const id = AudioAnalyzer.randomId();
-    const fileName = audioFile.name;
-    const color = this.findAvailableColor();
-
-    this.responses = [
-      ...this.responses,
-      {
-        id,
-        fileName,
-        numberOfChannels: audioBuffer.numberOfChannels,
-        durationSeconds: audioBuffer.duration,
-        sampleRate: audioBuffer.sampleRate,
-        isProcessing: true,
-        isEnabled: true,
-        color,
-      },
-    ];
-
-    let results: MonauralResults | BinauralResults;
-    if (audioBuffer.numberOfChannels === 1) {
-      results = await processMonauralAudio(
-        audioBuffer.getChannelData(0),
-        audioBuffer.sampleRate
+    if (buffer.numberOfChannels < 1 || buffer.numberOfChannels > 2) {
+      toastWarning(
+        `Skipping file ${audioFile.name} due to unsupported channel count (${buffer.numberOfChannels}).`
       );
-    } else if (audioBuffer.numberOfChannels === 2) {
-      results = await processBinauralAudio(
-        binauralAudioFromBuffer(audioBuffer),
-        audioBuffer.sampleRate
-      );
-    } else {
-      throw new Error('only monaural or binaural audio is supported');
+      return;
     }
 
-    this.results.set(id, results);
+    const response: RoomResponse = {
+      type: buffer.numberOfChannels === 1 ? 'monaural' : 'binaural',
+      id: AudioAnalyzer.randomId(),
+      fileName: audioFile.name,
+      durationSeconds: buffer.duration,
+      sampleRate: buffer.sampleRate,
+      isProcessing: true,
+      isEnabled: true,
+      color: this.findAvailableColor(),
+    };
+
+    this.responses = [...this.responses, response];
+
+    const { sampleRate } = buffer;
+
+    let results;
+    if (buffer.numberOfChannels === 1) {
+      results = await processMonauralAudio(
+        buffer.getChannelData(0),
+        sampleRate
+      );
+    } else {
+      results = await processBinauralAudio(
+        binauralAudioFromBuffer(buffer),
+        sampleRate
+      );
+    }
+
+    this.results.set(response.id, results);
+
+    await persistResponse({
+      ...response,
+      results,
+    });
 
     if (this.p0 !== null) {
       this.strengthResults.set(
-        id,
+        response.id,
         await calculateStrengths(results, {
           p0: this.p0,
           relativeHumidity: this.relativeHumidity,
@@ -316,9 +341,9 @@ export class AudioAnalyzer extends LitElement {
       );
     }
 
-    this.responses = this.responses.map(file => ({
-      ...file,
-      isProcessing: file.id === id ? false : file.isProcessing,
+    this.responses = this.responses.map(r => ({
+      ...r,
+      isProcessing: r.id === response.id ? false : r.isProcessing,
     }));
   }
 
@@ -416,6 +441,8 @@ export class AudioAnalyzer extends LitElement {
   private onRemoveFile(ev: FileListRemoveEvent) {
     this.responses = this.responses.filter(el => el.id !== ev.detail.id);
     this.results.delete(ev.detail.id);
+    // eslint-disable-next-line no-console
+    removeResponse(ev.detail.id).catch(console.error);
   }
 
   private onToggleFile(ev: FileListToggleEvent) {

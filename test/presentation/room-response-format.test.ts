@@ -4,7 +4,7 @@ import { formatResponseSummary } from '../../src/presentation/room-response-form
 it('formats monaural file details', () => {
   expect(
     formatResponseSummary({
-      numberOfChannels: 1,
+      type: 'monaural',
       durationSeconds: 1,
       sampleRate: 44100,
     })
@@ -14,7 +14,7 @@ it('formats monaural file details', () => {
 it('formats binaural file details', () => {
   expect(
     formatResponseSummary({
-      numberOfChannels: 2,
+      type: 'binaural',
       durationSeconds: 1,
       sampleRate: 44100,
     })

@@ -1,19 +1,21 @@
 import { RoomResponse } from '../audio/room-response';
 import { UNIT_HERTZ, UNIT_SECONDS } from '../units';
 
-type Input = Pick<
-  RoomResponse,
-  'numberOfChannels' | 'durationSeconds' | 'sampleRate'
->;
+type Input = Pick<RoomResponse, 'type' | 'durationSeconds' | 'sampleRate'>;
+
+const responseTypeNames = {
+  monaural: 'Monaural',
+  binaural: 'Binaural',
+};
 
 export function formatResponseSummary({
-  numberOfChannels,
+  type,
   durationSeconds,
   sampleRate,
 }: Input): string {
-  const audioType = numberOfChannels === 1 ? 'Monaural' : 'Binaural';
-
-  return `${audioType} • ${sampleRate}${UNIT_HERTZ} • ${durationSeconds.toFixed(
+  return `${
+    responseTypeNames[type]
+  } • ${sampleRate}${UNIT_HERTZ} • ${durationSeconds.toFixed(
     2
   )}${UNIT_SECONDS}`;
 }

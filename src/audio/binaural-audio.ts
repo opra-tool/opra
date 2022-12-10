@@ -1,3 +1,4 @@
+// TODO: rename to BinauralSamples
 export class BinauralAudio {
   readonly leftSamples: Float32Array;
 
