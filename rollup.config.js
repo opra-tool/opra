@@ -42,7 +42,11 @@ export default {
     copy({
       targets: [
         {
-          src: [iconPath('trash'), iconPath('check2-circle')],
+          src: [
+            iconPath('trash'),
+            iconPath('check2-circle'),
+            iconPath('exclamation-triangle'),
+          ],
           dest: path.resolve(__dirname, 'dist/shoelace/assets/icons'),
         },
       ],

@@ -12,7 +12,7 @@ import { P0SettingChangeEvent } from './p0-setting';
 import { calculateStrengths, Strengths } from '../strength';
 import { P0Dialog, P0DialogChangeEvent } from './p0-dialog';
 import { mapArrayParam } from '../arrays';
-import { toast } from './toast';
+import { toastSuccess, toastWarning } from './toast';
 import { P0_VAR } from '../presentation/p0-format';
 import {
   persistValue,
@@ -262,8 +262,8 @@ export class AudioAnalyzer extends LitElement {
 
   private async analyzeFile(audioFile: File) {
     if (this.responses.length >= MAX_FILE_COUNT) {
-      toast(
-        `Maximum file count (${MAX_FILE_COUNT}) reached. Skipping file ${audioFile.name}`
+      toastWarning(
+        `Maximum file count (${MAX_FILE_COUNT}) reached. Skipping file ${audioFile.name}.`
       );
       return;
     }
@@ -379,11 +379,7 @@ export class AudioAnalyzer extends LitElement {
     this.p0 = p0;
 
     setTimeout(() => {
-      toast(
-        html`Successfully set ${P0_VAR} = ${p0}`,
-        'success',
-        'check2-circle'
-      );
+      toastSuccess(html`Successfully set ${P0_VAR} = ${p0}`);
 
       this.recalculateStrengths();
 
@@ -400,11 +396,9 @@ export class AudioAnalyzer extends LitElement {
 
     setTimeout(() => {
       this.p0Dialog.hide();
-      toast(
+      toastSuccess(
         html`Successfully set ${P0_VAR} = ${p0}, ${temperature}${UNIT_CELCIUS},
-        ${relativeHumidity}%`,
-        'success',
-        'check2-circle'
+        ${relativeHumidity}%`
       );
 
       this.recalculateStrengths();
