@@ -38,9 +38,7 @@ const MAX_FILE_COUNT = FILE_COLORS.length;
 
 type Results = MonauralResults | BinauralResults;
 
-function isBinauralResults(results: Results): results is BinauralResults & {
-  strengthValues: Strengths | null;
-} {
+function isBinauralResults(results: Results): results is BinauralResults {
   return (results as BinauralResults).iaccBands !== undefined;
 }
 
