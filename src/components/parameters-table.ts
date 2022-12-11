@@ -10,10 +10,6 @@ export type Parameter = {
   responseValues: number[];
 };
 
-/**
- * TODO: set a max-width of (100 - 20) / numResponses in percent
- * TODO: set a max-width of the table to a sensible value depending on numResponses
- */
 @customElement('parameters-table')
 export class ParametersTable extends LitElement {
   @property({ type: Array })
@@ -111,7 +107,6 @@ export class ParametersTable extends LitElement {
     table {
       width: 100%;
       border-collapse: collapse;
-      table-layout: fixed;
     }
 
     tr:not(:last-child) {
