@@ -1,5 +1,5 @@
 import { ChartDataset } from 'chart.js';
-import { css, html, LitElement, PropertyValueMap } from 'lit';
+import { css, html, LitElement } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { UNIT_HERTZ } from '../../units';
 import { getFrequencyLabels } from './common';
@@ -33,17 +33,13 @@ export class OctaveBandsGraph extends LitElement {
   yAxisLabel: string = '';
 
   @state()
-  private activeParams: string[] = [];
-
-  protected firstUpdated() {
-    this.activeParams = this.params.map(param => param.key);
-  }
+  private hiddenParams: string[] = [];
 
   protected render() {
     const datasets: ChartDataset<'line', number[]>[] = [];
 
     this.params.forEach((param, paramIndex) => {
-      if (this.activeParams.includes(param.key)) {
+      if (!this.hiddenParams.includes(param.key)) {
         param.datasets.forEach(dataset => {
           datasets.push({
             label: param.label,
@@ -80,7 +76,7 @@ export class OctaveBandsGraph extends LitElement {
       (param, index) => html`
         <div class="legend-item">
           <sl-checkbox
-            ?checked=${this.activeParams.includes(param.key)}
+            ?checked=${!this.hiddenParams.includes(param.key)}
             value=${param.label}
             @sl-change=${() => this.onToggleLabelItem(param.key)}
           >
@@ -110,10 +106,10 @@ export class OctaveBandsGraph extends LitElement {
   }
 
   private onToggleLabelItem(key: string) {
-    if (this.activeParams.includes(key)) {
-      this.activeParams = this.activeParams.filter(i => i !== key);
+    if (this.hiddenParams.includes(key)) {
+      this.hiddenParams = this.hiddenParams.filter(i => i !== key);
     } else {
-      this.activeParams = [...this.activeParams, key];
+      this.hiddenParams = [...this.hiddenParams, key];
     }
   }
 
