@@ -1,6 +1,48 @@
-use rustfft::num_complex::Complex;
+use crate::utils;
+use realfft::{num_complex::Complex, RealFftPlanner};
+use wasm_bindgen::prelude::*;
 
-pub fn complex_object_form_to_flat_form(object_form: Vec<Complex<f32>>) -> Vec<f32> {
+#[wasm_bindgen]
+pub fn fft_flat(values: Vec<f32>) -> Vec<f32> {
+    utils::set_panic_hook();
+
+    let out = fft(values);
+
+    return complex_object_form_to_flat_form(out);
+}
+
+pub fn fft(mut x: Vec<f32>) -> Vec<Complex<f32>> {
+    let mut planner = RealFftPlanner::<f32>::new();
+    let fft = planner.plan_fft_forward(x.len());
+
+    let mut out = fft.make_output_vec();
+
+    fft.process(&mut x, &mut out).unwrap();
+
+    return out;
+}
+
+#[wasm_bindgen]
+pub fn ifft_flat(flat_input: Vec<f32>, length: usize) -> Vec<f32> {
+    utils::set_panic_hook();
+
+    let input = complex_flat_form_to_object_form(flat_input);
+
+    return ifft(input, length);
+}
+
+pub fn ifft(mut input: Vec<Complex<f32>>, length: usize) -> Vec<f32> {
+    let mut planner = RealFftPlanner::<f32>::new();
+    let ifft = planner.plan_fft_inverse(length);
+    let mut out = ifft.make_output_vec();
+
+    ifft.process(&mut input, &mut out).unwrap();
+
+    // normalize
+    return out.iter().map(|val| val / length as f32).collect();
+}
+
+fn complex_object_form_to_flat_form(object_form: Vec<Complex<f32>>) -> Vec<f32> {
     let mut flat_form: Vec<f32> = Vec::with_capacity(object_form.len() * 2);
 
     for num in object_form {
@@ -11,7 +53,7 @@ pub fn complex_object_form_to_flat_form(object_form: Vec<Complex<f32>>) -> Vec<f
     flat_form
 }
 
-pub fn complex_flat_form_to_object_form(flat_form: Vec<f32>) -> Vec<Complex<f32>> {
+fn complex_flat_form_to_object_form(flat_form: Vec<f32>) -> Vec<Complex<f32>> {
     let new_len = flat_form.len() / 2;
     let mut object_form: Vec<Complex<f32>> = Vec::with_capacity(new_len);
 
@@ -29,7 +71,7 @@ pub fn complex_flat_form_to_object_form(flat_form: Vec<f32>) -> Vec<Complex<f32>
 mod tests {
     use rustfft::num_complex::Complex;
 
-    use crate::wasm::*;
+    use crate::fourier::*;
 
     #[test]
     fn converts_complex_object_form_into_flat_form() {
