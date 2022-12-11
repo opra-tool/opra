@@ -95,7 +95,9 @@ export class AudioAnalyzer extends LitElement {
         isProcessing: false,
       }));
 
-      this.recalculateStrengths();
+      if (this.p0 !== null) {
+        this.recalculateStrengths();
+      }
     });
   }
 
