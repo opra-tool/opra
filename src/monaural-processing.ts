@@ -5,7 +5,7 @@ import { aWeightAudioSignal } from './filtering/aWeighting';
 import { arrayFilledWithZeros } from './math/arrayFilledWithZeros';
 import { arraySumSquared } from './math/arraySumSquared';
 import { octfilt } from './octfilt';
-import { edt, rev } from './reverberation';
+import { calculateReverberation } from './reverberation';
 import { correctStarttimeMonaural } from './starttime';
 
 type Point = {
@@ -55,8 +55,7 @@ export async function processMonauralAudio(
     aWeightAudioSignal(zeroPadded, sampleRate)
   );
 
-  const edtValues = edt(bands, sampleRate);
-  const reverbTime = rev(bands, 20, sampleRate);
+  const { edt, reverbTime } = calculateReverberation(bands, 20, sampleRate);
 
   const bassRatio =
     (reverbTime[1] + reverbTime[2]) / (reverbTime[3] + reverbTime[4]);
@@ -89,7 +88,7 @@ export async function processMonauralAudio(
     e80BandsSquaredSum,
     l80BandsSquaredSum,
     aWeightedSquaredSum,
-    edtBands: edtValues,
+    edtBands: edt,
     reverbTimeBands: reverbTime,
     c50Bands: c50Values,
     c80Bands: c80Values,

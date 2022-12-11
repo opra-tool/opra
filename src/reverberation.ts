@@ -19,13 +19,31 @@ function trimBetween(
   return array.filter(val => val > min && val < max);
 }
 
-function performCalculation(
-  octaveBands: Float32Array[],
+function calculateMinMax(
+  EC: Float64Array,
   min: number,
   max: number,
   fs: number
-): number[] {
-  const res = [];
+) {
+  const trimmed = trimBetween(EC, min, max);
+
+  const tseg = new Float64Array(trimmed.length);
+  for (let ii = 0; ii < trimmed.length; ii += 1) {
+    tseg[ii] = (1 / fs) * (ii + 1);
+  }
+
+  const { b } = fitCurve(tseg, trimmed);
+
+  return 60 / Math.abs(b);
+}
+
+export function calculateReverberation(
+  octaveBands: Float32Array[],
+  tc: number,
+  fs: number
+): { edt: number[]; reverbTime: number[] } {
+  const edt = [];
+  const reverbTime = [];
 
   for (const band of octaveBands) {
     const squared = band.map(v => v ** 2);
@@ -36,28 +54,10 @@ function performCalculation(
 
     const maxSI1 = arrayMax(SI1);
     const EC = new Float64Array(SI1.map(v => 10 * safeLog10(v / maxSI1)));
-    const trimmed = trimBetween(EC, min, max);
 
-    const tseg = new Float64Array(trimmed.length);
-    for (let ii = 0; ii < trimmed.length; ii += 1) {
-      tseg[ii] = (1 / fs) * (ii + 1);
-    }
-
-    const { b } = fitCurve(tseg, trimmed);
-    res.push(60 / Math.abs(b));
+    edt.push(calculateMinMax(EC, -10, 0, fs));
+    reverbTime.push(calculateMinMax(EC, -(5 + tc), -5, fs));
   }
 
-  return res;
-}
-
-export function edt(octaveBands: Float32Array[], fs: number): number[] {
-  return performCalculation(octaveBands, -10, 0, fs);
-}
-
-export function rev(
-  octaveBands: Float32Array[],
-  tc: number,
-  fs: number
-): number[] {
-  return performCalculation(octaveBands, -(5 + tc), -5, fs);
+  return { edt, reverbTime };
 }
