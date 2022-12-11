@@ -61,6 +61,10 @@ export class P0Setting extends LitElement {
       flex-wrap: wrap;
     }
 
+    p {
+      margin: 0.5rem 0;
+    }
+
     form {
       display: flex;
       gap: 0.5rem;

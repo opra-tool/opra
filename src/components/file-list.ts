@@ -96,6 +96,14 @@ export class FileList extends LitElement {
   }
 
   static styles = css`
+    section {
+      background: var(--sl-color-neutral-100);
+      border-radius: 0.5rem;
+      padding: 0.25rem;
+      height: 100%;
+      box-sizing: border-box;
+    }
+
     .file-list-entry {
       display: grid;
       grid-template-columns: 2.4rem minmax(0, 1fr) auto auto;

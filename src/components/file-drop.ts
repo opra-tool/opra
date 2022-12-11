@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, property, query, state } from 'lit/decorators.js';
+import { customElement, query, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 
 export class FileDropChangeEvent extends CustomEvent<{
@@ -110,7 +110,8 @@ export class FileDrop extends LitElement {
 
       padding: 1.5rem;
 
-      outline: 2px dashed var(--sl-color-neutral-200);
+      border: 2px dashed var(--sl-color-neutral-200);
+      border-radius: 0.5rem;
       transition: outline-color 0.15s, background-color 0.15s;
     }
 

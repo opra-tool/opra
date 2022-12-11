@@ -476,8 +476,14 @@ export class AudioAnalyzer extends LitElement {
 
     section.files {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
+      grid-template-rows: auto;
       gap: 1rem;
+    }
+
+    @media screen and (min-width: 40rem) {
+      section.files {
+        grid-template-columns: repeat(auto-fit, minmax(30rem, 1fr));
+      }
     }
 
     section.settings {
