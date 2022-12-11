@@ -144,6 +144,7 @@ export class OctaveBandsGraph extends LitElement {
     }
 
     sl-checkbox::part(base) {
+      align-items: center;
       padding: 0.5rem;
     }
   `;
