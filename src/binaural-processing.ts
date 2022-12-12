@@ -31,7 +31,6 @@ export async function processBinauralAudio(
 
   // calculate squared impulse response of binaural audio by taking
   // the arithmetic mean of the squared IR of each channel
-  const t1 = performance.now();
   const squaredIR = new Float32Array(starttimeCorrected.length);
   for (let i = 0; i < starttimeCorrected.length; i += 1) {
     squaredIR[i] =
@@ -48,11 +47,8 @@ export async function processBinauralAudio(
     }
     return meanBand;
   });
-  console.log('took ', performance.now() - t1, 'ms');
 
-  const t2 = performance.now();
   const meanResults = await processChannel(squaredIR, meanBands, sampleRate);
-  console.log('channel took ', performance.now() - t2, 'ms');
 
   return {
     iaccBands: iacc,
