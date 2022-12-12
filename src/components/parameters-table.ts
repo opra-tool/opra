@@ -8,6 +8,7 @@ export type Parameter = {
   description?: string;
   unit?: string;
   responseValues: number[];
+  position: number;
 };
 
 @customElement('parameters-table')
@@ -23,7 +24,11 @@ export class ParametersTable extends LitElement {
       return null;
     }
 
-    const { responseValues: firstResponseValues } = this.parameters[0];
+    const sortedParameters = this.parameters.sort(
+      (a, b) => a.position - b.position
+    );
+
+    const { responseValues: firstResponseValues } = sortedParameters[0];
 
     return html`
       <div class="scroll-container">
@@ -41,7 +46,7 @@ export class ParametersTable extends LitElement {
               `
             : null}
           <tbody>
-            ${this.parameters.map(ParametersTable.renderParameter)}
+            ${sortedParameters.map(ParametersTable.renderParameter)}
           </tbody>
         </table>
       </div>

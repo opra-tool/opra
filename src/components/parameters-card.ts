@@ -27,10 +27,12 @@ export class ParametersCard extends LitElement {
         description: 'according to ISO 3382-1',
         unit: UNIT_MILLISECONDS,
         responseValues: this.centreTimes,
+        position: 2,
       },
       {
         name: 'Bass Ratio',
         responseValues: this.bassRatios,
+        position: 8,
       },
     ];
 
@@ -49,27 +51,32 @@ export class ParametersCard extends LitElement {
         description: 'according to ISO 3382-1',
         responseValues: averageStrengths,
         unit: UNIT_DECIBELS,
-      });
-      parameters.push({
-        name: 'Treble Ratio',
-        responseValues: trebleRatios,
-      });
-      parameters.push({
-        name: 'Early Bass Strength',
-        responseValues: earlyBassStrengths,
-        unit: UNIT_DECIBELS,
+        position: 3,
       });
       parameters.push({
         name: 'A-Gewichtetes Stärkemaß',
         description: 'parameter is currently not reliably calculated',
         responseValues: aWeighted,
         unit: UNIT_DECIBELS,
+        position: 4,
       });
       parameters.push({
         name: 'A-Weighted C80',
         description: 'parameter is currently not reliably calculated',
         responseValues: aWeightedC80,
         unit: UNIT_DECIBELS,
+        position: 6,
+      });
+      parameters.push({
+        name: 'Treble Ratio',
+        responseValues: trebleRatios,
+        position: 7,
+      });
+      parameters.push({
+        name: 'Early Bass Strength',
+        responseValues: earlyBassStrengths,
+        unit: UNIT_DECIBELS,
+        position: 9,
       });
     }
 
