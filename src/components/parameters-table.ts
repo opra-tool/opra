@@ -75,7 +75,7 @@ export class ParametersTable extends LitElement {
     return html`
       <tr class=${classes}>
         <td>
-          <span>${name}${ParametersTable.renderUnit(unit)}</span>
+          <span>${name}</span>
           ${description
             ? html`
                 <br />
@@ -84,7 +84,10 @@ export class ParametersTable extends LitElement {
             : null}
         </td>
         ${coloredValues.map(
-          value => html`<td class="value">${value.toFixed(2)}</td>`
+          value =>
+            html`<td class="value">
+              ${value.toFixed(2)}${ParametersTable.renderUnit(unit)}
+            </td>`
         )}
       </tr>
     `;
@@ -95,7 +98,7 @@ export class ParametersTable extends LitElement {
       return null;
     }
 
-    return html`<span class="unit">[${unit}]</span>`;
+    return html`<span class="unit"> ${unit}</span>`;
   }
 
   static styles = css`
@@ -154,7 +157,6 @@ export class ParametersTable extends LitElement {
     }
 
     .unit {
-      margin-inline-start: 1ch;
       color: var(--sl-color-neutral-600);
     }
   `;
