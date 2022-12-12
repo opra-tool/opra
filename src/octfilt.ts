@@ -1,6 +1,7 @@
 import { BinauralAudio } from './audio/binaural-audio';
 import { bandpass } from './filtering/bandpass';
 
+const ZERO_PADDING_LENGTH = 10000;
 const FREQUENCIES_IEC61672 = [
   44.6683592150963, 89.1250938133746, 177.827941003892, 354.813389233576,
   707.945784384138, 1412.53754462275, 2818.38293126445, 5623.41325190349,
@@ -41,7 +42,7 @@ export async function octfilt(
 ): Promise<Float32Array[]> {
   const audioBuffer = new AudioBuffer({
     numberOfChannels: 1,
-    length: samples.length,
+    length: samples.length + ZERO_PADDING_LENGTH,
     sampleRate,
   });
 

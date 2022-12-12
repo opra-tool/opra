@@ -29,15 +29,8 @@ export async function processMonauralAudio(
   samples: Float32Array,
   sampleRate: number
 ): Promise<MonauralResults> {
-  const zeroPadded = new Float32Array([
-    ...samples,
-    ...arrayFilledWithZeros(10000),
-  ]);
-
-  const bands = await getStarttimeTrimmedAndPaddedOctaveBands(
-    zeroPadded,
-    sampleRate
-  );
+  const starttimeCorrected = correctStarttimeMonaural(samples);
+  const bands = await octfilt(starttimeCorrected, sampleRate);
 
   const fractions = bands.map(band => earlyLateFractions(band, sampleRate));
 
@@ -87,19 +80,4 @@ export async function processMonauralAudio(
     schwerpunktzeit,
     squaredImpulseResponse,
   };
-}
-
-async function getStarttimeTrimmedAndPaddedOctaveBands(
-  samples: Float32Array,
-  sampleRate: number
-): Promise<Float32Array[]> {
-  const rawBands = await octfilt(samples, sampleRate);
-
-  return rawBands.map(band => {
-    const trimmedBand = correctStarttimeMonaural(band);
-    return new Float32Array([
-      ...trimmedBand,
-      ...arrayFilledWithZeros(band.length - trimmedBand.length),
-    ]);
-  });
 }

@@ -15,9 +15,9 @@ export async function processBinauralAudio(
   audio: BinauralAudio,
   sampleRate: number
 ): Promise<BinauralResults> {
-  const trimmed = correctStarttimeBinaural(audio);
+  const starttimeCorrected = correctStarttimeBinaural(audio);
 
-  const bands = await octfiltBinaural(trimmed, sampleRate);
+  const bands = await octfiltBinaural(starttimeCorrected, sampleRate);
 
   const iacc = [];
   const eiacc = [];
