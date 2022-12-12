@@ -45,7 +45,7 @@ export class ParametersCard extends LitElement {
       const aWeightedC80 = mapArrayParam(this.strengths, 'aWeightedC80');
 
       parameters.push({
-        name: 'Avg. Strength',
+        name: 'Stärkemaß',
         description: 'according to ISO 3382-1',
         responseValues: averageStrengths,
         unit: UNIT_DECIBELS,
@@ -60,13 +60,13 @@ export class ParametersCard extends LitElement {
         unit: UNIT_DECIBELS,
       });
       parameters.push({
-        name: 'A-Weighted Avg. Strength',
+        name: 'A-Gewichtetes Stärkemaß',
         description: 'parameter is currently not reliably calculated',
         responseValues: aWeighted,
         unit: UNIT_DECIBELS,
       });
       parameters.push({
-        name: 'A-Weighted Avg. C80',
+        name: 'A-Weighted C80',
         description: 'parameter is currently not reliably calculated',
         responseValues: aWeightedC80,
         unit: UNIT_DECIBELS,

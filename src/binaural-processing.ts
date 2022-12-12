@@ -39,10 +39,6 @@ export async function processBinauralAudio(
 
   const meanResults: MonauralResults = {
     bassRatio: mean(resultsLeft.bassRatio, resultsRight.bassRatio),
-    aWeightedSquaredSum: mean(
-      resultsLeft.aWeightedSquaredSum,
-      resultsRight.aWeightedSquaredSum
-    ),
     schwerpunktzeit: mean(
       resultsLeft.schwerpunktzeit,
       resultsRight.schwerpunktzeit

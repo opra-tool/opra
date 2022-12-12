@@ -1,7 +1,6 @@
 import { c50c80 } from './c50c80';
 import { calculateSchwerpunktzeit } from './schwerpunktzeit';
 import { earlyLateFractions } from './early-late-fractions';
-import { aWeightAudioSignal } from './filtering/aWeighting';
 import { arrayFilledWithZeros } from './math/arrayFilledWithZeros';
 import { arraySumSquared } from './math/arraySumSquared';
 import { octfilt } from './octfilt';
@@ -22,7 +21,6 @@ export type MonauralResults = {
   c50Bands: number[];
   c80Bands: number[];
   squaredImpulseResponse: Point[];
-  aWeightedSquaredSum: number;
   schwerpunktzeit: number;
   bassRatio: number;
 };
@@ -51,10 +49,6 @@ export async function processMonauralAudio(
     c80Values.push(c80);
   }
 
-  const mira = correctStarttimeMonaural(
-    aWeightAudioSignal(zeroPadded, sampleRate)
-  );
-
   const { edt, reverbTime } = calculateReverberation(bands, 20, sampleRate);
 
   const bassRatio =
@@ -81,13 +75,10 @@ export async function processMonauralAudio(
 
   const l80BandsSquaredSum = l80Bands.map(arraySumSquared);
 
-  const aWeightedSquaredSum = arraySumSquared(mira);
-
   return {
     bandsSquaredSum,
     e80BandsSquaredSum,
     l80BandsSquaredSum,
-    aWeightedSquaredSum,
     edtBands: edt,
     reverbTimeBands: reverbTime,
     c50Bands: c50Values,

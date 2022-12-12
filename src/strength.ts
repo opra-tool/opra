@@ -19,7 +19,6 @@ type Input = {
   e80BandsSquaredSum: number[];
   l80BandsSquaredSum: number[];
   c80Bands: number[];
-  aWeightedSquaredSum: number;
 };
 
 type Options = {
@@ -28,14 +27,24 @@ type Options = {
   relativeHumidity: number;
 };
 
+/**
+ * Calculated as defined in IEC 61672-1:2013.
+ *
+ * Note: The value for 1kHz has been rounded to 0
+ */
+const A_WEIGHTING_CORRECTIONS = [
+  -26.3567, // 62.5 Hz
+  -16.1897, // 125 Hz
+  -8.67483, // 250 Hz
+  -3.24781, // 500 Hz
+  0, // 1000 Hz
+  1.20167, // 2000 Hz
+  0.963598, // 4000 Hz
+  -1.14688, // 8000 Hz
+];
+
 export async function calculateStrengths(
-  {
-    bandsSquaredSum,
-    e80BandsSquaredSum,
-    l80BandsSquaredSum,
-    aWeightedSquaredSum,
-    c80Bands,
-  }: Input,
+  { bandsSquaredSum, e80BandsSquaredSum, l80BandsSquaredSum, c80Bands }: Input,
   { p0, temperature, relativeHumidity }: Options
 ): Promise<Strengths> {
   const airCoeffs = getFrequencyValues().map(frequency =>
@@ -43,13 +52,13 @@ export async function calculateStrengths(
   );
   const lpe10 = await calculateLpe10(airCoeffs);
 
-  const strength = calculateStrength(bandsSquaredSum, p0, lpe10);
-  const earlyStrength = calculateStrength(e80BandsSquaredSum, p0, lpe10);
-  const lateStrength = calculateStrength(l80BandsSquaredSum, p0, lpe10);
-  const averageStrength = calculateAveragedFrequencyStrength(strength);
+  const strength = calculateStaerkemass(bandsSquaredSum, p0, lpe10);
+  const earlyStrength = calculateStaerkemass(e80BandsSquaredSum, p0, lpe10);
+  const lateStrength = calculateStaerkemass(l80BandsSquaredSum, p0, lpe10);
+  const averageStrength = calculateMeanStaerkemass(strength);
   const trebleRatio = calculateTrebleRatio(lateStrength);
-  const earlyBassStrength = calculateEarlyBassStrength(earlyStrength);
-  const aWeighted = calculateStrengthOfAWeighted(aWeightedSquaredSum, p0);
+  const earlyBassStrength = calculateEarlyBassStaerkemass(earlyStrength);
+  const aWeighted = calculateAWeightedStaerkemeass(strength);
   const aWeightedC80 = calculateAWeightedC80(c80Bands, aWeighted);
 
   return {
@@ -64,7 +73,7 @@ export async function calculateStrengths(
   };
 }
 
-function calculateStrength(
+function calculateStaerkemass(
   bandsSquaredSum: number[],
   p0: number,
   lpe10: number[]
@@ -80,17 +89,13 @@ function calculateStrength(
   return strength;
 }
 
-function calculateStrengthOfAWeighted(
-  aWeightedSquaredSum: number,
-  p0: number
-): number {
-  const lf = 100;
-  const l = 10 * safeLog10(aWeightedSquaredSum / p0 ** 2);
-
-  return l - lf;
+function calculateAWeightedStaerkemeass(strength: number[]): number {
+  return calculateMeanStaerkemass(
+    strength.map((val, i) => val + A_WEIGHTING_CORRECTIONS[i])
+  );
 }
 
-function calculateAveragedFrequencyStrength(strength: number[]): number {
+function calculateMeanStaerkemass(strength: number[]): number {
   return (strength[3] + strength[4]) / 2;
 }
 
@@ -98,7 +103,7 @@ function calculateTrebleRatio(lateStrength: number[]): number {
   return lateStrength[6] - (lateStrength[4] + lateStrength[5]) / 2;
 }
 
-function calculateEarlyBassStrength(earlyStrength: number[]): number {
+function calculateEarlyBassStaerkemass(earlyStrength: number[]): number {
   return (earlyStrength[1] + earlyStrength[2] + earlyStrength[3]) / 3;
 }
 
