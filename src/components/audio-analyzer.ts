@@ -212,6 +212,7 @@ export class AudioAnalyzer extends LitElement {
           .responseDetails=${responseDetails}
           .squaredIR=${squaredIR}
         ></impulse-response-graph>
+
         <parameters-card
           .responseDetails=${responseDetails}
           .centreTimes=${centreTimes}
@@ -225,43 +226,47 @@ export class AudioAnalyzer extends LitElement {
             @show-p0-dialog=${this.onShowP0Dialog}
           ></p0-notice>
         </parameters-card>
-        ${binauralResults.length
-          ? html` <iacc-graph
-              .responseDetails=${responseDetails}
-              .iacc=${iacc}
-              .eiacc=${eiacc}
-            ></iacc-graph>`
-          : null}
+
         <div class="grid">
           <reverb-graph
             .responseDetails=${responseDetails}
             .edt=${edt}
             .reverbTime=${reverbTime}
           ></reverb-graph>
+
           <c50c80-graph
             .responseDetails=${responseDetails}
             .c50=${c50}
             .c80=${c80}
           ></c50c80-graph>
+
+          <strengths-card
+            .p0=${this.p0}
+            .responseDetails=${responseDetails}
+            .strengths=${strengths}
+          >
+            <p0-notice
+              slot="p0-notice"
+              .p0=${this.p0}
+              .temperature=${this.temperature}
+              .relativeHumidity=${this.relativeHumidity}
+              @show-p0-dialog=${this.onShowP0Dialog}
+            ></p0-notice>
+            <p0-setting
+              slot="p0-setting"
+              .p0=${this.p0}
+              @change=${this.onP0SettingChange}
+            ></p0-setting>
+          </strengths-card>
+
+          ${binauralResults.length
+            ? html`<iacc-graph
+                .responseDetails=${responseDetails}
+                .iacc=${iacc}
+                .eiacc=${eiacc}
+              ></iacc-graph>`
+            : null}
         </div>
-        <strengths-card
-          .p0=${this.p0}
-          .responseDetails=${responseDetails}
-          .strengths=${strengths}
-        >
-          <p0-notice
-            slot="p0-notice"
-            .p0=${this.p0}
-            .temperature=${this.temperature}
-            .relativeHumidity=${this.relativeHumidity}
-            @show-p0-dialog=${this.onShowP0Dialog}
-          ></p0-notice>
-          <p0-setting
-            slot="p0-setting"
-            .p0=${this.p0}
-            @change=${this.onP0SettingChange}
-          ></p0-setting>
-        </strengths-card>
       </section>
     `;
   }
@@ -498,6 +503,11 @@ export class AudioAnalyzer extends LitElement {
     section.results > * {
       /* prevent stretching of parent */
       min-width: 0;
+    }
+
+    /* let the strengths graph take the full width if available */
+    strengths-card:last-child {
+      grid-column: 1 / -1;
     }
 
     .grid {
