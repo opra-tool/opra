@@ -12,7 +12,7 @@ export class ParametersCard extends LitElement {
   responseDetails: ResponseDetail[] = [];
 
   @property({ type: Array })
-  schwerpunktzeiten: number[] = [];
+  centreTimes: number[] = [];
 
   @property({ type: Array })
   bassRatios: number[] = [];
@@ -23,10 +23,10 @@ export class ParametersCard extends LitElement {
   render() {
     const parameters: Parameter[] = [
       {
-        name: 'Schwerpunktzeit',
+        name: 'Centre Time (Schwerpunktzeit)',
         description: 'according to ISO 3382-1',
         unit: UNIT_MILLISECONDS,
-        responseValues: this.schwerpunktzeiten,
+        responseValues: this.centreTimes,
       },
       {
         name: 'Bass Ratio',

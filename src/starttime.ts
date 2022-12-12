@@ -1,4 +1,4 @@
-import { BinauralAudio } from './audio/binaural-audio';
+import { BinauralSamples } from './audio/binaural-samples';
 import { arrayMaxAbs } from './math/arrayMaxAbs';
 
 /**
@@ -26,15 +26,15 @@ export function correctStarttimeMonaural(samples: Float32Array): Float32Array {
  * @returns Trimmed binaural audio
  */
 export function correctStarttimeBinaural({
-  leftSamples,
-  rightSamples,
-}: BinauralAudio): BinauralAudio {
+  leftChannel: leftSamples,
+  rightChannel: rightSamples,
+}: BinauralSamples): BinauralSamples {
   const leftIndex = findIndexOfFirstSample20dBBelowMax(leftSamples);
   const rightIndex = findIndexOfFirstSample20dBBelowMax(rightSamples);
 
   const index = Math.min(leftIndex, rightIndex);
 
-  return new BinauralAudio(
+  return new BinauralSamples(
     trimSamples(leftSamples, index),
     trimSamples(rightSamples, index)
   );

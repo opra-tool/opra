@@ -1,8 +1,7 @@
-import { BinauralAudio } from './audio/binaural-audio';
+import { BinauralSamples } from './audio/binaural-samples';
 import { e80 } from './early-late-fractions';
 import { calculateIacc } from './iacc';
-import { arraysMean, mean } from './math/mean';
-import { MonauralResults, processMonauralAudio } from './monaural-processing';
+import { MonauralResults, processChannel } from './monaural-processing';
 import { octfiltBinaural } from './octfilt';
 import { correctStarttimeBinaural } from './starttime';
 
@@ -12,63 +11,48 @@ export type BinauralResults = MonauralResults & {
 };
 
 export async function processBinauralAudio(
-  audio: BinauralAudio,
+  samples: BinauralSamples,
   sampleRate: number
 ): Promise<BinauralResults> {
-  const starttimeCorrected = correctStarttimeBinaural(audio);
-
+  const starttimeCorrected = correctStarttimeBinaural(samples);
   const bands = await octfiltBinaural(starttimeCorrected, sampleRate);
 
   const iacc = [];
   const eiacc = [];
   for (const band of bands) {
-    const earlyBand = new BinauralAudio(
-      e80(band.leftSamples, sampleRate),
-      e80(band.rightSamples, sampleRate)
+    const earlyBand = new BinauralSamples(
+      e80(band.leftChannel, sampleRate),
+      e80(band.rightChannel, sampleRate)
     );
 
     iacc.push(calculateIacc(band));
     eiacc.push(calculateIacc(earlyBand));
   }
 
-  const resultsLeft = await processMonauralAudio(audio.leftSamples, sampleRate);
-  const resultsRight = await processMonauralAudio(
-    audio.rightSamples,
-    sampleRate
-  );
+  // calculate squared impulse response of binaural audio by taking
+  // the arithmetic mean of the squared IR of each channel
+  const t1 = performance.now();
+  const squaredIR = new Float32Array(starttimeCorrected.length);
+  for (let i = 0; i < starttimeCorrected.length; i += 1) {
+    squaredIR[i] =
+      (starttimeCorrected.leftChannel[i] ** 2 +
+        starttimeCorrected.rightChannel[i] ** 2) /
+      2;
+  }
 
-  const meanResults: MonauralResults = {
-    bassRatio: mean(resultsLeft.bassRatio, resultsRight.bassRatio),
-    schwerpunktzeit: mean(
-      resultsLeft.schwerpunktzeit,
-      resultsRight.schwerpunktzeit
-    ),
-    reverbTimeBands: arraysMean(
-      resultsLeft.reverbTimeBands,
-      resultsRight.reverbTimeBands
-    ),
-    bandsSquaredSum: arraysMean(
-      resultsLeft.bandsSquaredSum,
-      resultsRight.bandsSquaredSum
-    ),
-    e80BandsSquaredSum: arraysMean(
-      resultsLeft.e80BandsSquaredSum,
-      resultsRight.e80BandsSquaredSum
-    ),
-    l80BandsSquaredSum: arraysMean(
-      resultsLeft.l80BandsSquaredSum,
-      resultsRight.l80BandsSquaredSum
-    ),
-    c50Bands: arraysMean(resultsLeft.c50Bands, resultsRight.c50Bands),
-    c80Bands: arraysMean(resultsLeft.c80Bands, resultsRight.c80Bands),
-    edtBands: arraysMean(resultsLeft.edtBands, resultsRight.edtBands),
-    squaredImpulseResponse: resultsLeft.squaredImpulseResponse.map(
-      ({ x, y }, i) => ({
-        x,
-        y: (y + resultsRight.squaredImpulseResponse[i].y) / 2,
-      })
-    ),
-  };
+  const meanBands = bands.map(band => {
+    const meanBand = new Float32Array(band.length);
+    for (let i = 0; i < band.length; i += 1) {
+      meanBand[i] =
+        (Math.abs(band.leftChannel[i]) + Math.abs(band.rightChannel[i])) / 2;
+    }
+    return meanBand;
+  });
+  console.log('took ', performance.now() - t1, 'ms');
+
+  const t2 = performance.now();
+  const meanResults = await processChannel(squaredIR, meanBands, sampleRate);
+  console.log('channel took ', performance.now() - t2, 'ms');
 
   return {
     iaccBands: iacc,

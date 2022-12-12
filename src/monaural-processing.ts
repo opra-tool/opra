@@ -1,7 +1,6 @@
 import { c50c80 } from './c50c80';
-import { calculateSchwerpunktzeit } from './schwerpunktzeit';
+import { calculateCentreTime } from './centre-time';
 import { earlyLateFractions } from './early-late-fractions';
-import { arrayFilledWithZeros } from './math/arrayFilledWithZeros';
 import { arraySumSquared } from './math/arraySumSquared';
 import { octfilt } from './octfilt';
 import { calculateReverberation } from './reverberation';
@@ -21,7 +20,7 @@ export type MonauralResults = {
   c50Bands: number[];
   c80Bands: number[];
   squaredImpulseResponse: Point[];
-  schwerpunktzeit: number;
+  centreTime: number;
   bassRatio: number;
 };
 
@@ -32,6 +31,19 @@ export async function processMonauralAudio(
   const starttimeCorrected = correctStarttimeMonaural(samples);
   const bands = await octfilt(starttimeCorrected, sampleRate);
 
+  const squaredIR = new Float32Array(starttimeCorrected.length);
+  for (let i = 0; i < starttimeCorrected.length; i += 1) {
+    squaredIR[i] = starttimeCorrected[i] ** 2;
+  }
+
+  return processChannel(squaredIR, bands, sampleRate);
+}
+
+export async function processChannel(
+  squaredIR: Float32Array,
+  bands: Float32Array[],
+  sampleRate: number
+): Promise<MonauralResults> {
   const fractions = bands.map(band => earlyLateFractions(band, sampleRate));
 
   const c50Values = [];
@@ -47,15 +59,14 @@ export async function processMonauralAudio(
   const bassRatio =
     (reverbTime[1] + reverbTime[2]) / (reverbTime[3] + reverbTime[4]);
 
-  const trimmedSamples = correctStarttimeMonaural(samples);
-  const schwerpunktzeit = calculateSchwerpunktzeit(trimmedSamples, sampleRate);
+  const centreTime = calculateCentreTime(squaredIR, sampleRate);
 
-  // TODO: extract into method
+  // TODO: move into graph
   const squaredImpulseResponse = [];
-  for (let i = 0; i < samples.length; i += 1) {
+  for (let i = 0; i < squaredIR.length; i += 1) {
     squaredImpulseResponse.push({
       x: (i + 1) / sampleRate,
-      y: Math.abs(samples[i]),
+      y: squaredIR[i],
     });
   }
 
@@ -77,7 +88,7 @@ export async function processMonauralAudio(
     c50Bands: c50Values,
     c80Bands: c80Values,
     bassRatio,
-    schwerpunktzeit,
+    centreTime,
     squaredImpulseResponse,
   };
 }

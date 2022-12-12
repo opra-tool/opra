@@ -1,5 +1,5 @@
 import { expect } from '@esm-bundle/chai';
-import { BinauralAudio } from '../src/audio/binaural-audio';
+import { BinauralSamples } from '../src/audio/binaural-samples';
 import {
   correctStarttimeBinaural,
   correctStarttimeMonaural,
@@ -26,13 +26,13 @@ it('trims binaural samples to correct starttime', () => {
   ]);
 
   const result = correctStarttimeBinaural(
-    new BinauralAudio(leftSamples, rightSamples)
+    new BinauralSamples(leftSamples, rightSamples)
   );
 
-  expect(result.leftSamples).deep.equal(
+  expect(result.leftChannel).deep.equal(
     new Float32Array([0.01, 0.02, 0.03, 0.04, 1, 0.001, 0])
   );
-  expect(result.rightSamples).deep.equal(
+  expect(result.rightChannel).deep.equal(
     new Float32Array([0.02, 0.03, 0.04, 1, 0.001, 0, 0])
   );
 });

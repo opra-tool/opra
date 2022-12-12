@@ -5,7 +5,7 @@ import { FileListToggleEvent, FileListRemoveEvent } from './file-list';
 import { RoomResponse } from '../audio/room-response';
 import { BinauralResults, processBinauralAudio } from '../binaural-processing';
 import { MonauralResults, processMonauralAudio } from '../monaural-processing';
-import { binauralAudioFromBuffer } from '../audio/binaural-audio';
+import { binauralAudioFromBuffer } from '../audio/binaural-samples';
 import { FileDropChangeEvent } from './file-drop';
 import { readAudioFile } from '../audio/audio-file-reading';
 import { P0SettingChangeEvent } from './p0-setting';
@@ -194,7 +194,7 @@ export class AudioAnalyzer extends LitElement {
     const c50 = mapArrayParam(results, 'c50Bands');
     const c80 = mapArrayParam(results, 'c80Bands');
     const squaredIR = mapArrayParam(results, 'squaredImpulseResponse');
-    const schwerpunktzeiten = mapArrayParam(results, 'schwerpunktzeit');
+    const centreTimes = mapArrayParam(results, 'centreTime');
     const bassRatios = mapArrayParam(results, 'bassRatio');
 
     // binaural parameters
@@ -214,7 +214,7 @@ export class AudioAnalyzer extends LitElement {
         ></impulse-response-graph>
         <parameters-card
           .responseDetails=${responseDetails}
-          .schwerpunktzeiten=${schwerpunktzeiten}
+          .centreTimes=${centreTimes}
           .bassRatios=${bassRatios}
           .strengths=${strengths}
         >

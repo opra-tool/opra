@@ -1,4 +1,3 @@
-import { arrayFilledWithZeros } from './math/arrayFilledWithZeros';
 import { arraySumSquared } from './math/arraySumSquared';
 import { safeLog10 } from './math/safeLog10';
 import { octfilt } from './octfilt';
@@ -8,7 +7,7 @@ const SAMPLE_RATE = 48_000;
 export async function calculateLpe10(
   airCoefficients: number[]
 ): Promise<number[]> {
-  const samples = arrayFilledWithZeros(SAMPLE_RATE);
+  const samples = new Float32Array(SAMPLE_RATE);
   samples[9999] = 1;
 
   const bands = await octfilt(samples, SAMPLE_RATE);

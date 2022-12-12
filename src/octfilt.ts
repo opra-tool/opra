@@ -1,4 +1,4 @@
-import { BinauralAudio } from './audio/binaural-audio';
+import { BinauralSamples } from './audio/binaural-samples';
 import { bandpass } from './filtering/bandpass';
 
 const ZERO_PADDING_LENGTH = 10000;
@@ -15,15 +15,15 @@ const FREQUENCIES_IEC61672 = [
  * @param audio
  */
 export async function octfiltBinaural(
-  { leftSamples, rightSamples }: BinauralAudio,
+  { leftChannel: leftSamples, rightChannel: rightSamples }: BinauralSamples,
   sampleRate: number
-): Promise<BinauralAudio[]> {
+): Promise<BinauralSamples[]> {
   const leftOctaves = await octfilt(leftSamples, sampleRate);
   const rightOctaves = await octfilt(rightSamples, sampleRate);
 
   const res = [];
   for (let i = 0; i < leftOctaves.length; i += 1) {
-    res.push(new BinauralAudio(leftOctaves[i], rightOctaves[i]));
+    res.push(new BinauralSamples(leftOctaves[i], rightOctaves[i]));
   }
 
   return res;
