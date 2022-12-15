@@ -3,13 +3,13 @@ export class BinauralSamples {
 
   readonly rightChannel: Float32Array;
 
-  constructor(leftSamples: Float32Array, rightSamples: Float32Array) {
-    if (leftSamples.length !== rightSamples.length) {
+  constructor(leftChannel: Float32Array, rightChannel: Float32Array) {
+    if (leftChannel.length !== rightChannel.length) {
       throw new Error('expected left and right samples to be of equal length');
     }
 
-    this.leftChannel = leftSamples;
-    this.rightChannel = rightSamples;
+    this.leftChannel = leftChannel;
+    this.rightChannel = rightChannel;
   }
 
   get length(): number {

@@ -1,7 +1,8 @@
 import { c50c80 } from './c50c80';
 import { calculateCentreTime } from './centre-time';
 import { earlyLateFractions } from './early-late-fractions';
-import { arraySumSquared } from './math/arraySumSquared';
+import { calculateSquaredIR } from './squared-impulse-response';
+import { arraySum } from './math/arraySum';
 import { octfilt } from './octfilt';
 import { calculateReverberation } from './reverberation';
 import { correctStarttimeMonaural } from './starttime';
@@ -29,32 +30,36 @@ export async function processMonauralAudio(
   sampleRate: number
 ): Promise<MonauralResults> {
   const starttimeCorrected = correctStarttimeMonaural(samples);
+  const squaredIR = calculateSquaredIR(starttimeCorrected);
+
   const bands = await octfilt(starttimeCorrected, sampleRate);
+  const bandsSquared = bands.map(calculateSquaredIR);
 
-  const squaredIR = new Float32Array(starttimeCorrected.length);
-  for (let i = 0; i < starttimeCorrected.length; i += 1) {
-    squaredIR[i] = starttimeCorrected[i] ** 2;
-  }
-
-  return processChannel(squaredIR, bands, sampleRate);
+  return processChannel(squaredIR, bandsSquared, sampleRate);
 }
 
 export async function processChannel(
   squaredIR: Float32Array,
-  bands: Float32Array[],
+  bandsSquared: Float32Array[],
   sampleRate: number
 ): Promise<MonauralResults> {
-  const fractions = bands.map(band => earlyLateFractions(band, sampleRate));
+  const fractions = bandsSquared.map(band =>
+    earlyLateFractions(band, sampleRate)
+  );
 
   const c50Values = [];
   const c80Values = [];
-  for (let i = 0; i < bands.length; i += 1) {
+  for (let i = 0; i < fractions.length; i += 1) {
     const { c50, c80 } = c50c80(fractions[i]);
     c50Values.push(c50);
     c80Values.push(c80);
   }
 
-  const { edt, reverbTime } = calculateReverberation(bands, 20, sampleRate);
+  const { edt, reverbTime } = calculateReverberation(
+    bandsSquared,
+    20,
+    sampleRate
+  );
 
   const bassRatio =
     (reverbTime[1] + reverbTime[2]) / (reverbTime[3] + reverbTime[4]);
@@ -70,14 +75,9 @@ export async function processChannel(
     });
   }
 
-  const bandsSquaredSum = bands.map(arraySumSquared);
-
-  const e80Bands = fractions.map(val => val.e80);
-  const l80Bands = fractions.map(val => val.l80);
-
-  const e80BandsSquaredSum = e80Bands.map(arraySumSquared);
-
-  const l80BandsSquaredSum = l80Bands.map(arraySumSquared);
+  const bandsSquaredSum = bandsSquared.map(arraySum);
+  const e80BandsSquaredSum = fractions.map(val => val.e80).map(arraySum);
+  const l80BandsSquaredSum = fractions.map(val => val.l80).map(arraySum);
 
   return {
     bandsSquaredSum,

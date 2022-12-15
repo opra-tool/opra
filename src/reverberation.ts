@@ -1,14 +1,14 @@
 import { calculate_reverberation as wasmCalculateReverberation } from 'wasm-raqi-online-toolbox';
 
 export function calculateReverberation(
-  octaveBands: Float32Array[],
+  bandsSquared: Float32Array[],
   tc: number,
   fs: number
 ): { edt: number[]; reverbTime: number[] } {
   const edt = [];
   const reverbTime = [];
 
-  for (const band of octaveBands) {
+  for (const band of bandsSquared) {
     const result = wasmCalculateReverberation(band, tc, fs);
 
     edt.push(result[0]);

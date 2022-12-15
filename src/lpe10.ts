@@ -1,4 +1,5 @@
-import { arraySumSquared } from './math/arraySumSquared';
+import { calculateSquaredIR } from './squared-impulse-response';
+import { arraySum } from './math/arraySum';
 import { safeLog10 } from './math/safeLog10';
 import { octfilt } from './octfilt';
 
@@ -13,8 +14,8 @@ export async function calculateLpe10(
   const bands = await octfilt(samples, SAMPLE_RATE);
 
   return bands.map((band, i) => {
-    const sumSquared = arraySumSquared(band);
-    const dodb = 10 * safeLog10(sumSquared);
+    const sum = arraySum(calculateSquaredIR(band));
+    const dodb = 10 * safeLog10(sum);
 
     return 100 + dodb - 10 * airCoefficients[i];
   });

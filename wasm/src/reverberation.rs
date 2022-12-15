@@ -1,34 +1,20 @@
 use wasm_bindgen::prelude::wasm_bindgen;
 
 #[wasm_bindgen]
-extern "C" {
-  #[wasm_bindgen(js_namespace = console)]
-  fn log(s: &str);
-}
-
-macro_rules! console_log {
-    // Note that this is using the `log` function imported above during
-    // `bare_bones`
-    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
-}
-
-#[wasm_bindgen]
-pub fn calculate_reverberation(samples: Vec<f32>, tc: f64, fs: f64) -> Vec<f64> {
-  let mut sum1 = 0.0;
-  for sample in &samples {
-    sum1 += sample.powf(2.0) as f64;
-  }
-
-  let mut cumulative_sum = Vec::with_capacity(samples.len());
-  cumulative_sum.push((samples[0] as f64).powf(2.0));
-  for i in 1..samples.len() {
-    cumulative_sum.push(cumulative_sum[i - 1] + (samples[i] as f64).powf(2.0));
-  }
+pub fn calculate_reverberation(squared_ir: Vec<f32>, tc: f64, fs: f64) -> Vec<f64> {
+  let sum = squared_ir.iter().sum::<f32>() as f64;
+  let cumulative_sum: Vec<f64> = squared_ir
+    .into_iter()
+    .scan(0.0, |acc, x| {
+      *acc += x as f64;
+      Some(*acc)
+    })
+    .collect();
 
   let mut max_si1 = 0.0;
   let mut si1 = Vec::with_capacity(cumulative_sum.len());
   for val in cumulative_sum {
-    let si1_val = sum1 - val;
+    let si1_val = sum - val;
 
     if si1_val > max_si1 {
       max_si1 = si1_val;
@@ -55,7 +41,7 @@ fn calc(ec: &Vec<f64>, min: f64, max: f64, fs: f64) -> f64 {
 
   let mut tseg = Vec::with_capacity(trimmed.len());
   for i in 0..trimmed.len() {
-    tseg.push((1.0 / fs as f64) * (i + 1) as f64);
+    tseg.push((1.0 / fs) * (i + 1) as f64);
   }
 
   return 60.0 / fit_linear_function(&tseg, &trimmed).abs();
