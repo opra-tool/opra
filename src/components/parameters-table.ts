@@ -1,10 +1,10 @@
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { ResponseDetail } from '../audio/response-detail';
 
 export type Parameter = {
-  name: string;
+  name: string | TemplateResult;
   description?: string;
   unit?: string;
   responseValues: number[];

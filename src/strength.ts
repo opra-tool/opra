@@ -1,6 +1,7 @@
 import { getFrequencyValues } from './components/graphs/common';
 import { calculateSoundDampingInAir } from './dampening';
 import { calculateLpe10 } from './lpe10';
+import { addDecibel, meanDecibel } from './math/decibels';
 import { safeLog10 } from './math/safeLog10';
 
 export type Strengths = {
@@ -9,9 +10,9 @@ export type Strengths = {
   lateStrength: number[];
   averageStrength: number;
   trebleRatio: number;
-  earlyBassStrength: number;
+  earlyBassLevel: number;
   aWeighted: number;
-  aWeightedC80: number;
+  levelAdjustedC80: number;
 };
 
 type Input = {
@@ -57,9 +58,9 @@ export async function calculateStrengths(
   const lateStrength = calculateStaerkemass(l80BandsSquaredSum, p0, lpe10);
   const averageStrength = calculateMeanStaerkemass(strength);
   const trebleRatio = calculateTrebleRatio(lateStrength);
-  const earlyBassStrength = calculateEarlyBassStaerkemass(earlyStrength);
+  const earlyBassLevel = calculateEarlyBassLevel(earlyStrength);
   const aWeighted = calculateAWeightedStaerkemeass(strength);
-  const aWeightedC80 = calculateAWeightedC80(c80Bands, aWeighted);
+  const levelAdjustedC80 = calculateLevelAdjustedC80(c80Bands, aWeighted);
 
   return {
     strength,
@@ -67,9 +68,9 @@ export async function calculateStrengths(
     lateStrength,
     averageStrength,
     trebleRatio,
-    earlyBassStrength,
+    earlyBassLevel,
     aWeighted,
-    aWeightedC80,
+    levelAdjustedC80,
   };
 }
 
@@ -96,17 +97,34 @@ function calculateAWeightedStaerkemeass(strength: number[]): number {
 }
 
 function calculateMeanStaerkemass(strength: number[]): number {
-  return (strength[3] + strength[4]) / 2;
+  return meanDecibel(strength[3], strength[4]);
 }
 
+/**
+ * As defined in G.A. Soulodre and J. S. Bradley (1995): Subjective evaluation
+of new room acoustic measures
+ */
 function calculateTrebleRatio(lateStrength: number[]): number {
-  return lateStrength[6] - (lateStrength[4] + lateStrength[5]) / 2;
+  return lateStrength[6] - meanDecibel(lateStrength[4], lateStrength[5]);
 }
 
-function calculateEarlyBassStaerkemass(earlyStrength: number[]): number {
-  return (earlyStrength[1] + earlyStrength[2] + earlyStrength[3]) / 3;
+/**
+ * As defined in G.A. Soulodre and J. S. Bradley (1995): Subjective evaluation
+of new room acoustic measures
+ */
+function calculateEarlyBassLevel(earlyStrength: number[]): number {
+  return meanDecibel(earlyStrength[1], earlyStrength[2], earlyStrength[3]);
 }
 
-function calculateAWeightedC80(c80Bands: number[], aWeighted: number): number {
-  return (c80Bands[3] + c80Bands[4]) / 2 - 0.62 * aWeighted;
+/**
+ * As defined in G.A. Soulodre and J. S. Bradley (1995): Subjective evaluation
+of new room acoustic measures
+ */
+function calculateLevelAdjustedC80(
+  c80Bands: number[],
+  aWeighted: number
+): number {
+  const mean500Hz1000Hz = meanDecibel(c80Bands[3], c80Bands[4]);
+
+  return addDecibel(mean500Hz1000Hz, 0.62 * aWeighted);
 }

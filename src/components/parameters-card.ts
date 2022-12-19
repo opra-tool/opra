@@ -3,7 +3,12 @@ import { customElement, property } from 'lit/decorators.js';
 import { isFreeOfNullValues, mapArrayParam } from '../arrays';
 import { ResponseDetail } from '../audio/response-detail';
 import { Strengths } from '../strength';
-import { UNIT_DECIBELS, UNIT_MILLISECONDS } from '../units';
+import {
+  UNIT_DECIBELS,
+  UNIT_DECIBELS_A,
+  UNIT_MILLISECONDS,
+  UNIT_SECONDS,
+} from '../units';
 import { Parameter } from './parameters-table';
 
 @customElement('parameters-card')
@@ -18,16 +23,36 @@ export class ParametersCard extends LitElement {
   bassRatios: number[] = [];
 
   @property({ type: Array })
+  c80s: number[] = [];
+
+  @property({ type: Array })
+  reverbTimes: number[] = [];
+
+  @property({ type: Array })
   strengths: (Strengths | null)[] = [];
 
   render() {
     const parameters: Parameter[] = [
       {
-        name: 'Centre Time (Schwerpunktzeit)',
+        name: 'Reverb Time', // TODO: translate: Nachhallzeit
+        description: 'according to ISO 3382-1 (500-1000Hz)',
+        unit: UNIT_SECONDS,
+        responseValues: this.reverbTimes,
+        position: 1,
+      },
+      {
+        name: 'Centre Time', // TODO: translate: Schwerpunktzeit
         description: 'according to ISO 3382-1',
         unit: UNIT_MILLISECONDS,
         responseValues: this.centreTimes,
         position: 2,
+      },
+      {
+        name: html`Clarity C<sub>80</sub>`, // TODO: translate: Klarheitsmaß C80
+        description: 'according to ISO 3382-1 (500-1000Hz)',
+        unit: UNIT_DECIBELS,
+        responseValues: this.c80s,
+        position: 5,
       },
       {
         name: 'Bass Ratio',
@@ -39,12 +64,12 @@ export class ParametersCard extends LitElement {
     if (isFreeOfNullValues(this.strengths)) {
       const averageStrengths = mapArrayParam(this.strengths, 'averageStrength');
       const trebleRatios = mapArrayParam(this.strengths, 'trebleRatio');
-      const earlyBassStrengths = mapArrayParam(
-        this.strengths,
-        'earlyBassStrength'
-      );
+      const earlyBassLevels = mapArrayParam(this.strengths, 'earlyBassLevel');
       const aWeighted = mapArrayParam(this.strengths, 'aWeighted');
-      const aWeightedC80 = mapArrayParam(this.strengths, 'aWeightedC80');
+      const levelAdjustedC80 = mapArrayParam(
+        this.strengths,
+        'levelAdjustedC80'
+      );
 
       parameters.push({
         name: 'Stärkemaß',
@@ -55,33 +80,37 @@ export class ParametersCard extends LitElement {
       });
       parameters.push({
         name: 'A-Gewichtetes Stärkemaß',
-        description: 'parameter is currently not reliably calculated',
+        description: 'as defined by Soulodre and Bradley (1995)',
         responseValues: aWeighted,
-        unit: UNIT_DECIBELS,
+        unit: UNIT_DECIBELS_A,
         position: 4,
       });
       parameters.push({
-        name: 'A-Weighted C80',
-        description: 'parameter is currently not reliably calculated',
-        responseValues: aWeightedC80,
-        unit: UNIT_DECIBELS,
+        name: html`Level adjusted C<sub>80</sub>`, // TODO: translation: Lautheitskorrigiertes Klarheitsmaß C80
+        description:
+          'Perceived clarity rating defined by Soulodre and Bradley (1995)',
+        responseValues: levelAdjustedC80,
+        unit: UNIT_DECIBELS_A,
         position: 6,
       });
       parameters.push({
         name: 'Treble Ratio',
+        description: 'as defined by Soulodre and Bradley (1995)',
         responseValues: trebleRatios,
+        unit: UNIT_DECIBELS,
         position: 7,
       });
       parameters.push({
-        name: 'Early Bass Strength',
-        responseValues: earlyBassStrengths,
+        name: 'Early Bass Level',
+        description: 'as defined by Soulodre and Bradley (1995)',
+        responseValues: earlyBassLevels,
         unit: UNIT_DECIBELS,
         position: 9,
       });
     }
 
     return html`
-      <base-card>
+      <base-card cardTitle="Single-Figure Parameters">
         <parameters-table
           .responseDetails=${this.responseDetails}
           .parameters=${parameters}

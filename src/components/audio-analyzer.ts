@@ -22,6 +22,7 @@ import {
   retrieveValue,
   retrieveValueOrDefault,
 } from '../persistence';
+import { meanDecibel } from '../math/decibels';
 
 const COLOR_WHITE = 'rgba(255, 255, 255, 0.75)';
 const COLOR_BLUE = 'rgba(153, 102, 255, 0.5)';
@@ -196,6 +197,8 @@ export class AudioAnalyzer extends LitElement {
     const squaredIR = mapArrayParam(results, 'squaredImpulseResponse');
     const centreTimes = mapArrayParam(results, 'centreTime');
     const bassRatios = mapArrayParam(results, 'bassRatio');
+    const meanC80s = c80.map(value => meanDecibel(value[3], value[4]));
+    const meanReverbTimes = reverbTime.map(value => (value[3] + value[4]) / 2);
 
     // binaural parameters
     const binauralResults = results.filter(isBinauralResults);
@@ -217,6 +220,8 @@ export class AudioAnalyzer extends LitElement {
           .responseDetails=${responseDetails}
           .centreTimes=${centreTimes}
           .bassRatios=${bassRatios}
+          .c80s=${meanC80s}
+          .reverbTimes=${meanReverbTimes}
           .strengths=${strengths}
         >
           <p0-notice
