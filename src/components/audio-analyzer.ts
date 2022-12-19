@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, query, state } from 'lit/decorators.js';
+import { customElement, query, state, property } from 'lit/decorators.js';
 import { UNIT_CELCIUS } from '../units';
 import { FileListToggleEvent, FileListRemoveEvent } from './file-list';
 import { RoomResponse } from '../audio/room-response';
@@ -107,6 +107,10 @@ export class AudioAnalyzer extends LitElement {
       ? this.responses.every(file => file.isProcessing)
       : false;
 
+    const includesBinauralResults = this.responses.some(
+      ({ type }) => type === 'binaural'
+    );
+
     return html`
       <section class="audio-analyzer">
         <base-card class="controls-card">
@@ -129,6 +133,19 @@ export class AudioAnalyzer extends LitElement {
             ></p0-setting>
           </section>
         </base-card>
+        ${includesBinauralResults
+          ? html`<base-card>
+              <section class="binaural-calculation-note">
+                <sl-icon name="exclamation-octagon"></sl-icon>
+                <p>
+                  For binaural room responses, monaural parameters and graphs
+                  are calculated on the arithmetic mean of the left and right
+                  channels. Keep in mind that the head-related transfer function
+                  might influence these results.
+                </p>
+              </section>
+            </base-card>`
+          : null}
         ${isProcessing ? this.renderProgress() : this.renderResults()}
         ${this.renderError()}
       </section>
@@ -498,6 +515,20 @@ export class AudioAnalyzer extends LitElement {
 
     section.settings {
       margin-block-start: 1rem;
+    }
+
+    section.binaural-calculation-note {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    section.binaural-calculation-note > p {
+      margin: 0;
+    }
+
+    section.binaural-calculation-note > sl-icon {
+      font-size: 2rem;
     }
 
     section.results {

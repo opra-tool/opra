@@ -46,6 +46,7 @@ export default {
             iconPath('trash'),
             iconPath('check2-circle'),
             iconPath('exclamation-triangle'),
+            iconPath('exclamation-octagon'),
           ],
           dest: path.resolve(__dirname, 'dist/shoelace/assets/icons'),
         },
