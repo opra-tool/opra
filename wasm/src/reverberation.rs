@@ -1,12 +1,12 @@
 use wasm_bindgen::prelude::wasm_bindgen;
 
 #[wasm_bindgen]
-pub fn calculate_reverberation(squared_ir: Vec<f32>, tc: f64, fs: f64) -> Vec<f64> {
-  let sum = squared_ir.iter().sum::<f32>() as f64;
-  let cumulative_sum: Vec<f64> = squared_ir
+pub fn calculate_reverberation(squared_ir: Vec<f32>, tc: f32, fs: f32) -> Vec<f32> {
+  let sum = squared_ir.iter().sum::<f32>();
+  let cumulative_sum: Vec<f32> = squared_ir
     .into_iter()
     .scan(0.0, |acc, x| {
-      *acc += x as f64;
+      *acc += x;
       Some(*acc)
     })
     .collect();
@@ -14,13 +14,10 @@ pub fn calculate_reverberation(squared_ir: Vec<f32>, tc: f64, fs: f64) -> Vec<f6
   let mut max_si1 = 0.0;
   let mut si1 = Vec::with_capacity(cumulative_sum.len());
   for val in cumulative_sum {
-    let si1_val = sum - val;
+    let next_val = sum - val;
+    si1.push(next_val);
 
-    if si1_val > max_si1 {
-      max_si1 = si1_val;
-    }
-
-    si1.push(si1_val);
+    max_si1 = next_val.max(max_si1);
   }
 
   let mut ec = Vec::with_capacity(si1.len());
@@ -31,7 +28,7 @@ pub fn calculate_reverberation(squared_ir: Vec<f32>, tc: f64, fs: f64) -> Vec<f6
   return vec![calc(&ec, -10.0, 0.0, fs), calc(&ec, -(5.0 + tc), -5.0, fs)];
 }
 
-fn calc(ec: &Vec<f64>, min: f64, max: f64, fs: f64) -> f64 {
+fn calc(ec: &Vec<f32>, min: f32, max: f32, fs: f32) -> f32 {
   let mut trimmed = vec![];
   for val in ec {
     if *val > min && *val < max {
@@ -41,13 +38,13 @@ fn calc(ec: &Vec<f64>, min: f64, max: f64, fs: f64) -> f64 {
 
   let mut tseg = Vec::with_capacity(trimmed.len());
   for i in 0..trimmed.len() {
-    tseg.push((1.0 / fs) * (i + 1) as f64);
+    tseg.push((1.0 / fs) * (i + 1) as f32);
   }
 
   return 60.0 / fit_linear_function(&tseg, &trimmed).abs();
 }
 
-fn fit_linear_function(x: &Vec<f64>, y: &Vec<f64>) -> f64 {
+fn fit_linear_function(x: &Vec<f32>, y: &Vec<f32>) -> f32 {
   if x.len() != y.len() {
     panic!("expected matching counts x- and y-values")
   }
@@ -59,8 +56,8 @@ fn fit_linear_function(x: &Vec<f64>, y: &Vec<f64>) -> f64 {
     sum_y += y[i];
   }
 
-  let avg_x = sum_x / (x.len() as f64);
-  let avg_y = sum_y / (y.len() as f64);
+  let avg_x = sum_x / (x.len() as f32);
+  let avg_y = sum_y / (y.len() as f32);
 
   let mut sum1 = 0.0;
   let mut sum2 = 0.0;
