@@ -107,10 +107,6 @@ export class AudioAnalyzer extends LitElement {
       ? this.responses.every(file => file.isProcessing)
       : false;
 
-    const includesBinauralResults = this.responses.some(
-      ({ type }) => type === 'binaural'
-    );
-
     return html`
       <section class="audio-analyzer">
         <base-card class="controls-card">
@@ -133,19 +129,6 @@ export class AudioAnalyzer extends LitElement {
             ></p0-setting>
           </section>
         </base-card>
-        ${includesBinauralResults
-          ? html`<base-card>
-              <section class="binaural-calculation-note">
-                <sl-icon name="exclamation-octagon"></sl-icon>
-                <p>
-                  For binaural room responses, monaural parameters and graphs
-                  are calculated on the arithmetic mean of the left and right
-                  channels. Keep in mind that the head-related transfer function
-                  might influence these results.
-                </p>
-              </section>
-            </base-card>`
-          : null}
         ${isProcessing ? this.renderProgress() : this.renderResults()}
         ${this.renderError()}
       </section>
@@ -198,6 +181,10 @@ export class AudioAnalyzer extends LitElement {
       f => !f.isProcessing && f.isEnabled
     );
 
+    const includesBinauralResults = enabledResponses.some(
+      ({ type }) => type === 'binaural'
+    );
+
     const responseDetails = enabledResponses.map(({ color, fileName }) => ({
       color,
       fileName,
@@ -228,6 +215,19 @@ export class AudioAnalyzer extends LitElement {
 
     return html`
       <section class="results">
+        ${includesBinauralResults
+          ? html` <base-card>
+              <section class="binaural-calculation-note">
+                <sl-icon name="exclamation-octagon"></sl-icon>
+                <p>
+                  For binaural room responses, monaural parameters and graphs
+                  are calculated on the arithmetic mean of the left and right
+                  channels. Keep in mind that the head-related transfer function
+                  might influence these results.
+                </p>
+              </section>
+            </base-card>`
+          : null}
         <impulse-response-graph
           .responseDetails=${responseDetails}
           .squaredIR=${squaredIR}
