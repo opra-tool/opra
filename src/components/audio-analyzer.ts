@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, query, state, property } from 'lit/decorators.js';
+import { customElement, query, state } from 'lit/decorators.js';
 import { UNIT_CELCIUS } from '../units';
 import { FileListToggleEvent, FileListRemoveEvent } from './file-list';
 import { RoomResponse } from '../audio/room-response';
@@ -87,14 +87,12 @@ export class AudioAnalyzer extends LitElement {
 
   protected firstUpdated() {
     getResponses().then(responses => {
-      for (const response of responses) {
-        this.results.set(response.id, response.results);
+      for (const [response, results] of responses) {
+        this.results.set(response.id, results);
+        this.responses.push(response);
       }
 
-      this.responses = responses.map(r => ({
-        ...r,
-        isProcessing: false,
-      }));
+      this.requestUpdate();
 
       if (this.p0 !== null) {
         this.recalculateStrengths();
@@ -289,6 +287,7 @@ export class AudioAnalyzer extends LitElement {
               ></iacc-graph>`
             : null}
         </div>
+        <convolver-card .responses=${this.responses}></convolver-card>
       </section>
     `;
   }
@@ -328,6 +327,7 @@ export class AudioAnalyzer extends LitElement {
       type: buffer.numberOfChannels === 1 ? 'monaural' : 'binaural',
       id: AudioAnalyzer.randomId(),
       fileName: audioFile.name,
+      buffer,
       durationSeconds: buffer.duration,
       sampleRate: buffer.sampleRate,
       isProcessing: true,
@@ -354,10 +354,7 @@ export class AudioAnalyzer extends LitElement {
 
     this.results.set(response.id, results);
 
-    await persistResponse({
-      ...response,
-      results,
-    });
+    await persistResponse(response, results);
 
     if (this.p0 !== null) {
       this.strengthResults.set(

@@ -5,8 +5,9 @@ import { MonauralResults } from './monaural-processing';
 
 const RESPONSES_STORE = 'saved-response';
 
-type RoomResponseRecord = Omit<RoomResponse, 'isProcessing'> & {
+type RoomResponseRecord = Omit<RoomResponse, 'isProcessing' | 'buffer'> & {
   results: MonauralResults | BinauralResults;
+  samples: Float32Array[];
 };
 
 type DBSchema = {
@@ -26,10 +27,13 @@ async function getDB(): Promise<IDBPDatabase<DBSchema>> {
 }
 
 export async function persistResponse(
-  response: RoomResponseRecord
+  response: RoomResponse,
+  results: MonauralResults | BinauralResults
 ): Promise<void> {
+  const record = responseToRecord(response, results);
+
   const db = await getDB();
-  await db.add(RESPONSES_STORE, response);
+  await db.add(RESPONSES_STORE, record);
 }
 
 export async function removeResponse(id: string): Promise<void> {
@@ -37,7 +41,9 @@ export async function removeResponse(id: string): Promise<void> {
   await db.delete(RESPONSES_STORE, id);
 }
 
-export async function getResponses(): Promise<RoomResponseRecord[]> {
+export async function getResponses(): Promise<
+  [RoomResponse, MonauralResults | BinauralResults][]
+> {
   const db = await getDB();
 
   const records = await db.getAll(RESPONSES_STORE);
@@ -45,7 +51,7 @@ export async function getResponses(): Promise<RoomResponseRecord[]> {
   const responses = [];
   for (const record of records) {
     if (isValidResponseRecord(record)) {
-      responses.push(record);
+      responses.push(recordToResponse(record));
     } else {
       // eslint-disable-next-line no-console
       console.warn(
@@ -56,6 +62,53 @@ export async function getResponses(): Promise<RoomResponseRecord[]> {
   }
 
   return responses;
+}
+
+function responseToRecord(
+  { buffer, isProcessing, ...rest }: RoomResponse,
+  results: MonauralResults | BinauralResults
+): RoomResponseRecord {
+  const samples: Float32Array[] = [];
+
+  for (let i = 0; i < buffer.numberOfChannels; i += 1) {
+    samples[i] = new Float32Array(buffer.length);
+    buffer.copyFromChannel(samples[i], i);
+  }
+
+  return {
+    samples,
+    results,
+    ...rest,
+  };
+}
+
+function recordToResponse({
+  samples,
+  sampleRate,
+  results,
+  ...rest
+}: RoomResponseRecord): [RoomResponse, MonauralResults | BinauralResults] {
+  const numberOfChannels = samples.length;
+
+  const buffer = new AudioBuffer({
+    sampleRate,
+    numberOfChannels,
+    length: samples[0].length,
+  });
+
+  for (let i = 0; i < samples.length; i += 1) {
+    buffer.copyToChannel(samples[i], i);
+  }
+
+  return [
+    {
+      buffer,
+      sampleRate,
+      isProcessing: false,
+      ...rest,
+    },
+    results,
+  ];
 }
 
 function isValidResponseRecord(record: unknown): boolean {
@@ -77,6 +130,7 @@ function isValidResponseRecord(record: unknown): boolean {
     typeof response.fileName === 'string' &&
     typeof response.isEnabled === 'boolean' &&
     typeof response.sampleRate === 'number' &&
+    response.samples instanceof Array &&
     typeof response.results === 'object'
   );
 }

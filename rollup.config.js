@@ -44,6 +44,8 @@ export default {
         {
           src: [
             iconPath('trash'),
+            iconPath('play-fill'),
+            iconPath('pause-fill'),
             iconPath('check2-circle'),
             iconPath('exclamation-triangle'),
             iconPath('exclamation-octagon'),

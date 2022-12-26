@@ -28,6 +28,7 @@ import '@shoelace-style/shoelace/dist/components/switch/switch.js';
 // register web components
 import './components/audio-analyzer';
 import './components/base-card';
+import './components/convolver-card';
 import './components/file-drop';
 import './components/file-dropdown';
 import './components/file-list';

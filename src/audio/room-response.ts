@@ -3,6 +3,7 @@ export type RoomResponse = {
   id: string;
   color: string;
   fileName: string;
+  buffer: AudioBuffer;
   durationSeconds: number;
   sampleRate: number;
   isProcessing: boolean;
