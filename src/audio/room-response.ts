@@ -4,8 +4,7 @@ export type RoomResponse = {
   color: string;
   fileName: string;
   buffer: AudioBuffer;
-  durationSeconds: number;
+  duration: number;
   sampleRate: number;
-  isProcessing: boolean;
   isEnabled: boolean;
 };

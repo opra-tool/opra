@@ -3,7 +3,17 @@ import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { when } from 'lit/directives/when.js';
 import { formatResponseSummary } from '../presentation/room-response-format';
-import { RoomResponse } from '../audio/room-response';
+
+export type FileListEntry = {
+  type: 'monaural' | 'binaural';
+  id: string;
+  fileName: string;
+  hasResults: boolean;
+  isEnabled: boolean;
+  color: string;
+  duration: number;
+  sampleRate: number;
+};
 
 export class FileListToggleEvent extends CustomEvent<{
   id: string;
@@ -15,23 +25,24 @@ export class FileListRemoveEvent extends CustomEvent<{
 
 @customElement('file-list')
 export class FileList extends LitElement {
-  @property({ type: Array }) files: RoomResponse[] = [];
+  @property({ type: Array })
+  entries: FileListEntry[] = [];
 
   protected render() {
-    const enabledCount = this.files.reduce(
+    const enabledCount = this.entries.reduce(
       (count, file) => (file.isEnabled ? count + 1 : count),
       0
     );
 
     return html`
       <section>
-        ${this.files.map(file => this.renderFile(file, enabledCount))}
+        ${this.entries.map(file => this.renderListEntry(file, enabledCount))}
       </section>
     `;
   }
 
-  private renderFile(
-    { id, fileName, isProcessing, isEnabled, color, ...details }: RoomResponse,
+  private renderListEntry(
+    { id, fileName, hasResults, isEnabled, color, ...details }: FileListEntry,
     enabledCount: number
   ) {
     const cannotToggle = isEnabled && enabledCount === 1;
@@ -44,15 +55,15 @@ export class FileList extends LitElement {
       <div class="file-list-entry" title=${fileName}>
         <div class="head">
           ${when(
-            isProcessing,
-            () => html`<sl-spinner></sl-spinner>`,
+            hasResults,
             () => html`<sl-switch
               ?checked=${isEnabled}
               ?disabled=${cannotToggle}
               title=${toggleTitle}
               value=${id}
               @sl-change=${this.onSwitch}
-            ></sl-switch>`
+            ></sl-switch>`,
+            () => html`<sl-spinner></sl-spinner>`
           )}
         </div>
         <div>

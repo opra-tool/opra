@@ -1,7 +1,11 @@
 import { RoomResponse } from '../audio/room-response';
 import { UNIT_HERTZ, UNIT_SECONDS } from '../units';
 
-type Input = Pick<RoomResponse, 'type' | 'durationSeconds' | 'sampleRate'>;
+type Input = {
+  type: 'monaural' | 'binaural';
+  duration: number;
+  sampleRate: number;
+};
 
 const responseTypeNames = {
   monaural: 'Monaural',
@@ -10,12 +14,10 @@ const responseTypeNames = {
 
 export function formatResponseSummary({
   type,
-  durationSeconds,
+  duration,
   sampleRate,
 }: Input): string {
   return `${
     responseTypeNames[type]
-  } • ${sampleRate}${UNIT_HERTZ} • ${durationSeconds.toFixed(
-    2
-  )}${UNIT_SECONDS}`;
+  } • ${sampleRate}${UNIT_HERTZ} • ${duration.toFixed(2)}${UNIT_SECONDS}`;
 }

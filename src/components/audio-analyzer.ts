@@ -101,9 +101,18 @@ export class AudioAnalyzer extends LitElement {
   }
 
   render() {
-    const isProcessing = this.responses.length
-      ? this.responses.every(file => file.isProcessing)
-      : false;
+    const fileListEntries = this.responses.map(
+      ({ type, id, color, duration, isEnabled, sampleRate, fileName }) => ({
+        type,
+        id,
+        color,
+        duration,
+        isEnabled,
+        sampleRate,
+        fileName,
+        hasResults: this.results.has(id),
+      })
+    );
 
     return html`
       <section class="audio-analyzer">
@@ -113,7 +122,7 @@ export class AudioAnalyzer extends LitElement {
             ${this.responses.length > 0
               ? html`
                   <file-list
-                    .files=${this.responses}
+                    .entries=${fileListEntries}
                     @toggle-file=${this.onToggleFile}
                     @remove-file=${this.onRemoveFile}
                   ></file-list>
@@ -127,13 +136,12 @@ export class AudioAnalyzer extends LitElement {
             ></p0-setting>
           </section>
         </base-card>
-        ${isProcessing ? this.renderProgress() : this.renderResults()}
-        ${this.renderError()}
+        ${this.renderResults()} ${this.renderError()}
       </section>
 
       ${this.responses.length > 0
         ? html`<file-dropdown
-            .files=${this.responses}
+            .entries=${fileListEntries}
             @toggle-file=${this.onToggleFile}
             @remove-file=${this.onRemoveFile}
           ></file-dropdown>`
@@ -165,33 +173,30 @@ export class AudioAnalyzer extends LitElement {
     `;
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  private renderProgress() {
-    return html`<progress-indicator></progress-indicator>`;
-  }
-
   private renderResults() {
-    if (!this.results.size) {
+    if (!this.responses.length) {
       return null;
     }
 
-    const enabledResponses = this.responses.filter(
-      f => !f.isProcessing && f.isEnabled
+    const responses = this.responses.filter(
+      r => r.isEnabled && this.results.has(r.id)
     );
 
-    const includesBinauralResults = enabledResponses.some(
+    if (!responses.length) {
+      return html`<progress-indicator></progress-indicator>`;
+    }
+
+    const includesBinauralResponses = responses.some(
       ({ type }) => type === 'binaural'
     );
 
-    const responseDetails = enabledResponses.map(({ color, fileName }) => ({
+    const responseDetails = responses.map(({ color, fileName }) => ({
       color,
       fileName,
     }));
 
     // monaural parameters
-    const results = enabledResponses.map(
-      this.getResponseResultsOrThrow.bind(this)
-    );
+    const results = responses.map(this.getResponseResultsOrThrow.bind(this));
     const edt = mapArrayParam(results, 'edtBands');
     const reverbTime = mapArrayParam(results, 'reverbTimeBands');
     const c50 = mapArrayParam(results, 'c50Bands');
@@ -207,13 +212,11 @@ export class AudioAnalyzer extends LitElement {
     const iacc = mapArrayParam(binauralResults, 'iaccBands');
     const eiacc = mapArrayParam(binauralResults, 'eiaccBands');
 
-    const strengths = enabledResponses.map(
-      this.getResponseStrengthResults.bind(this)
-    );
+    const strengths = responses.map(this.getResponseStrengthResults.bind(this));
 
     return html`
       <section class="results">
-        ${includesBinauralResults
+        ${includesBinauralResponses
           ? html` <base-card>
               <section class="binaural-calculation-note">
                 <sl-icon name="exclamation-octagon"></sl-icon>
@@ -328,9 +331,8 @@ export class AudioAnalyzer extends LitElement {
       id: AudioAnalyzer.randomId(),
       fileName: audioFile.name,
       buffer,
-      durationSeconds: buffer.duration,
+      duration: buffer.duration,
       sampleRate: buffer.sampleRate,
-      isProcessing: true,
       isEnabled: true,
       color: this.findAvailableColor(),
     };
@@ -367,10 +369,7 @@ export class AudioAnalyzer extends LitElement {
       );
     }
 
-    this.responses = this.responses.map(r => ({
-      ...r,
-      isProcessing: r.id === response.id ? false : r.isProcessing,
-    }));
+    this.requestUpdate();
   }
 
   private findAvailableColor(): string {

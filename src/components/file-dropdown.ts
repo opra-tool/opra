@@ -1,14 +1,14 @@
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { RoomResponse } from '../audio/room-response';
+import { FileListEntry } from './file-list';
 
 @customElement('file-dropdown')
 export class FileDropdown extends LitElement {
   @property()
-  files: RoomResponse[] = [];
+  entries: FileListEntry[] = [];
 
   protected render() {
-    const enabledFilesCount = this.files.reduce(
+    const enabledFilesCount = this.entries.reduce(
       (prev, cur) => (cur.isEnabled ? prev + 1 : prev),
       0
     );
@@ -20,7 +20,7 @@ export class FileDropdown extends LitElement {
             >${enabledFilesCount} response(s) enabled</sl-button
           >
           <div class="content">
-            <file-list .files=${this.files}></file-list>
+            <file-list .entries=${this.entries}></file-list>
           </div>
         </sl-dropdown>
       </div>

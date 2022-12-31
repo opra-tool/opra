@@ -5,7 +5,7 @@ it('formats monaural file details', () => {
   expect(
     formatResponseSummary({
       type: 'monaural',
-      durationSeconds: 1,
+      duration: 1,
       sampleRate: 44100,
     })
   ).to.equal('Monaural • 44100Hz • 1.00s');
@@ -15,7 +15,7 @@ it('formats binaural file details', () => {
   expect(
     formatResponseSummary({
       type: 'binaural',
-      durationSeconds: 1,
+      duration: 1,
       sampleRate: 44100,
     })
   ).to.equal('Binaural • 44100Hz • 1.00s');

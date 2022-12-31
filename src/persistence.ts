@@ -5,7 +5,7 @@ import { MonauralResults } from './monaural-processing';
 
 const RESPONSES_STORE = 'saved-response';
 
-type RoomResponseRecord = Omit<RoomResponse, 'isProcessing' | 'buffer'> & {
+type RoomResponseRecord = Omit<RoomResponse, 'buffer'> & {
   results: MonauralResults | BinauralResults;
   samples: Float32Array[];
 };
@@ -65,7 +65,7 @@ export async function getResponses(): Promise<
 }
 
 function responseToRecord(
-  { buffer, isProcessing, ...rest }: RoomResponse,
+  { buffer, ...rest }: RoomResponse,
   results: MonauralResults | BinauralResults
 ): RoomResponseRecord {
   const samples: Float32Array[] = [];
@@ -104,7 +104,6 @@ function recordToResponse({
     {
       buffer,
       sampleRate,
-      isProcessing: false,
       ...rest,
     },
     results,
@@ -126,7 +125,7 @@ function isValidResponseRecord(record: unknown): boolean {
     typeof response.type === 'string' &&
     typeof response.id === 'string' &&
     typeof response.color === 'string' &&
-    typeof response.durationSeconds === 'number' &&
+    typeof response.duration === 'number' &&
     typeof response.fileName === 'string' &&
     typeof response.isEnabled === 'boolean' &&
     typeof response.sampleRate === 'number' &&
