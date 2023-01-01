@@ -1,5 +1,6 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, query, state } from 'lit/decorators.js';
+import { classMap } from 'lit/directives/class-map.js';
 import { UNIT_CELCIUS } from '../units';
 import { FileListToggleEvent, FileListRemoveEvent } from './file-list';
 import { RoomResponse } from '../audio/room-response';
@@ -112,7 +113,7 @@ export class AudioAnalyzer extends LitElement {
     );
 
     return html`
-      <section class="audio-analyzer">
+      <section class="grid">
         <base-card class="controls-card">
           <section class="files">
             <file-drop @change=${this.onFilesAdded}></file-drop>
@@ -214,83 +215,73 @@ export class AudioAnalyzer extends LitElement {
     );
 
     return html`
-      <section class="results">
-        ${includesBinauralResponses
-          ? html` <base-card>
-              <section class="binaural-calculation-note">
-                <sl-icon name="exclamation-octagon"></sl-icon>
-                <p>
-                  For binaural room responses, monaural parameters and graphs
-                  are calculated on the arithmetic mean of the left and right
-                  channels. Keep in mind that the head-related transfer function
-                  might influence these results.
-                </p>
-              </section>
-            </base-card>`
-          : null}
-        <impulse-response-graph
-          .responseDetails=${responseDetails}
-          .squaredIR=${squaredIR}
-        ></impulse-response-graph>
+      ${includesBinauralResponses
+        ? html`<binaural-note-card></binaural-note-card>`
+        : null}
+      <impulse-response-graph
+        .responseDetails=${responseDetails}
+        .squaredIR=${squaredIR}
+      ></impulse-response-graph>
 
-        <parameters-card
-          .responseDetails=${responseDetails}
-          .centreTimes=${centreTimes}
-          .bassRatios=${bassRatios}
-          .c80s=${meanC80s}
-          .reverbTimes=${meanReverbTimes}
-          .strengths=${strengths}
-        >
-          <p0-notice
-            .p0=${this.p0}
-            .temperature=${this.temperature}
-            .relativeHumidity=${this.relativeHumidity}
-            @show-p0-dialog=${this.onShowP0Dialog}
-          ></p0-notice>
-        </parameters-card>
+      <parameters-card
+        .responseDetails=${responseDetails}
+        .centreTimes=${centreTimes}
+        .bassRatios=${bassRatios}
+        .c80s=${meanC80s}
+        .reverbTimes=${meanReverbTimes}
+        .strengths=${strengths}
+      >
+        <p0-notice
+          .p0=${this.p0}
+          .temperature=${this.temperature}
+          .relativeHumidity=${this.relativeHumidity}
+          @show-p0-dialog=${this.onShowP0Dialog}
+        ></p0-notice>
+      </parameters-card>
 
-        <div class="grid">
-          <reverb-graph
+      <reverb-graph
+        .responseDetails=${responseDetails}
+        .edt=${edt}
+        .reverbTime=${reverbTime}
+      ></reverb-graph>
+
+      <c50c80-graph
+        .responseDetails=${responseDetails}
+        .c50=${c50}
+        .c80=${c80}
+      ></c50c80-graph>
+
+      <strengths-card
+        .p0=${this.p0}
+        .responseDetails=${responseDetails}
+        .strengths=${strengths}
+      >
+        <p0-notice
+          slot="p0-notice"
+          .p0=${this.p0}
+          .temperature=${this.temperature}
+          .relativeHumidity=${this.relativeHumidity}
+          @show-p0-dialog=${this.onShowP0Dialog}
+        ></p0-notice>
+        <p0-setting
+          slot="p0-setting"
+          .p0=${this.p0}
+          @change=${this.onP0SettingChange}
+        ></p0-setting>
+      </strengths-card>
+
+      ${binauralResults.length
+        ? html`<iacc-graph
             .responseDetails=${responseDetails}
-            .edt=${edt}
-            .reverbTime=${reverbTime}
-          ></reverb-graph>
+            .iacc=${iacc}
+            .eiacc=${eiacc}
+          ></iacc-graph>`
+        : null}
 
-          <c50c80-graph
-            .responseDetails=${responseDetails}
-            .c50=${c50}
-            .c80=${c80}
-          ></c50c80-graph>
-
-          <strengths-card
-            .p0=${this.p0}
-            .responseDetails=${responseDetails}
-            .strengths=${strengths}
-          >
-            <p0-notice
-              slot="p0-notice"
-              .p0=${this.p0}
-              .temperature=${this.temperature}
-              .relativeHumidity=${this.relativeHumidity}
-              @show-p0-dialog=${this.onShowP0Dialog}
-            ></p0-notice>
-            <p0-setting
-              slot="p0-setting"
-              .p0=${this.p0}
-              @change=${this.onP0SettingChange}
-            ></p0-setting>
-          </strengths-card>
-
-          ${binauralResults.length
-            ? html`<iacc-graph
-                .responseDetails=${responseDetails}
-                .iacc=${iacc}
-                .eiacc=${eiacc}
-              ></iacc-graph>`
-            : null}
-        </div>
-        <convolver-card .responses=${this.responses}></convolver-card>
-      </section>
+      <convolver-card
+        class=${classMap({ expand: binauralResults.length })}
+        .responses=${this.responses}
+      ></convolver-card>
     `;
   }
 
@@ -494,10 +485,16 @@ export class AudioAnalyzer extends LitElement {
   }
 
   static styles = css`
-    section.audio-analyzer {
+    .grid {
       display: grid;
       gap: 1rem;
+      grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
       margin-block-end: 2.5rem;
+    }
+
+    .grid > * {
+      /* prevent stretching of parent */
+      min-width: 0;
     }
 
     section.files {
@@ -516,39 +513,16 @@ export class AudioAnalyzer extends LitElement {
       margin-block-start: 1rem;
     }
 
-    section.binaural-calculation-note {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    section.binaural-calculation-note > p {
-      margin: 0;
-    }
-
-    section.binaural-calculation-note > sl-icon {
-      font-size: 2rem;
-    }
-
-    section.results {
-      display: grid;
-      gap: 1rem;
-    }
-
-    section.results > * {
-      /* prevent stretching of parent */
-      min-width: 0;
-    }
-
-    /* let the strengths graph take the full width if available */
-    strengths-card:last-child {
+    .controls-card,
+    binaural-note-card,
+    impulse-response-graph,
+    parameters-card {
       grid-column: 1 / -1;
     }
 
-    .grid {
-      display: grid;
-      gap: 1rem;
-      grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
+    /* allow stretching to full width if on its own row */
+    convolver-card.expand {
+      grid-column: 1 / -1;
     }
 
     .error {
