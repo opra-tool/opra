@@ -53,11 +53,7 @@ export async function getResponses(): Promise<
     if (isValidResponseRecord(record)) {
       responses.push(recordToResponse(record));
     } else {
-      // eslint-disable-next-line no-console
-      console.warn(
-        'persistence contained possibly malformed room response record',
-        record
-      );
+      removeResponse(record.id);
     }
   }
 
