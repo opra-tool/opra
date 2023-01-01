@@ -1,17 +1,14 @@
 import { openDB, IDBPDatabase } from 'idb';
 import { RoomResponse } from './audio/room-response';
-import { BinauralResults } from './binaural-processing';
-import { MonauralResults } from './monaural-processing';
 
 const RESPONSES_STORE = 'saved-response';
 
-type RoomResponseRecord = Omit<RoomResponse, 'buffer'> & {
-  results: MonauralResults | BinauralResults;
+type Record = Omit<RoomResponse, 'buffer'> & {
   samples: Float32Array[];
 };
 
 type DBSchema = {
-  [RESPONSES_STORE]: RoomResponseRecord;
+  [RESPONSES_STORE]: Record;
 };
 
 async function getDB(): Promise<IDBPDatabase<DBSchema>> {
@@ -26,11 +23,8 @@ async function getDB(): Promise<IDBPDatabase<DBSchema>> {
   return db;
 }
 
-export async function persistResponse(
-  response: RoomResponse,
-  results: MonauralResults | BinauralResults
-): Promise<void> {
-  const record = responseToRecord(response, results);
+export async function persistResponse(response: RoomResponse): Promise<void> {
+  const record = responseToRecord(response);
 
   const db = await getDB();
   await db.add(RESPONSES_STORE, record);
@@ -41,9 +35,7 @@ export async function removeResponse(id: string): Promise<void> {
   await db.delete(RESPONSES_STORE, id);
 }
 
-export async function getResponses(): Promise<
-  [RoomResponse, MonauralResults | BinauralResults][]
-> {
+export async function getResponses(): Promise<RoomResponse[]> {
   const db = await getDB();
 
   const records = await db.getAll(RESPONSES_STORE);
@@ -60,10 +52,7 @@ export async function getResponses(): Promise<
   return responses;
 }
 
-function responseToRecord(
-  { buffer, ...rest }: RoomResponse,
-  results: MonauralResults | BinauralResults
-): RoomResponseRecord {
+function responseToRecord({ buffer, ...rest }: RoomResponse): Record {
   const samples: Float32Array[] = [];
 
   for (let i = 0; i < buffer.numberOfChannels; i += 1) {
@@ -73,7 +62,6 @@ function responseToRecord(
 
   return {
     samples,
-    results,
     ...rest,
   };
 }
@@ -81,9 +69,8 @@ function responseToRecord(
 function recordToResponse({
   samples,
   sampleRate,
-  results,
   ...rest
-}: RoomResponseRecord): [RoomResponse, MonauralResults | BinauralResults] {
+}: Record): RoomResponse {
   const numberOfChannels = samples.length;
 
   const buffer = new AudioBuffer({
@@ -96,14 +83,11 @@ function recordToResponse({
     buffer.copyToChannel(samples[i], i);
   }
 
-  return [
-    {
-      buffer,
-      sampleRate,
-      ...rest,
-    },
-    results,
-  ];
+  return {
+    buffer,
+    sampleRate,
+    ...rest,
+  };
 }
 
 function isValidResponseRecord(record: unknown): boolean {
@@ -115,7 +99,7 @@ function isValidResponseRecord(record: unknown): boolean {
     return false;
   }
 
-  const response = record as RoomResponseRecord;
+  const response = record as Record;
 
   return (
     typeof response.type === 'string' &&
@@ -125,8 +109,7 @@ function isValidResponseRecord(record: unknown): boolean {
     typeof response.fileName === 'string' &&
     typeof response.isEnabled === 'boolean' &&
     typeof response.sampleRate === 'number' &&
-    response.samples instanceof Array &&
-    typeof response.results === 'object'
+    response.samples instanceof Array
   );
 }
 

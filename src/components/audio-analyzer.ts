@@ -87,16 +87,13 @@ export class AudioAnalyzer extends LitElement {
 
   protected firstUpdated() {
     getResponses().then(responses => {
-      for (const [response, results] of responses) {
-        this.results.set(response.id, results);
+      for (const response of responses) {
+        // this.results.set(response.id, results);
         this.responses.push(response);
+        this.analyzeResponse(response);
       }
 
       this.requestUpdate();
-
-      if (this.p0 !== null) {
-        this.recalculateStrengths();
-      }
     });
   }
 
@@ -212,7 +209,9 @@ export class AudioAnalyzer extends LitElement {
     const iacc = mapArrayParam(binauralResults, 'iaccBands');
     const eiacc = mapArrayParam(binauralResults, 'eiaccBands');
 
-    const strengths = responses.map(this.getResponseStrengthResults.bind(this));
+    const strengths = responses.map(
+      r => this.strengthResults.get(r.id) || null
+    );
 
     return html`
       <section class="results">
@@ -305,68 +304,39 @@ export class AudioAnalyzer extends LitElement {
     return maybeResults;
   }
 
-  private getResponseStrengthResults({ id }: { id: string }): Strengths | null {
-    return this.strengthResults.get(id) || null;
-  }
+  private async analyzeResponse({ id, sampleRate, buffer }: RoomResponse) {
+    try {
+      let results;
+      if (buffer.numberOfChannels === 1) {
+        results = await processMonauralAudio(
+          buffer.getChannelData(0),
+          sampleRate
+        );
+      } else {
+        results = await processBinauralAudio(
+          binauralAudioFromBuffer(buffer),
+          sampleRate
+        );
+      }
 
-  private async analyzeFile(audioFile: File) {
-    if (this.responses.length >= MAX_FILE_COUNT) {
-      toastWarning(
-        `Maximum file count (${MAX_FILE_COUNT}) reached. Skipping file ${audioFile.name}.`
-      );
-      return;
-    }
+      this.results.set(id, results);
 
-    const buffer = await readAudioFile(audioFile);
-
-    if (buffer.numberOfChannels < 1 || buffer.numberOfChannels > 2) {
-      toastWarning(
-        `Skipping file ${audioFile.name} due to unsupported channel count (${buffer.numberOfChannels}).`
-      );
-      return;
-    }
-
-    const response: RoomResponse = {
-      type: buffer.numberOfChannels === 1 ? 'monaural' : 'binaural',
-      id: AudioAnalyzer.randomId(),
-      fileName: audioFile.name,
-      buffer,
-      duration: buffer.duration,
-      sampleRate: buffer.sampleRate,
-      isEnabled: true,
-      color: this.findAvailableColor(),
-    };
-
-    this.responses = [...this.responses, response];
-
-    const { sampleRate } = buffer;
-
-    let results;
-    if (buffer.numberOfChannels === 1) {
-      results = await processMonauralAudio(
-        buffer.getChannelData(0),
-        sampleRate
-      );
-    } else {
-      results = await processBinauralAudio(
-        binauralAudioFromBuffer(buffer),
-        sampleRate
-      );
-    }
-
-    this.results.set(response.id, results);
-
-    await persistResponse(response, results);
-
-    if (this.p0 !== null) {
-      this.strengthResults.set(
-        response.id,
-        await calculateStrengths(results, {
-          p0: this.p0,
-          relativeHumidity: this.relativeHumidity,
-          temperature: this.temperature,
-        })
-      );
+      if (this.p0 !== null) {
+        this.strengthResults.set(
+          id,
+          await calculateStrengths(results, {
+            p0: this.p0,
+            relativeHumidity: this.relativeHumidity,
+            temperature: this.temperature,
+          })
+        );
+      }
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error(err);
+      if (err instanceof Error) {
+        this.error = err;
+      }
     }
 
     this.requestUpdate();
@@ -407,22 +377,55 @@ export class AudioAnalyzer extends LitElement {
     this.requestUpdate();
   }
 
-  private async analyzeFiles(files: FileList) {
+  private async addFiles(files: FileList) {
     for (let i = 0; i < files.length; i += 1) {
+      if (this.responses.length >= MAX_FILE_COUNT) {
+        toastWarning(
+          `Maximum file count (${MAX_FILE_COUNT}) reached. Skipping ${
+            files.length - MAX_FILE_COUNT
+          } files.`
+        );
+        break;
+      }
+
       try {
         // eslint-disable-next-line no-await-in-loop
-        await this.analyzeFile(files[i]);
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error(err);
+        const response = await this.parseFile(files[i]);
+        this.responses.push(response);
 
+        this.analyzeResponse(response);
+
+        // eslint-disable-next-line no-await-in-loop
+        await persistResponse(response);
+      } catch (err) {
+        let message = 'unknown error';
         if (err instanceof Error) {
-          this.error = err;
-        } else if (typeof err === 'string') {
-          this.error = new Error(err);
+          message = err.message;
         }
+        toastWarning(`Skipping file ${files[i].name}: ${message}`);
       }
     }
+
+    this.requestUpdate();
+  }
+
+  private async parseFile(file: File): Promise<RoomResponse> {
+    const buffer = await readAudioFile(file);
+
+    if (buffer.numberOfChannels < 1 || buffer.numberOfChannels > 2) {
+      throw new Error(`unsupported channel count: ${buffer.numberOfChannels}`);
+    }
+
+    return {
+      type: buffer.numberOfChannels === 1 ? 'monaural' : 'binaural',
+      id: AudioAnalyzer.randomId(),
+      fileName: file.name,
+      buffer,
+      duration: buffer.duration,
+      sampleRate: buffer.sampleRate,
+      isEnabled: true,
+      color: this.findAvailableColor(),
+    };
   }
 
   private onP0SettingChange({ detail: { p0 } }: P0SettingChangeEvent) {
@@ -478,7 +481,7 @@ export class AudioAnalyzer extends LitElement {
   }
 
   private onFilesAdded(ev: FileDropChangeEvent) {
-    this.analyzeFiles(ev.detail.files);
+    this.addFiles(ev.detail.files);
   }
 
   /**
