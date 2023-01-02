@@ -1,4 +1,5 @@
-import { SlSelect } from '@shoelace-style/shoelace';
+import { divide } from '@iamsquare/complex.js';
+import { SlCheckbox, SlSelect } from '@shoelace-style/shoelace';
 import { LitElement, html, css } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { RoomResponse } from '../audio/room-response';
@@ -44,6 +45,9 @@ export class ConvolverCard extends LitElement {
   @query('#room-response-select', true)
   private selectEl!: SlSelect;
 
+  @query('#normalize-checkbox', true)
+  private normalizeCheckboxEl!: SlCheckbox;
+
   protected render() {
     if (!this.responses.length) {
       return null;
@@ -51,21 +55,38 @@ export class ConvolverCard extends LitElement {
 
     return html`
       <base-card cardTitle="Playback audio based on a room response">
-        <sl-select
-          id="room-response-select"
-          value="none"
-          @sl-change=${this.onResponseSelected}
-        >
-          <sl-menu-item value="none">No effect</sl-menu-item>
-          ${this.responses.map(
-            r => html`
-              <sl-menu-item value=${r.id}>${r.fileName}</sl-menu-item>
-            `
-          )}
-        </sl-select>
-        <ul class="playback-list">
-          ${SAMPLE_FILES.map(this.renderSampleFile.bind(this))}
-        </ul>
+        <section>
+          <sl-select
+            id="room-response-select"
+            value="none"
+            @sl-change=${this.onResponseSelected}
+          >
+            <sl-menu-item value="none">No effect</sl-menu-item>
+            ${this.responses.map(
+              r => html`
+                <sl-menu-item value=${r.id}>${r.fileName}</sl-menu-item>
+              `
+            )}
+          </sl-select>
+          <div>
+            <sl-checkbox
+              id="normalize-checkbox"
+              @change=${this.onNormalizeChange}
+              checked
+            >
+              Normalize output: Sets the <code>convolver</code> attribute of the
+              underlying <code>ConvolverNode</code>. Changing this will not
+              affect the current playback.
+              <a
+                href="https://webaudio.github.io/web-audio-api/#dom-convolvernode-normalize"
+                >See specification for details.</a
+              >
+            </sl-checkbox>
+          </div>
+          <ul class="playback-list">
+            ${SAMPLE_FILES.map(this.renderSampleFile.bind(this))}
+          </ul>
+        </section>
       </base-card>
     `;
   }
@@ -112,6 +133,12 @@ export class ConvolverCard extends LitElement {
   private setDuration(id: string, duration: number) {
     this.durations.set(id, duration);
     this.requestUpdate();
+  }
+
+  private onNormalizeChange() {
+    if (this.playback && this.playback.convolver) {
+      this.playback.convolver.normalize = this.normalizeCheckboxEl.checked;
+    }
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -203,7 +230,7 @@ export class ConvolverCard extends LitElement {
     if (response) {
       convolver = ctx.createConvolver();
       convolver.buffer = response.buffer;
-      convolver.normalize = false;
+      convolver.normalize = this.normalizeCheckboxEl.checked;
 
       source.connect(convolver);
       convolver.connect(ctx.destination);
@@ -253,6 +280,11 @@ export class ConvolverCard extends LitElement {
   }
 
   static styles = css`
+    section {
+      display: grid;
+      gap: 1rem;
+    }
+
     ul.playback-list {
       background: var(--sl-color-neutral-100);
       border-radius: 0.5rem;
