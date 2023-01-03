@@ -20,7 +20,7 @@ export type MonauralResults = {
   reverbTimeBands: number[];
   c50Bands: number[];
   c80Bands: number[];
-  squaredImpulseResponse: Point[];
+  squaredIRPoints: Point[];
   centreTime: number;
   bassRatio: number;
 };
@@ -66,10 +66,9 @@ export async function processChannel(
 
   const centreTime = calculateCentreTime(squaredIR, sampleRate);
 
-  // TODO: move into graph
-  const squaredImpulseResponse = [];
+  const squaredIRPoints = [];
   for (let i = 0; i < squaredIR.length; i += 1) {
-    squaredImpulseResponse.push({
+    squaredIRPoints.push({
       x: (i + 1) / sampleRate,
       y: squaredIR[i],
     });
@@ -89,6 +88,6 @@ export async function processChannel(
     c80Bands: c80Values,
     bassRatio,
     centreTime,
-    squaredImpulseResponse,
+    squaredIRPoints,
   };
 }

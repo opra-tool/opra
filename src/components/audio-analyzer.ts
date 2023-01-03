@@ -199,7 +199,7 @@ export class AudioAnalyzer extends LitElement {
     const reverbTime = mapArrayParam(results, 'reverbTimeBands');
     const c50 = mapArrayParam(results, 'c50Bands');
     const c80 = mapArrayParam(results, 'c80Bands');
-    const squaredIR = mapArrayParam(results, 'squaredImpulseResponse');
+    const squaredIRPoints = mapArrayParam(results, 'squaredIRPoints');
     const centreTimes = mapArrayParam(results, 'centreTime');
     const bassRatios = mapArrayParam(results, 'bassRatio');
     const meanC80s = c80.map(value => meanDecibel(value[3], value[4]));
@@ -220,7 +220,7 @@ export class AudioAnalyzer extends LitElement {
         : null}
       <impulse-response-graph
         .responseDetails=${responseDetails}
-        .squaredIR=${squaredIR}
+        .squaredIRPoints=${squaredIRPoints}
       ></impulse-response-graph>
 
       <parameters-card

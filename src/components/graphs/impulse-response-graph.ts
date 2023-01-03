@@ -18,11 +18,12 @@ export class ImpulseResponseGraph extends LitElement {
   @property({ type: Array })
   responseDetails: ResponseDetail[] = [];
 
-  @property({ type: Array }) squaredIR: Points[] = [];
+  @property({ type: Array })
+  squaredIRPoints: Points[] = [];
 
   render() {
     const config: GraphConfig = {
-      datasets: this.squaredIR.map((points, index) => ({
+      datasets: this.squaredIRPoints.map((points, index) => ({
         label: 'Squared IR',
         data: points,
         fill: false,
