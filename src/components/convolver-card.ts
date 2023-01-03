@@ -68,7 +68,7 @@ export class ConvolverCard extends LitElement {
               `
             )}
           </sl-select>
-          <div>
+          <div class="normalize-setting">
             <sl-checkbox
               id="normalize-checkbox"
               @change=${this.onNormalizeChange}
@@ -283,6 +283,10 @@ export class ConvolverCard extends LitElement {
     section {
       display: grid;
       gap: 1rem;
+    }
+
+    .normalize-setting {
+      padding: 0.5rem;
     }
 
     ul.playback-list {
