@@ -39,7 +39,7 @@ export class P0Dialog extends LitElement {
   @query('.humidity-input', true)
   private humidityInput!: SlInput;
 
-  render() {
+  protected render() {
     return html`
       <sl-dialog ?open=${false} class="dialog">
         <span slot="label">Set ${P0_VAR} and air parameters</span>
@@ -51,7 +51,6 @@ export class P0Dialog extends LitElement {
               step="any"
               filled
               required
-              value=${this.p0 ? formatP0(this.p0) : ''}
               class="p0-input"
             >
               <span slot="label">${P0_VAR}</span>
@@ -64,7 +63,6 @@ export class P0Dialog extends LitElement {
               max=${MAX_TEMPERATURE}
               filled
               required
-              value=${this.temperature.toString()}
               class="temperature-input"
             ></sl-input>
 
@@ -75,7 +73,6 @@ export class P0Dialog extends LitElement {
               max=${MAX_HUMIDITY}
               filled
               required
-              value=${this.relativeHumidity.toString()}
               class="humidity-input"
             ></sl-input>
 
@@ -90,6 +87,10 @@ export class P0Dialog extends LitElement {
   }
 
   public show() {
+    this.p0Input.value = this.p0 ? formatP0(this.p0) : '';
+    this.temperatureInput.value = this.temperature.toString();
+    this.humidityInput.value = this.relativeHumidity.toString();
+
     this.dialog.show();
   }
 
