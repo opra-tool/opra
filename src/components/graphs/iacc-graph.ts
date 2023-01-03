@@ -17,7 +17,7 @@ export class IACCGraph extends LitElement {
     const params = [
       {
         key: 'iacc',
-        label: 'Interaural Cross Correlation',
+        label: 'IACC',
         datasets: this.iacc.map((values, index) => ({
           color: this.responseDetails[index].color,
           values,
@@ -25,7 +25,7 @@ export class IACCGraph extends LitElement {
       },
       {
         key: 'eiacc',
-        label: 'Early Interaural Cross Correlation',
+        label: 'Early IACC',
         datasets: this.eiacc.map((values, index) => ({
           color: this.responseDetails[index].color,
           values,
