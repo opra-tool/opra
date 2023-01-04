@@ -29,7 +29,7 @@ import '@shoelace-style/shoelace/dist/components/switch/switch.js';
 import './components/audio-analyzer';
 import './components/base-card';
 import './components/binaural-note-card';
-import './components/convolver-card';
+import './convolving/convolver-card';
 import './components/file-drop';
 import './components/file-dropdown';
 import './components/file-list';

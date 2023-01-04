@@ -54,6 +54,18 @@ export default {
         },
       ],
     }),
+    /** Copy assets */
+    copy({
+      targets: [
+        {
+          src: path.resolve(
+            __dirname,
+            `assets`
+          ),
+          dest: path.resolve(__dirname, 'dist/'),
+        },
+      ],
+    }),
     /** Compile JS to a lower language target */
     babel({
       babelHelpers: 'bundled',

@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { customElement, query, state } from 'lit/decorators.js';
+import { customElement, property, query, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 
 export class FileDropChangeEvent extends CustomEvent<{
@@ -8,6 +8,9 @@ export class FileDropChangeEvent extends CustomEvent<{
 
 @customElement('file-drop')
 export class FileDrop extends LitElement {
+  @property({ type: String })
+  label: string = '';
+
   @state()
   private isDraggingOver = false;
 
@@ -26,7 +29,7 @@ export class FileDrop extends LitElement {
         @dragleave=${this.onDragLeave}
         @dragover=${this.onDragOver}
       >
-        <span>Drop room response files here</span>
+        <span>${this.label}</span>
         <span>or</span>
         <sl-button variant="primary" @click=${this.onFileUploadButtonCLicked}>
           Choose file(s)
@@ -106,7 +109,6 @@ export class FileDrop extends LitElement {
       gap: 1rem;
 
       box-sizing: border-box;
-      height: 100%;
 
       padding: 1.5rem;
 

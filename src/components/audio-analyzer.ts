@@ -116,7 +116,10 @@ export class AudioAnalyzer extends LitElement {
       <section class="grid">
         <base-card class="controls-card">
           <section class="files">
-            <file-drop @change=${this.onFilesAdded}></file-drop>
+            <file-drop
+              label="Drop room response files here"
+              @change=${this.onFilesAdded}
+            ></file-drop>
             ${this.responses.length > 0
               ? html`
                   <file-list
@@ -280,7 +283,7 @@ export class AudioAnalyzer extends LitElement {
 
       <convolver-card
         class=${classMap({ expand: binauralResults.length })}
-        .responses=${this.responses}
+        .responses=${responses}
       ></convolver-card>
     `;
   }
