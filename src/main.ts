@@ -7,7 +7,6 @@ import {
   PointElement,
   Tooltip,
 } from 'chart.js';
-import initWasm from 'wasm-raqi-online-toolbox';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
 
 // shoelace components
@@ -27,9 +26,11 @@ import '@shoelace-style/shoelace/dist/components/switch/switch.js';
 
 // register web components
 import './components/audio-analyzer';
+import './components/base-app';
 import './components/base-card';
 import './components/binaural-note-card';
 import './convolving/convolver-card';
+import './components/error-details';
 import './components/file-drop';
 import './components/file-dropdown';
 import './components/file-list';
@@ -47,10 +48,6 @@ import './components/parameters-card';
 import './components/parameters-table';
 import './components/progress-indicator';
 import './components/strengths-card';
-
-// init web assembly module
-// eslint-disable-next-line no-console
-initWasm().catch(console.error);
 
 setBasePath('/shoelace');
 
