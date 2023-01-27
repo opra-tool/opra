@@ -1,33 +1,39 @@
 import { RoomResponse } from '../audio/room-response';
-import { ConvolverPlaybackSource } from './convolver-playback-source';
+import {
+  PlaybackSource,
+  PlaybackSourceFactory,
+} from './convolver-playback-source';
 
 type Config = {
-  normalize: boolean,
-  response: RoomResponse | null,
-  startTime: number | null,
-}
+  id: string;
+  normalize: boolean;
+  startTime: number;
+  response: RoomResponse | null;
+};
 
-export class ConvolverPlayback {
+export const UPDATE_EVENT = 'update';
+
+export class ConvolverPlayback extends EventTarget {
   ended = false;
 
   private state: 'paused' | 'playing' = 'paused';
 
   private ctx: AudioContext;
 
-  readonly source: ConvolverPlaybackSource;
+  readonly source: PlaybackSource;
+
+  readonly id: string;
 
   private convolver: ConvolverNode | null = null;
 
-  private onUpdateListener: () => any = () => {};
-
-  private startTime: number | null;
-
   constructor(
-    { response, normalize, startTime }: Config,
-    source: ConvolverPlaybackSource
+    { response, normalize, startTime, id }: Config,
+    makeSource: PlaybackSourceFactory
   ) {
-    this.startTime = startTime;
-    
+    super();
+
+    this.id = id;
+
     if (response) {
       this.ctx = new AudioContext({
         sampleRate: response.sampleRate,
@@ -35,44 +41,34 @@ export class ConvolverPlayback {
     } else {
       this.ctx = new AudioContext();
     }
-    
-    this.source = source;
-    this.source.addEventListener("durationknown", () => this.notifyOnUpdateListener());
-    this.source.addEventListener("play", () => {
-      this.state = "playing";
-      this.notifyOnUpdateListener();
+
+    this.source = makeSource(this.ctx, startTime);
+    this.source.addEventListener('durationknown', () =>
+      this.dispatchEvent(new Event(UPDATE_EVENT))
+    );
+    this.source.addEventListener('play', () => {
+      this.state = 'playing';
+      this.dispatchEvent(new Event(UPDATE_EVENT));
     });
-    this.source.addEventListener("pause", () => {
-      this.state = "paused";
-      this.notifyOnUpdateListener();
+    this.source.addEventListener('pause', () => {
+      this.state = 'paused';
+      this.dispatchEvent(new Event(UPDATE_EVENT));
     });
-    this.source.addEventListener("ended", () => {
+    this.source.addEventListener('ended', () => {
       this.ended = true;
-      this.notifyOnUpdateListener();
+      this.dispatchEvent(new Event(UPDATE_EVENT));
     });
 
-    this.source.init(this.ctx);
+    if (response) {
+      this.convolver = this.ctx.createConvolver();
+      this.convolver.buffer = response.buffer;
+      this.convolver.normalize = normalize;
 
-    // if (response) {
-    //   this.convolver = this.ctx.createConvolver();
-    //   this.convolver.buffer = response.buffer;
-    //   this.convolver.normalize = normalize;
-
-    //   this.source.connect(this.convolver);
-    //   this.convolver.connect(this.ctx.destination);
-    // } else {
-    //   this.source.connect(this.ctx.destination);
-    // }
-
-    // this.setupEventListeners();
-  }
-
-  setOnUpdateListener(listener: () => any): void {
-    this.onUpdateListener = listener;
-  }
-
-  private notifyOnUpdateListener() {
-    this.onUpdateListener();
+      this.source.connect(this.convolver);
+      this.convolver.connect(this.ctx.destination);
+    } else {
+      this.source.connect(this.ctx.destination);
+    }
   }
 
   get isPlaying(): boolean {
@@ -83,12 +79,8 @@ export class ConvolverPlayback {
     return this.state === 'paused';
   }
 
-  get fileName(): string {
-    return "TODO"
-  }
-
   get currentTime(): number {
-    return 0;
+    return this.source.currentTime;
   }
 
   play(): void {
@@ -107,17 +99,7 @@ export class ConvolverPlayback {
     }
   }
 
-  // readyToPlay() {
-  //   if (this.startTime !== null) {
-  //     this.audioEl.currentTime = this.startTime;
-  //     this.startTime = null;
-  //   }
-  // }
-
   async destroy(): Promise<void> {
-    this.source.stop();
-    this.source.disconnect();
-    this.convolver?.disconnect();
     await this.ctx.close();
   }
 }

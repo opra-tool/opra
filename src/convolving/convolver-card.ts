@@ -1,38 +1,35 @@
 import { SlCheckbox, SlSelect } from '@shoelace-style/shoelace';
 import { LitElement, html, css } from 'lit';
-import { customElement, property, query, state } from 'lit/decorators.js';
-import { ConvolverBufferPlaybackSource, ConvolverPlaybackSource, ConvolverStreamPlaybackSource } from './convolver-playback-source';
-import { ConvolverPlayback } from './convolver-playback';
+import { customElement, property, query } from 'lit/decorators.js';
+import {
+  bufferPlaybackSourceFactory,
+  PlaybackSourceFactory,
+  streamPlaybackSourceFactory,
+} from './convolver-playback-source';
+import { ConvolverPlayback, UPDATE_EVENT } from './convolver-playback';
 import { readAudioFile } from '../audio/audio-file-reading';
 import { RoomResponse } from '../audio/room-response';
 import { UNIT_SECONDS } from '../units';
 import { FileDropChangeEvent } from '../components/file-drop';
 
-type SampleFile = {
+type BuiltinFile = {
+  type: 'builtin';
   fileName: string;
   label: string;
-  credit?: string;
+  credit: string;
 };
 
 type CustomFile = {
+  type: 'custom';
   fileName: string;
   buffer: AudioBuffer;
 };
 
-const SAMPLE_FILES: SampleFile[] = [
-  {
-    fileName: 'sax_BerniesTune_excerpt.wav',
-    label: 'Bernies Tune (Saxophon)',
-    credit: 'Saxophon: Aleksander Labuda, Aufnahme: Daniel Labuda',
-  },
-  {
-    fileName: 'voiceM_Archimedes_short.wav',
-    label: 'Archimedes Voice',
-    credit: 'Hansen / Munch, 1991',
-  },
-];
-
 const NO_EFFECT = 'none';
+
+function genId({ type, fileName }: CustomFile | BuiltinFile): string {
+  return `${type}_${fileName}`;
+}
 
 @customElement('convolver-card')
 export class ConvolverCard extends LitElement {
@@ -45,17 +42,27 @@ export class ConvolverCard extends LitElement {
   // not marked as @state() as updates are manually requested
   private durations = new Map<string, number>();
 
-  @state()
-  private customFiles: CustomFile[] = [];
+  // not marked as @state() as updates are manually requested
+  private files: (CustomFile | BuiltinFile)[] = [
+    {
+      type: 'builtin',
+      fileName: 'sax_BerniesTune_excerpt.wav',
+      label: 'Bernies Tune (Saxophon)',
+      credit: 'Saxophon: Aleksander Labuda, Aufnahme: Daniel Labuda',
+    },
+    {
+      type: 'builtin',
+      fileName: 'voiceM_Archimedes_short.wav',
+      label: 'Archimedes Voice',
+      credit: 'Hansen / Munch, 1991',
+    },
+  ];
 
   @query('#room-response-select', true)
   private selectEl!: SlSelect;
 
   @query('#normalize-checkbox', true)
   private normalizeCheckboxEl!: SlCheckbox;
-
-  @query('#file-input')
-  private fileInput!: HTMLInputElement;
 
   updated() {
     if (this.selectEl) {
@@ -98,20 +105,23 @@ export class ConvolverCard extends LitElement {
             </sl-checkbox>
           </div>
           <ul class="playback-list">
-            ${SAMPLE_FILES.map(this.renderSampleFile.bind(this))}
-            ${this.customFiles.map(this.renderCustomFile.bind(this))}
+            ${this.files.map(this.renderFile.bind(this))}
           </ul>
         </section>
+        <file-drop
+          label="Drop custom audio files here"
+          @change=${this.onFilesAdded}
+        ></file-drop>
       </base-card>
     `;
   }
 
-  private renderCustomFile({ fileName, buffer }: CustomFile) {
-    const isCurrent = this.playback?.fileName === fileName;
+  private renderFile(file: CustomFile | BuiltinFile) {
+    const isCurrent = this.playback?.id === genId(file);
     const isPlaying = isCurrent && this.playback?.isPlaying;
 
     let progress = 0;
-    const duration = Math.floor(this.durations.get(fileName) || 0);
+    const duration = Math.floor(this.durations.get(genId(file)) || 0);
     if (duration && this.playback?.currentTime) {
       progress = (this.playback?.currentTime / duration) * 100;
     }
@@ -120,59 +130,34 @@ export class ConvolverCard extends LitElement {
       <li class="playback-list-entry">
         <sl-icon-button
           name=${isPlaying ? 'pause-fill' : 'play-fill'}
-          @click=${() => this.onPlay(fileName)}
+          @click=${() => this.onPlay(file)}
         ></sl-icon-button>
         <div>
-          <p>${fileName}</p>
+          ${file.type === 'builtin'
+            ? html`
+                <p>${file.label}</p>
+                <small>${file.credit}</small>
+              `
+            : html` <p>${file.fileName}</p> `}
         </div>
         <p>
           <span>${duration} ${UNIT_SECONDS}</span>
         </p>
-        ${isCurrent
+        ${file.type === 'builtin'
           ? html`
-              <div class="progress">
-                <div class="value" style=${`width: ${progress}%`}></div>
-              </div>
+              <audio
+                src=${`/assets/sounds/${file.fileName}`}
+                preload="metadata"
+                style="display: none;"
+                @durationchange=${(ev: Event) => {
+                  this.setDuration(
+                    genId(file),
+                    (ev.target as HTMLAudioElement).duration
+                  );
+                }}
+              ></audio>
             `
           : null}
-      </li>
-    `;
-  }
-
-  private renderSampleFile({ label, fileName, credit }: SampleFile) {
-    const isCurrent = this.playback?.fileName === fileName;
-    const isPlaying = isCurrent && this.playback?.isPlaying;
-
-    let progress = 0;
-    const duration = Math.floor(this.durations.get(fileName) || 0);
-    if (duration && this.playback?.currentTime) {
-      progress = (this.playback?.currentTime / duration) * 100;
-    }
-
-    return html`
-      <li class="playback-list-entry">
-        <sl-icon-button
-          name=${isPlaying ? 'pause-fill' : 'play-fill'}
-          @click=${() => this.onPlay(fileName)}
-        ></sl-icon-button>
-        <div>
-          <p>${label}</p>
-          ${credit ? html`<small>${credit}</small>` : null}
-        </div>
-        <p>
-          <span>${duration} ${UNIT_SECONDS}</span>
-        </p>
-        <audio
-          src=${`/assets/sounds/${fileName}`}
-          preload="metadata"
-          style="display: none;"
-          @durationchange=${(ev: Event) => {
-            this.setDuration(
-              fileName,
-              (ev.target as HTMLAudioElement).duration
-            );
-          }}
-        ></audio>
         ${isCurrent
           ? html`
               <div class="progress">
@@ -192,10 +177,12 @@ export class ConvolverCard extends LitElement {
   private async onFilesAdded({ detail: { files } }: FileDropChangeEvent) {
     for (let i = 0; i < files.length; i += 1) {
       const fileName = files[i].name;
+      const id = `custom_${fileName}`;
       // eslint-disable-next-line no-await-in-loop
       const buffer = await readAudioFile(files[i]);
-      this.setDuration(fileName, buffer.duration);
-      this.customFiles.push({
+      this.setDuration(id, buffer.duration);
+      this.files.push({
+        type: 'custom',
         fileName,
         buffer,
       });
@@ -204,14 +191,14 @@ export class ConvolverCard extends LitElement {
     this.requestUpdate();
   }
 
-  // eslint-disable-next-line class-methods-use-this
   private async onResponseSelected() {
     if (this.playback) {
       const shouldStartPlaying = this.playback.isPlaying;
 
       await this.createPlayback(
-        this.playback.source
-        // this.playback.currentTime,
+        this.playback.id,
+        this.playback.source.factory(),
+        this.playback.currentTime
       );
 
       if (shouldStartPlaying) {
@@ -228,32 +215,38 @@ export class ConvolverCard extends LitElement {
     this.playback.togglePlayPause();
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  private async onPlay(fileName: string) {
-    if (this.playback && this.playback.fileName === fileName) {
+  private async onPlay(file: CustomFile | BuiltinFile) {
+    if (this.playback && this.playback.id === genId(file)) {
       this.togglePlayPause();
     } else {
-      const source = new ConvolverStreamPlaybackSource(fileName);
-      // new ConvolverBufferPlaybackSource(buffer) : 
-      await this.createPlayback(source);
+      const source =
+        file.type === 'custom'
+          ? bufferPlaybackSourceFactory(file.buffer)
+          : streamPlaybackSourceFactory(file.fileName);
+      await this.createPlayback(genId(file), source, 0);
       this.playback?.play();
     }
   }
 
   private async createPlayback(
-    // startTime: number | null = null,
-    source: ConvolverPlaybackSource
+    id: string,
+    makeSource: PlaybackSourceFactory,
+    startTime: number
   ) {
     await this.destroyCurrentPlayback();
 
     const response = this.getCurrentResponse();
 
-    this.playback = new ConvolverPlayback({
-      normalize: this.normalizeCheckboxEl.checked,
-      response,
-      startTime: 0
-    }, source);
-    this.playback.setOnUpdateListener(async () => {
+    this.playback = new ConvolverPlayback(
+      {
+        normalize: this.normalizeCheckboxEl.checked,
+        response,
+        startTime,
+        id,
+      },
+      makeSource
+    );
+    this.playback.addEventListener(UPDATE_EVENT, async () => {
       if (this.playback?.ended) {
         await this.destroyCurrentPlayback();
       }
