@@ -18,6 +18,7 @@
     "@iamsquare/complex.js": "^1.0.4",
     "@shoelace-style/shoelace": "^2.0.0-beta.83",
     "chart.js": "^3.9.1",
+    "codec-parser": "^2.2.0",
     "idb": "^7.1.1",
     "lit": "^2.0.2",
     "wasm-raqi-online-toolbox": "file:wasm/pkg"

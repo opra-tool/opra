@@ -1,7 +1,5 @@
 import { parseSampleRate } from './sample-rate-parsing';
 
-const ALLOWED_FILE_TYPES = ['audio/wav', 'audio/x-wav'];
-
 function readFile(file: File): Promise<ArrayBuffer> {
   return new Promise((resolve, reject) => {
     function onRead(ev: ProgressEvent<FileReader>) {
@@ -26,12 +24,8 @@ function readFile(file: File): Promise<ArrayBuffer> {
 }
 
 export async function readAudioFile(file: File): Promise<AudioBuffer> {
-  if (!ALLOWED_FILE_TYPES.includes(file.type)) {
-    throw new Error(`expected file to be of type ${ALLOWED_FILE_TYPES}`);
-  }
-
   const bytes = await readFile(file);
-  const sampleRate = parseSampleRate('wav', bytes);
+  const sampleRate = parseSampleRate(file.type, bytes);
   const audioCtx = new AudioContext({ sampleRate });
 
   return audioCtx.decodeAudioData(bytes);

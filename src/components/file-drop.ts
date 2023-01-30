@@ -37,7 +37,7 @@ export class FileDrop extends LitElement {
         <input
           id="file-input"
           type="file"
-          accept=".wav"
+          accept="audio/*"
           multiple
           @change=${this.onFileInputChange}
         />
