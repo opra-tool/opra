@@ -195,8 +195,15 @@ export class AudioAnalyzer extends LitElement {
 
     // binaural parameters
     const binauralResults = results.filter(isBinauralResults);
-    const iacc = mapArrayParam(binauralResults, 'iaccBands');
-    const eiacc = mapArrayParam(binauralResults, 'eiaccBands');
+    const iaccs = results.map(r => {
+      if (isBinauralResults(r)) {
+        return r.iacc;
+      }
+
+      return null;
+    });
+    const iaccBands = mapArrayParam(binauralResults, 'iaccBands');
+    const eiaccBands = mapArrayParam(binauralResults, 'eiaccBands');
 
     const strengths = responses.map(
       r => this.strengthResults.get(r.id) || null
@@ -217,6 +224,7 @@ export class AudioAnalyzer extends LitElement {
         .bassRatios=${bassRatios}
         .c80s=${meanC80s}
         .reverbTimes=${meanReverbTimes}
+        .iaccs=${iaccs}
         .strengths=${strengths}
       >
         <p0-notice
@@ -261,8 +269,8 @@ export class AudioAnalyzer extends LitElement {
       ${binauralResults.length
         ? html`<iacc-graph
             .responseDetails=${responseDetails}
-            .iacc=${iacc}
-            .eiacc=${eiacc}
+            .iacc=${iaccBands}
+            .eiacc=${eiaccBands}
           ></iacc-graph>`
         : null}
 

@@ -10,6 +10,7 @@ import { octfiltBinaural } from './octfilt';
 import { correctStarttimeBinaural } from './starttime';
 
 export type BinauralResults = MonauralResults & {
+  iacc: number;
   iaccBands: number[];
   eiaccBands: number[];
 };
@@ -21,17 +22,26 @@ export async function processBinauralAudio(
   const starttimeCorrected = correctStarttimeBinaural(samples);
   const bands = await octfiltBinaural(starttimeCorrected, sampleRate);
 
-  const iacc = [];
-  const eiacc = [];
+  const iaccBands = [];
+  const eiaccBands = [];
   for (const band of bands) {
     const earlyBand = new BinauralSamples(
       e80(band.leftChannel, sampleRate),
       e80(band.rightChannel, sampleRate)
     );
 
-    iacc.push(calculateIacc(band));
-    eiacc.push(calculateIacc(earlyBand));
+    iaccBands.push(calculateIacc(band));
+    eiaccBands.push(calculateIacc(earlyBand));
   }
+
+  const iacc =
+    (iaccBands[1] +
+      iaccBands[2] +
+      iaccBands[3] +
+      iaccBands[4] +
+      iaccBands[5] +
+      iaccBands[6]) /
+    6;
 
   // calculate squared impulse response of binaural audio by taking
   // the arithmetic mean of the squared IR of each channel
@@ -52,8 +62,9 @@ export async function processBinauralAudio(
   );
 
   return {
-    iaccBands: iacc,
-    eiaccBands: eiacc,
+    iacc,
+    iaccBands,
+    eiaccBands,
     ...meanResults,
   };
 }

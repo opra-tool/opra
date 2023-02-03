@@ -29,6 +29,9 @@ export class ParametersCard extends LitElement {
   reverbTimes: number[] = [];
 
   @property({ type: Array })
+  iaccs: (number | null)[] = [];
+
+  @property({ type: Array })
   strengths: (Strengths | null)[] = [];
 
   render() {
@@ -58,6 +61,12 @@ export class ParametersCard extends LitElement {
         name: 'Bass Ratio',
         responseValues: this.bassRatios,
         position: 8,
+      },
+      {
+        name: 'Interaural Cross Correlation', // TODO: translate: Interaurale Kreuzkorrelation
+        description: '125Hz - 4kHz, according to ISO 3382-1',
+        responseValues: this.iaccs,
+        position: 10,
       },
     ];
 

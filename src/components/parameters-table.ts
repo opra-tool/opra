@@ -7,7 +7,7 @@ export type Parameter = {
   name: string | TemplateResult;
   description?: string;
   unit?: string;
-  responseValues: number[];
+  responseValues: (number | null)[];
   position: number;
 };
 
@@ -91,7 +91,9 @@ export class ParametersTable extends LitElement {
         ${coloredValues.map(
           value =>
             html`<td class="value">
-              ${value.toFixed(2)}${ParametersTable.renderUnit(unit)}
+              ${value !== null
+                ? html`${value.toFixed(2)}${ParametersTable.renderUnit(unit)}`
+                : html`&mdash;`}
             </td>`
         )}
       </tr>
