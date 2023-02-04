@@ -9,7 +9,19 @@ export class P0DialogChangeEvent extends CustomEvent<{
   p0: number;
   relativeHumidity: number;
   temperature: number;
-}> {}
+}> {
+  constructor(p0: number, relativeHumidity: number, temperature: number) {
+    super('change', {
+      detail: {
+        p0,
+        relativeHumidity,
+        temperature,
+      },
+      bubbles: true,
+      composed: true,
+    });
+  }
+}
 
 const MIN_TEMPERATURE = -20;
 const MAX_TEMPERATURE = 50;
@@ -114,15 +126,7 @@ export class P0Dialog extends LitElement {
     const temperature = parseFloat(this.temperatureInput.value);
 
     this.dispatchEvent(
-      new P0DialogChangeEvent('change', {
-        detail: {
-          p0,
-          relativeHumidity,
-          temperature,
-        },
-        bubbles: true,
-        composed: true,
-      })
+      new P0DialogChangeEvent(p0, relativeHumidity, temperature)
     );
   }
 
