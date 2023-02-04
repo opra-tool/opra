@@ -102,9 +102,9 @@ export class P0Dialog extends LitElement {
     ev.preventDefault();
 
     if (
-      this.p0Input.invalid ||
-      this.humidityInput.invalid ||
-      this.temperatureInput.invalid
+      !this.p0Input.reportValidity() ||
+      !this.humidityInput.reportValidity() ||
+      !this.temperatureInput.reportValidity()
     ) {
       return;
     }
