@@ -3,9 +3,11 @@ import { customElement, query, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { UNIT_CELCIUS } from '../units';
 import { FileListToggleEvent, FileListRemoveEvent } from './file-list';
+import { FileListMarkEvent } from './file-list-entry-options';
 import { RoomResponse } from '../audio/room-response';
 import { BinauralResults, processBinauralAudio } from '../binaural-processing';
 import { MonauralResults, processMonauralAudio } from '../monaural-processing';
+import { MidSideResults, processMidSideAudio } from '../mid-side-processing';
 import { binauralAudioFromBuffer } from '../audio/binaural-samples';
 import { FileDropChangeEvent } from './file-drop';
 import { readAudioFile } from '../audio/audio-file-reading';
@@ -24,6 +26,10 @@ import {
   retrieveValueOrDefault,
 } from '../persistence';
 import { meanDecibel } from '../math/decibels';
+import {
+  calculateLateralLevel,
+  LateralLevel as LateralLevelResult,
+} from '../lateral-level';
 
 const COLOR_WHITE = 'rgba(255, 255, 255, 0.75)';
 const COLOR_BLUE = 'rgba(153, 102, 255, 0.5)';
@@ -41,10 +47,16 @@ const FILE_COLORS = [
 
 const MAX_FILE_COUNT = FILE_COLORS.length;
 
-type Results = MonauralResults | BinauralResults;
+type Results = MonauralResults | BinauralResults | MidSideResults;
 
 function isBinauralResults(results: Results): results is BinauralResults {
   return (results as BinauralResults).iaccBands !== undefined;
+}
+
+function isMidSideResults(results: Results): results is MidSideResults {
+  return (
+    (results as MidSideResults).earlyLateralEnergyFractionBands !== undefined
+  );
 }
 
 const P0_STORAGE_KEY = 'strengths-p0';
@@ -79,6 +91,9 @@ export class AudioAnalyzer extends LitElement {
 
   @state()
   private strengthResults: Map<string, Strengths> = new Map();
+
+  @state()
+  private lateralLevelResults: Map<string, LateralLevelResult> = new Map();
 
   @state()
   private error: Error | null = null;
@@ -126,6 +141,7 @@ export class AudioAnalyzer extends LitElement {
                     .entries=${fileListEntries}
                     @toggle-file=${this.onToggleFile}
                     @remove-file=${this.onRemoveFile}
+                    @mark-file=${this.onMarkFile}
                   ></file-list>
                 `
               : null}
@@ -146,6 +162,7 @@ export class AudioAnalyzer extends LitElement {
             .entries=${fileListEntries}
             @toggle-file=${this.onToggleFile}
             @remove-file=${this.onRemoveFile}
+            @mark-file=${this.onMarkFile}
           ></file-dropdown>`
         : null}
 
@@ -172,17 +189,14 @@ export class AudioAnalyzer extends LitElement {
       return html`<progress-indicator></progress-indicator>`;
     }
 
-    const includesBinauralResponses = responses.some(
-      ({ type }) => type === 'binaural'
-    );
-
     const responseDetails = responses.map(({ color, fileName }) => ({
       color,
       fileName,
     }));
 
-    // monaural parameters
-    const results = responses.map(this.getResponseResultsOrThrow.bind(this));
+    const results = responses.map(this.getResultsOrThrow.bind(this));
+
+    // monaural
     const edt = mapArrayParam(results, 'edtBands');
     const reverbTime = mapArrayParam(results, 'reverbTimeBands');
     const c50 = mapArrayParam(results, 'c50Bands');
@@ -193,17 +207,37 @@ export class AudioAnalyzer extends LitElement {
     const meanC80s = c80.map(value => meanDecibel(value[3], value[4]));
     const meanReverbTimes = reverbTime.map(value => (value[3] + value[4]) / 2);
 
-    // binaural parameters
+    // binaural
+    const binauralResponses = responses.filter(
+      ({ type }) => type === 'binaural'
+    );
     const binauralResults = results.filter(isBinauralResults);
     const iacc = mapArrayParam(binauralResults, 'iaccBands');
     const eiacc = mapArrayParam(binauralResults, 'eiaccBands');
 
+    // mid/side
+    const midSideResponses = responses.filter(
+      ({ type }) => type === 'mid-side'
+    );
+    const midSideResults = results.filter(isMidSideResults);
+    const earlyLateralEnergyFractionBands = mapArrayParam(
+      midSideResults,
+      'earlyLateralEnergyFractionBands'
+    );
+    const lateralLevels = midSideResponses.map(
+      r => this.lateralLevelResults.get(r.id) || null
+    );
+
+    // strengths
     const strengths = responses.map(
       r => this.strengthResults.get(r.id) || null
     );
 
+    const hasBinauralResults = binauralResults.length > 0;
+    const hasMidSideResults = midSideResults.length > 0;
+
     return html`
-      ${includesBinauralResponses
+      ${hasBinauralResults
         ? html`<binaural-note-card></binaural-note-card>`
         : null}
       <impulse-response-graph
@@ -258,41 +292,77 @@ export class AudioAnalyzer extends LitElement {
         ></p0-setting>
       </strengths-card>
 
-      ${binauralResults.length
+      ${hasMidSideResults
+        ? html`
+            <lateral-level-card
+              .p0=${this.p0}
+              .responseDetails=${midSideResponses}
+              .lateralLevels=${lateralLevels}
+            >
+              <p0-notice
+                slot="p0-notice"
+                .p0=${this.p0}
+                .temperature=${this.temperature}
+                .relativeHumidity=${this.relativeHumidity}
+                @show-p0-dialog=${this.onShowP0Dialog}
+              ></p0-notice>
+              <p0-setting
+                slot="p0-setting"
+                .p0=${this.p0}
+                @change=${this.onP0SettingChange}
+              ></p0-setting>
+            </lateral-level-card>
+            <early-lateral-fraction-graph
+              .responseDetails=${midSideResponses}
+              .earlyLateralEnergyFraction=${earlyLateralEnergyFractionBands}
+            ></early-lateral-fraction-graph>
+          `
+        : null}
+      ${hasBinauralResults
         ? html`<iacc-graph
-            .responseDetails=${responseDetails}
+            .responseDetails=${binauralResponses}
             .iacc=${iacc}
             .eiacc=${eiacc}
           ></iacc-graph>`
         : null}
 
       <convolver-card
-        class=${classMap({ expand: binauralResults.length })}
+        class=${classMap({ expand: hasBinauralResults })}
         .responses=${responses}
       ></convolver-card>
     `;
   }
 
-  private getResponseResultsOrThrow({ id }: { id: string }): Results {
+  private getResultsOrThrow({ id }: { id: string }): Results {
     const maybeResults = this.results.get(id);
 
     if (!maybeResults) {
-      throw new Error(`expected results to be defined for id ${id}`);
+      throw new Error(`expected to find results for id ${id}`);
     }
 
     return maybeResults;
   }
 
-  private async analyzeResponse({ id, sampleRate, buffer }: RoomResponse) {
+  private async analyzeResponse({
+    id,
+    type,
+    sampleRate,
+    buffer,
+  }: RoomResponse) {
     try {
       let results;
-      if (buffer.numberOfChannels === 1) {
+      if (type === 'monaural') {
         results = await processMonauralAudio(
           buffer.getChannelData(0),
           sampleRate
         );
-      } else {
+      } else if (type === 'binaural') {
         results = await processBinauralAudio(
+          binauralAudioFromBuffer(buffer),
+          sampleRate
+        );
+      } else {
+        results = await processMidSideAudio(
           binauralAudioFromBuffer(buffer),
           sampleRate
         );
@@ -304,6 +374,17 @@ export class AudioAnalyzer extends LitElement {
         this.strengthResults.set(
           id,
           await calculateStrengths(results, {
+            p0: this.p0,
+            relativeHumidity: this.relativeHumidity,
+            temperature: this.temperature,
+          })
+        );
+      }
+
+      if (this.p0 !== null && isMidSideResults(results)) {
+        this.lateralLevelResults.set(
+          id,
+          await calculateLateralLevel(results, {
             p0: this.p0,
             relativeHumidity: this.relativeHumidity,
             temperature: this.temperature,
@@ -340,7 +421,7 @@ export class AudioAnalyzer extends LitElement {
     }
 
     for (const response of this.responses) {
-      const results = this.getResponseResultsOrThrow(response);
+      const results = this.getResultsOrThrow(response);
 
       this.strengthResults.set(
         response.id,
@@ -351,6 +432,18 @@ export class AudioAnalyzer extends LitElement {
           temperature: this.temperature,
         })
       );
+
+      if (isMidSideResults(results)) {
+        this.lateralLevelResults.set(
+          response.id,
+          // eslint-disable-next-line no-await-in-loop
+          await calculateLateralLevel(results, {
+            p0: this.p0,
+            relativeHumidity: this.relativeHumidity,
+            temperature: this.temperature,
+          })
+        );
+      }
     }
 
     this.requestUpdate();
@@ -445,11 +538,35 @@ export class AudioAnalyzer extends LitElement {
     this.p0Dialog.show();
   }
 
-  private onRemoveFile(ev: FileListRemoveEvent) {
-    this.responses = this.responses.filter(el => el.id !== ev.detail.id);
-    this.results.delete(ev.detail.id);
+  private onRemoveFile({ detail: { id } }: FileListRemoveEvent) {
+    this.responses = this.responses.filter(el => el.id !== id);
+    this.results.delete(id);
     // eslint-disable-next-line no-console
-    removeResponse(ev.detail.id).catch(console.error);
+    removeResponse(id).catch(console.error);
+  }
+
+  private onMarkFile({ detail: { id, markAs } }: FileListMarkEvent) {
+    const response = this.responses.find(r => r.id === id);
+
+    if (!response) {
+      throw new Error(`cannot find response with id '${id}'`);
+    }
+
+    if (response.type === markAs) {
+      return;
+    }
+
+    response.type = markAs;
+
+    this.results.delete(id);
+    this.analyzeResponse(response);
+
+    this.requestUpdate();
+
+    // TODO: do more elegantly
+    // eslint-disable-next-line no-console
+    removeResponse(id).catch(console.error);
+    persistResponse(response);
   }
 
   private onToggleFile(ev: FileListToggleEvent) {

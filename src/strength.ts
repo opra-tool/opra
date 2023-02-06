@@ -74,7 +74,7 @@ export async function calculateStrengths(
   };
 }
 
-function calculateStaerkemass(
+export function calculateStaerkemass(
   bandsSquaredSum: number[],
   p0: number,
   lpe10: number[]
