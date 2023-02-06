@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
+<file target-language="de" source-language="en" original="lit-localize-inputs" datatype="plaintext">
+<body>
+<trans-unit id="s30a6412eb8b9650e">
+  <source>Reverb Time</source>
+  <target>Nachhallzeit</target>
+</trans-unit>
+<trans-unit id="s36f5790b361cadaf">
+  <source>according to ISO 3382-1 (500-1000Hz)</source>
+</trans-unit>
+<trans-unit id="s88ad31dce26701b3">
+  <source>Centre Time</source>
+</trans-unit>
+<trans-unit id="s15c414598970d711">
+  <source>according to ISO 3382-1</source>
+</trans-unit>
+<trans-unit id="h0151ab184c25d3a7">
+  <source>Clarity C<x id="0" equiv-text="&lt;sub&gt;"/>80<x id="1" equiv-text="&lt;/sub&gt;"/></source>
+</trans-unit>
+<trans-unit id="sfd396ad5707a3135">
+  <source>Bass Ratio</source>
+</trans-unit>
+<trans-unit id="sea93d3c78c26da12">
+  <source>Interaural Cross Correlation</source>
+</trans-unit>
+<trans-unit id="sf698baa2bf4c3b23">
+  <source>125Hz - 4kHz, according to ISO 3382-1</source>
+</trans-unit>
+<trans-unit id="s9be786361ad1f21b">
+  <source>Stärkemaß</source>
+  <target>Stärkemaß</target>
+</trans-unit>
+<trans-unit id="sde7dbd4f0a8945c1">
+  <source>A-Gewichtetes Stärkemaß</source>
+  <target>A-Gewichtetes Stärkemaß</target>
+</trans-unit>
+<trans-unit id="s14ed76d98e69694d">
+  <source>as defined by Soulodre and Bradley (1995)</source>
+</trans-unit>
+<trans-unit id="had0ad1abc70fb8c5">
+  <source>Level adjusted C<x id="0" equiv-text="&lt;sub&gt;"/>80<x id="1" equiv-text="&lt;/sub&gt;"/></source>
+</trans-unit>
+<trans-unit id="sce8e3785d56255cb">
+  <source>Perceived clarity rating defined by Soulodre and Bradley (1995)</source>
+</trans-unit>
+<trans-unit id="s6bc84d43b3db4bd0">
+  <source>Treble Ratio</source>
+</trans-unit>
+<trans-unit id="s251a76634b35932d">
+  <source>Early Bass Level</source>
+</trans-unit>
+<trans-unit id="sa5be1ba4649735f8">
+  <source>Single-Figure Parameters</source>
+</trans-unit>
+<trans-unit id="sefcf950b3cc4fc3b">
+  <source>Language</source>
+  <target>Sprache</target>
+</trans-unit>
+<trans-unit id="s06bbce97e12ca9d9">
+  <source>Strengths</source>
+  <target>Stärkemaße</target>
+</trans-unit>
+</body>
+</file>
+</xliff>

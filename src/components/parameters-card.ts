@@ -1,3 +1,4 @@
+import { msg, localized } from '@lit/localize';
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { isFreeOfNullValues, mapArrayParam } from '../arrays';
@@ -11,6 +12,7 @@ import {
 } from '../units';
 import { Parameter } from './parameters-table';
 
+@localized()
 @customElement('parameters-card')
 export class ParametersCard extends LitElement {
   @property({ type: Array })
@@ -37,34 +39,34 @@ export class ParametersCard extends LitElement {
   render() {
     const parameters: Parameter[] = [
       {
-        name: 'Reverb Time', // TODO: translate: Nachhallzeit
-        description: 'according to ISO 3382-1 (500-1000Hz)',
+        name: msg('Reverb Time'),
+        description: msg('according to ISO 3382-1 (500-1000Hz)'),
         unit: UNIT_SECONDS,
         responseValues: this.reverbTimes,
         position: 1,
       },
       {
-        name: 'Centre Time', // TODO: translate: Schwerpunktzeit
-        description: 'according to ISO 3382-1',
+        name: msg('Centre Time'), // TODO: translate: Schwerpunktzeit
+        description: msg('according to ISO 3382-1'),
         unit: UNIT_MILLISECONDS,
         responseValues: this.centreTimes,
         position: 2,
       },
       {
-        name: html`Clarity C<sub>80</sub>`, // TODO: translate: Klarheitsmaß C80
-        description: 'according to ISO 3382-1 (500-1000Hz)',
+        name: msg(html`Clarity C<sub>80</sub>`), // TODO: translate: Klarheitsmaß C80
+        description: msg('according to ISO 3382-1 (500-1000Hz)'),
         unit: UNIT_DECIBELS,
         responseValues: this.c80s,
         position: 5,
       },
       {
-        name: 'Bass Ratio',
+        name: msg('Bass Ratio'),
         responseValues: this.bassRatios,
         position: 8,
       },
       {
-        name: 'Interaural Cross Correlation', // TODO: translate: Interaurale Kreuzkorrelation
-        description: '125Hz - 4kHz, according to ISO 3382-1',
+        name: msg('Interaural Cross Correlation'), // TODO: translate: Interaurale Kreuzkorrelation
+        description: msg('125Hz - 4kHz, according to ISO 3382-1'),
         responseValues: this.iaccs,
         position: 10,
       },
@@ -81,37 +83,38 @@ export class ParametersCard extends LitElement {
       );
 
       parameters.push({
-        name: 'Stärkemaß',
-        description: 'according to ISO 3382-1',
+        name: msg('Stärkemaß'),
+        description: msg('according to ISO 3382-1'),
         responseValues: averageStrengths,
         unit: UNIT_DECIBELS,
         position: 3,
       });
       parameters.push({
-        name: 'A-Gewichtetes Stärkemaß',
-        description: 'as defined by Soulodre and Bradley (1995)',
+        name: msg('A-Gewichtetes Stärkemaß'),
+        description: msg('as defined by Soulodre and Bradley (1995)'),
         responseValues: aWeighted,
         unit: UNIT_DECIBELS_A,
         position: 4,
       });
       parameters.push({
-        name: html`Level adjusted C<sub>80</sub>`, // TODO: translation: Lautheitskorrigiertes Klarheitsmaß C80
-        description:
-          'Perceived clarity rating defined by Soulodre and Bradley (1995)',
+        name: msg(html`Level adjusted C<sub>80</sub>`), // TODO: translation: Lautheitskorrigiertes Klarheitsmaß C80
+        description: msg(
+          'Perceived clarity rating defined by Soulodre and Bradley (1995)'
+        ),
         responseValues: levelAdjustedC80,
         unit: UNIT_DECIBELS_A,
         position: 6,
       });
       parameters.push({
-        name: 'Treble Ratio',
-        description: 'as defined by Soulodre and Bradley (1995)',
+        name: msg('Treble Ratio'),
+        description: msg('as defined by Soulodre and Bradley (1995)'),
         responseValues: trebleRatios,
         unit: UNIT_DECIBELS,
         position: 7,
       });
       parameters.push({
-        name: 'Early Bass Level',
-        description: 'as defined by Soulodre and Bradley (1995)',
+        name: msg('Early Bass Level'),
+        description: msg('as defined by Soulodre and Bradley (1995)'),
         responseValues: earlyBassLevels,
         unit: UNIT_DECIBELS,
         position: 9,
@@ -119,7 +122,7 @@ export class ParametersCard extends LitElement {
     }
 
     return html`
-      <base-card cardTitle="Single-Figure Parameters">
+      <base-card cardTitle=${msg('Single-Figure Parameters')}>
         <parameters-table
           .responseDetails=${this.responseDetails}
           .parameters=${parameters}

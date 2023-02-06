@@ -44,6 +44,7 @@ export default {
         {
           src: [
             iconPath('trash'),
+            iconPath('globe2'),
             iconPath('play-fill'),
             iconPath('pause-fill'),
             iconPath('check2-circle'),

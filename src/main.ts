@@ -41,6 +41,7 @@ import './components/graphs/line-graph';
 import './components/graphs/octave-bands-graph';
 import './components/graphs/reverb-graph';
 import './components/graphs/strengths-graph';
+import './localization/language-select';
 import './components/p0-dialog';
 import './components/p0-notice';
 import './components/p0-setting';

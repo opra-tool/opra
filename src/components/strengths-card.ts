@@ -1,9 +1,11 @@
+import { msg, localized } from '@lit/localize';
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { isFreeOfNullValues } from '../arrays';
 import { ResponseDetail } from '../audio/response-detail';
 import { Strengths } from '../strength';
 
+@localized()
 @customElement('strengths-card')
 export class StrengthsCard extends LitElement {
   @property({ type: Number })
@@ -17,7 +19,9 @@ export class StrengthsCard extends LitElement {
 
   render() {
     return html`
-      <base-card cardTitle="Strengths"> ${this.renderCardContent()} </base-card>
+      <base-card cardTitle=${msg('Strengths')}>
+        ${this.renderCardContent()}
+      </base-card>
     `;
   }
 
