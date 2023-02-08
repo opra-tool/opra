@@ -1,10 +1,7 @@
 import { BinauralSamples } from './audio/binaural-samples';
 import { e80 } from './early-late-fractions';
 import { calculateIacc } from './iacc';
-import {
-  calculateMeanSquaredIR,
-  calculateSquaredIR,
-} from './squared-impulse-response';
+import { calculateMeanSquaredIR } from './squared-impulse-response';
 import { MonauralResults, processChannel } from './monaural-processing';
 import { octfiltBinaural } from './octfilt';
 import { correctStarttimeBinaural } from './starttime';
