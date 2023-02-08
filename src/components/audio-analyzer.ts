@@ -189,11 +189,6 @@ export class AudioAnalyzer extends LitElement {
       return html`<progress-indicator></progress-indicator>`;
     }
 
-    const responseDetails = responses.map(({ color, fileName }) => ({
-      color,
-      fileName,
-    }));
-
     const results = responses.map(this.getResultsOrThrow.bind(this));
 
     // monaural
@@ -248,12 +243,12 @@ export class AudioAnalyzer extends LitElement {
         ? html`<binaural-note-card></binaural-note-card>`
         : null}
       <impulse-response-graph
-        .responseDetails=${responseDetails}
+        .responseDetails=${responses}
         .squaredIRPoints=${squaredIRPoints}
       ></impulse-response-graph>
 
       <parameters-card
-        .responseDetails=${responseDetails}
+        .responseDetails=${responses}
         .centreTimes=${centreTimes}
         .bassRatios=${bassRatios}
         .c80s=${meanC80s}
@@ -270,20 +265,20 @@ export class AudioAnalyzer extends LitElement {
       </parameters-card>
 
       <reverb-graph
-        .responseDetails=${responseDetails}
+        .responseDetails=${responses}
         .edt=${edt}
         .reverbTime=${reverbTime}
       ></reverb-graph>
 
       <c50c80-graph
-        .responseDetails=${responseDetails}
+        .responseDetails=${responses}
         .c50=${c50}
         .c80=${c80}
       ></c50c80-graph>
 
       <strengths-card
         .p0=${this.p0}
-        .responseDetails=${responseDetails}
+        .responseDetails=${responses}
         .strengths=${strengths}
       >
         <p0-notice
