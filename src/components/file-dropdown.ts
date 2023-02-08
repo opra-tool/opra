@@ -20,7 +20,7 @@ export class FileDropdown extends LitElement {
             >${enabledFilesCount} response(s) enabled</sl-button
           >
           <div class="content">
-            <file-list .entries=${this.entries}></file-list>
+            <file-list .entries=${this.entries} hideOptions></file-list>
           </div>
         </sl-dropdown>
       </div>

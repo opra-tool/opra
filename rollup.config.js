@@ -48,6 +48,7 @@ export default {
             iconPath('play-fill'),
             iconPath('pause-fill'),
             iconPath('check2-circle'),
+            iconPath('three-dots-vertical'),
             iconPath('exclamation-triangle'),
             iconPath('exclamation-octagon'),
           ],

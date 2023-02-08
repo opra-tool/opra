@@ -1,11 +1,10 @@
 import { SlSwitch } from '@shoelace-style/shoelace';
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { when } from 'lit/directives/when.js';
 import { formatResponseSummary } from '../presentation/room-response-format';
 
 export type FileListEntry = {
-  type: 'monaural' | 'binaural';
+  type: 'monaural' | 'binaural' | 'mid-side';
   id: string;
   fileName: string;
   hasResults: boolean;
@@ -17,16 +16,39 @@ export type FileListEntry = {
 
 export class FileListToggleEvent extends CustomEvent<{
   id: string;
-}> {}
+}> {
+  constructor(id: string) {
+    super('toggle-file', {
+      detail: {
+        id,
+      },
+      bubbles: true,
+      composed: true,
+    });
+  }
+}
 
 export class FileListRemoveEvent extends CustomEvent<{
   id: string;
-}> {}
+}> {
+  constructor(id: string) {
+    super('remove-file', {
+      detail: {
+        id,
+      },
+      bubbles: true,
+      composed: true,
+    });
+  }
+}
 
 @customElement('file-list')
 export class FileList extends LitElement {
   @property({ type: Array })
   entries: FileListEntry[] = [];
+
+  @property({ type: Boolean })
+  hideOptions = false;
 
   protected render() {
     const enabledCount = this.entries.reduce(
@@ -54,56 +76,56 @@ export class FileList extends LitElement {
     return html`
       <div class="file-list-entry" title=${fileName}>
         <div class="head">
-          ${when(
-            hasResults,
-            () => html`<sl-switch
-              ?checked=${isEnabled}
-              ?disabled=${cannotToggle}
-              title=${toggleTitle}
-              value=${id}
-              @sl-change=${this.onSwitch}
-            ></sl-switch>`,
-            () => html`<sl-spinner></sl-spinner>`
-          )}
+          ${hasResults
+            ? html`<sl-switch
+                ?checked=${isEnabled}
+                ?disabled=${cannotToggle}
+                title=${toggleTitle}
+                value=${id}
+                @sl-change=${this.onSwitch}
+              ></sl-switch>`
+            : html`<sl-spinner></sl-spinner>`}
         </div>
         <div>
           <p>${fileName}</p>
           <small>${formatResponseSummary(details)}</small>
         </div>
-
         <div class="color" .style=${`background-color: ${color}`}></div>
-        <sl-icon-button
-          name="trash"
-          @click=${() => this.emitRemoveEvent(id)}
-        ></sl-icon-button>
+        ${this.renderFileOptions(details.type, id)}
       </div>
     `;
   }
 
-  private emitRemoveEvent(id: string) {
-    this.dispatchEvent(
-      new FileListRemoveEvent('remove-file', {
-        detail: {
-          id,
-        },
-        bubbles: true,
-        composed: true,
-      })
-    );
+  private renderFileOptions(
+    type: 'monaural' | 'binaural' | 'mid-side',
+    id: string
+  ) {
+    if (this.hideOptions) {
+      return null;
+    }
+
+    if (type === 'monaural') {
+      return html`
+        <sl-icon-button
+          name="trash"
+          title="Discard"
+          @click=${() => this.dispatchEvent(new FileListRemoveEvent(id))}
+        ></sl-icon-button>
+      `;
+    }
+
+    return html`
+      <file-list-entry-options
+        .id=${id}
+        .type=${type}
+      ></file-list-entry-options>
+    `;
   }
 
   private onSwitch(ev: CustomEvent) {
     const target = ev.target as SlSwitch;
 
-    this.dispatchEvent(
-      new FileListToggleEvent('toggle-file', {
-        detail: {
-          id: target.value,
-        },
-        bubbles: true,
-        composed: true,
-      })
-    );
+    this.dispatchEvent(new FileListToggleEvent(target.value));
   }
 
   static styles = css`

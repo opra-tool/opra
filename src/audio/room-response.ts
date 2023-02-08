@@ -1,5 +1,5 @@
 export type RoomResponse = {
-  type: 'monaural' | 'binaural';
+  type: 'monaural' | 'binaural' | 'mid-side';
   id: string;
   color: string;
   fileName: string;

@@ -1,13 +1,11 @@
-import { msg, localized } from '@lit/localize';
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { isFreeOfNullValues } from '../arrays';
 import { ResponseDetail } from '../audio/response-detail';
-import { Strengths } from '../strength';
+import { LateralLevel } from '../lateral-level';
 
-@localized()
-@customElement('strengths-card')
-export class StrengthsCard extends LitElement {
+@customElement('lateral-level-card')
+export class LateralLevelCard extends LitElement {
   @property({ type: Number })
   p0: number | null = null;
 
@@ -15,13 +13,13 @@ export class StrengthsCard extends LitElement {
   responseDetails: ResponseDetail[] = [];
 
   @property({ type: Array })
-  strengths: (Strengths | null)[] = [];
+  lateralLevels: (LateralLevel | null)[] = [];
 
   render() {
     return html`
-      <base-card cardTitle=${msg('Strengths')}>
-        ${this.renderCardContent()}
-      </base-card>
+      <base-card cardTitle="Lateral Level"
+        >${this.renderCardContent()}</base-card
+      >
     `;
   }
 
@@ -34,15 +32,18 @@ export class StrengthsCard extends LitElement {
       `;
     }
 
-    if (this.strengths.length === 0 || !isFreeOfNullValues(this.strengths)) {
+    if (
+      this.lateralLevels.length === 0 ||
+      !isFreeOfNullValues(this.lateralLevels)
+    ) {
       return html`<sl-spinner></sl-spinner>`;
     }
 
     return html`
-      <strengths-graph
+      <lateral-level-graph
         .responseDetails=${this.responseDetails}
-        .strengths=${this.strengths}
-      ></strengths-graph>
+        .lateralLevels=${this.lateralLevels}
+      ></lateral-level-graph>
       <slot name="p0-notice"></slot>
     `;
   }
