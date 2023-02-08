@@ -1,8 +1,7 @@
-import { RoomResponse } from '../audio/room-response';
 import { UNIT_HERTZ, UNIT_SECONDS } from '../units';
 
 type Input = {
-  type: 'monaural' | 'binaural';
+  type: 'monaural' | 'binaural' | 'mid-side';
   duration: number;
   sampleRate: number;
 };
@@ -10,6 +9,7 @@ type Input = {
 const responseTypeNames = {
   monaural: 'Monaural',
   binaural: 'Binaural',
+  'mid-side': 'Mid / Side',
 };
 
 export function formatResponseSummary({

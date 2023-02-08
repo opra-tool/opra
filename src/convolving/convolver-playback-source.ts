@@ -1,7 +1,7 @@
-// eslint-disable-next-line no-use-before-define
 export type PlaybackSourceFactory = (
   ctx: AudioContext,
   startTime: number
+  // eslint-disable-next-line no-use-before-define
 ) => PlaybackSource;
 
 export interface PlaybackSource extends EventTarget {
