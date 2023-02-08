@@ -1,3 +1,4 @@
+import { msg, localized } from '@lit/localize';
 import { SlCheckbox, SlSelect } from '@shoelace-style/shoelace';
 import { LitElement, html, css } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
@@ -31,6 +32,7 @@ function genId({ type, fileName }: CustomFile | BuiltinFile): string {
   return `${type}_${fileName}`;
 }
 
+@localized()
 @customElement('convolver-card')
 export class ConvolverCard extends LitElement {
   @property({ type: Array })
@@ -48,7 +50,7 @@ export class ConvolverCard extends LitElement {
       type: 'builtin',
       fileName: 'sax_BerniesTune_excerpt.wav',
       label: 'Bernies Tune (Saxophon)',
-      credit: 'Saxophon: Aleksander Labuda, Aufnahme: Daniel Labuda',
+      credit: 'Sax: Aleksander Labuda, Rec: Daniel Labuda',
     },
     {
       type: 'builtin',
@@ -86,7 +88,7 @@ export class ConvolverCard extends LitElement {
             value=${NO_EFFECT}
             @sl-change=${this.onResponseSelected}
           >
-            <sl-menu-item value=${NO_EFFECT}>No effect</sl-menu-item>
+            <sl-menu-item value=${NO_EFFECT}>${msg('No effect')}</sl-menu-item>
             ${this.responses.map(
               r => html`
                 <sl-menu-item value=${r.id}>${r.fileName}</sl-menu-item>
@@ -95,12 +97,13 @@ export class ConvolverCard extends LitElement {
           </sl-select>
           <div class="normalize-setting">
             <sl-checkbox id="normalize-checkbox" checked>
-              Normalize output: Sets the <code>convolver</code> attribute of the
-              underlying <code>ConvolverNode</code>. Changing this will not
-              affect the current playback.
+              ${msg(html`Normalize output: Sets the
+                <code>normalize</code> attribute of the underlying
+                <code>ConvolverNode</code>. Changing this will not affect the
+                current playback.`)}
               <a
                 href="https://webaudio.github.io/web-audio-api/#dom-convolvernode-normalize"
-                >See specification for details.</a
+                >${msg('See specification for details.')}</a
               >
             </sl-checkbox>
           </div>
@@ -109,7 +112,7 @@ export class ConvolverCard extends LitElement {
           </ul>
         </section>
         <file-drop
-          label="Drop custom audio files here"
+          label=${msg('Drop custom audio files here')}
           @change=${this.onFilesAdded}
         ></file-drop>
       </base-card>

@@ -61,6 +61,26 @@
   <source>Strengths</source>
   <target>Stärkemaße</target>
 </trans-unit>
+<trans-unit id="s9224ed62985fbd03">
+  <source>No effect</source>
+  <target>Kein Effekt</target>
+</trans-unit>
+<trans-unit id="s3810c3632cd9ccce">
+  <source>See specification for details.</source>
+  <target>Siehe Spezifikation für Details</target>
+</trans-unit>
+<trans-unit id="scb830009d3d61b90">
+  <source>Drop custom audio files here</source>
+  <target>Eigene Audiodateien hier ablegen</target>
+</trans-unit>
+<trans-unit id="h1f157057a75657bd">
+  <source>Normalize output: Sets the <x id="0" equiv-text="&lt;code&gt;"/>normalize<x id="1" equiv-text="&lt;/code&gt;"/> attribute of the
+              underlying <x id="2" equiv-text="&lt;code&gt;"/>ConvolverNode<x id="3" equiv-text="&lt;/code&gt;"/>. Changing this will not
+              affect the current playback.</source>
+  <target>Ausgabe normalisieren: Setzt das <x id="0" equiv-text="&lt;code&gt;"/>normalize<x id="1" equiv-text="&lt;/code&gt;"/> Attribut der
+              verwendeten <x id="2" equiv-text="&lt;code&gt;"/>ConvolverNode<x id="3" equiv-text="&lt;/code&gt;"/>. Eine Änderung dieser Einstellung 
+              hat keinen Einfluss auf die aktuelle Wiedergabe.</target>
+</trans-unit>
 </body>
 </file>
 </xliff>

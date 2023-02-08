@@ -12,6 +12,7 @@ const responseTypeNames = {
   'mid-side': 'Mid / Side',
 };
 
+// TODO: move to component for i18n
 export function formatResponseSummary({
   type,
   duration,

@@ -7,10 +7,19 @@ import { html } from 'lit';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export const templates = {
+  h1f157057a75657bd: html`Ausgabe normalisieren: Setzt das
+    <code>normalize</code> Attribut der verwendeten <code>ConvolverNode</code>.
+    Eine Änderung dieser Einstellung hat keinen Einfluss auf die aktuelle
+    Wiedergabe.`,
   s06bbce97e12ca9d9: `Stärkemaße`,
+  s0f86742a5871d550: `Saxophon`,
   s30a6412eb8b9650e: `Nachhallzeit`,
+  s3810c3632cd9ccce: `Siehe Spezifikation für Details`,
+  s9224ed62985fbd03: `Kein Effekt`,
   s9be786361ad1f21b: `Stärkemaß`,
+  scb830009d3d61b90: `Eigene Audiodateien hier ablegen`,
   sde7dbd4f0a8945c1: `A-Gewichtetes Stärkemaß`,
+  seb8c7c11a6c3f9ec: `Aufnahme`,
   sefcf950b3cc4fc3b: `Sprache`,
   s36f5790b361cadaf: `according to ISO 3382-1 (500-1000Hz)`,
   s88ad31dce26701b3: `Centre Time`,
