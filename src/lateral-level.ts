@@ -2,7 +2,7 @@ import { getFrequencyValues } from './components/graphs/common';
 import { calculateSoundDampingInAir } from './dampening';
 import { calculateLpe10 } from './lpe10';
 import { MidSideResults } from './mid-side-processing';
-import { calculateStaerkemass } from './strength';
+import { calculateSoundStrength } from './strength';
 
 export type LateralLevel = {
   earlyLateralLevelBands: number[];
@@ -25,12 +25,12 @@ export async function calculateLateralLevel(
   const lpe10 = await calculateLpe10(airCoeffs);
 
   return {
-    earlyLateralLevelBands: calculateStaerkemass(
+    earlyLateralLevelBands: calculateSoundStrength(
       sideE80BandsSquaredSum,
       p0,
       lpe10
     ),
-    lateLateralLevelBands: calculateStaerkemass(
+    lateLateralLevelBands: calculateSoundStrength(
       sideL80BandsSquaredSum,
       p0,
       lpe10

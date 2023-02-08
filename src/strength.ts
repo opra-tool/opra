@@ -53,13 +53,13 @@ export async function calculateStrengths(
   );
   const lpe10 = await calculateLpe10(airCoeffs);
 
-  const strength = calculateStaerkemass(bandsSquaredSum, p0, lpe10);
-  const earlyStrength = calculateStaerkemass(e80BandsSquaredSum, p0, lpe10);
-  const lateStrength = calculateStaerkemass(l80BandsSquaredSum, p0, lpe10);
-  const averageStrength = calculateMeanStaerkemass(strength);
+  const strength = calculateSoundStrength(bandsSquaredSum, p0, lpe10);
+  const earlyStrength = calculateSoundStrength(e80BandsSquaredSum, p0, lpe10);
+  const lateStrength = calculateSoundStrength(l80BandsSquaredSum, p0, lpe10);
+  const averageStrength = calculateMeanSoundStrength(strength);
   const trebleRatio = calculateTrebleRatio(lateStrength);
   const earlyBassLevel = calculateEarlyBassLevel(earlyStrength);
-  const aWeighted = calculateAWeightedStaerkemeass(strength);
+  const aWeighted = calculateAWeightedSoundStrength(strength);
   const levelAdjustedC80 = calculateLevelAdjustedC80(c80Bands, aWeighted);
 
   return {
@@ -74,7 +74,7 @@ export async function calculateStrengths(
   };
 }
 
-export function calculateStaerkemass(
+export function calculateSoundStrength(
   bandsSquaredSum: number[],
   p0: number,
   lpe10: number[]
@@ -90,13 +90,13 @@ export function calculateStaerkemass(
   return strength;
 }
 
-function calculateAWeightedStaerkemeass(strength: number[]): number {
-  return calculateMeanStaerkemass(
+function calculateAWeightedSoundStrength(strength: number[]): number {
+  return calculateMeanSoundStrength(
     strength.map((val, i) => val + A_WEIGHTING_CORRECTIONS[i])
   );
 }
 
-function calculateMeanStaerkemass(strength: number[]): number {
+function calculateMeanSoundStrength(strength: number[]): number {
   return meanDecibel(strength[3], strength[4]);
 }
 
