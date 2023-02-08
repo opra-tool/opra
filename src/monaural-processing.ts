@@ -47,12 +47,12 @@ export async function processChannel(
     earlyLateFractions(band, sampleRate)
   );
 
-  const c50Values = [];
-  const c80Values = [];
+  const c50Bands = [];
+  const c80Bands = [];
   for (let i = 0; i < fractions.length; i += 1) {
     const { c50, c80 } = c50c80(fractions[i]);
-    c50Values.push(c50);
-    c80Values.push(c80);
+    c50Bands.push(c50);
+    c80Bands.push(c80);
   }
 
   const { edt, reverbTime } = calculateReverberation(
@@ -84,8 +84,8 @@ export async function processChannel(
     l80BandsSquaredSum,
     edtBands: edt,
     reverbTimeBands: reverbTime,
-    c50Bands: c50Values,
-    c80Bands: c80Values,
+    c50Bands,
+    c80Bands,
     bassRatio,
     centreTime,
     squaredIRPoints,
