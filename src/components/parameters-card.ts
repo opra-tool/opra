@@ -39,34 +39,39 @@ export class ParametersCard extends LitElement {
   render() {
     const parameters: Parameter[] = [
       {
-        name: msg('Reverb Time'),
-        description: msg('according to ISO 3382-1 (500-1000Hz)'),
+        name: html`${msg('Reverb Time')} <i>T</i>`, // TODO: 500Hz - 1kHz
+        description: `${msg('according to')} ISO 3382-1`,
         unit: UNIT_SECONDS,
         responseValues: this.reverbTimes,
         position: 1,
       },
       {
-        name: msg('Centre Time'), // TODO: translate: Schwerpunktzeit
-        description: msg('according to ISO 3382-1'),
+        name: html`${msg('Centre Time')} <i>T<sub>S</sub></i>`,
+        description: `${msg(
+          'Perceived clarity of sound, according to'
+        )} ISO 3382-1`,
         unit: UNIT_MILLISECONDS,
         responseValues: this.centreTimes,
         position: 2,
       },
       {
-        name: msg(html`Clarity C<sub>80</sub>`), // TODO: translate: Klarheitsmaß C80
-        description: msg('according to ISO 3382-1 (500-1000Hz)'),
+        name: html`${msg('Clarity')} <i>C<sub>80</sub></i>`, // TODO: 500Hz - 1kHz
+        description: `${msg(
+          'Perceived clarity of sound, according to'
+        )} ISO 3382-1`,
         unit: UNIT_DECIBELS,
         responseValues: this.c80s,
         position: 5,
       },
       {
-        name: msg('Bass Ratio'),
+        name: html`${msg('Bass Ratio')} <i>BR</i>`,
+        description: `${msg('as defined by')} L.L. Beranek`,
         responseValues: this.bassRatios,
         position: 8,
       },
       {
-        name: msg('Interaural Cross Correlation'), // TODO: translate: Interaurale Kreuzkorrelation
-        description: msg('125Hz - 4kHz, according to ISO 3382-1'),
+        name: msg('Interaural Cross Correlation'), // TODO: 125Hz - 4kHz
+        description: `${msg('according to')} ISO 3382-1`,
         responseValues: this.iaccs,
         position: 10,
       },
@@ -83,23 +88,25 @@ export class ParametersCard extends LitElement {
       );
 
       parameters.push({
-        name: msg('Stärkemaß'),
-        description: msg('according to ISO 3382-1'),
+        name: html`${msg('Sound Strength')} <i>G</i>`,
+        description: `${msg(
+          'Subjective level of sound, according to'
+        )} ISO 3382-1`,
         responseValues: averageStrengths,
         unit: UNIT_DECIBELS,
         position: 3,
       });
       parameters.push({
-        name: msg('A-Gewichtetes Stärkemaß'),
+        name: html`${msg('A-weighted Sound Strength')} <i>G(A)</i>`,
         description: msg('as defined by Soulodre and Bradley (1995)'),
         responseValues: aWeighted,
         unit: UNIT_DECIBELS_A,
         position: 4,
       });
       parameters.push({
-        name: msg(html`Level adjusted C<sub>80</sub>`), // TODO: translation: Lautheitskorrigiertes Klarheitsmaß C80
+        name: html`${msg('Level-Adjusted')} C<sub>80</sub>`,
         description: msg(
-          'Perceived clarity rating defined by Soulodre and Bradley (1995)'
+          'Perceived clarity rating, as defined by Soulodre and Bradley (1995)'
         ),
         responseValues: levelAdjustedC80,
         unit: UNIT_DECIBELS_A,

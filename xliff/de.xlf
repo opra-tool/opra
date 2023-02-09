@@ -6,52 +6,33 @@
   <source>Reverb Time</source>
   <target>Nachhallzeit</target>
 </trans-unit>
-<trans-unit id="s36f5790b361cadaf">
-  <source>according to ISO 3382-1 (500-1000Hz)</source>
-</trans-unit>
 <trans-unit id="s88ad31dce26701b3">
   <source>Centre Time</source>
-</trans-unit>
-<trans-unit id="s15c414598970d711">
-  <source>according to ISO 3382-1</source>
-</trans-unit>
-<trans-unit id="h0151ab184c25d3a7">
-  <source>Clarity C<x id="0" equiv-text="&lt;sub&gt;"/>80<x id="1" equiv-text="&lt;/sub&gt;"/></source>
+  <target>Schwerpunktzeit</target>
 </trans-unit>
 <trans-unit id="sfd396ad5707a3135">
   <source>Bass Ratio</source>
+  <target>Bass-Verhältnis</target>
 </trans-unit>
 <trans-unit id="sea93d3c78c26da12">
   <source>Interaural Cross Correlation</source>
-</trans-unit>
-<trans-unit id="sf698baa2bf4c3b23">
-  <source>125Hz - 4kHz, according to ISO 3382-1</source>
-</trans-unit>
-<trans-unit id="s9be786361ad1f21b">
-  <source>Stärkemaß</source>
-  <target>Stärkemaß</target>
-</trans-unit>
-<trans-unit id="sde7dbd4f0a8945c1">
-  <source>A-Gewichtetes Stärkemaß</source>
-  <target>A-Gewichtetes Stärkemaß</target>
+  <target>Interaurale Kreuzkorrelation</target>
 </trans-unit>
 <trans-unit id="s14ed76d98e69694d">
   <source>as defined by Soulodre and Bradley (1995)</source>
-</trans-unit>
-<trans-unit id="had0ad1abc70fb8c5">
-  <source>Level adjusted C<x id="0" equiv-text="&lt;sub&gt;"/>80<x id="1" equiv-text="&lt;/sub&gt;"/></source>
-</trans-unit>
-<trans-unit id="sce8e3785d56255cb">
-  <source>Perceived clarity rating defined by Soulodre and Bradley (1995)</source>
+  <target>gemäß der Definition von Soulodre und Bradley (1995)</target>
 </trans-unit>
 <trans-unit id="s6bc84d43b3db4bd0">
   <source>Treble Ratio</source>
+  <target>Höhenverhältnis</target>
 </trans-unit>
 <trans-unit id="s251a76634b35932d">
   <source>Early Bass Level</source>
+  <target>Frühes Basslevel</target>
 </trans-unit>
 <trans-unit id="sa5be1ba4649735f8">
   <source>Single-Figure Parameters</source>
+  <target>Einzahlwerte</target>
 </trans-unit>
 <trans-unit id="sefcf950b3cc4fc3b">
   <source>Language</source>
@@ -73,13 +54,49 @@
   <source>Drop custom audio files here</source>
   <target>Eigene Audiodateien hier ablegen</target>
 </trans-unit>
-<trans-unit id="h1f157057a75657bd">
-  <source>Normalize output: Sets the <x id="0" equiv-text="&lt;code&gt;"/>normalize<x id="1" equiv-text="&lt;/code&gt;"/> attribute of the
-              underlying <x id="2" equiv-text="&lt;code&gt;"/>ConvolverNode<x id="3" equiv-text="&lt;/code&gt;"/>. Changing this will not
-              affect the current playback.</source>
+<trans-unit id="h21b9866c746fbbbf">
+  <source>Normalize output: Sets the
+                <x id="0" equiv-text="&lt;code&gt;"/>normalize<x id="1" equiv-text="&lt;/code&gt;"/> attribute of the underlying
+                <x id="2" equiv-text="&lt;code&gt;"/>ConvolverNode<x id="3" equiv-text="&lt;/code&gt;"/>. Changing this will not affect the
+                current playback.</source>
   <target>Ausgabe normalisieren: Setzt das <x id="0" equiv-text="&lt;code&gt;"/>normalize<x id="1" equiv-text="&lt;/code&gt;"/> Attribut der
               verwendeten <x id="2" equiv-text="&lt;code&gt;"/>ConvolverNode<x id="3" equiv-text="&lt;/code&gt;"/>. Eine Änderung dieser Einstellung 
               hat keinen Einfluss auf die aktuelle Wiedergabe.</target>
+</trans-unit>
+<trans-unit id="sec6d4ba328d97b24">
+  <source>according to</source>
+  <target>gemäß</target>
+</trans-unit>
+<trans-unit id="sd3eac79f739323df">
+  <source>Clarity</source>
+  <target>Klarheitsmaß</target>
+</trans-unit>
+<trans-unit id="s858ca7435ce9ffa5">
+  <source>Sound Strength</source>
+  <target>Stärkemaß</target>
+</trans-unit>
+<trans-unit id="sfd963ba27f135016">
+  <source>A-weighted Sound Strength</source>
+  <target>A-Gewichtetes Stärkemaß</target>
+</trans-unit>
+<trans-unit id="s6f0ae1a900147d95">
+  <source>Perceived clarity of sound, according to</source>
+  <target>Empfundene Klarheit des Klangs, gemäß</target>
+</trans-unit>
+<trans-unit id="s476a61875467bf2d">
+  <source>as defined by</source>
+  <target>gemäß</target>
+</trans-unit>
+<trans-unit id="sd69fbc00e11ac634">
+  <source>Subjective level of sound, according to</source>
+  <target>Subjektiver Schallpegel, gemäß</target>
+</trans-unit>
+<trans-unit id="s8f4fbba7efa3d5d3">
+  <source>Perceived clarity rating, as defined by Soulodre and Bradley (1995)</source>
+  <target>Empfundene Klarheit des Klangs, gemäß Soulodre und Bradley (1995)</target>
+</trans-unit>
+<trans-unit id="s2a2957356ab1c7fe">
+  <source>Level-Adjusted</source>
 </trans-unit>
 </body>
 </file>
