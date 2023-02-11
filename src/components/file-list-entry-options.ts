@@ -1,3 +1,4 @@
+import { localized, msg } from '@lit/localize';
 import { SlMenuItem } from '@shoelace-style/shoelace';
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
@@ -19,6 +20,7 @@ export class FileListMarkEvent extends CustomEvent<{
   }
 }
 
+@localized()
 @customElement('file-list-entry-options')
 export class FileListEntryOptions extends LitElement {
   @property({ type: String })
@@ -33,20 +35,22 @@ export class FileListEntryOptions extends LitElement {
         <sl-icon-button
           slot="trigger"
           name="three-dots-vertical"
-          title="More Options"
+          title=${msg('More options for this impulse response')}
         ></sl-icon-button>
         <sl-menu @sl-select=${this.onMenuSelect}>
           ${this.type === 'binaural'
             ? html`
                 <sl-menu-item value="mid-side">
-                  Mark as Mid / Side
+                  ${msg('Treat as M/S impulse response')}
                 </sl-menu-item>
               `
             : html`
-                <sl-menu-item value="binaural"> Mark as Binaural </sl-menu-item>
+                <sl-menu-item value="binaural"
+                  >${msg('Treat as binaural impulse response')}</sl-menu-item
+                >
               `}
           <sl-divider></sl-divider>
-          <sl-menu-item value="remove">Discard</sl-menu-item>
+          <sl-menu-item value="remove">${msg('Discard')}</sl-menu-item>
         </sl-menu>
       </sl-dropdown>
     `;

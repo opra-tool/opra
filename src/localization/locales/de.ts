@@ -16,9 +16,11 @@ export const templates = {
   s070f746328e45e39: `Raumimpulsantwortdateien hier ablegen`,
   s14ed76d98e69694d: `gemäß der Definition von Soulodre und Bradley (1995)`,
   s251a76634b35932d: `Frühes Basslevel`,
+  s3019bdb56b4ee311: `Als binaurale Impulsantwort behandeln`,
   s30a6412eb8b9650e: `Nachhallzeit`,
   s32cd679fcf36b635: str`Maximale Anzahl von (${0}) Dateien erreicht. ${1} Dateien ignoriert.`,
   s3810c3632cd9ccce: `Siehe Spezifikation für Details`,
+  s38beac14eccc0c6f: `Weitere Einstellungen für diese Impulsantwort`,
   s3df9c7b795b7e6c5: `ignoriert`,
   s45c06ffcf3bde0d1: `Bei binauralen Raumimpulsantworten wird eine Mittelung beider Kanäle vorgenommen
           und aus dieser Mittelung dann monaurale Parameter berechnet.
@@ -27,6 +29,7 @@ export const templates = {
   s5787e20cab57b383: `Unbekannter Fehler`,
   s6bc84d43b3db4bd0: `Höhenverhältnis`,
   s6f0ae1a900147d95: `Empfundene Klarheit des Klangs, gemäß`,
+  s7d54db2b110e7452: `Als M/S Impulsantwort behandeln`,
   s828755644aff07e4: `Erfolgreiche Zuweisung von`,
   s858ca7435ce9ffa5: `Stärkemaß`,
   s88ad31dce26701b3: `Schwerpunktzeit`,
@@ -35,6 +38,7 @@ export const templates = {
   sa5be1ba4649735f8: `Einzahlwerte`,
   sad69d8cf37fd5551: `aktivierte Raumimpulsantwort(en)`,
   sadf9ac04abb2c03e: `Technische Details`,
+  sc00a88b90cd60661: `Entfernen`,
   sc6b8315cb7dc297d: `Ein Fehler ist aufgetreten`,
   scb830009d3d61b90: `Eigene Audiodateien hier ablegen`,
   sd3eac79f739323df: `Klarheitsmaß`,

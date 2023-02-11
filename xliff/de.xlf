@@ -143,6 +143,22 @@
   <source>room impulse response(s) enabled</source>
   <target>aktivierte Raumimpulsantwort(en)</target>
 </trans-unit>
+<trans-unit id="sc00a88b90cd60661">
+  <source>Discard</source>
+  <target>Entfernen</target>
+</trans-unit>
+<trans-unit id="s38beac14eccc0c6f">
+  <source>More options for this impulse response</source>
+  <target>Weitere Einstellungen für diese Impulsantwort</target>
+</trans-unit>
+<trans-unit id="s7d54db2b110e7452">
+  <source>Treat as M/S impulse response</source>
+  <target>Als M/S Impulsantwort behandeln</target>
+</trans-unit>
+<trans-unit id="s3019bdb56b4ee311">
+  <source>Treat as binaural impulse response</source>
+  <target>Als binaurale Impulsantwort behandeln</target>
+</trans-unit>
 </body>
 </file>
 </xliff>
