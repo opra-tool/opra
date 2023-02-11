@@ -20,6 +20,9 @@ export const templates = {
   s32cd679fcf36b635: str`Maximale Anzahl von (${0}) Dateien erreicht. ${1} Dateien ignoriert.`,
   s3810c3632cd9ccce: `Siehe Spezifikation für Details`,
   s3df9c7b795b7e6c5: `ignoriert`,
+  s45c06ffcf3bde0d1: `Bei binauralen Raumimpulsantworten wird eine Mittelung beider Kanäle vorgenommen
+          und aus dieser Mittelung dann monaurale Parameter berechnet.
+          Die Head-Related Transfer Function kann Einfluss auf monaurale Parameter haben.`,
   s476a61875467bf2d: `gemäß`,
   s5787e20cab57b383: `Unbekannter Fehler`,
   s6bc84d43b3db4bd0: `Höhenverhältnis`,

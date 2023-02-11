@@ -1,6 +1,8 @@
+import { localized, msg } from '@lit/localize';
 import { LitElement, html, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
+@localized()
 @customElement('binaural-note-card')
 export class BinauralNoteCard extends LitElement {
   render() {
@@ -8,10 +10,10 @@ export class BinauralNoteCard extends LitElement {
       <section>
         <sl-icon name="exclamation-octagon"></sl-icon>
         <p>
-          For binaural room responses, monaural parameters and graphs are
+          ${msg(`For binaural room responses, monaural parameters and graphs are
           calculated on the arithmetic mean of the left and right channels. Keep
           in mind that the head-related transfer function might influence these
-          results.
+          results.`)}
         </p>
       </section>
     </base-card>`;
