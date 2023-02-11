@@ -34,9 +34,11 @@ export class P0Notice extends LitElement {
       <div class="p0-notice">
         <small>
           ${P0_VAR} = <b>${formatP0(this.p0)}</b>.
-          ${msg(html`An air temperature of
-            <b>${this.temperature}${UNIT_CELCIUS}</b> and humidity of
-            <b>${this.relativeHumidity}%</b> is assumed.`)}
+          ${msg('An air temperature of')}
+          <b>${this.temperature}${UNIT_CELCIUS}</b>
+          ${msg('and humidity of')}
+          <b>${this.relativeHumidity}%</b>
+          ${msg('is assumed.')}
           <a href="#" @click=${this.showAirDialog}>${msg('Change')}</a>
         </small>
       </div>

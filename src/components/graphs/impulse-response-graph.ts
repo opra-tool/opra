@@ -1,3 +1,4 @@
+import { msg } from '@lit/localize';
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { ResponseDetail } from '../../audio/response-detail';
@@ -24,7 +25,6 @@ export class ImpulseResponseGraph extends LitElement {
   render() {
     const config: GraphConfig = {
       datasets: this.squaredIRPoints.map((points, index) => ({
-        label: 'Squared IR',
         data: points,
         fill: false,
         borderColor: this.responseDetails[index].color,
@@ -37,14 +37,14 @@ export class ImpulseResponseGraph extends LitElement {
             beginAtZero: true,
             title: {
               display: true,
-              text: 'Energy relative to sample rate',
+              text: msg('Energy relative to sample rate'),
             },
           },
           x: {
             type: 'linear',
             title: {
               display: true,
-              text: 'Time [s]',
+              text: msg('Time (seconds)'),
             },
             max: MAX_X,
           },
@@ -62,7 +62,7 @@ export class ImpulseResponseGraph extends LitElement {
     };
 
     return html`
-      <base-card cardTitle="Squared Impulse Response">
+      <base-card cardTitle=${msg('Squared Impulse Response')}>
         <line-graph .config=${config} height="100"></line-graph>
       </base-card>
     `;

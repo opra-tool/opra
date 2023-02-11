@@ -235,11 +235,29 @@
   <source>Early IACC</source>
   <target>Frühe IACC</target>
 </trans-unit>
-<trans-unit id="hd25150929f0d303d">
-  <source>An air temperature of <x id="0" equiv-text="&lt;b&gt;${this.temperature}${UNIT_CELCIUS}&lt;/b&gt;"/> and
-            humidity of <x id="1" equiv-text="&lt;b&gt;${this.relativeHumidity}"/>%<x id="2" equiv-text="&lt;/b&gt;"/> is assumed.</source>
-  <target>Eine Lufttemperatur von <x id="0" equiv-text="&lt;b&gt;${this.temperature}${UNIT_CELCIUS}&lt;/b&gt;"/> und
-            eine Luftfeuchtigkeit von <x id="1" equiv-text="&lt;b&gt;${this.relativeHumidity}"/>%<x id="2" equiv-text="&lt;/b&gt;"/> wird angenommen.</target>
+<trans-unit id="saa6ef41d71e052e8">
+  <source>Energy relative to sample rate</source>
+  <target>Energie relativ zur Abtastrate</target>
+</trans-unit>
+<trans-unit id="s6f08f8dee433d4c8">
+  <source>Time (seconds)</source>
+  <target>Zeit (Sekunden)</target>
+</trans-unit>
+<trans-unit id="s5eebbc96bcf77fac">
+  <source>Squared Impulse Response</source>
+  <target>Quadrierte Impulsantwort</target>
+</trans-unit>
+<trans-unit id="s333e1c2ed29fa049">
+  <source>An air temperature of</source>
+  <target>EIne Lufttemperatur von</target>
+</trans-unit>
+<trans-unit id="s9f333e8ebc86b700">
+  <source>and humidity of</source>
+  <target>und eine Luftfeuchtigkeit von</target>
+</trans-unit>
+<trans-unit id="sb4f187b5af127533">
+  <source>is assumed.</source>
+  <target>wird angenommen.</target>
 </trans-unit>
 </body>
 </file>
