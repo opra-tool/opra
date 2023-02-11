@@ -1,7 +1,9 @@
+import { msg, localized } from '@lit/localize';
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { FileListEntry } from './file-list';
 
+@localized()
 @customElement('file-dropdown')
 export class FileDropdown extends LitElement {
   @property()
@@ -17,7 +19,8 @@ export class FileDropdown extends LitElement {
       <div class="wrapper">
         <sl-dropdown placement="top-end" stayOpenOnSelect distance="16">
           <sl-button slot="trigger" caret
-            >${enabledFilesCount} response(s) enabled</sl-button
+            >${enabledFilesCount}
+            ${msg('room impulse response(s) enabled')}</sl-button
           >
           <div class="content">
             <file-list .entries=${this.entries} hideOptions></file-list>

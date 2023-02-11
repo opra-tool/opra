@@ -139,6 +139,10 @@
   <source>Choose file(s)</source>
   <target>Datei(en) auswählen</target>
 </trans-unit>
+<trans-unit id="sad69d8cf37fd5551">
+  <source>room impulse response(s) enabled</source>
+  <target>aktivierte Raumimpulsantwort(en)</target>
+</trans-unit>
 </body>
 </file>
 </xliff>
