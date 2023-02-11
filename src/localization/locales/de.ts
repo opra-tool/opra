@@ -1,3 +1,5 @@
+/* eslint-disable lit/no-useless-template-literals */
+
 // Do not modify this file by hand!
 // Re-generate this file by running lit-localize
 
@@ -12,6 +14,7 @@ export const templates = {
     <code>normalize</code> Attribut der verwendeten <code>ConvolverNode</code>.
     Eine Änderung dieser Einstellung hat keinen Einfluss auf die aktuelle
     Wiedergabe.`,
+  h55173f1799401028: html`${0} und Luftparameter setzen`,
   s06bbce97e12ca9d9: `Stärkemaße`,
   s070f746328e45e39: `Raumimpulsantwortdateien hier ablegen`,
   s0710721d5743524b: `Nicht deaktivierbar, da dies die einzig aktive Impulsantwort ist`,
@@ -29,6 +32,7 @@ export const templates = {
   s476a61875467bf2d: `gemäß`,
   s516f1f455d0b7007: `Sichtbarkeit in Graphen umschalten`,
   s5787e20cab57b383: `Unbekannter Fehler`,
+  s58a862deb4175e28: `Relative Luftfeuchtigkeit in Prozent`,
   s6bc84d43b3db4bd0: `Höhenverhältnis`,
   s6f0ae1a900147d95: `Empfundene Klarheit des Klangs, gemäß`,
   s7d54db2b110e7452: `Als M/S Impulsantwort behandeln`,
@@ -37,6 +41,7 @@ export const templates = {
   s88ad31dce26701b3: `Schwerpunktzeit`,
   s8f4fbba7efa3d5d3: `Empfundene Klarheit des Klangs, gemäß Soulodre und Bradley (1995)`,
   s9224ed62985fbd03: `Kein Effekt`,
+  s9ed630bbd4e1a4d6: `Die Werte werden im Browser für deinen nächsten Besuch gespeichert.`,
   sa5be1ba4649735f8: `Einzahlwerte`,
   sad69d8cf37fd5551: `aktivierte Raumimpulsantwort(en)`,
   sadf9ac04abb2c03e: `Technische Details`,
@@ -47,6 +52,8 @@ export const templates = {
   sd2ffce103eac0816: `Früher seitlicher Energieanteil`,
   sd3eac79f739323df: `Klarheitsmaß`,
   sd69fbc00e11ac634: `Subjektiver Schallpegel, gemäß`,
+  se40908c6bd9acc56: str`Lufttemperatur in ${0}`,
+  sea5e5bff614a370f: `Werte setzen`,
   sea93d3c78c26da12: `Interaurale Kreuzkorrelation`,
   sec6d4ba328d97b24: `gemäß`,
   sefcf950b3cc4fc3b: `Sprache`,

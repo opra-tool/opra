@@ -2,6 +2,7 @@ import { LitElement, html, css } from 'lit';
 import SlInput from '@shoelace-style/shoelace/dist/components/input/input.js';
 import SlDialog from '@shoelace-style/shoelace/dist/components/dialog/dialog.js';
 import { customElement, property, query } from 'lit/decorators.js';
+import { localized, msg, str } from '@lit/localize';
 import { UNIT_CELCIUS } from '../units';
 import { P0_VAR, formatP0 } from '../presentation/p0-format';
 
@@ -28,6 +29,7 @@ const MAX_TEMPERATURE = 50;
 const MIN_HUMIDITY = 10;
 const MAX_HUMIDITY = 100;
 
+@localized()
 @customElement('p0-dialog')
 export class P0Dialog extends LitElement {
   @property({ type: Number })
@@ -54,7 +56,7 @@ export class P0Dialog extends LitElement {
   protected render() {
     return html`
       <sl-dialog ?open=${false} class="dialog">
-        <span slot="label">Set ${P0_VAR} and air parameters</span>
+        <span slot="label">${msg(html`Set ${P0_VAR} and air parameters`)}</span>
         <section>
           <form @submit=${this.onSubmit}>
             <sl-input
@@ -69,7 +71,7 @@ export class P0Dialog extends LitElement {
             </sl-input>
 
             <sl-input
-              label=${`Air Temperature in ${UNIT_CELCIUS}`}
+              label=${msg(str`Air Temperature in ${UNIT_CELCIUS}`)}
               type="number"
               min=${MIN_TEMPERATURE}
               max=${MAX_TEMPERATURE}
@@ -79,7 +81,7 @@ export class P0Dialog extends LitElement {
             ></sl-input>
 
             <sl-input
-              label="Relative humidity in percent"
+              label=${msg('Relative humidity in percent')}
               type="number"
               min=${MIN_HUMIDITY}
               max=${MAX_HUMIDITY}
@@ -88,11 +90,15 @@ export class P0Dialog extends LitElement {
               class="humidity-input"
             ></sl-input>
 
-            <sl-button type="submit">Update</sl-button>
+            <sl-button type="submit">${msg('Set values')}</sl-button>
           </form>
         </section>
         <section class="persistence-notice">
-          <small>Values are stored for your next visit.</small>
+          <small
+            >${msg(
+              'Values are stored in the browser for your next visit.'
+            )}</small
+          >
         </section>
       </sl-dialog>
     `;

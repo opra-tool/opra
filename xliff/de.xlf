@@ -179,6 +179,26 @@
   <source>Lateral Sound Level</source>
   <target>Seitlicher Energieanteil</target>
 </trans-unit>
+<trans-unit id="se40908c6bd9acc56">
+  <source>Air Temperature in <x id="0" equiv-text="${UNIT_CELCIUS}"/></source>
+  <target>Lufttemperatur in <x id="0" equiv-text="${UNIT_CELCIUS}"/></target>
+</trans-unit>
+<trans-unit id="s58a862deb4175e28">
+  <source>Relative humidity in percent</source>
+  <target>Relative Luftfeuchtigkeit in Prozent</target>
+</trans-unit>
+<trans-unit id="sea5e5bff614a370f">
+  <source>Set values</source>
+  <target>Werte setzen</target>
+</trans-unit>
+<trans-unit id="s9ed630bbd4e1a4d6">
+  <source>Values are stored in the browser for your next visit.</source>
+  <target>Die Werte werden im Browser für deinen nächsten Besuch gespeichert.</target>
+</trans-unit>
+<trans-unit id="h55173f1799401028">
+  <source>Set <x id="0" equiv-text="${P0_VAR}"/> and air parameters</source>
+  <target><x id="0" equiv-text="${P0_VAR}"/> und Luftparameter setzen</target>
+</trans-unit>
 </body>
 </file>
 </xliff>
