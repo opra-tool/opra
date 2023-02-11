@@ -1,9 +1,11 @@
+import { msg, localized } from '@lit/localize';
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { ResponseDetail } from '../../audio/response-detail';
 
 type BandValues = number[];
 
+@localized()
 @customElement('iacc-graph')
 export class IACCGraph extends LitElement {
   @property({ type: Array })
@@ -25,7 +27,7 @@ export class IACCGraph extends LitElement {
       },
       {
         key: 'eiacc',
-        label: 'Early IACC',
+        label: msg('Early IACC'),
         datasets: this.eiacc.map((values, index) => ({
           color: this.responseDetails[index].color,
           values,
@@ -34,7 +36,7 @@ export class IACCGraph extends LitElement {
     ];
 
     return html`
-      <base-card cardTitle="Interaural Cross Correlation">
+      <base-card cardTitle=${msg('Interaural Cross Correlation')}>
         <octave-bands-graph .params=${params}></octave-bands-graph>
       </base-card>
     `;
