@@ -98,6 +98,26 @@
 <trans-unit id="s2a2957356ab1c7fe">
   <source>Level-Adjusted</source>
 </trans-unit>
+<trans-unit id="s070f746328e45e39">
+  <source>Drop room response files here</source>
+  <target>Raumimpulsantwortdateien hier ablegen</target>
+</trans-unit>
+<trans-unit id="s32cd679fcf36b635">
+  <source>Maximum file count (<x id="0" equiv-text="${MAX_FILE_COUNT}"/>) reached. Skipping <x id="1" equiv-text="${files.length - MAX_FILE_COUNT}"/> files.</source>
+  <target>Maximale Anzahl von (<x id="0" equiv-text="${MAX_FILE_COUNT}"/>) Dateien erreicht. <x id="1" equiv-text="${files.length - MAX_FILE_COUNT}"/> Dateien ignoriert.</target>
+</trans-unit>
+<trans-unit id="s828755644aff07e4">
+  <source>Successfully set</source>
+  <target>Erfolgreiche Zuweisung von</target>
+</trans-unit>
+<trans-unit id="s5787e20cab57b383">
+  <source>Unknown error</source>
+  <target>Unbekannter Fehler</target>
+</trans-unit>
+<trans-unit id="s3df9c7b795b7e6c5">
+  <source>ignored</source>
+  <target>ignoriert</target>
+</trans-unit>
 </body>
 </file>
 </xliff>

@@ -5,6 +5,7 @@ import { ResponseDetail } from '../audio/response-detail';
 
 export type Parameter = {
   name: string | TemplateResult;
+  badge?: string;
   description?: string;
   unit?: string;
   responseValues: (number | null)[];
@@ -69,6 +70,7 @@ export class ParametersTable extends LitElement {
 
   private static renderParameter({
     name,
+    badge,
     description,
     unit,
     responseValues: coloredValues,
@@ -81,6 +83,9 @@ export class ParametersTable extends LitElement {
       <tr class=${classes}>
         <td>
           <span>${name}</span>
+          ${badge
+            ? html`<sl-badge variant="neutral" pill>${badge}</sl-badge>`
+            : null}
           ${description
             ? html`
                 <br />

@@ -1,6 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, query, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
+import { localized, msg, str } from '@lit/localize';
 import { UNIT_CELCIUS } from '../units';
 import { FileListToggleEvent, FileListRemoveEvent } from './file-list';
 import { FileListMarkEvent } from './file-list-entry-options';
@@ -66,6 +67,7 @@ const HUMIDITY_STORAGE_KEY = 'strengths-humidity';
 const DEFAULT_RELATIVE_HUMIDITY = 50;
 const DEFAULT_TEMPERATURE = 20;
 
+@localized()
 @customElement('audio-analyzer')
 export class AudioAnalyzer extends LitElement {
   @state()
@@ -132,7 +134,7 @@ export class AudioAnalyzer extends LitElement {
         <base-card class="controls-card">
           <section class="files">
             <file-drop
-              label="Drop room response files here"
+              label=${msg('Drop room response files here')}
               @change=${this.onFilesAdded}
             ></file-drop>
             ${this.responses.length > 0
@@ -456,9 +458,11 @@ export class AudioAnalyzer extends LitElement {
     for (let i = 0; i < files.length; i += 1) {
       if (this.responses.length >= MAX_FILE_COUNT) {
         toastWarning(
-          `Maximum file count (${MAX_FILE_COUNT}) reached. Skipping ${
-            files.length - MAX_FILE_COUNT
-          } files.`
+          msg(
+            str`Maximum file count (${MAX_FILE_COUNT}) reached. Skipping ${
+              files.length - MAX_FILE_COUNT
+            } files.`
+          )
         );
         break;
       }
@@ -473,11 +477,11 @@ export class AudioAnalyzer extends LitElement {
         // eslint-disable-next-line no-await-in-loop
         await persistResponse(response);
       } catch (err) {
-        let message = 'unknown error';
+        let message = msg('Unknown error');
         if (err instanceof Error) {
           message = err.message;
         }
-        toastWarning(`Skipping file ${files[i].name}: ${message}`);
+        toastWarning(`${files[i].name} ${msg('ignored')}: ${message}`);
       }
     }
 
@@ -507,7 +511,7 @@ export class AudioAnalyzer extends LitElement {
     this.p0 = p0;
 
     setTimeout(() => {
-      toastSuccess(html`Successfully set ${P0_VAR} = ${p0}`);
+      toastSuccess(html`${msg('Successfully set')} ${P0_VAR} = ${p0}`);
 
       this.recalculateStrengths();
 
@@ -525,8 +529,8 @@ export class AudioAnalyzer extends LitElement {
     setTimeout(() => {
       this.p0Dialog.hide();
       toastSuccess(
-        html`Successfully set ${P0_VAR} = ${p0}, ${temperature}${UNIT_CELCIUS},
-        ${relativeHumidity}%`
+        html`${msg('Successfully set')} ${P0_VAR} = ${p0},
+        ${temperature}${UNIT_CELCIUS}, ${relativeHumidity}%`
       );
 
       this.recalculateStrengths();

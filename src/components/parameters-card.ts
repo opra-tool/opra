@@ -39,7 +39,8 @@ export class ParametersCard extends LitElement {
   render() {
     const parameters: Parameter[] = [
       {
-        name: html`${msg('Reverb Time')} <i>T</i>`, // TODO: 500Hz - 1kHz
+        name: html`${msg('Reverb Time')} <i>T</i>`,
+        badge: '500Hz - 1kHz',
         description: `${msg('according to')} ISO 3382-1`,
         unit: UNIT_SECONDS,
         responseValues: this.reverbTimes,
@@ -55,7 +56,8 @@ export class ParametersCard extends LitElement {
         position: 2,
       },
       {
-        name: html`${msg('Clarity')} <i>C<sub>80</sub></i>`, // TODO: 500Hz - 1kHz
+        name: html`${msg('Clarity')} <i>C<sub>80</sub></i>`,
+        badge: '500Hz - 1kHz',
         description: `${msg(
           'Perceived clarity of sound, according to'
         )} ISO 3382-1`,
@@ -70,7 +72,8 @@ export class ParametersCard extends LitElement {
         position: 8,
       },
       {
-        name: msg('Interaural Cross Correlation'), // TODO: 125Hz - 4kHz
+        name: msg('Interaural Cross Correlation'),
+        badge: '125Hz - 4kHz',
         description: `${msg('according to')} ISO 3382-1`,
         responseValues: this.iaccs,
         position: 10,
