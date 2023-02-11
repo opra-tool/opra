@@ -259,6 +259,26 @@
   <source>is assumed.</source>
   <target>wird angenommen.</target>
 </trans-unit>
+<trans-unit id="s1093e7c731b35120">
+  <source>Frequency in</source>
+  <target>Frequenz in</target>
+</trans-unit>
+<trans-unit id="s04549174c3fe5774">
+  <source>Energy Decay Curve</source>
+  <target>Energie-Abklingkurve</target>
+</trans-unit>
+<trans-unit id="s2f687d204fbee187">
+  <source>Reverb Time (T20)</source>
+  <target>Nachhallzeit (T20)</target>
+</trans-unit>
+<trans-unit id="s4b3ab99331bfc6c7">
+  <source>Reverberation</source>
+  <target>Nachhall</target>
+</trans-unit>
+<trans-unit id="s1d239e20ebb93f76">
+  <source>Time in seconds</source>
+  <source>Zeit in Sekunden</source>
+</trans-unit>
 </body>
 </file>
 </xliff>

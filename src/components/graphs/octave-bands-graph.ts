@@ -1,3 +1,4 @@
+import { localized, msg } from '@lit/localize';
 import { ChartDataset } from 'chart.js';
 import { css, html, LitElement } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
@@ -24,6 +25,7 @@ const LINE_STYLES = [
   [2], // dotted
 ];
 
+@localized()
 @customElement('octave-bands-graph')
 export class OctaveBandsGraph extends LitElement {
   @property({ type: Array })
@@ -65,7 +67,7 @@ export class OctaveBandsGraph extends LitElement {
           x: {
             title: {
               display: true,
-              text: `Frequency [${UNIT_HERTZ}]`,
+              text: `${msg('Frequency in')} ${UNIT_HERTZ}`,
             },
           },
         },
