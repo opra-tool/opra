@@ -159,6 +159,14 @@
   <source>Treat as binaural impulse response</source>
   <target>Als binaurale Impulsantwort behandeln</target>
 </trans-unit>
+<trans-unit id="s516f1f455d0b7007">
+  <source>Toggle visibility in graphs</source>
+  <target>Sichtbarkeit in Graphen umschalten</target>
+</trans-unit>
+<trans-unit id="s0710721d5743524b">
+  <source>Cannot deactivate, as this is the only active impulse response</source>
+  <target>Nicht deaktivierbar, da dies die einzig aktive Impulsantwort ist</target>
+</trans-unit>
 </body>
 </file>
 </xliff>

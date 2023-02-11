@@ -14,6 +14,7 @@ export const templates = {
     Wiedergabe.`,
   s06bbce97e12ca9d9: `Stärkemaße`,
   s070f746328e45e39: `Raumimpulsantwortdateien hier ablegen`,
+  s0710721d5743524b: `Nicht deaktivierbar, da dies die einzig aktive Impulsantwort ist`,
   s14ed76d98e69694d: `gemäß der Definition von Soulodre und Bradley (1995)`,
   s251a76634b35932d: `Frühes Basslevel`,
   s3019bdb56b4ee311: `Als binaurale Impulsantwort behandeln`,
@@ -26,6 +27,7 @@ export const templates = {
           und aus dieser Mittelung dann monaurale Parameter berechnet.
           Die Head-Related Transfer Function kann Einfluss auf monaurale Parameter haben.`,
   s476a61875467bf2d: `gemäß`,
+  s516f1f455d0b7007: `Sichtbarkeit in Graphen umschalten`,
   s5787e20cab57b383: `Unbekannter Fehler`,
   s6bc84d43b3db4bd0: `Höhenverhältnis`,
   s6f0ae1a900147d95: `Empfundene Klarheit des Klangs, gemäß`,

@@ -1,3 +1,4 @@
+import { localized, msg } from '@lit/localize';
 import { SlSwitch } from '@shoelace-style/shoelace';
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
@@ -42,6 +43,7 @@ export class FileListRemoveEvent extends CustomEvent<{
   }
 }
 
+@localized()
 @customElement('file-list')
 export class FileList extends LitElement {
   @property({ type: Array })
@@ -70,8 +72,8 @@ export class FileList extends LitElement {
     const cannotToggle = isEnabled && enabledCount === 1;
 
     const toggleTitle = cannotToggle
-      ? 'Cannot toggle as it is the only one active'
-      : 'Toggle visibility in graphs';
+      ? msg('Cannot deactivate, as this is the only active impulse response')
+      : msg('Toggle visibility in graphs');
 
     return html`
       <div class="file-list-entry" title=${fileName}>
@@ -108,7 +110,7 @@ export class FileList extends LitElement {
       return html`
         <sl-icon-button
           name="trash"
-          title="Discard"
+          title=${msg('Discard')}
           @click=${() => this.dispatchEvent(new FileListRemoveEvent(id))}
         ></sl-icon-button>
       `;
