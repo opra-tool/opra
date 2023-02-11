@@ -127,6 +127,14 @@
           und aus dieser Mittelung dann monaurale Parameter berechnet.
           Die Head-Related Transfer Function kann Einfluss auf monaurale Parameter haben.</target>
 </trans-unit>
+<trans-unit id="sc6b8315cb7dc297d">
+  <source>An error occured</source>
+  <target>Ein Fehler ist aufgetreten</target>
+</trans-unit>
+<trans-unit id="sadf9ac04abb2c03e">
+  <source>Technical details</source>
+  <target>Technische Details</target>
+</trans-unit>
 </body>
 </file>
 </xliff>

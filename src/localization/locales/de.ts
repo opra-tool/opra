@@ -33,6 +33,8 @@ export const templates = {
   s8f4fbba7efa3d5d3: `Empfundene Klarheit des Klangs, gemäß Soulodre und Bradley (1995)`,
   s9224ed62985fbd03: `Kein Effekt`,
   sa5be1ba4649735f8: `Einzahlwerte`,
+  sadf9ac04abb2c03e: `Technische Details`,
+  sc6b8315cb7dc297d: `Ein Fehler ist aufgetreten`,
   scb830009d3d61b90: `Eigene Audiodateien hier ablegen`,
   sd3eac79f739323df: `Klarheitsmaß`,
   sd69fbc00e11ac634: `Subjektiver Schallpegel, gemäß`,

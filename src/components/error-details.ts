@@ -1,6 +1,8 @@
+import { localized, msg } from '@lit/localize';
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
+@localized()
 @customElement('error-details')
 export class ErrorDetails extends LitElement {
   @property({ type: Object })
@@ -14,8 +16,8 @@ export class ErrorDetails extends LitElement {
     return html`
       <div class="error">
         <sl-icon name="exclamation-octagon"></sl-icon>
-        <strong>An error occured</strong>
-        <sl-details summary="Technical details">
+        <strong>${msg('An error occured')}</strong>
+        <sl-details summary=${msg('Technical details')}>
           <code> ${this.error} </code>
         </sl-details>
       </div>
