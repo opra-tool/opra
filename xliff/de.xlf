@@ -38,10 +38,6 @@
   <source>Language</source>
   <target>Sprache</target>
 </trans-unit>
-<trans-unit id="s06bbce97e12ca9d9">
-  <source>Strengths</source>
-  <target>Stärkemaße</target>
-</trans-unit>
 <trans-unit id="s9224ed62985fbd03">
   <source>No effect</source>
   <target>Kein Effekt</target>
@@ -277,7 +273,15 @@
 </trans-unit>
 <trans-unit id="s1d239e20ebb93f76">
   <source>Time in seconds</source>
-  <source>Zeit in Sekunden</source>
+  <target>Zeit in Sekunden</target>
+</trans-unit>
+<trans-unit id="s29a26d2ca3ba8d74">
+  <source>Early Sound Strength</source>
+  <target>Fühes Stärkemaß</target>
+</trans-unit>
+<trans-unit id="s7918caa28313467f">
+  <source>Late Sound Strength</source>
+  <target>Spätes Stärkemaß</target>
 </trans-unit>
 </body>
 </file>

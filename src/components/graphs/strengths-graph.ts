@@ -1,9 +1,11 @@
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { localized, msg } from '@lit/localize';
 import { UNIT_DECIBELS } from '../../units';
 import { Strengths } from '../../strength';
 import { ResponseDetail } from '../../audio/response-detail';
 
+@localized()
 @customElement('strengths-graph')
 export class StrengthGraph extends LitElement {
   @property({ type: Array })
@@ -16,7 +18,7 @@ export class StrengthGraph extends LitElement {
     const params = [
       {
         key: 'strength',
-        label: 'Strength',
+        label: msg('Sound Strength'),
         datasets: this.strengths.map(({ strength }, index) => ({
           color: this.responseDetails[index].color,
           values: strength,
@@ -24,7 +26,7 @@ export class StrengthGraph extends LitElement {
       },
       {
         key: 'earlyStrength',
-        label: 'Early Strength',
+        label: msg('Early Sound Strength'),
         datasets: this.strengths.map(({ earlyStrength }, index) => ({
           color: this.responseDetails[index].color,
           values: earlyStrength,
@@ -32,7 +34,7 @@ export class StrengthGraph extends LitElement {
       },
       {
         key: 'lateStrength',
-        label: 'Late Strength',
+        label: msg('Late Sound Strength'),
         datasets: this.strengths.map(({ lateStrength }, index) => ({
           color: this.responseDetails[index].color,
           values: lateStrength,
