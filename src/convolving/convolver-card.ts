@@ -9,8 +9,8 @@ import {
 } from './convolver-playback-source';
 import { ConvolverPlayback, UPDATE_EVENT } from './convolver-playback';
 import { readAudioFile } from '../audio/audio-file-reading';
-import { ImpulseResponse } from '../audio/impulse-response';
-import { UNIT_SECONDS } from '../units';
+import { ImpulseResponse } from '../analyzing/impulse-response';
+import { UNIT_SECONDS } from '../presentation/units';
 import { FileDropChangeEvent } from '../components/file-drop';
 
 type BuiltinFile = {

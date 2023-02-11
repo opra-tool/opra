@@ -1,7 +1,7 @@
 import { msg } from '@lit/localize';
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { ResponseDetail } from '../../audio/response-detail';
+import { ImpulseResponse } from '../../analyzing/impulse-response';
 import { GraphConfig } from './line-graph';
 
 type Point = {
@@ -17,7 +17,7 @@ const DECIMATION_SAMPLES = 500;
 @customElement('impulse-response-graph')
 export class ImpulseResponseGraph extends LitElement {
   @property({ type: Array })
-  responseDetails: ResponseDetail[] = [];
+  impulseResponses: ImpulseResponse[] = [];
 
   @property({ type: Array })
   squaredIRPoints: Points[] = [];
@@ -27,7 +27,7 @@ export class ImpulseResponseGraph extends LitElement {
       datasets: this.squaredIRPoints.map((points, index) => ({
         data: points,
         fill: false,
-        borderColor: this.responseDetails[index].color,
+        borderColor: this.impulseResponses[index].color,
         borderWidth: 1,
         pointRadius: 0,
       })),

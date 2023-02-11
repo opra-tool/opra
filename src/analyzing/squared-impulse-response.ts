@@ -1,4 +1,4 @@
-import { BinauralSamples } from './audio/binaural-samples';
+import { BinauralSamples } from './binaural-samples';
 
 /**
  * Given an impulse response, calculates the squared impulse response.

@@ -1,7 +1,7 @@
 import { LitElement, html, css, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { ResponseDetail } from '../audio/response-detail';
+import { ImpulseResponse } from '../analyzing/impulse-response';
 
 export type Parameter = {
   name: string | TemplateResult;
@@ -15,7 +15,7 @@ export type Parameter = {
 @customElement('parameters-table')
 export class ParametersTable extends LitElement {
   @property({ type: Array })
-  responseDetails: ResponseDetail[] = [];
+  impulseResponses: ImpulseResponse[] = [];
 
   @property({ type: Array, attribute: false })
   parameters: Parameter[] = [];
@@ -55,7 +55,7 @@ export class ParametersTable extends LitElement {
   }
 
   private renderLegend(currentIndex: number) {
-    const { color, fileName } = this.responseDetails[currentIndex];
+    const { color, fileName } = this.impulseResponses[currentIndex];
 
     return html`
       <th title=${fileName}>

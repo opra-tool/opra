@@ -1,5 +1,5 @@
-import { BinauralSamples } from './audio/binaural-samples';
-import { bandpass } from './filtering/bandpass';
+import { BinauralSamples } from '../analyzing/binaural-samples';
+import { bandpass } from './bandpass';
 
 const ZERO_PADDING_LENGTH = 10000;
 const FREQUENCIES_IEC61672 = [

@@ -1,7 +1,7 @@
 import { msg, localized } from '@lit/localize';
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { ResponseDetail } from '../../audio/response-detail';
+import { ImpulseResponse } from '../../analyzing/impulse-response';
 
 type BandValues = number[];
 
@@ -9,7 +9,7 @@ type BandValues = number[];
 @customElement('iacc-graph')
 export class IACCGraph extends LitElement {
   @property({ type: Array })
-  responseDetails: ResponseDetail[] = [];
+  impulseResponses: ImpulseResponse[] = [];
 
   @property({ type: Array }) iacc: BandValues[] = [];
 
@@ -21,7 +21,7 @@ export class IACCGraph extends LitElement {
         key: 'iacc',
         label: 'IACC',
         datasets: this.iacc.map((values, index) => ({
-          color: this.responseDetails[index].color,
+          color: this.impulseResponses[index].color,
           values,
         })),
       },
@@ -29,7 +29,7 @@ export class IACCGraph extends LitElement {
         key: 'eiacc',
         label: msg('Early IACC'),
         datasets: this.eiacc.map((values, index) => ({
-          color: this.responseDetails[index].color,
+          color: this.impulseResponses[index].color,
           values,
         })),
       },

@@ -1,7 +1,7 @@
-import { getFrequencyValues } from './components/graphs/common';
 import { calculateSoundDampingInAir } from './dampening';
 import { calculateLpe10 } from './lpe10';
 import { MidSideResults } from './mid-side-processing';
+import { getFrequencyValues } from './octave-band-frequencies';
 import { calculateSoundStrength } from './strength';
 
 export type LateralLevel = {

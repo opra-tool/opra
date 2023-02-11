@@ -1,15 +1,15 @@
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { localized, msg } from '@lit/localize';
-import { UNIT_DECIBELS } from '../../units';
-import { ResponseDetail } from '../../audio/response-detail';
-import { LateralLevel } from '../../lateral-level';
+import { UNIT_DECIBELS } from '../../presentation/units';
+import { LateralLevel } from '../../analyzing/lateral-level';
+import { ImpulseResponse } from '../../analyzing/impulse-response';
 
 @localized()
 @customElement('lateral-level-graph')
 export class LateralLevelGraph extends LitElement {
   @property({ type: Array })
-  responseDetails: ResponseDetail[] = [];
+  impulseResponses: ImpulseResponse[] = [];
 
   @property({ type: Array })
   lateralLevels: LateralLevel[] = [];
@@ -21,7 +21,7 @@ export class LateralLevelGraph extends LitElement {
         label: msg('Early Lateral Sound Level'),
         datasets: this.lateralLevels.map(
           ({ earlyLateralLevelBands }, index) => ({
-            color: this.responseDetails[index].color,
+            color: this.impulseResponses[index].color,
             values: earlyLateralLevelBands,
           })
         ),
@@ -31,7 +31,7 @@ export class LateralLevelGraph extends LitElement {
         label: msg('Late Lateral Sound Level'),
         datasets: this.lateralLevels.map(
           ({ lateLateralLevelBands }, index) => ({
-            color: this.responseDetails[index].color,
+            color: this.impulseResponses[index].color,
             values: lateLateralLevelBands,
           })
         ),

@@ -2,10 +2,11 @@ import { localized, msg } from '@lit/localize';
 import { SlSwitch } from '@shoelace-style/shoelace';
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { ImpulseResponseType } from '../analyzing/impulse-response';
 import { formatResponseSummary } from '../presentation/impulse-response-format';
 
 export type FileListEntry = {
-  type: 'monaural' | 'binaural' | 'mid-side';
+  type: ImpulseResponseType;
   id: string;
   fileName: string;
   hasResults: boolean;
@@ -98,10 +99,7 @@ export class FileList extends LitElement {
     `;
   }
 
-  private renderFileOptions(
-    type: 'monaural' | 'binaural' | 'mid-side',
-    id: string
-  ) {
+  private renderFileOptions(type: ImpulseResponseType, id: string) {
     if (this.hideOptions) {
       return null;
     }

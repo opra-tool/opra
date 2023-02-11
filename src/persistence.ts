@@ -1,5 +1,5 @@
 import { openDB, IDBPDatabase } from 'idb';
-import { ImpulseResponse } from './audio/impulse-response';
+import { ImpulseResponse } from './analyzing/impulse-response';
 
 const RESPONSES_STORE = 'saved-response';
 

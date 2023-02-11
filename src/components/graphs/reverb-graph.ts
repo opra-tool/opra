@@ -1,7 +1,7 @@
 import { localized, msg } from '@lit/localize';
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { ResponseDetail } from '../../audio/response-detail';
+import { ImpulseResponse } from '../../analyzing/impulse-response';
 
 type BandValues = number[];
 
@@ -9,7 +9,7 @@ type BandValues = number[];
 @customElement('reverb-graph')
 export class ReverbGraph extends LitElement {
   @property({ type: Array })
-  responseDetails: ResponseDetail[] = [];
+  impulseResponses: ImpulseResponse[] = [];
 
   @property({ type: Array })
   edt: BandValues[] = [];
@@ -23,7 +23,7 @@ export class ReverbGraph extends LitElement {
         key: 'edt',
         label: msg('Energy Decay Curve'),
         datasets: this.edt.map((values, index) => ({
-          color: this.responseDetails[index].color,
+          color: this.impulseResponses[index].color,
           values,
         })),
       },
@@ -31,7 +31,7 @@ export class ReverbGraph extends LitElement {
         key: 'reverbTime',
         label: msg('Reverb Time (T20)'),
         datasets: this.reverbTime.map((values, index) => ({
-          color: this.responseDetails[index].color,
+          color: this.impulseResponses[index].color,
           values,
         })),
       },

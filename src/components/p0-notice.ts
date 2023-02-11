@@ -2,7 +2,7 @@ import { localized, msg, str } from '@lit/localize';
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { P0_VAR, formatP0 } from '../presentation/p0-format';
-import { UNIT_CELCIUS } from '../units';
+import { UNIT_CELCIUS } from '../presentation/units';
 
 @localized()
 @customElement('p0-notice')

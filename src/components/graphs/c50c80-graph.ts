@@ -1,14 +1,14 @@
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { ResponseDetail } from '../../audio/response-detail';
-import { UNIT_DECIBELS } from '../../units';
+import { ImpulseResponse } from '../../analyzing/impulse-response';
+import { UNIT_DECIBELS } from '../../presentation/units';
 
 type BandValues = number[];
 
 @customElement('c50c80-graph')
 export class C50C80Graph extends LitElement {
   @property({ type: Array })
-  responseDetails: ResponseDetail[] = [];
+  impulseResponses: ImpulseResponse[] = [];
 
   @property({ type: Array }) c50: BandValues[] = [];
 
@@ -20,7 +20,7 @@ export class C50C80Graph extends LitElement {
         key: 'c50',
         label: 'C50',
         datasets: this.c50.map((values, index) => ({
-          color: this.responseDetails[index].color,
+          color: this.impulseResponses[index].color,
           values,
         })),
       },
@@ -28,7 +28,7 @@ export class C50C80Graph extends LitElement {
         key: 'c80',
         label: 'C80',
         datasets: this.c80.map((values, index) => ({
-          color: this.responseDetails[index].color,
+          color: this.impulseResponses[index].color,
           values,
         })),
       },

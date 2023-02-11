@@ -1,9 +1,9 @@
 import { msg, localized } from '@lit/localize';
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { ImpulseResponse } from '../analyzing/impulse-response';
 import { isFreeOfNullValues } from '../arrays';
-import { ResponseDetail } from '../audio/response-detail';
-import { Strengths } from '../strength';
+import { Strengths } from '../analyzing/strength';
 
 @localized()
 @customElement('strengths-card')
@@ -12,7 +12,7 @@ export class StrengthsCard extends LitElement {
   p0: number | null = null;
 
   @property({ type: Array })
-  responseDetails: ResponseDetail[] = [];
+  impulseResponses: ImpulseResponse[] = [];
 
   @property({ type: Array })
   strengths: (Strengths | null)[] = [];
@@ -40,7 +40,7 @@ export class StrengthsCard extends LitElement {
 
     return html`
       <strengths-graph
-        .responseDetails=${this.responseDetails}
+        .impulseResponses=${this.impulseResponses}
         .strengths=${this.strengths}
       ></strengths-graph>
       <slot name="p0-notice"></slot>

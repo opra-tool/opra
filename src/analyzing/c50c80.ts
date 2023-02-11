@@ -1,5 +1,5 @@
-import { arraySum } from './math/arraySum';
-import { safeLog10 } from './math/safeLog10';
+import { arraySum } from '../math/arraySum';
+import { safeLog10 } from '../math/safeLog10';
 
 type EarlyLateFractions = {
   e50: Float32Array;

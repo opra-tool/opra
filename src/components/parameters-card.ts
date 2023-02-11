@@ -1,22 +1,22 @@
 import { msg, localized } from '@lit/localize';
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
+import { ImpulseResponse } from '../analyzing/impulse-response';
 import { isFreeOfNullValues, mapArrayParam } from '../arrays';
-import { ResponseDetail } from '../audio/response-detail';
-import { Strengths } from '../strength';
+import { Strengths } from '../analyzing/strength';
 import {
   UNIT_DECIBELS,
   UNIT_DECIBELS_A,
   UNIT_MILLISECONDS,
   UNIT_SECONDS,
-} from '../units';
+} from '../presentation/units';
 import { Parameter } from './parameters-table';
 
 @localized()
 @customElement('parameters-card')
 export class ParametersCard extends LitElement {
   @property({ type: Array })
-  responseDetails: ResponseDetail[] = [];
+  impulseResponses: ImpulseResponse[] = [];
 
   @property({ type: Array })
   centreTimes: number[] = [];
@@ -134,7 +134,7 @@ export class ParametersCard extends LitElement {
     return html`
       <base-card cardTitle=${msg('Single-Figure Parameters')}>
         <parameters-table
-          .responseDetails=${this.responseDetails}
+          .impulseResponses=${this.impulseResponses}
           .parameters=${parameters}
         ></parameters-table>
         <slot></slot>

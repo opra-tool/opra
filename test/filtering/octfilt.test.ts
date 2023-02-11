@@ -1,5 +1,5 @@
 import { expect } from '@esm-bundle/chai';
-import { octfilt } from '../src/octfilt';
+import { octfilt } from '../../src/filtering/octfilt';
 
 const SAMPLE_RATE = 44100;
 const DATA = [

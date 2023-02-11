@@ -1,5 +1,5 @@
 import { e80 } from './early-late-fractions';
-import { arraySum } from './math/arraySum';
+import { arraySum } from '../math/arraySum';
 
 /**
  * Calculates early lateral energy fraction as defined in ISO 3382-1.

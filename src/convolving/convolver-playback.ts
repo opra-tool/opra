@@ -1,4 +1,4 @@
-import { ImpulseResponse } from '../audio/impulse-response';
+import { ImpulseResponse } from '../analyzing/impulse-response';
 import {
   PlaybackSource,
   PlaybackSourceFactory,

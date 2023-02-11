@@ -2,18 +2,27 @@ import { LitElement, html, css } from 'lit';
 import { customElement, query, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { localized, msg, str } from '@lit/localize';
-import { UNIT_CELCIUS } from '../units';
+import { UNIT_CELCIUS } from '../presentation/units';
 import { FileListToggleEvent, FileListRemoveEvent } from './file-list';
 import { FileListMarkEvent } from './file-list-entry-options';
-import { ImpulseResponse } from '../audio/impulse-response';
-import { BinauralResults, processBinauralAudio } from '../binaural-processing';
-import { MonauralResults, processMonauralAudio } from '../monaural-processing';
-import { MidSideResults, processMidSideAudio } from '../mid-side-processing';
-import { binauralAudioFromBuffer } from '../audio/binaural-samples';
+import { ImpulseResponse } from '../analyzing/impulse-response';
+import {
+  BinauralResults,
+  processBinauralAudio,
+} from '../analyzing/binaural-processing';
+import {
+  MonauralResults,
+  processMonauralAudio,
+} from '../analyzing/monaural-processing';
+import {
+  MidSideResults,
+  processMidSideAudio,
+} from '../analyzing/mid-side-processing';
+import { binauralAudioFromBuffer } from '../analyzing/binaural-samples';
 import { FileDropChangeEvent } from './file-drop';
 import { readAudioFile } from '../audio/audio-file-reading';
 import { P0SettingChangeEvent } from './p0-setting';
-import { calculateStrengths, Strengths } from '../strength';
+import { calculateStrengths, Strengths } from '../analyzing/strength';
 import { P0Dialog, P0DialogChangeEvent } from './p0-dialog';
 import { mapArrayParam } from '../arrays';
 import { toastSuccess, toastWarning } from './toast';
@@ -29,8 +38,8 @@ import {
 import { meanDecibel } from '../math/decibels';
 import {
   calculateLateralLevel,
-  LateralLevel as LateralLevelResult,
-} from '../lateral-level';
+  LateralLevel,
+} from '../analyzing/lateral-level';
 
 const COLOR_WHITE = 'rgba(255, 255, 255, 0.75)';
 const COLOR_BLUE = 'rgba(153, 102, 255, 0.5)';
@@ -95,7 +104,7 @@ export class AudioAnalyzer extends LitElement {
   private strengthResults: Map<string, Strengths> = new Map();
 
   @state()
-  private lateralLevelResults: Map<string, LateralLevelResult> = new Map();
+  private lateralLevelResults: Map<string, LateralLevel> = new Map();
 
   @state()
   private error: Error | null = null;
@@ -245,12 +254,12 @@ export class AudioAnalyzer extends LitElement {
         ? html`<binaural-note-card></binaural-note-card>`
         : null}
       <impulse-response-graph
-        .responseDetails=${responses}
+        .impulseResponses=${responses}
         .squaredIRPoints=${squaredIRPoints}
       ></impulse-response-graph>
 
       <parameters-card
-        .responseDetails=${responses}
+        .impulseResponses=${responses}
         .centreTimes=${centreTimes}
         .bassRatios=${bassRatios}
         .c80s=${meanC80s}
@@ -267,20 +276,20 @@ export class AudioAnalyzer extends LitElement {
       </parameters-card>
 
       <reverb-graph
-        .responseDetails=${responses}
+        .impulseResponses=${responses}
         .edt=${edt}
         .reverbTime=${reverbTime}
       ></reverb-graph>
 
       <c50c80-graph
-        .responseDetails=${responses}
+        .impulseResponses=${responses}
         .c50=${c50}
         .c80=${c80}
       ></c50c80-graph>
 
       <strengths-card
         .p0=${this.p0}
-        .responseDetails=${responses}
+        .impulseResponses=${responses}
         .strengths=${strengths}
       >
         <p0-notice
@@ -301,7 +310,7 @@ export class AudioAnalyzer extends LitElement {
         ? html`
             <lateral-level-card
               .p0=${this.p0}
-              .responseDetails=${midSideResponses}
+              .impulseResponses=${midSideResponses}
               .lateralLevels=${lateralLevels}
             >
               <p0-notice
@@ -318,14 +327,14 @@ export class AudioAnalyzer extends LitElement {
               ></p0-setting>
             </lateral-level-card>
             <early-lateral-fraction-graph
-              .responseDetails=${midSideResponses}
+              .impulseResponses=${midSideResponses}
               .earlyLateralEnergyFraction=${earlyLateralEnergyFractionBands}
             ></early-lateral-fraction-graph>
           `
         : null}
       ${hasBinauralResults
         ? html`<iacc-graph
-            .responseDetails=${binauralResponses}
+            .impulseResponses=${binauralResponses}
             .iacc=${iaccBands}
             .eiacc=${eiaccBands}
           ></iacc-graph>`

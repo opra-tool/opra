@@ -2,8 +2,8 @@ import { localized, msg } from '@lit/localize';
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { isFreeOfNullValues } from '../arrays';
-import { ResponseDetail } from '../audio/response-detail';
-import { LateralLevel } from '../lateral-level';
+import { LateralLevel } from '../analyzing/lateral-level';
+import { ImpulseResponse } from '../analyzing/impulse-response';
 
 @localized()
 @customElement('lateral-level-card')
@@ -12,7 +12,7 @@ export class LateralLevelCard extends LitElement {
   p0: number | null = null;
 
   @property({ type: Array })
-  responseDetails: ResponseDetail[] = [];
+  impulseResponses: ImpulseResponse[] = [];
 
   @property({ type: Array })
   lateralLevels: (LateralLevel | null)[] = [];
@@ -43,7 +43,7 @@ export class LateralLevelCard extends LitElement {
 
     return html`
       <lateral-level-graph
-        .responseDetails=${this.responseDetails}
+        .impulseResponses=${this.impulseResponses}
         .lateralLevels=${this.lateralLevels}
       ></lateral-level-graph>
       <slot name="p0-notice"></slot>

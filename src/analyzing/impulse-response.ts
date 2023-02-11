@@ -1,5 +1,7 @@
+export type ImpulseResponseType = 'monaural' | 'binaural' | 'mid-side';
+
 export type ImpulseResponse = {
-  type: 'monaural' | 'binaural' | 'mid-side';
+  type: ImpulseResponseType;
   id: string;
   color: string;
   fileName: string;

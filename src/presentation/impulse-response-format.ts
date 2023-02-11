@@ -1,7 +1,8 @@
-import { UNIT_HERTZ, UNIT_SECONDS } from '../units';
+import { ImpulseResponseType } from '../analyzing/impulse-response';
+import { UNIT_HERTZ, UNIT_SECONDS } from './units';
 
 type Input = {
-  type: 'monaural' | 'binaural' | 'mid-side';
+  type: ImpulseResponseType;
   duration: number;
   sampleRate: number;
 };

@@ -3,7 +3,7 @@ import SlInput from '@shoelace-style/shoelace/dist/components/input/input.js';
 import SlDialog from '@shoelace-style/shoelace/dist/components/dialog/dialog.js';
 import { customElement, property, query } from 'lit/decorators.js';
 import { localized, msg, str } from '@lit/localize';
-import { UNIT_CELCIUS } from '../units';
+import { UNIT_CELCIUS } from '../presentation/units';
 import { P0_VAR, formatP0 } from '../presentation/p0-format';
 
 export class P0DialogChangeEvent extends CustomEvent<{

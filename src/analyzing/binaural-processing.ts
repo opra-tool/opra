@@ -1,9 +1,9 @@
-import { BinauralSamples } from './audio/binaural-samples';
+import { BinauralSamples } from './binaural-samples';
 import { e80 } from './early-late-fractions';
 import { calculateIacc } from './iacc';
 import { calculateMeanSquaredIR } from './squared-impulse-response';
 import { MonauralResults, processChannel } from './monaural-processing';
-import { octfiltBinaural } from './octfilt';
+import { octfiltBinaural } from '../filtering/octfilt';
 import { correctStarttimeBinaural } from './starttime';
 
 export type BinauralResults = MonauralResults & {

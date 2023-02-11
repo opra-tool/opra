@@ -1,9 +1,9 @@
 import { expect } from '@esm-bundle/chai';
-import { BinauralSamples } from '../src/audio/binaural-samples';
+import { BinauralSamples } from '../../src/analyzing/binaural-samples';
 import {
   correctStarttimeBinaural,
   correctStarttimeMonaural,
-} from '../src/starttime';
+} from '../../src/analyzing/starttime';
 
 it('trims samples to correct starttime', () => {
   const samples = new Float32Array([

@@ -1,8 +1,8 @@
-import { getFrequencyValues } from './components/graphs/common';
+import { getFrequencyValues } from './octave-band-frequencies';
 import { calculateSoundDampingInAir } from './dampening';
 import { calculateLpe10 } from './lpe10';
-import { addDecibel, meanDecibel } from './math/decibels';
-import { safeLog10 } from './math/safeLog10';
+import { addDecibel, meanDecibel } from '../math/decibels';
+import { safeLog10 } from '../math/safeLog10';
 
 export type Strengths = {
   strength: number[];

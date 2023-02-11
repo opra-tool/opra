@@ -1,5 +1,5 @@
 import { expect } from '@esm-bundle/chai';
-import { calculateSoundDampingInAir } from '../src/dampening';
+import { calculateSoundDampingInAir } from '../../src/analyzing/dampening';
 
 it('fails for frequencies < 50Hz and > 10kHz', () => {
   const anyTemperature = 1;

@@ -2,7 +2,7 @@ import { localized, msg } from '@lit/localize';
 import { ChartDataset } from 'chart.js';
 import { css, html, LitElement } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { UNIT_HERTZ } from '../../units';
+import { UNIT_HERTZ } from '../../presentation/units';
 import { getFrequencyLabels } from './common';
 import { GraphConfig } from './line-graph';
 

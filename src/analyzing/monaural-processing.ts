@@ -2,8 +2,8 @@ import { c50c80 } from './c50c80';
 import { calculateCentreTime } from './centre-time';
 import { earlyLateFractions } from './early-late-fractions';
 import { calculateSquaredIR } from './squared-impulse-response';
-import { arraySum } from './math/arraySum';
-import { octfilt } from './octfilt';
+import { arraySum } from '../math/arraySum';
+import { octfilt } from '../filtering/octfilt';
 import { calculateReverberation } from './reverberation';
 import { correctStarttimeMonaural } from './starttime';
 
