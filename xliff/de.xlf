@@ -94,10 +94,6 @@
 <trans-unit id="s2a2957356ab1c7fe">
   <source>Level-Adjusted</source>
 </trans-unit>
-<trans-unit id="s070f746328e45e39">
-  <source>Drop room response files here</source>
-  <target>Raumimpulsantwortdateien hier ablegen</target>
-</trans-unit>
 <trans-unit id="s32cd679fcf36b635">
   <source>Maximum file count (<x id="0" equiv-text="${MAX_FILE_COUNT}"/>) reached. Skipping <x id="1" equiv-text="${files.length - MAX_FILE_COUNT}"/> files.</source>
   <target>Maximale Anzahl von (<x id="0" equiv-text="${MAX_FILE_COUNT}"/>) Dateien erreicht. <x id="1" equiv-text="${files.length - MAX_FILE_COUNT}"/> Dateien ignoriert.</target>
@@ -113,15 +109,6 @@
 <trans-unit id="s3df9c7b795b7e6c5">
   <source>ignored</source>
   <target>ignoriert</target>
-</trans-unit>
-<trans-unit id="s45c06ffcf3bde0d1">
-  <source>For binaural room responses, monaural parameters and graphs are
-          calculated on the arithmetic mean of the left and right channels. Keep
-          in mind that the head-related transfer function might influence these
-          results.</source>
-  <target>Bei binauralen Raumimpulsantworten wird eine Mittelung beider Kanäle vorgenommen
-          und aus dieser Mittelung dann monaurale Parameter berechnet.
-          Die Head-Related Transfer Function kann Einfluss auf monaurale Parameter haben.</target>
 </trans-unit>
 <trans-unit id="sc6b8315cb7dc297d">
   <source>An error occured</source>
@@ -283,9 +270,22 @@
   <source>Late Sound Strength</source>
   <target>Spätes Stärkemaß</target>
 </trans-unit>
-<trans-unit id="sb495137dc3417123">
-  <source>Playback audio based on a room response</source>
+<trans-unit id="sd80e4b4178b216ca">
+  <source>Drop room impulse response files here</source>
+  <target>Raumimpulsantwortdateien hier ablegen</target>
+</trans-unit>
+<trans-unit id="s77254dde396a3476">
+  <source>Playback audio based on a room impulse response</source>
   <target>Faltung von Audiodateien anhand von Raumimpulsantworten</target>
+</trans-unit>
+<trans-unit id="sd6b609963453c5c6">
+  <source>For binaural room impulse responses, monaural parameters and graphs are
+          calculated on the arithmetic mean of the left and right channels. Keep
+          in mind that the head-related transfer function might influence these
+          results.</source>
+  <target>Bei binauralen Raumimpulsantworten wird eine Mittelung beider Kanäle vorgenommen
+          und aus dieser Mittelung dann monaurale Parameter berechnet.
+          Die Head-Related Transfer Function kann Einfluss auf monaurale Parameter haben.</target>
 </trans-unit>
 </body>
 </file>

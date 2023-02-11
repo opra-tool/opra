@@ -1,9 +1,9 @@
 import { openDB, IDBPDatabase } from 'idb';
-import { RoomResponse } from './audio/room-response';
+import { ImpulseResponse } from './audio/impulse-response';
 
 const RESPONSES_STORE = 'saved-response';
 
-type Record = Omit<RoomResponse, 'buffer'> & {
+type Record = Omit<ImpulseResponse, 'buffer'> & {
   samples: Float32Array[];
 };
 
@@ -23,7 +23,9 @@ async function getDB(): Promise<IDBPDatabase<DBSchema>> {
   return db;
 }
 
-export async function persistResponse(response: RoomResponse): Promise<void> {
+export async function persistResponse(
+  response: ImpulseResponse
+): Promise<void> {
   const record = responseToRecord(response);
 
   const db = await getDB();
@@ -35,7 +37,7 @@ export async function removeResponse(id: string): Promise<void> {
   await db.delete(RESPONSES_STORE, id);
 }
 
-export async function getResponses(): Promise<RoomResponse[]> {
+export async function getResponses(): Promise<ImpulseResponse[]> {
   const db = await getDB();
 
   const records = await db.getAll(RESPONSES_STORE);
@@ -52,7 +54,7 @@ export async function getResponses(): Promise<RoomResponse[]> {
   return responses;
 }
 
-function responseToRecord({ buffer, ...rest }: RoomResponse): Record {
+function responseToRecord({ buffer, ...rest }: ImpulseResponse): Record {
   const samples: Float32Array[] = [];
 
   for (let i = 0; i < buffer.numberOfChannels; i += 1) {
@@ -70,7 +72,7 @@ function recordToResponse({
   samples,
   sampleRate,
   ...rest
-}: Record): RoomResponse {
+}: Record): ImpulseResponse {
   const numberOfChannels = samples.length;
 
   const buffer = new AudioBuffer({

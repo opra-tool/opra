@@ -2,7 +2,7 @@ import { localized, msg } from '@lit/localize';
 import { SlSwitch } from '@shoelace-style/shoelace';
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { formatResponseSummary } from '../presentation/room-response-format';
+import { formatResponseSummary } from '../presentation/impulse-response-format';
 
 export type FileListEntry = {
   type: 'monaural' | 'binaural' | 'mid-side';

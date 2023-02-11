@@ -1,4 +1,4 @@
-import { RoomResponse } from '../audio/room-response';
+import { ImpulseResponse } from '../audio/impulse-response';
 import {
   PlaybackSource,
   PlaybackSourceFactory,
@@ -8,7 +8,7 @@ type Config = {
   id: string;
   normalize: boolean;
   startTime: number;
-  response: RoomResponse | null;
+  response: ImpulseResponse | null;
 };
 
 export const UPDATE_EVENT = 'update';

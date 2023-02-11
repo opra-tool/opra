@@ -1,3 +1,3 @@
-import { RoomResponse } from './room-response';
+import { ImpulseResponse } from './impulse-response';
 
-export type ResponseDetail = Pick<RoomResponse, 'fileName' | 'color'>;
+export type ResponseDetail = Pick<ImpulseResponse, 'fileName' | 'color'>;

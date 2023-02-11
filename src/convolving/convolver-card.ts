@@ -9,7 +9,7 @@ import {
 } from './convolver-playback-source';
 import { ConvolverPlayback, UPDATE_EVENT } from './convolver-playback';
 import { readAudioFile } from '../audio/audio-file-reading';
-import { RoomResponse } from '../audio/room-response';
+import { ImpulseResponse } from '../audio/impulse-response';
 import { UNIT_SECONDS } from '../units';
 import { FileDropChangeEvent } from '../components/file-drop';
 
@@ -36,7 +36,7 @@ function genId({ type, fileName }: CustomFile | BuiltinFile): string {
 @customElement('convolver-card')
 export class ConvolverCard extends LitElement {
   @property({ type: Array })
-  responses: RoomResponse[] = [];
+  responses: ImpulseResponse[] = [];
 
   // not marked as @state() as updates are manually requested
   private playback: ConvolverPlayback | null = null;
@@ -60,7 +60,7 @@ export class ConvolverCard extends LitElement {
     },
   ];
 
-  @query('#room-response-select', true)
+  @query('#impulse-response-select', true)
   private selectEl!: SlSelect;
 
   @query('#normalize-checkbox', true)
@@ -81,10 +81,12 @@ export class ConvolverCard extends LitElement {
     }
 
     return html`
-      <base-card cardTitle=${msg('Playback audio based on a room response')}>
+      <base-card
+        cardTitle=${msg('Playback audio based on a room impulse response')}
+      >
         <section>
           <sl-select
-            id="room-response-select"
+            id="impulse-response-select"
             value=${NO_EFFECT}
             @sl-change=${this.onResponseSelected}
           >
@@ -269,7 +271,7 @@ export class ConvolverCard extends LitElement {
     return value instanceof Array ? value[0] : value;
   }
 
-  private getCurrentResponse(): RoomResponse | null {
+  private getCurrentResponse(): ImpulseResponse | null {
     const id = this.getSelectedResponseId();
 
     if (id === NO_EFFECT) {

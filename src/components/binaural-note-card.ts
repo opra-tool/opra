@@ -10,7 +10,7 @@ export class BinauralNoteCard extends LitElement {
       <section>
         <sl-icon name="exclamation-octagon"></sl-icon>
         <p>
-          ${msg(`For binaural room responses, monaural parameters and graphs are
+          ${msg(`For binaural room impulse responses, monaural parameters and graphs are
           calculated on the arithmetic mean of the left and right channels. Keep
           in mind that the head-related transfer function might influence these
           results.`)}

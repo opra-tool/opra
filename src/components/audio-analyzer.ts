@@ -5,7 +5,7 @@ import { localized, msg, str } from '@lit/localize';
 import { UNIT_CELCIUS } from '../units';
 import { FileListToggleEvent, FileListRemoveEvent } from './file-list';
 import { FileListMarkEvent } from './file-list-entry-options';
-import { RoomResponse } from '../audio/room-response';
+import { ImpulseResponse } from '../audio/impulse-response';
 import { BinauralResults, processBinauralAudio } from '../binaural-processing';
 import { MonauralResults, processMonauralAudio } from '../monaural-processing';
 import { MidSideResults, processMidSideAudio } from '../mid-side-processing';
@@ -86,7 +86,7 @@ export class AudioAnalyzer extends LitElement {
   );
 
   @state()
-  private responses: RoomResponse[] = [];
+  private responses: ImpulseResponse[] = [];
 
   @state()
   private results: Map<string, Results> = new Map();
@@ -134,7 +134,7 @@ export class AudioAnalyzer extends LitElement {
         <base-card class="controls-card">
           <section class="files">
             <file-drop
-              label=${msg('Drop room response files here')}
+              label=${msg('Drop room impulse response files here')}
               @change=${this.onFilesAdded}
             ></file-drop>
             ${this.responses.length > 0
@@ -353,7 +353,7 @@ export class AudioAnalyzer extends LitElement {
     type,
     sampleRate,
     buffer,
-  }: RoomResponse) {
+  }: ImpulseResponse) {
     try {
       let results;
       if (type === 'monaural') {
@@ -488,7 +488,7 @@ export class AudioAnalyzer extends LitElement {
     this.requestUpdate();
   }
 
-  private async parseFile(file: File): Promise<RoomResponse> {
+  private async parseFile(file: File): Promise<ImpulseResponse> {
     const buffer = await readAudioFile(file);
 
     if (buffer.numberOfChannels < 1 || buffer.numberOfChannels > 2) {

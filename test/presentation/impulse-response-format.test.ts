@@ -1,5 +1,5 @@
 import { expect } from '@esm-bundle/chai';
-import { formatResponseSummary } from '../../src/presentation/room-response-format';
+import { formatResponseSummary } from '../../src/presentation/impulse-response-format';
 
 it('formats monaural file details', () => {
   expect(

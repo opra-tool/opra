@@ -1,4 +1,4 @@
-export type RoomResponse = {
+export type ImpulseResponse = {
   type: 'monaural' | 'binaural' | 'mid-side';
   id: string;
   color: string;
