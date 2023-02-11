@@ -1,0 +1,5 @@
+{
+  "rules": {
+    "lit/no-useless-template-literals": "off"
+  }
+}

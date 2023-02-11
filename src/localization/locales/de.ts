@@ -1,5 +1,3 @@
-/* eslint-disable lit/no-useless-template-literals */
-
 // Do not modify this file by hand!
 // Re-generate this file by running lit-localize
 
