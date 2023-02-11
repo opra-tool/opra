@@ -81,7 +81,7 @@ export class ConvolverCard extends LitElement {
     }
 
     return html`
-      <base-card cardTitle="Playback audio based on a room response">
+      <base-card cardTitle=${msg('Playback audio based on a room response')}>
         <section>
           <sl-select
             id="room-response-select"

@@ -283,6 +283,10 @@
   <source>Late Sound Strength</source>
   <target>Spätes Stärkemaß</target>
 </trans-unit>
+<trans-unit id="sb495137dc3417123">
+  <source>Playback audio based on a room response</source>
+  <target>Faltung von Audiodateien anhand von Raumimpulsantworten</target>
+</trans-unit>
 </body>
 </file>
 </xliff>
