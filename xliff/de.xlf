@@ -199,6 +199,32 @@
   <source>Set <x id="0" equiv-text="${P0_VAR}"/> and air parameters</source>
   <target><x id="0" equiv-text="${P0_VAR}"/> und Luftparameter setzen</target>
 </trans-unit>
+<trans-unit id="h18e73ffa52a6ab3c">
+  <source>Further values require <x id="0" equiv-text="${P0_VAR}"/> to be set.</source>
+  <target>Um weitere Werte zu berechnen, wird <x id="0" equiv-text="${P0_VAR}"/> benötigt.</target>
+</trans-unit>
+<trans-unit id="hade4a196e0bbae85">
+  <source>Set <x id="0" equiv-text="${P0_VAR}"/></source>
+  <target><x id="0" equiv-text="${P0_VAR}"/> setzen</target>
+</trans-unit>
+<trans-unit id="s2f64461723d3df5d">
+  <source>Change</source>
+  <target>Ändern</target>
+</trans-unit>
+<trans-unit id="h59277fa7920c0581">
+  <source><x id="0" equiv-text="${P0_VAR}"/> is required for sound strength calculations.</source>
+  <target><x id="0" equiv-text="${P0_VAR}"/> wird für Stärkemaß-Berechnungen benötigt.</target>
+</trans-unit>
+<trans-unit id="sd86237254884db99">
+  <source>e.g. 0.015 or 1e-6</source>
+  <target>z.B. 0.015 oder 1e-6</target>
+</trans-unit>
+<trans-unit id="sd25150929f0d303d">
+  <source>An air temperature of &lt;b&gt;<x id="0" equiv-text="${this.temperature}${UNIT_CELCIUS}"/>&lt;/b&gt; and
+            humidity of &lt;b&gt;<x id="1" equiv-text="${this.relativeHumidity}"/>%&lt;/b&gt; is assumed.</source>
+  <target>Eine Lufttemperatur von &lt;b&gt;<x id="0" equiv-text="${this.temperature}${UNIT_CELCIUS}"/>&lt;/b&gt; und
+            eine Luftfeuchtigkeit von &lt;b&gt;<x id="1" equiv-text="${this.relativeHumidity}"/>%&lt;/b&gt; wird angenommen.</target>
+</trans-unit>
 </body>
 </file>
 </xliff>

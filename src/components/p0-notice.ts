@@ -1,8 +1,10 @@
+import { localized, msg, str } from '@lit/localize';
 import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { P0_VAR, formatP0 } from '../presentation/p0-format';
 import { UNIT_CELCIUS } from '../units';
 
+@localized()
 @customElement('p0-notice')
 export class P0Notice extends LitElement {
   @property({ type: Number })
@@ -19,8 +21,10 @@ export class P0Notice extends LitElement {
       return html`
         <div class="p0-notice">
           <small>
-            Further values require ${P0_VAR} to be set.
-            <a href="#" @click=${this.showAirDialog}>Set ${P0_VAR}</a>
+            ${msg(html`Further values require ${P0_VAR} to be set.`)}
+            <a href="#" @click=${this.showAirDialog}
+              >${msg(html`Set ${P0_VAR}`)}</a
+            >
           </small>
         </div>
       `;
@@ -29,10 +33,10 @@ export class P0Notice extends LitElement {
     return html`
       <div class="p0-notice">
         <small>
-          ${P0_VAR} is set to <b>${formatP0(this.p0)}</b>. An air temperature of
-          <b>${this.temperature}${UNIT_CELCIUS}</b> and humidity of
-          <b>${this.relativeHumidity}%</b> is assumed.
-          <a href="#" @click=${this.showAirDialog}>Change</a>
+          ${P0_VAR} = <b>${formatP0(this.p0)}</b>.
+          ${msg(str`An air temperature of <b>${this.temperature}${UNIT_CELCIUS}</b> and
+            humidity of <b>${this.relativeHumidity}%</b> is assumed.`)}
+          <a href="#" @click=${this.showAirDialog}>${msg('Change')}</a>
         </small>
       </div>
     `;

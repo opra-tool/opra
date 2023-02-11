@@ -8,16 +8,20 @@ import { str } from '@lit/localize';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export const templates = {
+  h18e73ffa52a6ab3c: html`Um weitere Werte zu berechnen, wird ${0} benötigt.`,
   h21b9866c746fbbbf: html`Ausgabe normalisieren: Setzt das
     <code>normalize</code> Attribut der verwendeten <code>ConvolverNode</code>.
     Eine Änderung dieser Einstellung hat keinen Einfluss auf die aktuelle
     Wiedergabe.`,
   h55173f1799401028: html`${0} und Luftparameter setzen`,
+  h59277fa7920c0581: html`${0} wird für Stärkemaß-Berechnungen benötigt.`,
+  hade4a196e0bbae85: html`${0} setzen`,
   s06bbce97e12ca9d9: `Stärkemaße`,
   s070f746328e45e39: `Raumimpulsantwortdateien hier ablegen`,
   s0710721d5743524b: `Nicht deaktivierbar, da dies die einzig aktive Impulsantwort ist`,
   s14ed76d98e69694d: `gemäß der Definition von Soulodre und Bradley (1995)`,
   s251a76634b35932d: `Frühes Basslevel`,
+  s2f64461723d3df5d: `Ändern`,
   s3019bdb56b4ee311: `Als binaurale Impulsantwort behandeln`,
   s30a6412eb8b9650e: `Nachhallzeit`,
   s32cd679fcf36b635: str`Maximale Anzahl von (${0}) Dateien erreicht. ${1} Dateien ignoriert.`,
@@ -47,9 +51,12 @@ export const templates = {
   sc5369185e5aa8027: `Später seitlicher Energieanteil`,
   sc6b8315cb7dc297d: `Ein Fehler ist aufgetreten`,
   scb830009d3d61b90: `Eigene Audiodateien hier ablegen`,
+  sd25150929f0d303d: str`Eine Lufttemperatur von &lt;b&gt;${0}${1}&lt;/b&gt; und
+            eine Luftfeuchtigkeit von &lt;b&gt;${2}%&lt;/b&gt; wird angenommen.`,
   sd2ffce103eac0816: `Früher seitlicher Energieanteil`,
   sd3eac79f739323df: `Klarheitsmaß`,
   sd69fbc00e11ac634: `Subjektiver Schallpegel, gemäß`,
+  sd86237254884db99: `z.B. 0.015 oder 1e-6`,
   se40908c6bd9acc56: str`Lufttemperatur in ${0}`,
   sea5e5bff614a370f: `Werte setzen`,
   sea93d3c78c26da12: `Interaurale Kreuzkorrelation`,

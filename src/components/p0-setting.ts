@@ -1,3 +1,4 @@
+import { localized, msg } from '@lit/localize';
 import SlInput from '@shoelace-style/shoelace/dist/components/input/input.js';
 import { LitElement, html, css } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
@@ -7,6 +8,7 @@ export class P0SettingChangeEvent extends CustomEvent<{
   p0: number;
 }> {}
 
+@localized()
 @customElement('p0-setting')
 export class P0Setting extends LitElement {
   @property({ type: Number })
@@ -19,19 +21,21 @@ export class P0Setting extends LitElement {
     return html`
       <div class="p0-setting">
         <!-- TODO: add link to explain what p0 is -->
-        <p>${P0_VAR} is required for strength-based calculations.</p>
+        <p>
+          ${msg(html`${P0_VAR} is required for sound strength calculations.`)}
+        </p>
         <form @submit=${this.onSubmitP0}>
           <sl-input
             class="p0-input"
             type="number"
-            placeholder="e.g. 0.015 or 1e-6"
+            placeholder=${msg('e.g. 0.015 or 1e-6')}
             filled
             min="0"
             step="any"
             required
             value=${this.p0 ? formatP0(this.p0) : ''}
           ></sl-input>
-          <sl-button type="submit">Set ${P0_VAR}</sl-button>
+          <sl-button type="submit">${msg(html`Set ${P0_VAR}`)}</sl-button>
         </form>
       </div>
     `;
