@@ -1,3 +1,4 @@
+import { localized, msg } from '@lit/localize';
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { ResponseDetail } from '../../audio/response-detail';
@@ -5,6 +6,7 @@ import { UNIT_DECIBELS } from '../../units';
 
 type BandValues = number[];
 
+@localized()
 @customElement('early-lateral-fraction-graph')
 export class earlyLateralEnergyFractionGraph extends LitElement {
   @property({ type: Array })
@@ -16,7 +18,7 @@ export class earlyLateralEnergyFractionGraph extends LitElement {
     const params = [
       {
         key: 'earlyLateralEnergyFraction',
-        label: 'Early Lateral Fraction',
+        label: msg('Early Lateral Energy Fraction'),
         datasets: this.earlyLateralEnergyFraction.map((values, index) => ({
           color: this.responseDetails[index].color,
           values,
@@ -25,7 +27,7 @@ export class earlyLateralEnergyFractionGraph extends LitElement {
     ];
 
     return html`
-      <base-card cardTitle="Early Lateral Fraction">
+      <base-card cardTitle=${msg('Early Lateral Energy Fraction')}>
         <octave-bands-graph
           .params=${params}
           .yAxisLabel=${UNIT_DECIBELS}

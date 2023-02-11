@@ -1,13 +1,15 @@
+import { localized, msg } from '@lit/localize';
 import { LitElement, html, css } from 'lit';
 import { customElement } from 'lit/decorators.js';
 
+@localized()
 @customElement('progress-indicator')
 export class ProgressIndicator extends LitElement {
   render() {
     return html`
       <div>
         <sl-spinner></sl-spinner>
-        <p>Analyzing file(s) ...</p>
+        <p>${msg('Analyzing file(s) ...')}</p>
       </div>
     `;
   }

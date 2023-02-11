@@ -32,7 +32,7 @@ export class FileDrop extends LitElement {
         @dragover=${this.onDragOver}
       >
         <span>${this.label}</span>
-        <span>or</span>
+        <span>${msg('or')}</span>
         <sl-button variant="primary" @click=${this.onFileUploadButtonCLicked}>
           ${msg('Choose file(s)')}
         </sl-button>

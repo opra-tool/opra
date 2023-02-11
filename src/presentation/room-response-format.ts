@@ -9,10 +9,9 @@ type Input = {
 const responseTypeNames = {
   monaural: 'Monaural',
   binaural: 'Binaural',
-  'mid-side': 'Mid / Side',
+  'mid-side': 'M/S',
 };
 
-// TODO: move to component for i18n
 export function formatResponseSummary({
   type,
   duration,

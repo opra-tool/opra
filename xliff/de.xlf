@@ -169,15 +169,15 @@
 </trans-unit>
 <trans-unit id="sd2ffce103eac0816">
   <source>Early Lateral Sound Level</source>
-  <target>Früher seitlicher Energieanteil</target>
+  <target>Früher seitlicher Schallpegel</target>
 </trans-unit>
 <trans-unit id="sc5369185e5aa8027">
   <source>Late Lateral Sound Level</source>
-  <target>Später seitlicher Energieanteil</target>
+  <target>Später seitlicher Schallpegel</target>
 </trans-unit>
 <trans-unit id="sf11c26d807a68579">
   <source>Lateral Sound Level</source>
-  <target>Seitlicher Energieanteil</target>
+  <target>Seitlicher Schallpegel</target>
 </trans-unit>
 <trans-unit id="se40908c6bd9acc56">
   <source>Air Temperature in <x id="0" equiv-text="${UNIT_CELCIUS}"/></source>
@@ -224,6 +224,18 @@
             humidity of &lt;b&gt;<x id="1" equiv-text="${this.relativeHumidity}"/>%&lt;/b&gt; is assumed.</source>
   <target>Eine Lufttemperatur von &lt;b&gt;<x id="0" equiv-text="${this.temperature}${UNIT_CELCIUS}"/>&lt;/b&gt; und
             eine Luftfeuchtigkeit von &lt;b&gt;<x id="1" equiv-text="${this.relativeHumidity}"/>%&lt;/b&gt; wird angenommen.</target>
+</trans-unit>
+<trans-unit id="s979ceb45938c45d4">
+  <source>Analyzing file(s) ...</source>
+  <target>Analysiere Datei(en) ...</target>
+</trans-unit>
+<trans-unit id="sd4076ccc972a1c65">
+  <source>Early Lateral Energy Fraction</source>
+  <target>Früher seitlicher Energieanteil</target>
+</trans-unit>
+<trans-unit id="s08b05407b5565ca4">
+  <source>or</source>
+  <target>oder</target>
 </trans-unit>
 </body>
 </file>
