@@ -1,9 +1,11 @@
+import { localized, msg } from '@lit/localize';
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { isFreeOfNullValues } from '../arrays';
 import { ResponseDetail } from '../audio/response-detail';
 import { LateralLevel } from '../lateral-level';
 
+@localized()
 @customElement('lateral-level-card')
 export class LateralLevelCard extends LitElement {
   @property({ type: Number })
@@ -17,7 +19,7 @@ export class LateralLevelCard extends LitElement {
 
   render() {
     return html`
-      <base-card cardTitle="Lateral Level"
+      <base-card cardTitle=${msg('Lateral Sound Level')}
         >${this.renderCardContent()}</base-card
       >
     `;

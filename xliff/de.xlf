@@ -167,6 +167,18 @@
   <source>Cannot deactivate, as this is the only active impulse response</source>
   <target>Nicht deaktivierbar, da dies die einzig aktive Impulsantwort ist</target>
 </trans-unit>
+<trans-unit id="sd2ffce103eac0816">
+  <source>Early Lateral Sound Level</source>
+  <target>Früher seitlicher Energieanteil</target>
+</trans-unit>
+<trans-unit id="sc5369185e5aa8027">
+  <source>Late Lateral Sound Level</source>
+  <target>Später seitlicher Energieanteil</target>
+</trans-unit>
+<trans-unit id="sf11c26d807a68579">
+  <source>Lateral Sound Level</source>
+  <target>Seitlicher Energieanteil</target>
+</trans-unit>
 </body>
 </file>
 </xliff>
