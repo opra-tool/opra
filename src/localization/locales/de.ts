@@ -43,5 +43,6 @@ export const templates = {
   sefcf950b3cc4fc3b: `Sprache`,
   sfd396ad5707a3135: `Bass-Verhältnis`,
   sfd963ba27f135016: `A-Gewichtetes Stärkemaß`,
+  sfdb0e52d13786ac6: `Datei(en) auswählen`,
   s2a2957356ab1c7fe: `Level-Adjusted`,
 };

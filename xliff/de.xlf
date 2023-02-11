@@ -135,6 +135,10 @@
   <source>Technical details</source>
   <target>Technische Details</target>
 </trans-unit>
+<trans-unit id="sfdb0e52d13786ac6">
+  <source>Choose file(s)</source>
+  <target>Datei(en) auswählen</target>
+</trans-unit>
 </body>
 </file>
 </xliff>

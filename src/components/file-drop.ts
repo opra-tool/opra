@@ -1,3 +1,4 @@
+import { localized, msg } from '@lit/localize';
 import { LitElement, html, css } from 'lit';
 import { customElement, property, query, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
@@ -6,6 +7,7 @@ export class FileDropChangeEvent extends CustomEvent<{
   files: FileList;
 }> {}
 
+@localized()
 @customElement('file-drop')
 export class FileDrop extends LitElement {
   @property({ type: String })
@@ -32,7 +34,7 @@ export class FileDrop extends LitElement {
         <span>${this.label}</span>
         <span>or</span>
         <sl-button variant="primary" @click=${this.onFileUploadButtonCLicked}>
-          Choose file(s)
+          ${msg('Choose file(s)')}
         </sl-button>
         <input
           id="file-input"
