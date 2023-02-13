@@ -2,109 +2,47 @@ import { LitElement, html, css } from 'lit';
 import { customElement, query, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { localized, msg, str } from '@lit/localize';
+import { Analyzer, MaximumFileCountReachedError } from '../analyzing/analyzer';
 import { UNIT_CELCIUS } from '../presentation/units';
 import { FileListToggleEvent, FileListRemoveEvent } from './file-list';
 import { FileListMarkEvent } from './file-list-entry-options';
-import { ImpulseResponse } from '../analyzing/impulse-response';
-import {
-  BinauralResults,
-  processBinauralAudio,
-} from '../analyzing/binaural-processing';
-import {
-  MonauralResults,
-  processMonauralAudio,
-} from '../analyzing/monaural-processing';
-import {
-  MidSideResults,
-  processMidSideAudio,
-} from '../analyzing/mid-side-processing';
-import { binauralAudioFromBuffer } from '../analyzing/binaural-samples';
+import { BinauralResults } from '../analyzing/binaural-processing';
+import { MonauralResults } from '../analyzing/monaural-processing';
+import { MidSideResults } from '../analyzing/mid-side-processing';
 import { FileDropChangeEvent } from './file-drop';
-import { readAudioFile } from '../audio/audio-file-reading';
 import { P0SettingChangeEvent } from './p0-setting';
-import { calculateStrengths, Strengths } from '../analyzing/strength';
 import { P0Dialog, P0DialogChangeEvent } from './p0-dialog';
 import { mapArrayParam } from '../arrays';
 import { toastSuccess, toastWarning } from './toast';
 import { P0_VAR } from '../presentation/p0-format';
-import {
-  getResponses,
-  persistResponse,
-  persistValue,
-  removeResponse,
-  retrieveValue,
-  retrieveValueOrDefault,
-} from '../persistence';
 import { meanDecibel } from '../math/decibels';
-import {
-  calculateLateralLevel,
-  LateralLevel,
-} from '../analyzing/lateral-level';
-
-const COLOR_WHITE = 'rgba(255, 255, 255, 0.75)';
-const COLOR_BLUE = 'rgba(153, 102, 255, 0.5)';
-const COLOR_RED = 'rgba(255, 99, 132, 0.5)';
-const COLOR_YELLOW = 'rgba(128, 128, 0, 0.5)';
-const COLOR_GREEN = 'rgba(93, 163, 153, 0.5)';
-
-const FILE_COLORS = [
-  COLOR_WHITE,
-  COLOR_BLUE,
-  COLOR_RED,
-  COLOR_YELLOW,
-  COLOR_GREEN,
-];
-
-const MAX_FILE_COUNT = FILE_COLORS.length;
 
 type Results = MonauralResults | BinauralResults | MidSideResults;
 
+/**
+ * @deprecated
+ */
 function isBinauralResults(results: Results): results is BinauralResults {
   return (results as BinauralResults).iaccBands !== undefined;
 }
 
+/**
+ * @deprecated
+ */
 function isMidSideResults(results: Results): results is MidSideResults {
   return (
     (results as MidSideResults).earlyLateralEnergyFractionBands !== undefined
   );
 }
 
-const P0_STORAGE_KEY = 'strengths-p0';
-const TEMPERATURE_STORAGE_KEY = 'strengths-temperature';
-const HUMIDITY_STORAGE_KEY = 'strengths-humidity';
-
-const DEFAULT_RELATIVE_HUMIDITY = 50;
-const DEFAULT_TEMPERATURE = 20;
-
 @localized()
 @customElement('audio-analyzer')
 export class AudioAnalyzer extends LitElement {
-  @state()
-  private p0 = retrieveValue(P0_STORAGE_KEY);
+  private analyzer = new Analyzer();
 
-  @state()
-  private temperature = retrieveValueOrDefault(
-    TEMPERATURE_STORAGE_KEY,
-    DEFAULT_TEMPERATURE
-  );
+  private hiddenResponses = new Map<string, true>();
 
-  @state()
-  private relativeHumidity = retrieveValueOrDefault(
-    HUMIDITY_STORAGE_KEY,
-    DEFAULT_RELATIVE_HUMIDITY
-  );
-
-  @state()
-  private responses: ImpulseResponse[] = [];
-
-  @state()
-  private results: Map<string, Results> = new Map();
-
-  @state()
-  private strengthResults: Map<string, Strengths> = new Map();
-
-  @state()
-  private lateralLevelResults: Map<string, LateralLevel> = new Map();
+  private errors = new Map<string, Error>();
 
   @state()
   private error: Error | null = null;
@@ -112,31 +50,57 @@ export class AudioAnalyzer extends LitElement {
   @query('.p0-dialog', true)
   private p0Dialog!: P0Dialog;
 
-  protected firstUpdated() {
-    getResponses().then(responses => {
-      for (const response of responses) {
-        // this.results.set(response.id, results);
-        this.responses.push(response);
-        this.analyzeResponse(response);
-      }
+  constructor() {
+    super();
 
-      this.requestUpdate();
-    });
+    this.analyzer.addEventListener('change', () => this.requestUpdate());
+    this.analyzer.addEventListener(
+      'file-adding-error',
+      ({ fileName, error }) => {
+        toastWarning(
+          `${fileName} ${msg('ignored')}: ${
+            error.message || msg('Unknown error')
+          }`
+        );
+      }
+    );
+
+    this.analyzer.addEventListener(
+      'file-processing-error',
+      ({ id, fileName, error }) => {
+        toastWarning(
+          `${fileName} ${msg('ignored')}: ${
+            error.message || msg('Unknown error')
+          }`
+        );
+        this.errors.set(id, error);
+      }
+    );
+
+    this.analyzer.addEventListener(
+      'p0-air-values-update',
+      ({ p0, temperature, humidity }) =>
+        toastSuccess(
+          html`${msg('Successfully set')} ${P0_VAR} = ${p0},
+          ${temperature}${UNIT_CELCIUS}, ${humidity}%`
+        )
+    );
   }
 
-  render() {
-    const fileListEntries = this.responses.map(
-      ({ type, id, color, duration, isEnabled, sampleRate, fileName }) => ({
+  protected render() {
+    const fileListEntries = this.analyzer
+      .getResponses()
+      .map(({ type, id, color, duration, sampleRate, fileName }) => ({
         type,
         id,
         color,
         duration,
-        isEnabled,
+        isEnabled: !this.hiddenResponses.has(id),
         sampleRate,
         fileName,
-        hasResults: this.results.has(id),
-      })
-    );
+        hasResults: this.analyzer.hasResults(id),
+        error: this.errors.get(id),
+      }));
 
     return html`
       <section class="grid">
@@ -146,7 +110,7 @@ export class AudioAnalyzer extends LitElement {
               label=${msg('Drop room impulse response files here')}
               @change=${this.onFilesAdded}
             ></file-drop>
-            ${this.responses.length > 0
+            ${this.analyzer.getResponses().length > 0
               ? html`
                   <file-list
                     .entries=${fileListEntries}
@@ -159,7 +123,7 @@ export class AudioAnalyzer extends LitElement {
           </section>
           <section class="settings">
             <p0-setting
-              .p0=${this.p0}
+              .p0=${this.analyzer.getP0()}
               @change=${this.onP0SettingChange}
             ></p0-setting>
           </section>
@@ -168,7 +132,7 @@ export class AudioAnalyzer extends LitElement {
         <error-details .error=${this.error}></error-details>
       </section>
 
-      ${this.responses.length > 0
+      ${this.analyzer.getResponses().length > 0
         ? html`<file-dropdown
             .entries=${fileListEntries}
             @toggle-file=${this.onToggleFile}
@@ -178,9 +142,9 @@ export class AudioAnalyzer extends LitElement {
         : null}
 
       <p0-dialog
-        .p0=${this.p0}
-        relativeHumidity=${this.relativeHumidity}
-        temperature=${this.temperature}
+        .p0=${this.analyzer.getP0()}
+        relativeHumidity=${this.analyzer.getRelativeHumidity()}
+        temperature=${this.analyzer.getAirTemperature()}
         class="p0-dialog"
         @change=${this.onP0DialogChange}
       ></p0-dialog>
@@ -188,19 +152,21 @@ export class AudioAnalyzer extends LitElement {
   }
 
   private renderResults() {
-    if (!this.responses.length) {
+    if (!this.analyzer.getResponses().length) {
       return null;
     }
 
-    const responses = this.responses.filter(
-      r => r.isEnabled && this.results.has(r.id)
-    );
+    const responses = this.analyzer
+      .getResponses()
+      .filter(
+        r => !this.hiddenResponses.has(r.id) && this.analyzer.hasResults(r.id)
+      );
 
     if (!responses.length) {
       return html`<progress-indicator></progress-indicator>`;
     }
 
-    const results = responses.map(this.getResultsOrThrow.bind(this));
+    const results = responses.map(r => this.analyzer.getResultsOrThrow(r.id));
 
     // monaural
     const edt = mapArrayParam(results, 'edtBands');
@@ -237,13 +203,13 @@ export class AudioAnalyzer extends LitElement {
       midSideResults,
       'earlyLateralEnergyFractionBands'
     );
-    const lateralLevels = midSideResponses.map(
-      r => this.lateralLevelResults.get(r.id) || null
+    const lateralLevels = midSideResponses.map(r =>
+      this.analyzer.getLateralLevelResults(r.id)
     );
 
     // strengths
-    const strengths = responses.map(
-      r => this.strengthResults.get(r.id) || null
+    const strengths = responses.map(r =>
+      this.analyzer.getStrengthResults(r.id)
     );
 
     const hasBinauralResults = binauralResults.length > 0;
@@ -268,9 +234,9 @@ export class AudioAnalyzer extends LitElement {
         .strengths=${strengths}
       >
         <p0-notice
-          .p0=${this.p0}
-          .temperature=${this.temperature}
-          .relativeHumidity=${this.relativeHumidity}
+          .p0=${this.analyzer.getP0()}
+          .temperature=${this.analyzer.getAirTemperature()}
+          .relativeHumidity=${this.analyzer.getRelativeHumidity()}
           @show-p0-dialog=${this.onShowP0Dialog}
         ></p0-notice>
       </parameters-card>
@@ -288,20 +254,20 @@ export class AudioAnalyzer extends LitElement {
       ></c50c80-graph>
 
       <strengths-card
-        .p0=${this.p0}
+        .p0=${this.analyzer.getP0()}
         .impulseResponses=${responses}
         .strengths=${strengths}
       >
         <p0-notice
           slot="p0-notice"
-          .p0=${this.p0}
-          .temperature=${this.temperature}
-          .relativeHumidity=${this.relativeHumidity}
+          .p0=${this.analyzer.getP0()}
+          .temperature=${this.analyzer.getAirTemperature()}
+          .relativeHumidity=${this.analyzer.getRelativeHumidity()}
           @show-p0-dialog=${this.onShowP0Dialog}
         ></p0-notice>
         <p0-setting
           slot="p0-setting"
-          .p0=${this.p0}
+          .p0=${this.analyzer.getP0()}
           @change=${this.onP0SettingChange}
         ></p0-setting>
       </strengths-card>
@@ -309,20 +275,20 @@ export class AudioAnalyzer extends LitElement {
       ${hasMidSideResults
         ? html`
             <lateral-level-card
-              .p0=${this.p0}
+              .p0=${this.analyzer.getP0()}
               .impulseResponses=${midSideResponses}
               .lateralLevels=${lateralLevels}
             >
               <p0-notice
                 slot="p0-notice"
-                .p0=${this.p0}
-                .temperature=${this.temperature}
-                .relativeHumidity=${this.relativeHumidity}
+                .p0=${this.analyzer.getP0()}
+                .temperature=${this.analyzer.getAirTemperature()}
+                .relativeHumidity=${this.analyzer.getRelativeHumidity()}
                 @show-p0-dialog=${this.onShowP0Dialog}
               ></p0-notice>
               <p0-setting
                 slot="p0-setting"
-                .p0=${this.p0}
+                .p0=${this.analyzer.getP0()}
                 @change=${this.onP0SettingChange}
               ></p0-setting>
             </lateral-level-card>
@@ -347,207 +313,18 @@ export class AudioAnalyzer extends LitElement {
     `;
   }
 
-  private getResultsOrThrow({ id }: { id: string }): Results {
-    const maybeResults = this.results.get(id);
-
-    if (!maybeResults) {
-      throw new Error(`expected to find results for id ${id}`);
-    }
-
-    return maybeResults;
-  }
-
-  private async analyzeResponse({
-    id,
-    type,
-    sampleRate,
-    buffer,
-  }: ImpulseResponse) {
-    try {
-      let results;
-      if (type === 'monaural') {
-        results = await processMonauralAudio(
-          buffer.getChannelData(0),
-          sampleRate
-        );
-      } else if (type === 'binaural') {
-        results = await processBinauralAudio(
-          binauralAudioFromBuffer(buffer),
-          sampleRate
-        );
-      } else {
-        results = await processMidSideAudio(
-          binauralAudioFromBuffer(buffer),
-          sampleRate
-        );
-      }
-
-      this.results.set(id, results);
-
-      if (this.p0 !== null) {
-        this.strengthResults.set(
-          id,
-          await calculateStrengths(results, {
-            p0: this.p0,
-            relativeHumidity: this.relativeHumidity,
-            temperature: this.temperature,
-          })
-        );
-      }
-
-      if (this.p0 !== null && isMidSideResults(results)) {
-        this.lateralLevelResults.set(
-          id,
-          await calculateLateralLevel(results, {
-            p0: this.p0,
-            relativeHumidity: this.relativeHumidity,
-            temperature: this.temperature,
-          })
-        );
-      }
-    } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error(err);
-      if (err instanceof Error) {
-        this.error = err;
-      }
-    }
-
-    this.requestUpdate();
-  }
-
-  private findAvailableColor(): string {
-    const takenColors = this.responses.map(r => r.color);
-    const color = FILE_COLORS.find(c => !takenColors.includes(c));
-
-    if (!color) {
-      throw new Error(
-        `could not find available color takenColors=${takenColors}`
-      );
-    }
-
-    return color;
-  }
-
-  private async recalculateStrengths() {
-    if (!this.p0) {
-      throw new Error('expected p0 to be defined when recalcuation strengths');
-    }
-
-    for (const response of this.responses) {
-      const results = this.getResultsOrThrow(response);
-
-      this.strengthResults.set(
-        response.id,
-        // eslint-disable-next-line no-await-in-loop
-        await calculateStrengths(results, {
-          p0: this.p0,
-          relativeHumidity: this.relativeHumidity,
-          temperature: this.temperature,
-        })
-      );
-
-      if (isMidSideResults(results)) {
-        this.lateralLevelResults.set(
-          response.id,
-          // eslint-disable-next-line no-await-in-loop
-          await calculateLateralLevel(results, {
-            p0: this.p0,
-            relativeHumidity: this.relativeHumidity,
-            temperature: this.temperature,
-          })
-        );
-      }
-    }
-
-    this.requestUpdate();
-  }
-
-  private async addFiles(files: FileList) {
-    for (let i = 0; i < files.length; i += 1) {
-      if (this.responses.length >= MAX_FILE_COUNT) {
-        toastWarning(
-          msg(
-            str`Maximum file count (${MAX_FILE_COUNT}) reached. Skipping ${
-              files.length - MAX_FILE_COUNT
-            } files.`
-          )
-        );
-        break;
-      }
-
-      try {
-        // eslint-disable-next-line no-await-in-loop
-        const response = await this.parseFile(files[i]);
-        this.responses.push(response);
-
-        this.analyzeResponse(response);
-
-        // eslint-disable-next-line no-await-in-loop
-        await persistResponse(response);
-      } catch (err) {
-        let message = msg('Unknown error');
-        if (err instanceof Error) {
-          message = err.message;
-        }
-        toastWarning(`${files[i].name} ${msg('ignored')}: ${message}`);
-      }
-    }
-
-    this.requestUpdate();
-  }
-
-  private async parseFile(file: File): Promise<ImpulseResponse> {
-    const buffer = await readAudioFile(file);
-
-    if (buffer.numberOfChannels < 1 || buffer.numberOfChannels > 2) {
-      throw new Error(`unsupported channel count: ${buffer.numberOfChannels}`);
-    }
-
-    return {
-      type: buffer.numberOfChannels === 1 ? 'monaural' : 'binaural',
-      id: AudioAnalyzer.randomId(),
-      fileName: file.name,
-      buffer,
-      duration: buffer.duration,
-      sampleRate: buffer.sampleRate,
-      isEnabled: true,
-      color: this.findAvailableColor(),
-    };
-  }
-
   private onP0SettingChange({ detail: { p0 } }: P0SettingChangeEvent) {
-    this.p0 = p0;
+    this.analyzer.setP0(p0);
 
-    setTimeout(() => {
-      toastSuccess(html`${msg('Successfully set')} ${P0_VAR} = ${p0}`);
-
-      this.recalculateStrengths();
-
-      persistValue(P0_STORAGE_KEY, p0);
-    }, 0);
+    this.p0Dialog.hide();
   }
 
   private onP0DialogChange({
     detail: { p0, relativeHumidity, temperature },
   }: P0DialogChangeEvent) {
-    this.p0 = p0;
-    this.relativeHumidity = relativeHumidity;
-    this.temperature = temperature;
+    this.analyzer.setP0AndAirValues(p0, temperature, relativeHumidity);
 
-    setTimeout(() => {
-      this.p0Dialog.hide();
-      toastSuccess(
-        html`${msg('Successfully set')} ${P0_VAR} = ${p0},
-        ${temperature}${UNIT_CELCIUS}, ${relativeHumidity}%`
-      );
-
-      this.recalculateStrengths();
-
-      persistValue(P0_STORAGE_KEY, p0);
-      persistValue(TEMPERATURE_STORAGE_KEY, this.temperature);
-      persistValue(HUMIDITY_STORAGE_KEY, this.relativeHumidity);
-    }, 0);
+    this.p0Dialog.hide();
   }
 
   private onShowP0Dialog() {
@@ -555,54 +332,37 @@ export class AudioAnalyzer extends LitElement {
   }
 
   private onRemoveFile({ detail: { id } }: FileListRemoveEvent) {
-    this.responses = this.responses.filter(el => el.id !== id);
-    this.results.delete(id);
-    // eslint-disable-next-line no-console
-    removeResponse(id).catch(console.error);
+    this.analyzer.removeResponse(id);
   }
 
   private onMarkFile({ detail: { id, markAs } }: FileListMarkEvent) {
-    const response = this.responses.find(r => r.id === id);
+    this.analyzer.markResponseAs(id, markAs);
+  }
 
-    if (!response) {
-      throw new Error(`cannot find response with id '${id}'`);
+  private onToggleFile({ detail: { id } }: FileListToggleEvent) {
+    if (this.hiddenResponses.has(id)) {
+      this.hiddenResponses.delete(id);
+    } else {
+      this.hiddenResponses.set(id, true);
     }
-
-    if (response.type === markAs) {
-      return;
-    }
-
-    response.type = markAs;
-
-    this.results.delete(id);
-    this.analyzeResponse(response);
 
     this.requestUpdate();
-
-    // TODO: do more elegantly
-    // eslint-disable-next-line no-console
-    removeResponse(id).catch(console.error);
-    persistResponse(response);
   }
 
-  private onToggleFile(ev: FileListToggleEvent) {
-    this.responses = this.responses.map(el => ({
-      ...el,
-      isEnabled: el.id === ev.detail.id ? !el.isEnabled : el.isEnabled,
-    }));
-  }
-
-  private onFilesAdded(ev: FileDropChangeEvent) {
-    this.addFiles(ev.detail.files);
-  }
-
-  /**
-   * @copyright Michal Zalecki
-   * @returns A pseudo-random ID
-   */
-  static randomId(): string {
-    const uint32 = window.crypto.getRandomValues(new Uint32Array(1))[0];
-    return uint32.toString(8);
+  private async onFilesAdded({ detail: { files } }: FileDropChangeEvent) {
+    try {
+      this.analyzer.addResponseFiles(files);
+    } catch (err) {
+      if (err instanceof MaximumFileCountReachedError) {
+        toastWarning(
+          msg(
+            str`Maximum file count (${err.maxFileCount}) reached. Skipped ${err.skippedFileCount} files.`
+          )
+        );
+      } else {
+        throw err;
+      }
+    }
   }
 
   static styles = css`

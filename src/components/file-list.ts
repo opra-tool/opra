@@ -14,6 +14,7 @@ export type FileListEntry = {
   color: string;
   duration: number;
   sampleRate: number;
+  error?: string;
 };
 
 export class FileListToggleEvent extends CustomEvent<{
@@ -54,49 +55,50 @@ export class FileList extends LitElement {
   hideOptions = false;
 
   protected render() {
-    const enabledCount = this.entries.reduce(
-      (count, file) => (file.isEnabled ? count + 1 : count),
-      0
-    );
-
     return html`
-      <section>
-        ${this.entries.map(file => this.renderListEntry(file, enabledCount))}
-      </section>
+      <section>${this.entries.map(file => this.renderListEntry(file))}</section>
     `;
   }
 
-  private renderListEntry(
-    { id, fileName, hasResults, isEnabled, color, ...details }: FileListEntry,
-    enabledCount: number
-  ) {
-    const cannotToggle = isEnabled && enabledCount === 1;
+  private renderListEntry(entry: FileListEntry) {
+    return html`
+      <div class="file-list-entry" title=${entry.fileName}>
+        <div class="head">${this.renderPrefix(entry)}</div>
+        <div>
+          <p>${entry.fileName}</p>
+          <small>${formatResponseSummary(entry)}</small>
+        </div>
+        <div class="color" .style=${`background-color: ${entry.color}`}></div>
+        ${this.renderFileOptions(entry.type, entry.id)}
+      </div>
+    `;
+  }
+
+  private renderPrefix({ id, isEnabled, error, hasResults }: FileListEntry) {
+    if (!hasResults && !error) {
+      return html`<sl-spinner></sl-spinner>`;
+    }
+
+    if (error) {
+      return html`<sl-icon
+        title=${error}
+        name="exclamation-triangle"
+      ></sl-icon>`;
+    }
+
+    const cannotToggle = isEnabled && this.getEnabledCount() === 1;
 
     const toggleTitle = cannotToggle
       ? msg('Cannot deactivate, as this is the only active impulse response')
       : msg('Toggle visibility in graphs');
 
-    return html`
-      <div class="file-list-entry" title=${fileName}>
-        <div class="head">
-          ${hasResults
-            ? html`<sl-switch
-                ?checked=${isEnabled}
-                ?disabled=${cannotToggle}
-                title=${toggleTitle}
-                value=${id}
-                @sl-change=${this.onSwitch}
-              ></sl-switch>`
-            : html`<sl-spinner></sl-spinner>`}
-        </div>
-        <div>
-          <p>${fileName}</p>
-          <small>${formatResponseSummary(details)}</small>
-        </div>
-        <div class="color" .style=${`background-color: ${color}`}></div>
-        ${this.renderFileOptions(details.type, id)}
-      </div>
-    `;
+    return html`<sl-switch
+      ?checked=${isEnabled}
+      ?disabled=${cannotToggle}
+      title=${toggleTitle}
+      value=${id}
+      @sl-change=${this.onSwitch}
+    ></sl-switch>`;
   }
 
   private renderFileOptions(type: ImpulseResponseType, id: string) {
@@ -126,6 +128,13 @@ export class FileList extends LitElement {
     const target = ev.target as SlSwitch;
 
     this.dispatchEvent(new FileListToggleEvent(target.value));
+  }
+
+  private getEnabledCount() {
+    return this.entries.reduce(
+      (count, file) => (file.isEnabled ? count + 1 : count),
+      0
+    );
   }
 
   static styles = css`

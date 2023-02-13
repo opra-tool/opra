@@ -109,7 +109,6 @@ function isValidResponseRecord(record: unknown): boolean {
     typeof response.color === 'string' &&
     typeof response.duration === 'number' &&
     typeof response.fileName === 'string' &&
-    typeof response.isEnabled === 'boolean' &&
     typeof response.sampleRate === 'number' &&
     response.samples instanceof Array
   );

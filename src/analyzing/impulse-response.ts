@@ -8,5 +8,4 @@ export type ImpulseResponse = {
   buffer: AudioBuffer;
   duration: number;
   sampleRate: number;
-  isEnabled: boolean;
 };
