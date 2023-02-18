@@ -94,9 +94,9 @@
 <trans-unit id="s2a2957356ab1c7fe">
   <source>Level-Adjusted</source>
 </trans-unit>
-<trans-unit id="s32cd679fcf36b635">
-  <source>Maximum file count (<x id="0" equiv-text="${MAX_FILE_COUNT}"/>) reached. Skipping <x id="1" equiv-text="${files.length - MAX_FILE_COUNT}"/> files.</source>
-  <target>Maximale Anzahl von (<x id="0" equiv-text="${MAX_FILE_COUNT}"/>) Dateien erreicht. <x id="1" equiv-text="${files.length - MAX_FILE_COUNT}"/> Dateien ignoriert.</target>
+<trans-unit id="s81ee24b15aa0408a">
+  <source>Maximum file count (<x id="0" equiv-text="${err.maxFileCount}"/>) reached. Skipped <x id="1" equiv-text="${err.skippedFileCount}"/> files.</source>
+  <target>Maximale Anzahl von (<x id="0" equiv-text="${err.maxFileCount}"/>) Dateien erreicht. <x id="1" equiv-text="${err.skippedFileCount}"/> Dateien ignoriert.</target>
 </trans-unit>
 <trans-unit id="s828755644aff07e4">
   <source>Successfully set</source>
