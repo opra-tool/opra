@@ -2,6 +2,7 @@ import { LitElement, html, css } from 'lit';
 import { customElement, query, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { localized, msg, str } from '@lit/localize';
+import { Exporter } from '../export-import/exporter';
 import { Analyzer, MaximumFileCountReachedError } from '../analyzing/analyzer';
 import { UNIT_CELCIUS } from '../presentation/units';
 import { FileListToggleEvent, FileListRemoveEvent } from './file-list';
@@ -39,6 +40,8 @@ function isMidSideResults(results: Results): results is MidSideResults {
 @customElement('audio-analyzer')
 export class AudioAnalyzer extends LitElement {
   private analyzer = new Analyzer();
+
+  private exporter = new Exporter(this.analyzer);
 
   private hiddenResponses = new Map<string, true>();
 
@@ -126,6 +129,10 @@ export class AudioAnalyzer extends LitElement {
               .p0=${this.analyzer.getP0()}
               @change=${this.onP0SettingChange}
             ></p0-setting>
+            <sl-button @click=${this.onExport}>
+              <sl-icon slot="prefix" name="download"></sl-icon>
+              ${msg('Download Results')}
+            </sl-button>
           </section>
         </base-card>
         ${this.renderResults()}
@@ -365,6 +372,19 @@ export class AudioAnalyzer extends LitElement {
     }
   }
 
+  private onExport() {
+    const json = this.exporter.generateExportFile();
+    const blob = new Blob([json], {
+      type: 'application/json',
+    });
+
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `raqi-export-${new Date().toISOString()}.json`;
+
+    link.click();
+  }
+
   static styles = css`
     .grid {
       display: grid;
@@ -391,6 +411,9 @@ export class AudioAnalyzer extends LitElement {
     }
 
     section.settings {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
       margin-block-start: 1rem;
     }
 

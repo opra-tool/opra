@@ -63,6 +63,7 @@ export class P0Setting extends LitElement {
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
+      gap: 1rem;
     }
 
     p {

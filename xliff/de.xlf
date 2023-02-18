@@ -287,6 +287,10 @@
           und aus dieser Mittelung dann monaurale Parameter berechnet.
           Die Head-Related Transfer Function kann Einfluss auf monaurale Parameter haben.</target>
 </trans-unit>
+<trans-unit id="safa8613aa4ab25b3">
+  <source>Download Results</source>
+  <target>Ergebnisse herunterladen</target>
+</trans-unit>
 </body>
 </file>
 </xliff>

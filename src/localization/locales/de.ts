@@ -58,6 +58,7 @@ export const templates = {
   saa6ef41d71e052e8: `Energie relativ zur Abtastrate`,
   sad69d8cf37fd5551: `aktivierte Raumimpulsantwort(en)`,
   sadf9ac04abb2c03e: `Technische Details`,
+  safa8613aa4ab25b3: `Ergebnisse herunterladen`,
   sb4f187b5af127533: `wird angenommen.`,
   sc00a88b90cd60661: `Entfernen`,
   sc5369185e5aa8027: `Später seitlicher Schallpegel`,
