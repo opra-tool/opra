@@ -1,5 +1,5 @@
 /**
- * Calculate dampening of audible sound in air at the pressure of one atmosphere.
+ * Calculate dampening of audible sound in air at an assumed pressure of one atmosphere (101325 kPa).
  *
  * Based on the implementation by Eberhard Sengpiel (http://www.sengpielaudio.com/Rechner-luft.htm).
  *
@@ -40,10 +40,10 @@ export function calculateSoundDampingInAir(
     (1.84e-11 * Math.sqrt(tempr) +
       tempr ** -2.5 *
         (0.01275 *
-          ((Math.exp(-2239.1 / airTemperatureKelvin) * 1) /
+          (Math.exp(-2239.1 / airTemperatureKelvin) /
             (frO + (frequency * frequency) / frO)) +
           0.1068 *
-            ((Math.exp(-3352 / airTemperatureKelvin) * 1) /
+            (Math.exp(-3352 / airTemperatureKelvin) /
               (frN + (frequency * frequency) / frN))));
   let dbHumid = 100 * alpha;
 
