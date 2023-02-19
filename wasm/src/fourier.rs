@@ -69,7 +69,7 @@ fn complex_flat_form_to_object_form(flat_form: Vec<f32>) -> Vec<Complex<f32>> {
 
 #[cfg(test)]
 mod tests {
-    use rustfft::num_complex::Complex;
+    use realfft::num_complex::Complex;
 
     use crate::fourier::*;
 
