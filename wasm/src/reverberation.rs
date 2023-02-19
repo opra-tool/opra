@@ -12,35 +12,35 @@ pub fn calculate_reverberation(squared_ir: Vec<f32>, tc: f32, fs: f32) -> Vec<f3
     })
     .collect();
 
-  let mut max_si1 = 0.0;
-  let mut si1 = Vec::with_capacity(cumulative_sum.len());
-  for val in cumulative_sum {
-    let next_val = sum - val;
-    si1.push(next_val);
+  let si1: Vec<f32> = cumulative_sum
+    .into_iter()
+    .map(|x| (sum - x))
+    .collect();
 
-    max_si1 = next_val.max(max_si1);
-  }
+  let max_si1 = si1.iter()
+    .max_by(|a, b| a.partial_cmp(b).unwrap())
+    .unwrap();
 
-  let mut ec = Vec::with_capacity(si1.len());
-  for val in si1 {
-    ec.push(10.0 * (val / max_si1).log10())
-  }
+  let ec = si1
+    .iter()
+    .map(|val| 10.0 * (val / max_si1).log10())
+    .collect();
 
   return vec![calc(&ec, -10.0, 0.0, fs), calc(&ec, -(5.0 + tc), -5.0, fs)];
 }
 
 fn calc(ec: &Vec<f32>, min: f32, max: f32, fs: f32) -> f32 {
-  let mut trimmed = vec![];
-  for val in ec {
-    if *val > min && *val < max {
-      trimmed.push(*val);
-    }
-  }
+  let y_values: Vec<f32> = ec
+    .iter()
+    .filter(|val| (**val > min && **val < max))
+    .map(|x| *x)
+    .collect();
 
-  let mut tseg = Vec::with_capacity(trimmed.len());
-  for i in 0..trimmed.len() {
-    tseg.push((1.0 / fs) * (i + 1) as f32);
-  }
+  let x_values = y_values
+    .iter()
+    .enumerate()
+    .map(|(i, _val)| (1.0 / fs) * (i + 1) as f32)
+    .collect();
 
-  return 60.0 / linear_function_steepness(&tseg, &trimmed).abs();
+  return 60.0 / linear_function_steepness(&x_values, &y_values).abs();
 }
