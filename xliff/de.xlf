@@ -246,10 +246,6 @@
   <source>Frequency in</source>
   <target>Frequenz in</target>
 </trans-unit>
-<trans-unit id="s04549174c3fe5774">
-  <source>Energy Decay Curve</source>
-  <target>Energie-Abklingkurve</target>
-</trans-unit>
 <trans-unit id="s2f687d204fbee187">
   <source>Reverb Time (T20)</source>
   <target>Nachhallzeit (T20)</target>
@@ -290,6 +286,10 @@
 <trans-unit id="safa8613aa4ab25b3">
   <source>Download Results</source>
   <target>Ergebnisse herunterladen</target>
+</trans-unit>
+<trans-unit id="sb7131723206d0924">
+  <source>Energy Decay Time</source>
+  <target>Frühe Abklingzeit</target>
 </trans-unit>
 </body>
 </file>

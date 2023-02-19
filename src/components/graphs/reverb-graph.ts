@@ -21,7 +21,7 @@ export class ReverbGraph extends LitElement {
     const params = [
       {
         key: 'edt',
-        label: msg('Energy Decay Curve'),
+        label: msg('Energy Decay Time'),
         datasets: this.edt.map((values, index) => ({
           color: this.impulseResponses[index].color,
           values,
