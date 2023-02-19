@@ -55,14 +55,15 @@ export async function processChannel(
     c80Bands.push(c80);
   }
 
-  const { edt, reverbTime } = calculateReverberation(
+  const { edtBands, reverbTimeBands } = calculateReverberation(
     bandsSquared,
     20,
     sampleRate
   );
 
   const bassRatio =
-    (reverbTime[1] + reverbTime[2]) / (reverbTime[3] + reverbTime[4]);
+    (reverbTimeBands[1] + reverbTimeBands[2]) /
+    (reverbTimeBands[3] + reverbTimeBands[4]);
 
   const centreTime = calculateCentreTime(squaredIR, sampleRate);
 
@@ -82,8 +83,8 @@ export async function processChannel(
     bandsSquaredSum,
     e80BandsSquaredSum,
     l80BandsSquaredSum,
-    edtBands: edt,
-    reverbTimeBands: reverbTime,
+    edtBands,
+    reverbTimeBands,
     c50Bands,
     c80Bands,
     bassRatio,

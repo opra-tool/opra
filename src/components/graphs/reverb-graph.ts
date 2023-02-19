@@ -29,7 +29,7 @@ export class ReverbGraph extends LitElement {
       },
       {
         key: 'reverbTime',
-        label: msg('Reverb Time (T20)'),
+        label: html`${msg('Reverb Time')} <i>T<sub>20</sub></i>`,
         datasets: this.reverbTime.map((values, index) => ({
           color: this.impulseResponses[index].color,
           values,

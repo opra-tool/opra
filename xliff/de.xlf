@@ -246,10 +246,6 @@
   <source>Frequency in</source>
   <target>Frequenz in</target>
 </trans-unit>
-<trans-unit id="s2f687d204fbee187">
-  <source>Reverb Time (T20)</source>
-  <target>Nachhallzeit (T20)</target>
-</trans-unit>
 <trans-unit id="s4b3ab99331bfc6c7">
   <source>Reverberation</source>
   <target>Nachhall</target>

@@ -4,16 +4,16 @@ export function calculateReverberation(
   bandsSquared: Float32Array[],
   tc: number,
   fs: number
-): { edt: number[]; reverbTime: number[] } {
-  const edt = [];
-  const reverbTime = [];
+): { edtBands: number[]; reverbTimeBands: number[] } {
+  const edtBands = [];
+  const reverbTimeBands = [];
 
   for (const band of bandsSquared) {
     const result = wasmCalculateReverberation(band, tc, fs);
 
-    edt.push(result[0]);
-    reverbTime.push(result[1]);
+    edtBands.push(result[0]);
+    reverbTimeBands.push(result[1]);
   }
 
-  return { edt, reverbTime };
+  return { edtBands, reverbTimeBands };
 }

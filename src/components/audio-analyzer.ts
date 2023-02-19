@@ -177,14 +177,14 @@ export class AudioAnalyzer extends LitElement {
 
     // monaural
     const edt = mapArrayParam(results, 'edtBands');
-    const reverbTime = mapArrayParam(results, 'reverbTimeBands');
+    const reverbTimeBands = mapArrayParam(results, 'reverbTimeBands');
     const c50 = mapArrayParam(results, 'c50Bands');
     const c80 = mapArrayParam(results, 'c80Bands');
     const squaredIRPoints = mapArrayParam(results, 'squaredIRPoints');
     const centreTimes = mapArrayParam(results, 'centreTime');
     const bassRatios = mapArrayParam(results, 'bassRatio');
     const meanC80s = c80.map(value => meanDecibel(value[3], value[4]));
-    const meanReverbTimes = reverbTime.map(value => (value[3] + value[4]) / 2);
+    const reverbTimes = reverbTimeBands.map(value => (value[3] + value[4]) / 2);
 
     // binaural
     const binauralResponses = responses.filter(
@@ -236,7 +236,7 @@ export class AudioAnalyzer extends LitElement {
         .centreTimes=${centreTimes}
         .bassRatios=${bassRatios}
         .c80s=${meanC80s}
-        .reverbTimes=${meanReverbTimes}
+        .reverbTimes=${reverbTimes}
         .iaccs=${iaccs}
         .strengths=${strengths}
       >
@@ -251,7 +251,7 @@ export class AudioAnalyzer extends LitElement {
       <reverb-graph
         .impulseResponses=${responses}
         .edt=${edt}
-        .reverbTime=${reverbTime}
+        .reverbTime=${reverbTimeBands}
       ></reverb-graph>
 
       <c50c80-graph

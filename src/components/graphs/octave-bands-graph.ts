@@ -1,6 +1,6 @@
 import { localized, msg } from '@lit/localize';
 import { ChartDataset } from 'chart.js';
-import { css, html, LitElement } from 'lit';
+import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { UNIT_HERTZ } from '../../presentation/units';
 import { getFrequencyLabels } from './common';
@@ -14,7 +14,7 @@ type Dataset = {
 type Param = {
   key: string;
   name: string;
-  label: string;
+  label: string | TemplateResult;
   datasets: Dataset[];
 };
 
@@ -44,7 +44,7 @@ export class OctaveBandsGraph extends LitElement {
       if (!this.hiddenParams.includes(param.key)) {
         param.datasets.forEach(dataset => {
           datasets.push({
-            label: param.label,
+            label: param.name,
             data: dataset.values,
             borderColor: dataset.color,
             borderDash: LINE_STYLES[paramIndex],

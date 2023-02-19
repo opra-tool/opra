@@ -24,7 +24,6 @@ export const templates = {
   s251a76634b35932d: `Frühes Basslevel`,
   s29a26d2ca3ba8d74: `Fühes Stärkemaß`,
   s2f64461723d3df5d: `Ändern`,
-  s2f687d204fbee187: `Nachhallzeit (T20)`,
   s3019bdb56b4ee311: `Als binaurale Impulsantwort behandeln`,
   s30a6412eb8b9650e: `Nachhallzeit`,
   s333e1c2ed29fa049: `EIne Lufttemperatur von`,

@@ -39,7 +39,7 @@ export class ParametersCard extends LitElement {
   render() {
     const parameters: Parameter[] = [
       {
-        name: html`${msg('Reverb Time')} <i>T</i>`,
+        name: html`${msg('Reverb Time')} <i>T<sub>20</sub></i>`,
         badge: '500Hz - 1kHz',
         description: `${msg('according to')} ISO 3382-1`,
         unit: UNIT_SECONDS,
