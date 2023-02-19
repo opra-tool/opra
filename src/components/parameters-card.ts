@@ -48,6 +48,7 @@ export class ParametersCard extends LitElement {
       },
       {
         name: html`${msg('Centre Time')} <i>T<sub>S</sub></i>`,
+        badge: '500Hz - 1kHz',
         description: `${msg(
           'Perceived clarity of sound, according to'
         )} ISO 3382-1`,
@@ -92,6 +93,7 @@ export class ParametersCard extends LitElement {
 
       parameters.push({
         name: html`${msg('Sound Strength')} <i>G</i>`,
+        badge: '500Hz - 1kHz',
         description: `${msg(
           'Subjective level of sound, according to'
         )} ISO 3382-1`,
@@ -101,6 +103,7 @@ export class ParametersCard extends LitElement {
       });
       parameters.push({
         name: html`${msg('A-weighted Sound Strength')} <i>G(A)</i>`,
+        badge: '500Hz - 1kHz',
         description: msg('as defined by Soulodre and Bradley (1995)'),
         responseValues: aWeighted,
         unit: UNIT_DECIBELS_A,
@@ -108,6 +111,7 @@ export class ParametersCard extends LitElement {
       });
       parameters.push({
         name: html`${msg('Level-Adjusted')} C<sub>80</sub>`,
+        badge: '500Hz - 1kHz',
         description: msg(
           'Perceived clarity rating, as defined by Soulodre and Bradley (1995)'
         ),
