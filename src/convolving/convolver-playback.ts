@@ -85,10 +85,12 @@ export class ConvolverPlayback extends EventTarget {
 
   play(): void {
     this.source.start();
+    this.ctx.resume();
   }
 
   pause(): void {
     this.source.stop();
+    this.ctx.suspend();
   }
 
   togglePlayPause(): void {
