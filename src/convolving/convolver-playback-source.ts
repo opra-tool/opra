@@ -151,9 +151,13 @@ class BufferPlaybackSource extends EventTarget implements PlaybackSource {
       throw new Error();
     }
 
-    if (this.startTime) {
+    if (this.node.playbackRate.value === 0) {
+      // AudioBufferSourceNode can only be started once - resetting playback rate to stop simulate pausing
+      this.node.playbackRate.value = this.node.playbackRate.defaultValue;
+    } else if (this.startTime) {
       this.currentTimeVal = this.startTime;
       this.node.start(0, this.startTime);
+      this.node.playbackRate.value = 1;
     } else {
       this.currentTimeVal = 0;
       this.node.start();
@@ -162,7 +166,12 @@ class BufferPlaybackSource extends EventTarget implements PlaybackSource {
   }
 
   stop(): void {
-    this.node?.stop();
+    if (!this.node) {
+      throw new Error();
+    }
+
+    // AudioBufferSourceNode can only be started once - setting playback rate to 0 to simulate pausing
+    this.node.playbackRate.value = 0;
     this.dispatchEvent(new Event('pause'));
   }
 
