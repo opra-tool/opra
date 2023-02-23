@@ -19,9 +19,11 @@ export class LateralLevelCard extends LitElement {
 
   render() {
     return html`
-      <base-card cardTitle=${msg('Lateral Sound Level')}
-        >${this.renderCardContent()}</base-card
-      >
+      <help-card cardTitle=${msg('Lateral Sound Level')}>
+        ${this.renderCardContent()}
+
+        <div slot="help">TODO</div>
+      </help-card>
     `;
   }
 

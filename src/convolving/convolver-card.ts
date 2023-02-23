@@ -81,7 +81,7 @@ export class ConvolverCard extends LitElement {
     }
 
     return html`
-      <base-card
+      <titled-card
         cardTitle=${msg('Playback audio based on a room impulse response')}
       >
         <section>
@@ -117,7 +117,7 @@ export class ConvolverCard extends LitElement {
           label=${msg('Drop custom audio files here')}
           @change=${this.onFilesAdded}
         ></file-drop>
-      </base-card>
+      </titled-card>
     `;
   }
 

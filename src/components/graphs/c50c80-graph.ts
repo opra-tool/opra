@@ -35,12 +35,14 @@ export class C50C80Graph extends LitElement {
     ];
 
     return html`
-      <base-card cardTitle="C50 / C80">
+      <help-card cardTitle="C50 / C80">
         <octave-bands-graph
           .params=${params}
           .yAxisLabel=${UNIT_DECIBELS}
         ></octave-bands-graph>
-      </base-card>
+
+        <div slot="help">TODO</div>
+      </help-card>
     `;
   }
 }

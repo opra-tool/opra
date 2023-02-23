@@ -136,13 +136,13 @@ export class ParametersCard extends LitElement {
     }
 
     return html`
-      <base-card cardTitle=${msg('Single-Figure Parameters')}>
+      <titled-card cardTitle=${msg('Single-Figure Parameters')}>
         <parameters-table
           .impulseResponses=${this.impulseResponses}
           .parameters=${parameters}
         ></parameters-table>
         <slot></slot>
-      </base-card>
+      </titled-card>
     `;
   }
 }

@@ -30,7 +30,9 @@ import '@shoelace-style/shoelace/dist/components/switch/switch.js';
 // register web components
 import './components/audio-analyzer';
 import './components/base-app';
-import './components/base-card';
+import './components/cards/base-card';
+import './components/cards/titled-card';
+import './components/cards/help-card';
 import './components/binaural-note-card';
 import './convolving/convolver-card';
 import './components/error-details';

@@ -38,12 +38,14 @@ export class ReverbGraph extends LitElement {
     ];
 
     return html`
-      <base-card cardTitle=${msg('Reverberation')}>
+      <help-card cardTitle=${msg('Reverberation')}>
         <octave-bands-graph
           .params=${params}
           .yAxisLabel=${msg('Time in seconds')}
         ></octave-bands-graph>
-      </base-card>
+
+        <div slot="help">TODO</div>
+      </help-card>
     `;
   }
 }

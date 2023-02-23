@@ -27,12 +27,14 @@ export class earlyLateralEnergyFractionGraph extends LitElement {
     ];
 
     return html`
-      <base-card cardTitle=${msg('Early Lateral Energy Fraction')}>
+      <help-card cardTitle=${msg('Early Lateral Energy Fraction')}>
         <octave-bands-graph
           .params=${params}
           .yAxisLabel=${UNIT_DECIBELS}
         ></octave-bands-graph>
-      </base-card>
+
+        <div slot="help">TODO</div>
+      </help-card>
     `;
   }
 }

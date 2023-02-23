@@ -19,9 +19,11 @@ export class StrengthsCard extends LitElement {
 
   render() {
     return html`
-      <base-card cardTitle=${msg('Sound Strength')}>
+      <help-card cardTitle=${msg('Sound Strength')}>
         ${this.renderCardContent()}
-      </base-card>
+
+        <div slot="help">TODO</div>
+      </help-card>
     `;
   }
 

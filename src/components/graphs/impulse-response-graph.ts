@@ -62,9 +62,11 @@ export class ImpulseResponseGraph extends LitElement {
     };
 
     return html`
-      <base-card cardTitle=${msg('Squared Impulse Response')}>
+      <help-card cardTitle=${msg('Squared Impulse Response')}>
         <line-graph .config=${config} height="100"></line-graph>
-      </base-card>
+
+        <div slot="help">TODO</div>
+      </help-card>
     `;
   }
 }

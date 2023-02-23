@@ -287,6 +287,18 @@
   <source>Energy Decay Time</source>
   <target>Frühe Abklingzeit</target>
 </trans-unit>
+<trans-unit id="s6ff0144bf13be05e">
+  <source>Close help</source>
+  <target>Hilfe schließen</target>
+</trans-unit>
+<trans-unit id="sd14599a1d51f5fa8">
+  <source>What is this?</source>
+  <target>Was ist das?</target>
+</trans-unit>
+<trans-unit id="s8cf84c09568b1264">
+  <source>There is no help available for this item.</source>
+  <target>Für dieses Element gibt es noch keine Hilfe.</target>
+</trans-unit>
 </body>
 </file>
 </xliff>

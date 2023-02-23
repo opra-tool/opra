@@ -43,11 +43,13 @@ export default {
       targets: [
         {
           src: [
+            iconPath('x-lg'),
             iconPath('trash'),
             iconPath('globe2'),
             iconPath('download'),
             iconPath('play-fill'),
             iconPath('pause-fill'),
+            iconPath('info-circle'),
             iconPath('check2-circle'),
             iconPath('three-dots-vertical'),
             iconPath('exclamation-triangle'),
