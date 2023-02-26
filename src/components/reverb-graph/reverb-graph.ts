@@ -44,7 +44,7 @@ export class ReverbGraph extends LitElement {
           .yAxisLabel=${msg('Time in seconds')}
         ></octave-bands-graph>
 
-        <div slot="help">TODO</div>
+        <reverb-graph-help slot="help"></reverb-graph-help>
       </help-card>
     `;
   }
