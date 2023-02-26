@@ -1,8 +1,8 @@
 import { msg } from '@lit/localize';
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { ImpulseResponse } from '../../analyzing/impulse-response';
-import { GraphConfig } from './line-graph';
+import { ImpulseResponse } from '../analyzing/impulse-response';
+import { GraphConfig } from './graphs/line-graph';
 
 type Point = {
   x: number;
@@ -65,7 +65,19 @@ export class ImpulseResponseGraph extends LitElement {
       <help-card cardTitle=${msg('Squared Impulse Response')}>
         <line-graph .config=${config} height="100"></line-graph>
 
-        <div slot="help">TODO</div>
+        <div slot="help">
+          <p>
+            ${msg(`
+            This graph shows the squared impulse response of all room impulse responses.
+            It formes the basis of much of the calculations in the following graphs.
+          `)}
+          </p>
+          <p>
+            ${msg('In formulae, it is usually represented as ')}<i
+              >p<sup>2</sup></i
+            >
+          </p>
+        </div>
       </help-card>
     `;
   }

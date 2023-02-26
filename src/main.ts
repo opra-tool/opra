@@ -45,7 +45,7 @@ import './components/c50c80-graph/c50c80-graph-help';
 import './components/graphs/early-lateral-fraction-graph';
 import './components/iacc-graph/iacc-graph';
 import './components/iacc-graph/iacc-graph-help';
-import './components/graphs/impulse-response-graph';
+import './components/impulse-response-graph';
 import './components/graphs/lateral-level-graph';
 import './components/graphs/line-graph';
 import './components/graphs/octave-bands-graph';
