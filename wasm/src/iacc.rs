@@ -77,10 +77,43 @@ fn x_correlate(a: Vec<f32>, b: Vec<f32>, n: usize) -> Vec<f32> {
 #[cfg(test)]
 mod tests {
     use crate::iacc::*;
+    use rand::Rng;
+    use approx::relative_eq;
 
     #[test]
     #[should_panic]
     fn panics_when_given_channels_of_unequal_lengths() {
         let _ = iacc(vec![1.0], vec![1.0, 2.0]);
+    }
+
+    #[test]
+    #[allow(unused_must_use)]
+    fn returns_1_for_fully_correlated_signal() {
+      let mut rng = rand::thread_rng();
+
+      let mut left = Vec::with_capacity(1000);
+      let mut right = Vec::with_capacity(1000);
+      for _ in 0..1000 {
+        let val = rng.gen_range(0.0..1.0) as f32;
+        left.push(val);
+        right.push(val);
+      }
+
+      relative_eq!(iacc(left, right), 1.0, epsilon = f32::EPSILON);
+    }
+
+    #[test]
+    #[allow(unused_must_use)]
+    fn returns_0_for_fully_uncorrelated_signal() {
+      let mut rng = rand::thread_rng();
+
+      let mut left = Vec::with_capacity(1000);
+      let mut right = Vec::with_capacity(1000);
+      for _ in 0..1000 {
+        left.push(rng.gen_range(0.0..1.0) as f32);
+        right.push(rng.gen_range(0.0..1.0) as f32);
+      }
+
+      relative_eq!(iacc(left, right), 0.0, epsilon = f32::EPSILON);
     }
 }
