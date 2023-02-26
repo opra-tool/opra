@@ -40,8 +40,7 @@ export class C50C80Graph extends LitElement {
           .params=${params}
           .yAxisLabel=${UNIT_DECIBELS}
         ></octave-bands-graph>
-
-        <div slot="help">TODO</div>
+        <c50c80-graph-help slot="help"></c50c80-graph-help>
       </help-card>
     `;
   }

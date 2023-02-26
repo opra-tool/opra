@@ -38,8 +38,7 @@ export class IACCGraph extends LitElement {
     return html`
       <help-card cardTitle=${msg('Interaural Cross Correlation')}>
         <octave-bands-graph .params=${params}></octave-bands-graph>
-
-        <div slot="help">TODO</div>
+        <iacc-graph-help slot="help"></iacc-graph-help>
       </help-card>
     `;
   }
