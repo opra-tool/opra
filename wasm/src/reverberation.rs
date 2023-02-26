@@ -2,6 +2,7 @@ use wasm_bindgen::prelude::wasm_bindgen;
 use crate::linear_algebra::linear_function_steepness;
 
 #[wasm_bindgen]
+#[allow(dead_code)]
 pub fn calculate_reverberation(squared_ir: Vec<f32>, tc: f32, fs: f32) -> Vec<f32> {
   let sum = squared_ir.iter().sum::<f32>();
   let cumulative_sum: Vec<f32> = squared_ir

@@ -3,6 +3,7 @@ use realfft::{num_complex::Complex, RealFftPlanner};
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
+#[allow(dead_code)]
 pub fn fft_flat(values: Vec<f32>) -> Vec<f32> {
     utils::set_panic_hook();
 
@@ -23,6 +24,7 @@ pub fn fft(mut x: Vec<f32>) -> Vec<Complex<f32>> {
 }
 
 #[wasm_bindgen]
+#[allow(dead_code)]
 pub fn ifft_flat(flat_input: Vec<f32>, length: usize) -> Vec<f32> {
     utils::set_panic_hook();
 

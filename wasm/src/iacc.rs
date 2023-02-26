@@ -2,6 +2,7 @@ use crate::{fourier, utils};
 use wasm_bindgen::prelude::wasm_bindgen;
 
 #[wasm_bindgen]
+#[allow(dead_code)]
 pub fn iacc(left_channel: Vec<f32>, right_channel: Vec<f32>) -> f32 {
     utils::set_panic_hook();
 
