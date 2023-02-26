@@ -28,7 +28,7 @@ pub fn linear_function_steepness(x: &Vec<f32>, y: &Vec<f32>) -> f32 {
 
 #[cfg(test)]
 mod tests {
-  use crate::reverberation::*;
+  use crate::linear_algebra::*;
 
   #[test]
   fn returns_steepness_of_a_fitted_linear_function() {
