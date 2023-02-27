@@ -36,6 +36,12 @@ export class ParametersCard extends LitElement {
   @property({ type: Array })
   strengths: (Strengths | null)[] = [];
 
+  @property({ type: Array })
+  earlyLateralEnergyFractions: (number | null)[] = [];
+
+  @property({ type: Array })
+  lateLateralLevels: (number | null)[] = [];
+
   render() {
     const parameters: Parameter[] = [
       {
@@ -134,6 +140,22 @@ export class ParametersCard extends LitElement {
         position: 9,
       });
     }
+
+    parameters.push({
+      name: msg('Early Lateral Energy Fraction'),
+      badge: '125Hz - 1kHz',
+      description: `${msg('according to')} ISO 3382-1`,
+      responseValues: this.earlyLateralEnergyFractions,
+      position: 11,
+    });
+    parameters.push({
+      name: msg('Late Lateral Sound Level'),
+      badge: '125Hz - 1kHz',
+      description: `${msg('according to')} ISO 3382-1`,
+      responseValues: this.lateLateralLevels,
+      unit: UNIT_DECIBELS,
+      position: 12,
+    });
 
     return html`
       <titled-card cardTitle=${msg('Single-Figure Parameters')}>

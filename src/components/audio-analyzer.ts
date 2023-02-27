@@ -210,9 +210,19 @@ export class AudioAnalyzer extends LitElement {
       midSideResults,
       'earlyLateralEnergyFractionBands'
     );
-    const lateralLevels = midSideResponses.map(r =>
+    const lateralLevelBands = midSideResponses.map(r =>
       this.analyzer.getLateralLevelResults(r.id)
     );
+    const lateLateralLevels = responses
+      .map(r => this.analyzer.getLateralLevelResults(r.id))
+      .map(v => (v ? v.lateLateralLevel : null));
+    const earlyLateralEnergyFractions = results.map(r => {
+      if (isMidSideResults(r)) {
+        return r.earlyLateralEnergyFraction;
+      }
+
+      return null;
+    });
 
     // strengths
     const strengths = responses.map(r =>
@@ -239,6 +249,8 @@ export class AudioAnalyzer extends LitElement {
         .reverbTimes=${reverbTimes}
         .iaccs=${iaccs}
         .strengths=${strengths}
+        .lateLateralLevels=${lateLateralLevels}
+        .earlyLateralEnergyFractions=${earlyLateralEnergyFractions}
       >
         <p0-notice
           .p0=${this.analyzer.getP0()}
@@ -284,7 +296,7 @@ export class AudioAnalyzer extends LitElement {
             <lateral-level-card
               .p0=${this.analyzer.getP0()}
               .impulseResponses=${midSideResponses}
-              .lateralLevels=${lateralLevels}
+              .lateralLevels=${lateralLevelBands}
             >
               <p0-notice
                 slot="p0-notice"

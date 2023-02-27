@@ -9,6 +9,15 @@ export function meanDecibel(...values: number[]): number {
   return 10 * safeLog10(sum / values.length);
 }
 
+export function meanDecibelEnergetic(...values: number[]): number {
+  let sum = 0;
+  for (const value of values) {
+    sum += 10 ** (value / 20);
+  }
+
+  return 20 * safeLog10(sum / values.length);
+}
+
 export function addDecibel(...values: number[]): number {
   let sum = 0;
   for (const value of values) {

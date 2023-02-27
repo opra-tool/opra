@@ -6,9 +6,11 @@ import { MonauralResults, processChannel } from './monaural-processing';
 import { octfiltBinaural } from '../filtering/octfilt';
 import { calculateSquaredIR } from './squared-impulse-response';
 import { correctStarttimeBinaural } from './starttime';
+import { meanDecibel } from '../math/decibels';
 
 export type MidSideResults = MonauralResults & {
   earlyLateralEnergyFractionBands: number[];
+  earlyLateralEnergyFraction: number;
   sideE80BandsSquaredSum: number[];
   sideL80BandsSquaredSum: number[];
 };
@@ -45,6 +47,12 @@ export async function processMidSideAudio(
   return {
     ...monauralResults,
     earlyLateralEnergyFractionBands,
+    earlyLateralEnergyFraction: meanDecibel(
+      earlyLateralEnergyFractionBands[1],
+      earlyLateralEnergyFractionBands[2],
+      earlyLateralEnergyFractionBands[3],
+      earlyLateralEnergyFractionBands[4]
+    ),
     sideE80BandsSquaredSum,
     sideL80BandsSquaredSum,
   };
