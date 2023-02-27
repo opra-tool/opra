@@ -111,6 +111,7 @@ export class FileDrop extends LitElement {
       gap: 1rem;
 
       box-sizing: border-box;
+      height: 100%;
 
       padding: 1.5rem;
 

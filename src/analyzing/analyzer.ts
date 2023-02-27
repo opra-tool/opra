@@ -142,11 +142,13 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
   }
 
   async addResponseFiles(files: FileList) {
+    const totalFileCount = this.responses.length + files.length;
+
     for (let i = 0; i < files.length; i += 1) {
       if (this.responses.length >= MAX_FILE_COUNT) {
         throw new MaximumFileCountReachedError(
           MAX_FILE_COUNT,
-          files.length - MAX_FILE_COUNT
+          totalFileCount - MAX_FILE_COUNT
         );
       }
 

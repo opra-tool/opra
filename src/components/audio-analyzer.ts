@@ -358,7 +358,7 @@ export class AudioAnalyzer extends LitElement {
 
   private async onFilesAdded({ detail: { files } }: FileDropChangeEvent) {
     try {
-      this.analyzer.addResponseFiles(files);
+      await this.analyzer.addResponseFiles(files);
     } catch (err) {
       if (err instanceof MaximumFileCountReachedError) {
         toastWarning(

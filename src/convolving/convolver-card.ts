@@ -113,10 +113,12 @@ export class ConvolverCard extends LitElement {
             ${this.files.map(this.renderFile.bind(this))}
           </ul>
         </section>
-        <file-drop
-          label=${msg('Drop custom audio files here')}
-          @change=${this.onFilesAdded}
-        ></file-drop>
+        <div>
+          <file-drop
+            label=${msg('Drop custom audio files here')}
+            @change=${this.onFilesAdded}
+          ></file-drop>
+        </div>
       </titled-card>
     `;
   }
