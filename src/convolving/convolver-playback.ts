@@ -1,4 +1,5 @@
 import { ImpulseResponse } from '../analyzing/impulse-response';
+import { basePath } from '../paths';
 import {
   PlaybackSource,
   PlaybackSourceFactory,
@@ -65,7 +66,26 @@ export class ConvolverPlayback extends EventTarget {
       this.convolver.normalize = normalize;
 
       this.source.connect(this.convolver);
-      this.convolver.connect(this.ctx.destination);
+
+      if (response.type === 'mid-side') {
+        this.ctx.audioWorklet
+          .addModule(
+            `${basePath(
+              import.meta.url
+            )}/mid-side-to-binaural-audio-worklet-processor.js`
+          )
+          .then(() => {
+            const workletNode = new AudioWorkletNode(
+              this.ctx,
+              'mid-side-to-binaural-audio-worklet-processor'
+            );
+
+            this.convolver?.connect(workletNode);
+            workletNode.connect(this.ctx.destination);
+          });
+      } else {
+        this.convolver.connect(this.ctx.destination);
+      }
     } else {
       this.source.connect(this.ctx.destination);
     }

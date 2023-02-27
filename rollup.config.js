@@ -71,6 +71,12 @@ export default {
         },
       ],
     }),
+    copy({
+      targets: [{ src: path.resolve(
+        __dirname,
+        'out-tsc/src/convolving/mid-side-to-binaural-audio-worklet-processor.js'
+      ), dest: path.resolve(__dirname, 'dist/') }]
+    }),
     /** Compile JS to a lower language target */
     babel({
       babelHelpers: 'bundled',
