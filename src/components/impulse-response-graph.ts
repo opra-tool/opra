@@ -1,4 +1,4 @@
-import { msg } from '@lit/localize';
+import { msg, localized } from '@lit/localize';
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { ImpulseResponse } from '../analyzing/impulse-response';
@@ -14,6 +14,7 @@ type Points = Point[];
 const MAX_X = 0.5;
 const DECIMATION_SAMPLES = 500;
 
+@localized()
 @customElement('impulse-response-graph')
 export class ImpulseResponseGraph extends LitElement {
   @property({ type: Array })
