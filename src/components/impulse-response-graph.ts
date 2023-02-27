@@ -1,5 +1,5 @@
 import { msg, localized } from '@lit/localize';
-import { LitElement, html } from 'lit';
+import { LitElement, html, css } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { ImpulseResponse } from '../analyzing/impulse-response';
 import { GraphConfig } from './graphs/line-graph';
@@ -62,24 +62,23 @@ export class ImpulseResponseGraph extends LitElement {
       },
     };
 
+    // This component does not use the <titled-card> component,
+    // as this seems to trigger a bug in Firefox (https://bugzilla.mozilla.org/show_bug.cgi?id=941146).
+    // It is not entirely clear why this error occurs with this component
+    // and not other graphs. Possibly caused by a certain nesting of web components.
     return html`
-      <help-card cardTitle=${msg('Squared Impulse Response')}>
+      <base-card>
+        <h3>${msg('Squared Impulse Response')}</h3>
         <line-graph .config=${config} height="100"></line-graph>
-
-        <div slot="help">
-          <p>
-            ${msg(`
-            This graph shows the squared impulse response of all room impulse responses.
-            It formes the basis of much of the calculations in the following graphs.
-          `)}
-          </p>
-          <p>
-            ${msg('In formulae, it is usually represented as ')}<i
-              >p<sup>2</sup></i
-            >
-          </p>
-        </div>
-      </help-card>
+      </base-card>
     `;
   }
+
+  static styles = css`
+    h3 {
+      margin: 0.5rem 0 2rem 0;
+      font-size: 1rem;
+      letter-spacing: 1px;
+    }
+  `;
 }
