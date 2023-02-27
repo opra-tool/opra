@@ -41,24 +41,14 @@ export class LineGraph extends LitElement {
       throw new Error('canvas 2D context required for drawing graph');
     }
 
-    try {
-      this.chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: this.config.labels,
-          datasets: this.config.datasets,
-        },
-        options: this.config.options,
-      });
-    } catch (e) {
-      // ignore error NS_ERROR_FAILURE due to a bug in firefox
-      // https://bugzilla.mozilla.org/show_bug.cgi?id=941146
-      if (hasErrorName(e, 'NS_ERROR_FAILURE')) {
-        return;
-      }
-
-      throw e;
-    }
+    this.chart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: this.config.labels || ['lala', 'lulu'],
+        datasets: this.config.datasets,
+      },
+      options: this.config.options,
+    });
   }
 
   protected updated(): void {
@@ -75,6 +65,8 @@ export class LineGraph extends LitElement {
         this.chart.options = this.config.options;
       }
       this.chart.update();
+    } else {
+      throw new Error('expected chart to be defined');
     }
   }
 
@@ -86,16 +78,4 @@ export class LineGraph extends LitElement {
       </div>
     `;
   }
-}
-
-function hasErrorName(e: unknown, name: string): boolean {
-  if (!e) {
-    return false;
-  }
-
-  if (typeof e !== 'object') {
-    return false;
-  }
-
-  return (e as { name: string }).name === name;
 }
