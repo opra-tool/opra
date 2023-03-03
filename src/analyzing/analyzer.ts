@@ -1,4 +1,5 @@
 import { readAudioFile } from '../audio/audio-file-reading';
+import { convertBetweenBinauralAndMidSide } from '../conversion';
 import { EventEmitter } from '../event-emitter';
 import {
   getResponses,
@@ -9,7 +10,7 @@ import {
   retrieveValueOrDefault,
 } from '../persistence';
 import { BinauralResults, processBinauralAudio } from './binaural-processing';
-import { binauralAudioFromBuffer } from './binaural-samples';
+import { binauralSamplesFromBuffer } from './binaural-samples';
 import { ImpulseResponse } from './impulse-response';
 import { calculateLateralLevel, LateralLevel } from './lateral-level';
 import { MidSideResults, processMidSideAudio } from './mid-side-processing';
@@ -208,11 +209,7 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
   }
 
   markResponseAs(id: string, markAs: 'binaural' | 'mid-side') {
-    const response = this.responses.find(r => r.id === id);
-
-    if (!response) {
-      throw new Error(`cannot find response with id '${id}'`);
-    }
+    const response = this.getResponseOrThrow(id);
 
     if (response.type === markAs) {
       return;
@@ -229,6 +226,33 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
     // eslint-disable-next-line no-console
     removeResponse(id).catch(console.error);
     persistResponse(response);
+  }
+
+  convertResponseTo(id: string, convertTo: 'binaural' | 'mid-side') {
+    const response = this.getResponseOrThrow(id);
+
+    if (response.type === convertTo) {
+      return;
+    }
+
+    const newResponse = convertBetweenBinauralAndMidSide(response);
+    this.analyzeResponse(newResponse);
+
+    this.results.delete(id);
+    this.responses = this.responses.map(r => {
+      if (r.id === id) {
+        return newResponse;
+      }
+
+      return r;
+    });
+
+    this.dispatchEvent('change', undefined);
+
+    // TODO: do more elegantly
+    // eslint-disable-next-line no-console
+    removeResponse(id).catch(console.error);
+    persistResponse(newResponse);
   }
 
   hasResults(responseId: string): boolean {
@@ -253,6 +277,16 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
     return this.lateralLevelResults.get(responseId) || null;
   }
 
+  private getResponseOrThrow(id: string): ImpulseResponse {
+    const response = this.responses.find(r => r.id === id);
+
+    if (!response) {
+      throw new Error(`cannot find response with id '${id}'`);
+    }
+
+    return response;
+  }
+
   private async analyzeResponse({
     id,
     type,
@@ -269,12 +303,12 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
         );
       } else if (type === 'binaural') {
         results = await processBinauralAudio(
-          binauralAudioFromBuffer(buffer),
+          binauralSamplesFromBuffer(buffer),
           sampleRate
         );
       } else {
         results = await processMidSideAudio(
-          binauralAudioFromBuffer(buffer),
+          binauralSamplesFromBuffer(buffer),
           sampleRate
         );
       }

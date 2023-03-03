@@ -134,10 +134,6 @@
   <source>More options for this impulse response</source>
   <target>Weitere Einstellungen für diese Impulsantwort</target>
 </trans-unit>
-<trans-unit id="s7d54db2b110e7452">
-  <source>Treat as M/S impulse response</source>
-  <target>Als M/S Impulsantwort behandeln</target>
-</trans-unit>
 <trans-unit id="s3019bdb56b4ee311">
   <source>Treat as binaural impulse response</source>
   <target>Als binaurale Impulsantwort behandeln</target>
@@ -298,6 +294,38 @@
 <trans-unit id="s8cf84c09568b1264">
   <source>There is no help available for this item.</source>
   <target>Für dieses Element gibt es noch keine Hilfe.</target>
+</trans-unit>
+<trans-unit id="s50dc09393c99feda">
+  <source>Monaural</source>
+  <target>Monaural</target>
+</trans-unit>
+<trans-unit id="s4c159fe41145b863">
+  <source>Binaural</source>
+  <target>Binaural</target>
+</trans-unit>
+<trans-unit id="s15b70d1b44576ead">
+  <source>Mid/Side</source>
+  <target>Mitten/Seiten</target>
+</trans-unit>
+<trans-unit id="s65d9ceb799192a39">
+  <source>converted</source>
+  <target>konvertiert</target>
+</trans-unit>
+<trans-unit id="sd95fff9731b3bfad">
+  <source>Undo conversion</source>
+  <target>Konvertierung rückgängig machen</target>
+</trans-unit>
+<trans-unit id="s33ea1b826a344e0d">
+  <source>Convert to binaural impulse response</source>
+  <target>In eine binaurale Impulsantwort konvertieren</target>
+</trans-unit>
+<trans-unit id="s78cb1ae8a1d79653">
+  <source>Treat as Mid/Side impulse response</source>
+  <target>Als Mitten/Seiten Impulsantwort behandeln</target>
+</trans-unit>
+<trans-unit id="saf8a00fbc745150f">
+  <source>Convert to Mid/Side impulse response</source>
+  <target>In eine Mitten/Seiten Impulsantwort konvertieren</target>
 </trans-unit>
 </body>
 </file>

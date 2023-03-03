@@ -1,7 +1,9 @@
 /* eslint-disable class-methods-use-this */
 
 /**
- * Represents an audio node which converts a M/S signal to a binaural signal.
+ * Represents an audio node which converts a mid/side signal to a binaural signal.
+ *
+ * TODO: should this use / sqrt(2)
  */
 class MidSideToBinauralAudioWorkletProcessor extends AudioWorkletProcessor {
   process(inputs: Float32Array[][], outputs: Float32Array[][]) {

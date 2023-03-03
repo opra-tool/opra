@@ -17,7 +17,7 @@ export class BinauralSamples {
   }
 }
 
-export function binauralAudioFromBuffer(buffer: AudioBuffer) {
+export function binauralSamplesFromBuffer(buffer: AudioBuffer) {
   const leftChannel = buffer.getChannelData(0);
   const rightChannel = buffer.getChannelData(1);
 

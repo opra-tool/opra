@@ -20,6 +20,22 @@ export class FileListMarkEvent extends CustomEvent<{
   }
 }
 
+export class FileListConvertEvent extends CustomEvent<{
+  id: string;
+  convertTo: 'binaural' | 'mid-side';
+}> {
+  constructor(id: string, convertTo: 'binaural' | 'mid-side') {
+    super('convert-file', {
+      detail: {
+        id,
+        convertTo,
+      },
+      bubbles: true,
+      composed: true,
+    });
+  }
+}
+
 @localized()
 @customElement('file-list-entry-options')
 export class FileListEntryOptions extends LitElement {
@@ -28,6 +44,9 @@ export class FileListEntryOptions extends LitElement {
 
   @property({ type: String })
   type: 'binaural' | 'mid-side' = 'binaural';
+
+  @property({ type: Boolean })
+  converted: boolean = false;
 
   protected render() {
     return html`
@@ -38,17 +57,7 @@ export class FileListEntryOptions extends LitElement {
           title=${msg('More options for this impulse response')}
         ></sl-icon-button>
         <sl-menu @sl-select=${this.onMenuSelect}>
-          ${this.type === 'binaural'
-            ? html`
-                <sl-menu-item value="mid-side">
-                  ${msg('Treat as M/S impulse response')}
-                </sl-menu-item>
-              `
-            : html`
-                <sl-menu-item value="binaural"
-                  >${msg('Treat as binaural impulse response')}</sl-menu-item
-                >
-              `}
+          ${this.renderConversionOptions()}
           <sl-divider></sl-divider>
           <sl-menu-item value="remove">${msg('Discard')}</sl-menu-item>
         </sl-menu>
@@ -56,13 +65,59 @@ export class FileListEntryOptions extends LitElement {
     `;
   }
 
+  private renderConversionOptions() {
+    if (this.converted) {
+      return this.type === 'binaural'
+        ? html`
+            <sl-menu-item value="convert:mid-side">
+              ${msg('Undo conversion')}
+            </sl-menu-item>
+          `
+        : html`
+            <sl-menu-item value="convert:binaural">
+              ${msg('Undo conversion')}
+            </sl-menu-item>
+          `;
+    }
+
+    return this.type === 'binaural'
+      ? html`
+          <sl-menu-item value="mark:mid-side">
+            ${msg('Treat as Mid/Side impulse response')}
+          </sl-menu-item>
+          <sl-menu-item value="convert:mid-side">
+            ${msg('Convert to Mid/Side impulse response')}
+          </sl-menu-item>
+        `
+      : html`
+          <sl-menu-item value="mark:binaural">
+            ${msg('Treat as binaural impulse response')}
+          </sl-menu-item>
+          <sl-menu-item value="convert:binaural">
+            ${msg('Convert to binaural impulse response')}
+          </sl-menu-item>
+        `;
+  }
+
   private onMenuSelect({
     detail: { item },
   }: CustomEvent<{ item: SlMenuItem }>) {
-    switch (item.value) {
-      case 'mid-side':
-      case 'binaural':
-        this.dispatchEvent(new FileListMarkEvent(this.id, item.value));
+    const [action, type] = item.value.split(':');
+
+    switch (action) {
+      case 'mark':
+        if (type !== 'binaural' && type !== 'mid-side') {
+          throw new Error('expected type to be one of [binaural, mid-side]');
+        }
+
+        this.dispatchEvent(new FileListMarkEvent(this.id, type));
+        break;
+      case 'convert':
+        if (type !== 'binaural' && type !== 'mid-side') {
+          throw new Error('expected type to be one of [binaural, mid-side]');
+        }
+
+        this.dispatchEvent(new FileListConvertEvent(this.id, type));
         break;
       case 'remove':
         this.dispatchEvent(new FileListRemoveEvent(this.id));

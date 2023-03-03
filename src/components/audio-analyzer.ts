@@ -6,7 +6,10 @@ import { Exporter } from '../export-import/exporter';
 import { Analyzer, MaximumFileCountReachedError } from '../analyzing/analyzer';
 import { UNIT_CELCIUS } from '../presentation/units';
 import { FileListToggleEvent, FileListRemoveEvent } from './file-list';
-import { FileListMarkEvent } from './file-list-entry-options';
+import {
+  FileListConvertEvent,
+  FileListMarkEvent,
+} from './file-list-entry-options';
 import { BinauralResults } from '../analyzing/binaural-processing';
 import { MonauralResults } from '../analyzing/monaural-processing';
 import { MidSideResults } from '../analyzing/mid-side-processing';
@@ -93,17 +96,28 @@ export class AudioAnalyzer extends LitElement {
   protected render() {
     const fileListEntries = this.analyzer
       .getResponses()
-      .map(({ type, id, color, duration, sampleRate, fileName }) => ({
-        type,
-        id,
-        color,
-        duration,
-        isEnabled: !this.hiddenResponses.has(id),
-        sampleRate,
-        fileName,
-        hasResults: this.analyzer.hasResults(id),
-        error: this.errors.get(id),
-      }));
+      .map(
+        ({
+          type,
+          id,
+          color,
+          duration,
+          sampleRate,
+          fileName,
+          originalBuffer,
+        }) => ({
+          type,
+          id,
+          color,
+          duration,
+          isEnabled: !this.hiddenResponses.has(id),
+          sampleRate,
+          fileName,
+          hasResults: this.analyzer.hasResults(id),
+          error: this.errors.get(id),
+          converted: !!originalBuffer,
+        })
+      );
 
     return html`
       <section class="grid">
@@ -120,6 +134,7 @@ export class AudioAnalyzer extends LitElement {
                     @toggle-file=${this.onToggleFile}
                     @remove-file=${this.onRemoveFile}
                     @mark-file=${this.onMarkFile}
+                    @convert-file=${this.onConvertFile}
                   ></file-list>
                 `
               : null}
@@ -143,8 +158,6 @@ export class AudioAnalyzer extends LitElement {
         ? html`<file-dropdown
             .entries=${fileListEntries}
             @toggle-file=${this.onToggleFile}
-            @remove-file=${this.onRemoveFile}
-            @mark-file=${this.onMarkFile}
           ></file-dropdown>`
         : null}
 
@@ -356,6 +369,10 @@ export class AudioAnalyzer extends LitElement {
 
   private onMarkFile({ detail: { id, markAs } }: FileListMarkEvent) {
     this.analyzer.markResponseAs(id, markAs);
+  }
+
+  private onConvertFile({ detail: { id, convertTo } }: FileListConvertEvent) {
+    this.analyzer.convertResponseTo(id, convertTo);
   }
 
   private onToggleFile({ detail: { id } }: FileListToggleEvent) {

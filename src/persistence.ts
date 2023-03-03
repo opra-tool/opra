@@ -3,8 +3,9 @@ import { ImpulseResponse } from './analyzing/impulse-response';
 
 const RESPONSES_STORE = 'saved-response';
 
-type Record = Omit<ImpulseResponse, 'buffer'> & {
+type Record = Omit<ImpulseResponse, 'buffer' | 'originalBuffer'> & {
   samples: Float32Array[];
+  originalSamples?: Float32Array[];
 };
 
 type DBSchema = {
@@ -54,7 +55,11 @@ export async function getResponses(): Promise<ImpulseResponse[]> {
   return responses;
 }
 
-function responseToRecord({ buffer, ...rest }: ImpulseResponse): Record {
+function responseToRecord({
+  buffer,
+  originalBuffer,
+  ...rest
+}: ImpulseResponse): Record {
   const samples: Float32Array[] = [];
 
   for (let i = 0; i < buffer.numberOfChannels; i += 1) {
@@ -62,22 +67,31 @@ function responseToRecord({ buffer, ...rest }: ImpulseResponse): Record {
     buffer.copyFromChannel(samples[i], i);
   }
 
+  let originalSamples: Float32Array[] | undefined;
+  if (originalBuffer) {
+    originalSamples = [];
+    for (let i = 0; i < originalBuffer.numberOfChannels; i += 1) {
+      originalSamples[i] = new Float32Array(originalBuffer.length);
+      originalBuffer.copyFromChannel(originalSamples[i], i);
+    }
+  }
+
   return {
     samples,
+    originalSamples,
     ...rest,
   };
 }
 
 function recordToResponse({
   samples,
+  originalSamples,
   sampleRate,
   ...rest
 }: Record): ImpulseResponse {
-  const numberOfChannels = samples.length;
-
   const buffer = new AudioBuffer({
     sampleRate,
-    numberOfChannels,
+    numberOfChannels: samples.length,
     length: samples[0].length,
   });
 
@@ -85,8 +99,22 @@ function recordToResponse({
     buffer.copyToChannel(samples[i], i);
   }
 
+  let originalBuffer;
+  if (originalSamples) {
+    originalBuffer = new AudioBuffer({
+      sampleRate,
+      numberOfChannels: originalSamples.length,
+      length: originalSamples[0].length,
+    });
+
+    for (let i = 0; i < originalSamples.length; i += 1) {
+      originalBuffer.copyToChannel(originalSamples[i], i);
+    }
+  }
+
   return {
     buffer,
+    originalBuffer,
     sampleRate,
     ...rest,
   };
@@ -110,7 +138,9 @@ function isValidResponseRecord(record: unknown): boolean {
     typeof response.duration === 'number' &&
     typeof response.fileName === 'string' &&
     typeof response.sampleRate === 'number' &&
-    response.samples instanceof Array
+    response.samples instanceof Array &&
+    (typeof response.originalSamples === 'undefined' ||
+      response.originalSamples instanceof Array)
   );
 }
 

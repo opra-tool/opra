@@ -3,7 +3,7 @@ import { SlSwitch } from '@shoelace-style/shoelace';
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { ImpulseResponseType } from '../analyzing/impulse-response';
-import { formatResponseSummary } from '../presentation/impulse-response-format';
+import { UNIT_HERTZ, UNIT_SECONDS } from '../presentation/units';
 
 export type FileListEntry = {
   type: ImpulseResponseType;
@@ -15,6 +15,7 @@ export type FileListEntry = {
   duration: number;
   sampleRate: number;
   error?: string;
+  converted: boolean;
 };
 
 export class FileListToggleEvent extends CustomEvent<{
@@ -66,10 +67,10 @@ export class FileList extends LitElement {
         <div class="head">${this.renderPrefix(entry)}</div>
         <div>
           <p>${entry.fileName}</p>
-          <small>${formatResponseSummary(entry)}</small>
+          <small>${FileList.renderSummary(entry)}</small>
         </div>
         <div class="color" .style=${`background-color: ${entry.color}`}></div>
-        ${this.renderFileOptions(entry.type, entry.id)}
+        ${this.renderFileOptions(entry)}
       </div>
     `;
   }
@@ -101,7 +102,25 @@ export class FileList extends LitElement {
     ></sl-switch>`;
   }
 
-  private renderFileOptions(type: ImpulseResponseType, id: string) {
+  private static renderSummary({
+    type,
+    duration,
+    sampleRate,
+    converted,
+  }: FileListEntry) {
+    const names = {
+      monaural: msg('Monaural'),
+      binaural: msg('Binaural'),
+      'mid-side': msg('Mid/Side'),
+    };
+
+    const convertedString = converted ? ` (${msg('converted')})` : '';
+
+    return html`${names[type]}${convertedString} • ${sampleRate}${UNIT_HERTZ} •
+    ${duration.toFixed(2)}${UNIT_SECONDS}`;
+  }
+
+  private renderFileOptions({ type, id, converted }: FileListEntry) {
     if (this.hideOptions) {
       return null;
     }
@@ -120,6 +139,7 @@ export class FileList extends LitElement {
       <file-list-entry-options
         .id=${id}
         .type=${type}
+        .converted=${converted}
       ></file-list-entry-options>
     `;
   }
