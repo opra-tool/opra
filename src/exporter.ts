@@ -43,6 +43,8 @@ type ExportData = {
       soundStrength?: number[];
       earlySoundStrength?: number[];
       lateSoundStrength?: number[];
+      iacc?: number[];
+      eiacc?: number[];
     };
     singleFigureParameters: {
       centreTime: number;
@@ -52,6 +54,7 @@ type ExportData = {
       earlyBassLevel?: number;
       aWeightedSoundStrength?: number;
       levelAdjustedC80?: number;
+      iacc?: number;
     };
   }[];
 };
@@ -115,6 +118,8 @@ export class Exporter {
             ? strengthResults.lateStrength
             : undefined,
           soundStrength: strengthResults ? strengthResults.strength : undefined,
+          iacc: (results as BinauralResults).iaccBands,
+          eiacc: (results as BinauralResults).eiaccBands,
         },
         singleFigureParameters: {
           bassRatio: results.bassRatio,
@@ -134,6 +139,7 @@ export class Exporter {
           trebleRatio: strengthResults
             ? strengthResults.trebleRatio
             : undefined,
+          iacc: (results as BinauralResults).iacc,
         },
       });
     }

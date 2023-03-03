@@ -1,0 +1,29 @@
+{
+  "octaveBandsFrequencies": [62.5,125,250,500,1000,2000,4000,8000],
+  "environmentParameters": {
+    "p0": null,
+    "airTemperature": 20,
+    "relativeHumidity": 50
+  },
+  "impulseResponses": [
+    {
+      "type": "binaural",
+      "fileName": "audio.wav",
+      "duration": 100,
+      "sampleRate": 44100,
+      "octaveBandParameters": {
+        "c50": [1,2,3,4,5,6,7,8],
+        "c80": [1,2,3,4,5,6,7,8],
+        "edt": [1,2,3,4,5,6,7,8],
+        "reverbTime": [1,2,3,4,5,6,7,8],
+        "iacc": [1,2,3,4,5,6,7,8],
+        "eiacc": [1,2,3,4,5,6,7,8]
+      },
+      "singleFigureParameters": {
+        "bassRatio": 1,
+        "centreTime": 2,
+        "iacc": 1
+      }
+    }
+  ]
+}
