@@ -53,11 +53,6 @@ type ExportData = {
       aWeightedSoundStrength?: number;
       levelAdjustedC80?: number;
     };
-    meta: {
-      bandsSquaredSum: number[];
-      e80BandsSquaredSum: number[];
-      l80BandsSquaredSum: number[];
-    };
   }[];
 };
 
@@ -139,11 +134,6 @@ export class Exporter {
           trebleRatio: strengthResults
             ? strengthResults.trebleRatio
             : undefined,
-        },
-        meta: {
-          bandsSquaredSum: results.bandsSquaredSum,
-          e80BandsSquaredSum: results.e80BandsSquaredSum,
-          l80BandsSquaredSum: results.l80BandsSquaredSum,
         },
       });
     }
