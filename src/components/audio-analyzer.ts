@@ -2,7 +2,7 @@ import { LitElement, html, css } from 'lit';
 import { customElement, query, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { localized, msg, str } from '@lit/localize';
-import { Exporter } from '../export-import/exporter';
+import { Exporter } from '../exporter';
 import { Analyzer, MaximumFileCountReachedError } from '../analyzing/analyzer';
 import { UNIT_CELCIUS } from '../presentation/units';
 import { FileListToggleEvent, FileListRemoveEvent } from './file-list';
