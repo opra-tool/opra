@@ -5,6 +5,7 @@ import {
 } from '../src/analyzing/impulse-response';
 import { Exporter } from '../src/exporter';
 import { Strengths } from '../src/analyzing/strength';
+import { LateralLevel } from '../src/analyzing/lateral-level';
 
 const makeResponse = (type: ImpulseResponseType) => ({
   id: 'testId',
@@ -38,6 +39,9 @@ const makeSource = () => ({
     return [makeResponse('monaural')];
   },
   getResultsOrThrow: makeMonauralResults,
+  getLateralLevelResults(): LateralLevel | null {
+    return null;
+  },
   getStrengthResults(): Strengths | null {
     return null;
   },
@@ -75,6 +79,30 @@ it('it generates a binaural export', async () => {
   const exporter = new Exporter(source);
 
   const expected = await fetch('/testfiles/exports/binaural-export.json').then(
+    r => r.text()
+  );
+  const actual = exporter.generateExportFile();
+
+  expect(actual).to.equal(expected);
+});
+
+it('it generates a mid/side export including lateral level values', async () => {
+  const source = makeSource();
+  source.getP0 = () => 0.01;
+  source.getResponses = () => [makeResponse('mid-side')];
+  source.getResultsOrThrow = () => ({
+    ...makeMonauralResults(),
+    earlyLateralEnergyFractionBands: [1, 2, 3, 4, 5, 6, 7, 8],
+    earlyLateralEnergyFraction: 1,
+  });
+  source.getLateralLevelResults = () => ({
+    earlyLateralLevelBands: [1, 2, 3, 4, 5, 6, 7, 8],
+    lateLateralLevelBands: [1, 2, 3, 4, 5, 6, 7, 8],
+    lateLateralLevel: 1,
+  });
+  const exporter = new Exporter(source);
+
+  const expected = await fetch('/testfiles/exports/mid-side-export.json').then(
     r => r.text()
   );
   const actual = exporter.generateExportFile();
