@@ -6,7 +6,9 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, viewport-fit=cover"
     />
-    <meta name="Description" content="Put your description here." />
+    <meta name="description" content="A tool to analyze room impulse responses in the browser." />
+    <meta name="keywords" content="online tool, room impulse response, raqi, acoustics" />
+    <meta name="author" content="Paul Schwörer" />
     <base href="/" />
 
     <script type="module" src="./out-tsc/src/main.js"></script>
@@ -50,6 +52,14 @@
       a {
         color: var(--sl-color-neutral-1000);
       }
+
+      footer {
+        padding: 0 1rem;
+      }
+
+      footer p {
+        margin: 0;
+      }
     </style>
     <title>RAQI Online Toolbox</title>
   </head>
@@ -64,6 +74,10 @@
       <content>
         <base-app></base-app>
       </content>
+
+      <footer>
+        <p>Made by <a href="https://paulschwoerer.de">Paul Schwörer</a> at <a href="https://hs-duesseldorf.de">Hochschule Düsseldorf</a></p>
+      </footer>
     </div>
   </body>
 </html>

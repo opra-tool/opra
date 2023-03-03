@@ -24,6 +24,8 @@ export class ProgressIndicator extends LitElement {
     }
 
     sl-spinner {
+      --track-width: 0.25rem;
+
       font-size: 4rem;
     }
 

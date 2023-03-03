@@ -419,7 +419,6 @@ export class AudioAnalyzer extends LitElement {
       display: grid;
       gap: 1rem;
       grid-template-columns: repeat(auto-fill, minmax(500px, 1fr));
-      margin-block-end: 2.5rem;
     }
 
     .grid > * {
@@ -455,6 +454,11 @@ export class AudioAnalyzer extends LitElement {
 
     /* allow stretching to full width if on its own row */
     convolver-card.expand {
+      grid-column: 1 / -1;
+    }
+
+    /* allow stretching to full width */
+    progress-indicator {
       grid-column: 1 / -1;
     }
   `;
