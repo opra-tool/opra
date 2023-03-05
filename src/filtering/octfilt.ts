@@ -76,15 +76,15 @@ function calc(
   const { feedbacks, gains } = bandpass(filterOrder, f1, f2, fs);
 
   const filters = [];
-  for (let ii = 0; ii < filterOrder / 2; ii += 1) {
-    const feedback = feedbacks[ii];
-    const feedforward = b.map(val => val * gains[ii]);
+  for (let i = 0; i < filterOrder / 2; i += 1) {
+    const feedback = feedbacks[i];
+    const feedforward = b.map(val => val * gains[i]);
     const filter = offlineCtx.createIIRFilter(feedforward, feedback);
     filters.push(filter);
   }
   source.connect(filters[0]);
-  for (let ii = 1; ii < filters.length; ii += 1) {
-    filters[ii - 1].connect(filters[ii]);
+  for (let i = 1; i < filters.length; i += 1) {
+    filters[i - 1].connect(filters[i]);
   }
   filters[filters.length - 1].connect(offlineCtx.destination);
 
