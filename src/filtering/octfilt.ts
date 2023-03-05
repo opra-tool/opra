@@ -18,15 +18,18 @@ export async function octfiltBinaural(
   { leftChannel: leftSamples, rightChannel: rightSamples }: BinauralSamples,
   sampleRate: number
 ): Promise<BinauralSamples[]> {
-  const leftOctaves = await octfilt(leftSamples, sampleRate);
-  const rightOctaves = await octfilt(rightSamples, sampleRate);
+  const audioBuffer = new AudioBuffer({
+    numberOfChannels: 2,
+    length: leftSamples.length + ZERO_PADDING_LENGTH,
+    sampleRate,
+  });
 
-  const res = [];
-  for (let i = 0; i < leftOctaves.length; i += 1) {
-    res.push(new BinauralSamples(leftOctaves[i], rightOctaves[i]));
-  }
+  audioBuffer.copyToChannel(leftSamples, 0);
+  audioBuffer.copyToChannel(rightSamples, 1);
 
-  return res;
+  return (await separateOctaveBands(audioBuffer, sampleRate)).map(
+    b => new BinauralSamples(b.getChannelData(0), b.getChannelData(1))
+  );
 }
 
 /**
@@ -48,24 +51,36 @@ export async function octfilt(
 
   audioBuffer.copyToChannel(samples, 0);
 
+  return (await separateOctaveBands(audioBuffer, sampleRate)).map(b =>
+    b.getChannelData(0)
+  );
+}
+
+function separateOctaveBands(
+  buffer: AudioBuffer,
+  fs: number
+): Promise<AudioBuffer[]> {
   const promises = [];
   for (let i = 0; i < FREQUENCIES_IEC61672.length - 1; i += 1) {
     const f1 = FREQUENCIES_IEC61672[i];
     const f2 = FREQUENCIES_IEC61672[i + 1];
 
-    promises.push(calc(audioBuffer, f1, f2, sampleRate));
+    promises.push(separateOctaveBand(buffer, f1, f2, fs));
   }
-
   return Promise.all(promises);
 }
 
-function calc(
+function separateOctaveBand(
   buffer: AudioBuffer,
   f1: number,
   f2: number,
   fs: number
-): Promise<Float32Array> {
-  const offlineCtx = new OfflineAudioContext(1, buffer.length, fs);
+): Promise<AudioBuffer> {
+  const offlineCtx = new OfflineAudioContext(
+    buffer.numberOfChannels,
+    buffer.length,
+    fs
+  );
 
   const source = offlineCtx.createBufferSource();
   source.buffer = buffer;
@@ -90,9 +105,5 @@ function calc(
 
   source.start();
 
-  return new Promise(resolve => {
-    offlineCtx.startRendering().then(renderedBuffer => {
-      resolve(renderedBuffer.getChannelData(0));
-    });
-  });
+  return offlineCtx.startRendering();
 }
