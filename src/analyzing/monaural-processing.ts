@@ -57,7 +57,6 @@ export async function processChannel(
 
   const { edtBands, reverbTimeBands } = calculateReverberation(
     bandsSquared,
-    20,
     sampleRate
   );
 
