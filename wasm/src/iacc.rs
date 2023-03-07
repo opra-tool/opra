@@ -78,7 +78,7 @@ fn x_correlate(a: Vec<f32>, b: Vec<f32>, n: usize) -> Vec<f32> {
 mod tests {
     use crate::iacc::*;
     use rand::Rng;
-    use approx::relative_eq;
+    use approx::{assert_relative_eq};
 
     #[test]
     #[should_panic]
@@ -87,7 +87,6 @@ mod tests {
     }
 
     #[test]
-    #[allow(unused_must_use)]
     fn returns_1_for_fully_correlated_signal() {
       let mut rng = rand::thread_rng();
 
@@ -99,7 +98,7 @@ mod tests {
         right.push(val);
       }
 
-      relative_eq!(iacc(left, right), 1.0, epsilon = f32::EPSILON);
+      assert_relative_eq!(iacc(left, right), 1.0, epsilon = f32::EPSILON);
     }
 
     #[test]
@@ -114,6 +113,6 @@ mod tests {
         right.push(rng.gen_range(0.0..1.0) as f32);
       }
 
-      relative_eq!(iacc(left, right), 0.0, epsilon = f32::EPSILON);
+      assert_relative_eq!(iacc(left, right), 0.0, epsilon = f32::EPSILON);
     }
 }
