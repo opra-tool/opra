@@ -109,8 +109,8 @@ mod tests {
       let mut left = Vec::with_capacity(1000);
       let mut right = Vec::with_capacity(1000);
       for _ in 0..1000 {
-        left.push(rng.gen_range(0.0..1.0) as f32);
-        right.push(rng.gen_range(0.0..1.0) as f32);
+        left.push(rng.gen_range(-4.0..1.0) as f32);
+        right.push(rng.gen_range(10.0..13.0) as f32);
       }
 
       assert_relative_eq!(iacc(left, right), 0.0, epsilon = f32::EPSILON);
