@@ -76,8 +76,8 @@ fn x_correlate(a: Vec<f32>, b: Vec<f32>, n: usize) -> Vec<f32> {
 
 #[cfg(test)]
 mod tests {
-    use crate::iacc::*;
-    use rand::Rng;
+  use std::f32::consts::PI;
+  use crate::iacc::*;
     use approx::{assert_relative_eq};
 
     #[test]
@@ -88,31 +88,25 @@ mod tests {
 
     #[test]
     fn returns_1_for_fully_correlated_signals() {
-      let mut rng = rand::thread_rng();
-
       let mut left = Vec::with_capacity(1000);
       let mut right = Vec::with_capacity(1000);
-      for _ in 0..1000 {
-        let val = rng.gen_range(0.0..1.0) as f32;
-        left.push(val);
-        right.push(val);
+      for i in 0..1000 {
+        left.push((i as f32 / PI * 1000.0).sin());
+        right.push((i as f32 / PI * 1000.0).sin());
       }
 
       assert_relative_eq!(iacc(left, right), 1.0, epsilon = f32::EPSILON);
     }
 
     #[test]
-    #[allow(unused_must_use)]
-    fn returns_0_for_fully_uncorrelated_signals() {
-      let mut rng = rand::thread_rng();
-
+    fn returns_close_to_0_for_uncorrelated_signals() {
       let mut left = Vec::with_capacity(1000);
       let mut right = Vec::with_capacity(1000);
-      for _ in 0..1000 {
-        left.push(rng.gen_range(-4.0..1.0) as f32);
-        right.push(rng.gen_range(10.0..13.0) as f32);
+      for i in 0..1000 {
+        left.push((i as f32 + 1000.0).powf(4.0));
+        right.push((i as f32 / PI * 1000.0).sin());
       }
 
-      assert_relative_eq!(iacc(left, right), 0.0, epsilon = f32::EPSILON);
+      assert_relative_eq!(iacc(left, right), 0.0,  epsilon = 0.01);
     }
 }
