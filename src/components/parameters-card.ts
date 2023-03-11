@@ -7,7 +7,6 @@ import { Strengths } from '../analyzing/strength';
 import {
   UNIT_DECIBELS,
   UNIT_DECIBELS_A,
-  UNIT_MILLISECONDS,
   UNIT_SECONDS,
 } from '../presentation/units';
 import { Parameter } from './parameters-table';
@@ -58,7 +57,7 @@ export class ParametersCard extends LitElement {
         description: `${msg(
           'Perceived clarity of sound, according to'
         )} ISO 3382-1`,
-        unit: UNIT_MILLISECONDS,
+        unit: UNIT_SECONDS,
         responseValues: this.centreTimes,
         position: 2,
       },

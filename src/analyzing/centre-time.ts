@@ -1,11 +1,9 @@
-const SECONDS_TO_MILLIS = 1000;
-
 /**
  * Calculates the centre time as defined in ISO 3382-1.
  *
  * @param squaredIR Squared impulse response of the audio signal.
  * @param sampleRate Sample rate of the audio signal in Hz.
- * @returns Centre time in milliseconds.
+ * @returns Centre time in seconds.
  */
 export function calculateCentreTime(
   squaredIR: Float32Array,
@@ -19,5 +17,5 @@ export function calculateCentreTime(
     denominator += squaredIR[i];
   }
 
-  return (numerator / denominator) * SECONDS_TO_MILLIS;
+  return numerator / denominator;
 }
