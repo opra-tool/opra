@@ -87,7 +87,7 @@ mod tests {
     }
 
     #[test]
-    fn returns_1_for_fully_correlated_signal() {
+    fn returns_1_for_fully_correlated_signals() {
       let mut rng = rand::thread_rng();
 
       let mut left = Vec::with_capacity(1000);
@@ -103,7 +103,7 @@ mod tests {
 
     #[test]
     #[allow(unused_must_use)]
-    fn returns_0_for_fully_uncorrelated_signal() {
+    fn returns_0_for_fully_uncorrelated_signals() {
       let mut rng = rand::thread_rng();
 
       let mut left = Vec::with_capacity(1000);
