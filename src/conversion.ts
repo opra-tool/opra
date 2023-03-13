@@ -22,37 +22,45 @@ export function convertBetweenBinauralAndMidSide({
   originalBuffer,
   ...rest
 }: ImpulseResponse): ImpulseResponse {
-  if (type !== 'binaural' && type !== 'mid-side') {
-    throw new Error(
-      'can only convert between binaural and mid/side impulse responses'
-    );
-  }
+  if (type === 'binaural') {
+    if (originalBuffer) {
+      throw new Error('cannot undo conversion from binaural to mid-side');
+    }
 
-  if (originalBuffer) {
+    const newBuffer = new AudioBuffer({
+      sampleRate: buffer.sampleRate,
+      length: buffer.length,
+      numberOfChannels: 2,
+    });
+    const channel0 = buffer.getChannelData(0);
+    const channel1 = buffer.getChannelData(1);
+
+    for (let i = 0; i < buffer.length; i += 1) {
+      newBuffer.getChannelData(0)[i] = (channel0[i] + channel1[i]) / Math.SQRT2;
+      newBuffer.getChannelData(1)[i] = (channel0[i] - channel1[i]) / Math.SQRT2;
+    }
+
     return {
       ...rest,
       type: type === 'binaural' ? 'mid-side' : 'binaural',
+      buffer: newBuffer,
+      originalBuffer: buffer,
+    };
+  }
+
+  if (type === 'mid-side') {
+    if (!originalBuffer) {
+      throw new Error('cannot convert from mid-side to binaural');
+    }
+
+    return {
+      ...rest,
+      type: 'binaural',
       buffer: originalBuffer,
     };
   }
 
-  const newBuffer = new AudioBuffer({
-    sampleRate: buffer.sampleRate,
-    length: buffer.length,
-    numberOfChannels: 2,
-  });
-  const channel0 = buffer.getChannelData(0);
-  const channel1 = buffer.getChannelData(1);
-
-  for (let i = 0; i < buffer.length; i += 1) {
-    newBuffer.getChannelData(0)[i] = (channel0[i] + channel1[i]) / Math.SQRT2;
-    newBuffer.getChannelData(1)[i] = (channel0[i] - channel1[i]) / Math.SQRT2;
-  }
-
-  return {
-    ...rest,
-    type: type === 'binaural' ? 'mid-side' : 'binaural',
-    buffer: newBuffer,
-    originalBuffer: buffer,
-  };
+  throw new Error(
+    'can only convert between binaural and mid/side impulse responses'
+  );
 }

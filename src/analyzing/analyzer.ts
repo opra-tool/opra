@@ -228,12 +228,8 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
     persistResponse(response);
   }
 
-  convertResponseTo(id: string, convertTo: 'binaural' | 'mid-side') {
+  convertResponse(id: string) {
     const response = this.getResponseOrThrow(id);
-
-    if (response.type === convertTo) {
-      return;
-    }
 
     const newResponse = convertBetweenBinauralAndMidSide(response);
     this.analyzeResponse(newResponse);

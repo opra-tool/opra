@@ -22,13 +22,11 @@ export class FileListMarkEvent extends CustomEvent<{
 
 export class FileListConvertEvent extends CustomEvent<{
   id: string;
-  convertTo: 'binaural' | 'mid-side';
 }> {
-  constructor(id: string, convertTo: 'binaural' | 'mid-side') {
+  constructor(id: string) {
     super('convert-file', {
       detail: {
         id,
-        convertTo,
       },
       bubbles: true,
       composed: true,
@@ -66,18 +64,10 @@ export class FileListEntryOptions extends LitElement {
   }
 
   private renderConversionOptions() {
-    if (this.converted) {
-      return this.type === 'binaural'
-        ? html`
-            <sl-menu-item value="convert:mid-side">
-              ${msg('Undo conversion')}
-            </sl-menu-item>
-          `
-        : html`
-            <sl-menu-item value="convert:binaural">
-              ${msg('Undo conversion')}
-            </sl-menu-item>
-          `;
+    if (this.converted && this.type === 'mid-side') {
+      return html`
+        <sl-menu-item value="convert"> ${msg('Undo conversion')} </sl-menu-item>
+      `;
     }
 
     return this.type === 'binaural'
@@ -85,16 +75,13 @@ export class FileListEntryOptions extends LitElement {
           <sl-menu-item value="mark:mid-side">
             ${msg('Treat as Mid/Side impulse response')}
           </sl-menu-item>
-          <sl-menu-item value="convert:mid-side">
+          <sl-menu-item value="convert">
             ${msg('Convert to Mid/Side impulse response')}
           </sl-menu-item>
         `
       : html`
           <sl-menu-item value="mark:binaural">
             ${msg('Treat as binaural impulse response')}
-          </sl-menu-item>
-          <sl-menu-item value="convert:binaural">
-            ${msg('Convert to binaural impulse response')}
           </sl-menu-item>
         `;
   }
@@ -113,11 +100,7 @@ export class FileListEntryOptions extends LitElement {
         this.dispatchEvent(new FileListMarkEvent(this.id, type));
         break;
       case 'convert':
-        if (type !== 'binaural' && type !== 'mid-side') {
-          throw new Error('expected type to be one of [binaural, mid-side]');
-        }
-
-        this.dispatchEvent(new FileListConvertEvent(this.id, type));
+        this.dispatchEvent(new FileListConvertEvent(this.id));
         break;
       case 'remove':
         this.dispatchEvent(new FileListRemoveEvent(this.id));

@@ -371,8 +371,8 @@ export class AudioAnalyzer extends LitElement {
     this.analyzer.markResponseAs(id, markAs);
   }
 
-  private onConvertFile({ detail: { id, convertTo } }: FileListConvertEvent) {
-    this.analyzer.convertResponseTo(id, convertTo);
+  private onConvertFile({ detail: { id } }: FileListConvertEvent) {
+    this.analyzer.convertResponse(id);
   }
 
   private onToggleFile({ detail: { id } }: FileListToggleEvent) {

@@ -17,6 +17,20 @@ it('throws when attempting to convert a monaural impulse response', () => {
   expect(() => convertBetweenBinauralAndMidSide(response)).to.throw();
 });
 
+it('throws when attempting to convert a mid-side response without original buffer', () => {
+  const response: ImpulseResponse = {
+    id: 'any id',
+    color: 'any color',
+    duration: 1,
+    fileName: 'any filename',
+    sampleRate: 44100,
+    type: 'mid-side',
+    buffer: makeAudioBuffer(),
+  };
+
+  expect(() => convertBetweenBinauralAndMidSide(response)).to.throw();
+});
+
 it('preserves metadata while converting', () => {
   const buffer = makeAudioBuffer();
   const converted = convertBetweenBinauralAndMidSide({
@@ -67,33 +81,6 @@ it('converts binaural response to mid/side response', () => {
   );
 });
 
-it('converts mid/side response to binaural response', () => {
-  const buffer = makeAudioBuffer();
-  const converted = convertBetweenBinauralAndMidSide({
-    id: 'any id',
-    color: 'any color',
-    duration: 1,
-    fileName: 'any filename',
-    sampleRate: 44100,
-    type: 'mid-side',
-    buffer,
-  });
-
-  expect(converted.type).to.equal('binaural');
-  expect(converted.originalBuffer).to.equal(buffer);
-
-  expectArraysApproximatelyEqual(
-    converted.buffer.getChannelData(0),
-    new Float32Array([0.7 / Math.SQRT2, 1.0 / Math.SQRT2]),
-    0.001
-  );
-  expectArraysApproximatelyEqual(
-    converted.buffer.getChannelData(1),
-    new Float32Array([-0.1 / Math.SQRT2, -0.6 / Math.SQRT2]),
-    0.001
-  );
-});
-
 it('undoes a conversion', () => {
   const originalBuffer = makeAudioBuffer();
   const converted = convertBetweenBinauralAndMidSide({
@@ -102,12 +89,12 @@ it('undoes a conversion', () => {
     duration: 1,
     fileName: 'any filename',
     sampleRate: 44100,
-    type: 'binaural',
+    type: 'mid-side',
     buffer: makeAudioBuffer(),
     originalBuffer,
   });
 
-  expect(converted.type).to.equal('mid-side');
+  expect(converted.type).to.equal('binaural');
   expect(converted.buffer).to.equal(originalBuffer);
   expect(converted.originalBuffer).to.equal(undefined);
 });
