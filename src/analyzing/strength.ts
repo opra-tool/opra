@@ -17,6 +17,7 @@ export type Strengths = {
 
 type Input = {
   bandsSquaredSum: number[];
+  e50BandsSquaredSum: number[];
   e80BandsSquaredSum: number[];
   l80BandsSquaredSum: number[];
   c80Bands: number[];
@@ -45,7 +46,13 @@ const A_WEIGHTING_CORRECTIONS = [
 ];
 
 export async function calculateStrengths(
-  { bandsSquaredSum, e80BandsSquaredSum, l80BandsSquaredSum, c80Bands }: Input,
+  {
+    bandsSquaredSum,
+    e50BandsSquaredSum,
+    e80BandsSquaredSum,
+    l80BandsSquaredSum,
+    c80Bands,
+  }: Input,
   { p0, temperature, relativeHumidity }: Options
 ): Promise<Strengths> {
   const airCoeffs = getFrequencyValues().map(frequency =>
@@ -58,7 +65,9 @@ export async function calculateStrengths(
   const lateStrength = calculateSoundStrength(l80BandsSquaredSum, p0, lpe10);
   const averageStrength = calculateMeanSoundStrength(strength);
   const trebleRatio = calculateTrebleRatio(lateStrength);
-  const earlyBassLevel = calculateEarlyBassLevel(earlyStrength);
+  const earlyBassLevel = calculateEarlyBassLevel(
+    calculateSoundStrength(e50BandsSquaredSum, p0, lpe10)
+  );
   const aWeighted = calculateAWeightedSoundStrength(strength);
   const levelAdjustedC80 = calculateLevelAdjustedC80(c80Bands, aWeighted);
 

@@ -14,6 +14,7 @@ type Point = {
 
 export type MonauralResults = {
   bandsSquaredSum: number[];
+  e50BandsSquaredSum: number[];
   e80BandsSquaredSum: number[];
   l80BandsSquaredSum: number[];
   edtBands: number[];
@@ -75,11 +76,13 @@ export async function processChannel(
   }
 
   const bandsSquaredSum = bandsSquared.map(arraySum);
+  const e50BandsSquaredSum = fractions.map(val => val.e50).map(arraySum);
   const e80BandsSquaredSum = fractions.map(val => val.e80).map(arraySum);
   const l80BandsSquaredSum = fractions.map(val => val.l80).map(arraySum);
 
   return {
     bandsSquaredSum,
+    e50BandsSquaredSum,
     e80BandsSquaredSum,
     l80BandsSquaredSum,
     edtBands,

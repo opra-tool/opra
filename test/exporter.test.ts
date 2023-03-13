@@ -23,6 +23,7 @@ const makeResponse = (type: ImpulseResponseType) => ({
 
 const makeMonauralResults = () => ({
   bandsSquaredSum: [1, 2, 3, 4, 5, 6, 7, 8],
+  e50BandsSquaredSum: [1, 2, 3, 4, 5, 6, 7, 8],
   e80BandsSquaredSum: [1, 2, 3, 4, 5, 6, 7, 8],
   l80BandsSquaredSum: [1, 2, 3, 4, 5, 6, 7, 8],
   c50Bands: [1, 2, 3, 4, 5, 6, 7, 8],
