@@ -29,7 +29,7 @@ export async function octfiltBinaural(
  *
  * // TODO: pass in audio buffer directly?
  */
-export async function octfilt(
+export function octfilt(
   samples: Float32Array,
   sampleRate: number
 ): Promise<Float32Array[]> {
