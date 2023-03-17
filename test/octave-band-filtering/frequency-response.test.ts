@@ -30,11 +30,11 @@ it('calculates the frequency response of a digital IIR-filter at evaluation freq
           48000
         )
       )
-  ).to.be.closeTo(0, 0.025);
+  ).to.be.closeTo(0, 0.015);
   expect(
     20 * Math.log10(frequencyResponse(feedforward, feedbackward, 100, 48000))
-  ).to.be.closeTo(-3, 0.025);
+  ).to.be.closeTo(-3, 0.015);
   expect(
     20 * Math.log10(frequencyResponse(feedforward, feedbackward, 200, 48000))
-  ).to.be.closeTo(-3, 0.025);
+  ).to.be.closeTo(-3, 0.015);
 });
