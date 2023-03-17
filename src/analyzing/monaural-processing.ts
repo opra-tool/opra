@@ -3,7 +3,7 @@ import { calculateCentreTime } from './centre-time';
 import { earlyLateFractions } from './early-late-fractions';
 import { calculateSquaredIR } from './squared-impulse-response';
 import { arraySum } from '../math/arraySum';
-import { octfilt } from '../filtering/octfilt';
+import { octfilt } from '../octave-band-filtering/octave-band-filtering';
 import { calculateReverberation } from './reverberation';
 import { correctStarttimeMonaural } from './starttime';
 

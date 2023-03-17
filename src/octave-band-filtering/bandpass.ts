@@ -10,49 +10,42 @@ import {
 import { absComplex } from '../math/absComplex';
 import { frequencyResponse } from './frequency-response';
 
+const FILTER_ORDER = 6;
+const Q_ONE_OCTAVE = Math.SQRT2;
+
 type Coefficients = {
-  feedbacks: number[][];
-  gains: number[];
+  feedback: number[];
+  feedforward: number[];
 };
 
 /**
- * Calculates coefficients for a cascade of biquad IIR filters to model a higher-order IIR filter.
+ * Calculates coefficients for a cascade of three 2nd order IIR filters, modelling a 6th order
+ * IIR bandpass filter with a bandwith of one octave and the given center frequency.
  *
- * @copyright Neil Robertson https://www.dsprelated.com/showarticle/1257.php
- *
- * @param order
- * @param f1
- * @param f2
- * @param sampleRate
+ * @copyright (in parts) Neil Robertson https://www.dsprelated.com/showarticle/1257.php
  */
-export function bandpass(
-  order: number,
-  f1: number,
-  f2: number,
+export function octaveBandpassFilterCoefficients(
+  centerFrequency: number,
   sampleRate: number
-): Coefficients {
-  if (order % 2 !== 0) {
-    throw new Error('only filters with an even order are supported');
-  }
+): Coefficients[] {
+  const numberOfFilters = FILTER_ORDER / 2;
 
-  // TODO: sanity checks on f1, f2
+  const coefficients: Coefficients[] = [];
 
-  const numberOfBiquads = order / 2;
+  const f1 = centerFrequency / Q_ONE_OCTAVE;
+  const f2 = Q_ONE_OCTAVE * centerFrequency;
 
   // continuous frequency variables
   const F1 = (sampleRate / Math.PI) * Math.tan((Math.PI * f1) / sampleRate);
   const F2 = (sampleRate / Math.PI) * Math.tan((Math.PI * f2) / sampleRate);
   const BW = F2 - F1; // -3dB bandwith in Hz
-  const f0 = Math.sqrt(f1 * f2);
   const F0 = Math.sqrt(F1 * F2);
 
   const b = [1, 0, -1];
-  const feedbacks = new Array(numberOfBiquads);
-  const gains = new Array(numberOfBiquads);
 
-  for (let i = 0; i < numberOfBiquads; i += 1) {
+  for (let i = 0; i < numberOfFilters; i += 1) {
     const k = i + 1;
-    const theta = ((2 * k - 1) * Math.PI) / (2 * numberOfBiquads);
+    const theta = ((2 * k - 1) * Math.PI) / (2 * numberOfFilters);
 
     const pLp = new Complex(-Math.sin(theta), Math.cos(theta));
 
@@ -71,14 +64,14 @@ export function bandpass(
 
     const a1 = -2 * p.getRe();
     const a2 = absComplex(p) ** 2;
-    feedbacks[i] = [1, a1, a2];
+    const feedback = [1, a1, a2];
 
-    const h = frequencyResponse(b, feedbacks[i], [f0, f0], sampleRate);
-    gains[i] = 1 / absComplex(h[0]);
+    const gain =
+      1 / frequencyResponse(b, feedback, centerFrequency, sampleRate);
+    const feedforward = b.map(v => v * gain);
+
+    coefficients.push({ feedback, feedforward });
   }
 
-  return {
-    feedbacks,
-    gains,
-  };
+  return coefficients;
 }

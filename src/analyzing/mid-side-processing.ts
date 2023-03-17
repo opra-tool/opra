@@ -3,7 +3,7 @@ import { earlyLateFractions } from './early-late-fractions';
 import { calculateEarlyLateralEnergyFraction } from './early-lateral-fraction';
 import { arraySum } from '../math/arraySum';
 import { MonauralResults, processChannel } from './monaural-processing';
-import { octfiltBinaural } from '../filtering/octfilt';
+import { octfiltBinaural } from '../octave-band-filtering/octave-band-filtering';
 import { calculateSquaredIR } from './squared-impulse-response';
 import { correctStarttimeBinaural } from './starttime';
 import { meanDecibel } from '../math/decibels';

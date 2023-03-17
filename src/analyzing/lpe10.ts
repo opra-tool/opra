@@ -1,7 +1,7 @@
 import { calculateSquaredIR } from './squared-impulse-response';
 import { arraySum } from '../math/arraySum';
 import { safeLog10 } from '../math/safeLog10';
-import { octfilt } from '../filtering/octfilt';
+import { octfilt } from '../octave-band-filtering/octave-band-filtering';
 
 const SAMPLE_RATE = 48_000;
 

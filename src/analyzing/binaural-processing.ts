@@ -3,7 +3,7 @@ import { e80 } from './early-late-fractions';
 import { calculateIacc } from './iacc';
 import { calculateMeanSquaredIR } from './squared-impulse-response';
 import { MonauralResults, processChannel } from './monaural-processing';
-import { octfiltBinaural } from '../filtering/octfilt';
+import { octfiltBinaural } from '../octave-band-filtering/octave-band-filtering';
 import { correctStarttimeBinaural } from './starttime';
 
 export type BinauralResults = MonauralResults & {
