@@ -44,7 +44,7 @@ export class ParametersCard extends LitElement {
   render() {
     const parameters: Parameter[] = [
       {
-        name: html`${msg('Reverb Time')} <i>T<sub>20</sub></i>`,
+        name: html`${msg('Reverb Time')}, T<sub>20</sub>`,
         badge: '500Hz - 1kHz',
         description: `${msg('according to')} ISO 3382-1`,
         unit: UNIT_SECONDS,
@@ -52,7 +52,7 @@ export class ParametersCard extends LitElement {
         position: 1,
       },
       {
-        name: html`${msg('Centre Time')} <i>T<sub>S</sub></i>`,
+        name: html`${msg('Centre Time')}, T<sub>S</sub>`,
         badge: '500Hz - 1kHz',
         description: `${msg(
           'Perceived clarity of sound, according to'
@@ -62,7 +62,7 @@ export class ParametersCard extends LitElement {
         position: 2,
       },
       {
-        name: html`${msg('Clarity')} <i>C<sub>80</sub></i>`,
+        name: html`${msg('Clarity')}, C<sub>80</sub>`,
         badge: '500Hz - 1kHz',
         description: `${msg(
           'Perceived clarity of sound, according to'
@@ -72,7 +72,7 @@ export class ParametersCard extends LitElement {
         position: 5,
       },
       {
-        name: html`${msg('Bass Ratio')} <i>BR</i>`,
+        name: html`${msg('Bass Ratio')}, BR`,
         description: `${msg('as defined by')} L.L. Beranek`,
         responseValues: this.bassRatios,
         position: 8,
@@ -97,7 +97,7 @@ export class ParametersCard extends LitElement {
       );
 
       parameters.push({
-        name: html`${msg('Sound Strength')} <i>G</i>`,
+        name: html`${msg('Sound Strength')}, G`,
         badge: '500Hz - 1kHz',
         description: `${msg(
           'Subjective level of sound, according to'
@@ -107,7 +107,7 @@ export class ParametersCard extends LitElement {
         position: 3,
       });
       parameters.push({
-        name: html`${msg('A-weighted Sound Strength')} <i>G(A)</i>`,
+        name: html`${msg('A-weighted Sound Strength')}, G(A)`,
         badge: '500Hz - 1kHz',
         description: msg('as defined by Soulodre and Bradley (1995)'),
         responseValues: aWeighted,
@@ -141,14 +141,14 @@ export class ParametersCard extends LitElement {
     }
 
     parameters.push({
-      name: msg('Early Lateral Energy Fraction'),
+      name: html`${msg('Early Lateral Energy Fraction')}, J<sub>LFC</sub>`,
       badge: '125Hz - 1kHz',
       description: `${msg('according to')} ISO 3382-1`,
       responseValues: this.earlyLateralEnergyFractions,
       position: 11,
     });
     parameters.push({
-      name: msg('Late Lateral Sound Level'),
+      name: html`${msg('Late Lateral Sound Level')}, L<sub>J</sub>`,
       badge: '125Hz - 1kHz',
       description: `${msg('according to')} ISO 3382-1`,
       responseValues: this.lateLateralLevels,
