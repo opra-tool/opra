@@ -279,10 +279,6 @@
   <source>Download Results</source>
   <target>Ergebnisse herunterladen</target>
 </trans-unit>
-<trans-unit id="sb7131723206d0924">
-  <source>Energy Decay Time</source>
-  <target>Frühe Abklingzeit</target>
-</trans-unit>
 <trans-unit id="s6ff0144bf13be05e">
   <source>Close help</source>
   <target>Hilfe schließen</target>
@@ -315,10 +311,6 @@
   <source>Undo conversion</source>
   <target>Konvertierung rückgängig machen</target>
 </trans-unit>
-<trans-unit id="s33ea1b826a344e0d">
-  <source>Convert to binaural impulse response</source>
-  <target>In eine binaurale Impulsantwort konvertieren</target>
-</trans-unit>
 <trans-unit id="s78cb1ae8a1d79653">
   <source>Treat as Mid/Side impulse response</source>
   <target>Als Mitten/Seiten Impulsantwort behandeln</target>
@@ -326,6 +318,10 @@
 <trans-unit id="saf8a00fbc745150f">
   <source>Convert to Mid/Side impulse response</source>
   <target>In eine Mitten/Seiten Impulsantwort konvertieren</target>
+</trans-unit>
+<trans-unit id="s6ffa4e2d558d55af">
+  <source>Early Decay Time</source>
+  <target>Frühe Abklingzeit</target>
 </trans-unit>
 </body>
 </file>
