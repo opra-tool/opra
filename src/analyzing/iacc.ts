@@ -8,8 +8,8 @@ import { BinauralSamples } from './binaural-samples';
  * @returns IACC for the given audio channels
  */
 export function calculateIacc({
-  leftChannel: leftSamples,
-  rightChannel: rightSamples,
+  leftChannel,
+  rightChannel,
 }: BinauralSamples): number {
-  return wasmIacc(leftSamples, rightSamples);
+  return wasmIacc(leftChannel, rightChannel);
 }
