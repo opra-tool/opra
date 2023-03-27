@@ -70,14 +70,12 @@ export class ConvolverPlayback extends EventTarget {
       if (response.type === 'mid-side') {
         this.ctx.audioWorklet
           .addModule(
-            `${basePath(
-              import.meta.url
-            )}/mid-side-to-binaural-audio-worklet-processor.js`
+            `${basePath(import.meta.url)}/mid-side-to-stereo-converter.js`
           )
           .then(() => {
             const workletNode = new AudioWorkletNode(
               this.ctx,
-              'mid-side-to-binaural-audio-worklet-processor'
+              'mid-side-to-stereo-converter'
             );
 
             this.convolver?.connect(workletNode);
