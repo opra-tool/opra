@@ -88,15 +88,15 @@ export function calculateSoundStrength(
   p0: number,
   lpe10: number[]
 ): number[] {
-  const strength = [];
-
-  for (let i = 0; i < bandsSquaredSum.length; i += 1) {
-    const lpe = 10 * safeLog10(bandsSquaredSum[i] / p0 ** 2);
-
-    strength.push(lpe - lpe10[i]);
+  if (bandsSquaredSum.length !== lpe10.length) {
+    throw new Error('expected bands length to match lpe10 length');
   }
 
-  return strength;
+  return bandsSquaredSum.map((bandSum, i) => {
+    const lpe = 10 * safeLog10(bandSum / p0 ** 2);
+
+    return lpe - lpe10[i];
+  });
 }
 
 function calculateAWeightedSoundStrength(strength: number[]): number {
