@@ -134,7 +134,7 @@ export class ParametersCard extends LitElement {
     }
 
     parameters.push({
-      name: html`${msg('Early Lateral Energy Fraction')}, J<sub>LFC</sub>`,
+      name: html`${msg('Early Lateral Energy Fraction')}, J<sub>LF</sub>`,
       description: `${msg('Apparent source width (ASW)')} • ISO 3382-1`,
       responseValues: this.earlyLateralEnergyFractions,
       position: 11,
