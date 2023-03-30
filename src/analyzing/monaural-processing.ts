@@ -65,7 +65,7 @@ export async function processChannel(
     (reverbTimeBands[1] + reverbTimeBands[2]) /
     (reverbTimeBands[3] + reverbTimeBands[4]);
 
-  const centreTime = calculateCentreTime(squaredIR, sampleRate);
+  const centreTime = calculateCentreTime(bandsSquared, sampleRate);
 
   const squaredIRPoints = [];
   for (let i = 0; i < squaredIR.length; i += 1) {
