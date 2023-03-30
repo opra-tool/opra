@@ -45,7 +45,6 @@ export class ParametersCard extends LitElement {
     const parameters: Parameter[] = [
       {
         name: html`${msg('Reverb Time')}, T<sub>20</sub>`,
-        badge: '500Hz - 1kHz',
         description: `${msg('according to')} ISO 3382-1`,
         unit: UNIT_SECONDS,
         responseValues: this.reverbTimes,
@@ -53,7 +52,6 @@ export class ParametersCard extends LitElement {
       },
       {
         name: html`${msg('Centre Time')}, T<sub>S</sub>`,
-        badge: '500Hz - 1kHz',
         description: `${msg(
           'Perceived clarity of sound, according to'
         )} ISO 3382-1`,
@@ -63,7 +61,6 @@ export class ParametersCard extends LitElement {
       },
       {
         name: html`${msg('Clarity')}, C<sub>80</sub>`,
-        badge: '500Hz - 1kHz',
         description: `${msg(
           'Perceived clarity of sound, according to'
         )} ISO 3382-1`,
@@ -79,7 +76,6 @@ export class ParametersCard extends LitElement {
       },
       {
         name: msg('Interaural Cross Correlation'),
-        badge: '125Hz - 4kHz',
         description: `${msg('according to')} ISO 3382-1`,
         responseValues: this.iaccs,
         position: 10,
@@ -98,7 +94,6 @@ export class ParametersCard extends LitElement {
 
       parameters.push({
         name: html`${msg('Sound Strength')}, G`,
-        badge: '500Hz - 1kHz',
         description: `${msg(
           'Subjective level of sound, according to'
         )} ISO 3382-1`,
@@ -108,7 +103,6 @@ export class ParametersCard extends LitElement {
       });
       parameters.push({
         name: html`${msg('A-weighted Sound Strength')}, G(A)`,
-        badge: '500Hz - 1kHz',
         description: msg('as defined by Soulodre and Bradley (1995)'),
         responseValues: aWeighted,
         unit: UNIT_DECIBELS_A,
@@ -116,7 +110,6 @@ export class ParametersCard extends LitElement {
       });
       parameters.push({
         name: html`${msg('Level-Adjusted')} C<sub>80</sub>`,
-        badge: '500Hz - 1kHz',
         description: msg(
           'Perceived clarity rating, as defined by Soulodre and Bradley (1995)'
         ),
@@ -142,14 +135,12 @@ export class ParametersCard extends LitElement {
 
     parameters.push({
       name: html`${msg('Early Lateral Energy Fraction')}, J<sub>LFC</sub>`,
-      badge: '125Hz - 1kHz',
       description: `${msg('according to')} ISO 3382-1`,
       responseValues: this.earlyLateralEnergyFractions,
       position: 11,
     });
     parameters.push({
       name: html`${msg('Late Lateral Sound Level')}, L<sub>J</sub>`,
-      badge: '125Hz - 1kHz',
       description: `${msg('according to')} ISO 3382-1`,
       responseValues: this.lateLateralLevels,
       unit: UNIT_DECIBELS,
