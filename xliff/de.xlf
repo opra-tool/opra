@@ -18,10 +18,6 @@
   <source>Interaural Cross Correlation</source>
   <target>Interaurale Kreuzkorrelation (IACC)</target>
 </trans-unit>
-<trans-unit id="s14ed76d98e69694d">
-  <source>as defined by Soulodre and Bradley (1995)</source>
-  <target>nach der Definition von Soulodre und Bradley (1995)</target>
-</trans-unit>
 <trans-unit id="s6bc84d43b3db4bd0">
   <source>Treble Ratio</source>
   <target>Höhenverhältnis</target>
@@ -59,10 +55,6 @@
               verwendeten <x id="2" equiv-text="&lt;code&gt;"/>ConvolverNode<x id="3" equiv-text="&lt;/code&gt;"/>. Eine Änderung dieser Einstellung 
               hat keinen Einfluss auf die aktuelle Wiedergabe.</target>
 </trans-unit>
-<trans-unit id="sec6d4ba328d97b24">
-  <source>according to</source>
-  <target>nach</target>
-</trans-unit>
 <trans-unit id="sd3eac79f739323df">
   <source>Clarity</source>
   <target>Klarheitsmaß</target>
@@ -74,22 +66,6 @@
 <trans-unit id="sfd963ba27f135016">
   <source>A-weighted Sound Strength</source>
   <target>A-Gewichtetes Stärkemaß</target>
-</trans-unit>
-<trans-unit id="s6f0ae1a900147d95">
-  <source>Perceived clarity of sound, according to</source>
-  <target>Empfundene Klarheit des Klangs, nach</target>
-</trans-unit>
-<trans-unit id="s476a61875467bf2d">
-  <source>as defined by</source>
-  <target>nach</target>
-</trans-unit>
-<trans-unit id="sd69fbc00e11ac634">
-  <source>Subjective level of sound, according to</source>
-  <target>Subjektiver Schallpegel, nach</target>
-</trans-unit>
-<trans-unit id="s8f4fbba7efa3d5d3">
-  <source>Perceived clarity rating, as defined by Soulodre and Bradley (1995)</source>
-  <target>Empfundene Klarheit des Klangs, nach Soulodre und Bradley (1995)</target>
 </trans-unit>
 <trans-unit id="s2a2957356ab1c7fe">
   <source>Level-Adjusted</source>
@@ -322,6 +298,42 @@
 <trans-unit id="s6ffa4e2d558d55af">
   <source>Early Decay Time</source>
   <target>Frühe Abklingzeit</target>
+</trans-unit>
+<trans-unit id="s511236609e55d132">
+  <source>Perceived reverberation</source>
+  <target>Empfundener Nachhall</target>
+</trans-unit>
+<trans-unit id="sa839a71768515684">
+  <source>Perceived clarity of sound</source>
+  <target>Empfundene Klarheit des Klangs</target>
+</trans-unit>
+<trans-unit id="s4e4d23b157b9c659">
+  <source>Perceived bass</source>
+  <target>Empfundener Bass</target>
+</trans-unit>
+<trans-unit id="s001d4f16b5820bf0">
+  <source>Spatial impression</source>
+  <target>Räumliche Wirkung</target>
+</trans-unit>
+<trans-unit id="sf26193ea9ec517e1">
+  <source>Subjective level of sound</source>
+  <target>Subjektiver Schallpegel</target>
+</trans-unit>
+<trans-unit id="sb743e7f938d6d433">
+  <source>Soulodre and Bradley (1995)</source>
+  <target>Soulodre und Bradley (1995)</target>
+</trans-unit>
+<trans-unit id="s8635817f218ac8bc">
+  <source>Perceived treble</source>
+  <target>Empfundene Höhen</target>
+</trans-unit>
+<trans-unit id="s7f187fdac1f91f05">
+  <source>Apparent source width (ASW)</source>
+  <target>Scheinbare Quellenbreite (ASW)</target>
+</trans-unit>
+<trans-unit id="sda368d49761aef66">
+  <source>Listener envelopment (LEV)</source>
+  <target>Zuhörer-Einhüllung (LEV)</target>
 </trans-unit>
 </body>
 </file>

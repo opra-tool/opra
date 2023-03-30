@@ -45,38 +45,34 @@ export class ParametersCard extends LitElement {
     const parameters: Parameter[] = [
       {
         name: html`${msg('Reverb Time')}, T<sub>20</sub>`,
-        description: `${msg('according to')} ISO 3382-1`,
+        description: `${msg('Perceived reverberation')} • ISO 3382-1`,
         unit: UNIT_SECONDS,
         responseValues: this.reverbTimes,
         position: 1,
       },
       {
         name: html`${msg('Centre Time')}, T<sub>S</sub>`,
-        description: `${msg(
-          'Perceived clarity of sound, according to'
-        )} ISO 3382-1`,
+        description: `${msg('Perceived clarity of sound')} • ISO 3382-1`,
         unit: UNIT_SECONDS,
         responseValues: this.centreTimes,
         position: 2,
       },
       {
         name: html`${msg('Clarity')}, C<sub>80</sub>`,
-        description: `${msg(
-          'Perceived clarity of sound, according to'
-        )} ISO 3382-1`,
+        description: `${msg('Perceived clarity of sound')} • ISO 3382-1`,
         unit: UNIT_DECIBELS,
         responseValues: this.c80s,
         position: 5,
       },
       {
-        name: html`${msg('Bass Ratio')}, BR`,
-        description: `${msg('as defined by')} L.L. Beranek`,
+        name: `${msg('Bass Ratio')}, BR`,
+        description: `${msg('Perceived bass')} • L.L. Beranek`,
         responseValues: this.bassRatios,
         position: 8,
       },
       {
-        name: msg('Interaural Cross Correlation'),
-        description: `${msg('according to')} ISO 3382-1`,
+        name: `${msg('Interaural Cross Correlation')}, IACC`,
+        description: `${msg('Spatial impression')} • ISO 3382-1`,
         responseValues: this.iaccs,
         position: 10,
       },
@@ -94,39 +90,43 @@ export class ParametersCard extends LitElement {
 
       parameters.push({
         name: html`${msg('Sound Strength')}, G`,
-        description: `${msg(
-          'Subjective level of sound, according to'
-        )} ISO 3382-1`,
+        description: `${msg('Subjective level of sound')} • ISO 3382-1`,
         responseValues: averageStrengths,
         unit: UNIT_DECIBELS,
         position: 3,
       });
       parameters.push({
         name: html`${msg('A-weighted Sound Strength')}, G(A)`,
-        description: msg('as defined by Soulodre and Bradley (1995)'),
+        description: `${msg('Subjective level of sound')} • ${msg(
+          'Soulodre and Bradley (1995)'
+        )}`,
         responseValues: aWeighted,
         unit: UNIT_DECIBELS_A,
         position: 4,
       });
       parameters.push({
         name: html`${msg('Level-Adjusted')} C<sub>80</sub>`,
-        description: msg(
-          'Perceived clarity rating, as defined by Soulodre and Bradley (1995)'
-        ),
+        description: `${msg('Perceived clarity of sound')} • ${msg(
+          'Soulodre and Bradley (1995)'
+        )}`,
         responseValues: levelAdjustedC80,
         unit: UNIT_DECIBELS_A,
         position: 6,
       });
       parameters.push({
         name: msg('Treble Ratio'),
-        description: msg('as defined by Soulodre and Bradley (1995)'),
+        description: `${msg('Perceived treble')} • ${msg(
+          'Soulodre and Bradley (1995)'
+        )}`,
         responseValues: trebleRatios,
         unit: UNIT_DECIBELS,
         position: 7,
       });
       parameters.push({
         name: msg('Early Bass Level'),
-        description: msg('as defined by Soulodre and Bradley (1995)'),
+        description: `${msg('Perceived bass')} • ${msg(
+          'Soulodre and Bradley (1995)'
+        )}`,
         responseValues: earlyBassLevels,
         unit: UNIT_DECIBELS,
         position: 9,
@@ -135,13 +135,13 @@ export class ParametersCard extends LitElement {
 
     parameters.push({
       name: html`${msg('Early Lateral Energy Fraction')}, J<sub>LFC</sub>`,
-      description: `${msg('according to')} ISO 3382-1`,
+      description: `${msg('Apparent source width (ASW)')} • ISO 3382-1`,
       responseValues: this.earlyLateralEnergyFractions,
       position: 11,
     });
     parameters.push({
       name: html`${msg('Late Lateral Sound Level')}, L<sub>J</sub>`,
-      description: `${msg('according to')} ISO 3382-1`,
+      description: `${msg('Listener envelopment (LEV)')} • ISO 3382-1`,
       responseValues: this.lateLateralLevels,
       unit: UNIT_DECIBELS,
       position: 12,
