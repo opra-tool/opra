@@ -1,5 +1,5 @@
 import { msg, localized } from '@lit/localize';
-import { LitElement, html, css } from 'lit';
+import { LitElement, html, css, PropertyValues } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { ImpulseResponse } from '../analyzing/impulse-response';
 import { GraphConfig } from './graphs/line-graph';
@@ -8,8 +8,6 @@ type Point = {
   x: number;
   y: number;
 };
-
-type Points = Point[];
 
 const MAX_X = 0.5;
 const DECIMATION_SAMPLES = 500;
@@ -20,18 +18,57 @@ export class ImpulseResponseGraph extends LitElement {
   @property({ type: Array })
   impulseResponses: ImpulseResponse[] = [];
 
-  @property({ type: Array })
-  squaredIRPoints: Points[] = [];
+  squaredIRPoints: Map<
+    string,
+    {
+      color: string;
+      points: Point[];
+    }
+  > = new Map();
+
+  firstUpdated() {
+    for (const response of this.impulseResponses) {
+      this.updateResponseIR(response);
+    }
+  }
+
+  willUpdate(changedProperties: PropertyValues<this>) {
+    if (changedProperties.get('impulseResponses') === undefined) {
+      return;
+    }
+
+    // delete responses no longer present in properties
+    for (const [responseId] of this.squaredIRPoints) {
+      if (!this.impulseResponses.find(r => r.id === responseId)) {
+        this.squaredIRPoints.delete(responseId);
+      }
+    }
+
+    for (const response of this.impulseResponses) {
+      if (
+        changedProperties
+          .get('impulseResponses')
+          .find(r => r.id === response.id)?.buffer !== response.buffer
+      ) {
+        this.updateResponseIR(response);
+      }
+    }
+  }
 
   render() {
-    const config: GraphConfig = {
-      datasets: this.squaredIRPoints.map((points, index) => ({
+    const datasets = [];
+    for (const [_, { points, color }] of this.squaredIRPoints) {
+      datasets.push({
         data: points,
         fill: false,
-        borderColor: this.impulseResponses[index].color,
+        borderColor: color,
         borderWidth: 1,
         pointRadius: 0,
-      })),
+      });
+    }
+
+    const config: GraphConfig = {
+      datasets,
       options: {
         scales: {
           y: {
@@ -72,6 +109,39 @@ export class ImpulseResponseGraph extends LitElement {
         <line-graph .config=${config} height="100"></line-graph>
       </base-card>
     `;
+  }
+
+  private updateResponseIR({
+    id,
+    type,
+    buffer,
+    color,
+    sampleRate,
+    fileName,
+  }: ImpulseResponse) {
+    const points = [];
+
+    for (let i = 0; i < buffer.length; i += 1) {
+      let y;
+      if (type === 'binaural') {
+        y =
+          (buffer.getChannelData(0)[i] ** 2 +
+            buffer.getChannelData(1)[i] ** 2) /
+          2;
+      } else {
+        y = buffer.getChannelData(0)[i] ** 2;
+      }
+
+      points.push({
+        x: (i + 1) / sampleRate,
+        y,
+      });
+    }
+
+    this.squaredIRPoints.set(id, {
+      color,
+      points,
+    });
   }
 
   static styles = css`

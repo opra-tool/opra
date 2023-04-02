@@ -32,7 +32,6 @@ const makeMonauralResults = () => ({
   reverbTime: 1,
   bassRatio: 1,
   centreTime: 2,
-  squaredIRPoints: [{ x: 1, y: 2 }],
 });
 
 const makeSource = () => ({

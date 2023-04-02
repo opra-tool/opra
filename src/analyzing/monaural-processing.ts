@@ -8,11 +8,6 @@ import { calculateReverberation } from './reverberation';
 import { correctStarttimeMonaural } from './starttime';
 import { meanDecibel } from '../math/decibels';
 
-type Point = {
-  x: number;
-  y: number;
-};
-
 export type IntermediateResults = {
   bandsSquaredSum: number[];
   e50BandsSquaredSum: number[];
@@ -27,7 +22,6 @@ export type MonauralResults = {
   c50Bands: number[];
   c80Bands: number[];
   c80: number;
-  squaredIRPoints: Point[];
   centreTime: number;
   bassRatio: number;
 };
@@ -77,14 +71,6 @@ export async function processChannel(
 
   const centreTime = calculateCentreTime(bandsSquared, sampleRate);
 
-  const squaredIRPoints = [];
-  for (let i = 0; i < squaredIR.length; i += 1) {
-    squaredIRPoints.push({
-      x: (i + 1) / sampleRate,
-      y: squaredIR[i],
-    });
-  }
-
   const bandsSquaredSum = bandsSquared.map(arraySum);
   const e50BandsSquaredSum = fractions.map(val => val.e50).map(arraySum);
   const e80BandsSquaredSum = fractions.map(val => val.e80).map(arraySum);
@@ -100,7 +86,6 @@ export async function processChannel(
       c80,
       bassRatio,
       centreTime,
-      squaredIRPoints,
     },
     {
       bandsSquaredSum,

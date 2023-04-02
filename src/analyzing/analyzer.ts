@@ -56,7 +56,6 @@ export type Results = {
   c50Bands: number[];
   c80Bands: number[];
   c80: number;
-  squaredIRPoints: { x: number; y: number }[];
   centreTime: number;
   bassRatio: number;
   /* strength-based monaural parameters */

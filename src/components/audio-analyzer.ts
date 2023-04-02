@@ -179,7 +179,6 @@ export class AudioAnalyzer extends LitElement {
     const reverbTimeBands = results.map(r => r.reverbTimeBands);
     const c50Bands = results.map(r => r.c50Bands);
     const c80Bands = results.map(r => r.c80Bands);
-    const squaredIRPoints = results.map(r => r.squaredIRPoints);
     const strengthBands = results.map(r => r.strengthBands).filter(isDefined);
     const earlyStrengthBands = results
       .map(r => r.earlyStrengthBands)
@@ -205,7 +204,6 @@ export class AudioAnalyzer extends LitElement {
         : null}
       <impulse-response-graph
         .impulseResponses=${responses}
-        .squaredIRPoints=${squaredIRPoints}
       ></impulse-response-graph>
 
       <parameters-card .impulseResponses=${responses} .results=${results}>
