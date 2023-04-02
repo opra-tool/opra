@@ -13,7 +13,6 @@ pub fn iacc(left_channel: Vec<f32>, right_channel: Vec<f32>) -> f32 {
     let mut left_sum = 0.0;
     let mut right_sum = 0.0;
     for i in 0..left_channel.len() {
-        // TODO: using f32 produced slight floating point errors, find explanation
         left_sum += (left_channel[i] as f64).powf(2.0);
         right_sum += (right_channel[i] as f64).powf(2.0);
     }
@@ -21,15 +20,11 @@ pub fn iacc(left_channel: Vec<f32>, right_channel: Vec<f32>) -> f32 {
     let transform_length = find_transform_length(left_channel.len());
     let correlated = x_correlate(left_channel, right_channel, transform_length);
 
-    let root = (left_sum * right_sum).sqrt() as f32;
-    let mut max_val = 0.0;
-    for val in correlated {
-        if val / root > max_val {
-            max_val = val / root;
-        }
-    }
-
-    return max_val;
+    let denominator = (left_sum * right_sum).sqrt() as f32;
+    return correlated.iter()
+      .map(|x| x / denominator)
+      .max_by(|a, b| a.partial_cmp(b).unwrap())
+      .unwrap();
 }
 
 fn find_transform_length(m: usize) -> usize {
@@ -65,7 +60,7 @@ fn x_correlate(a: Vec<f32>, b: Vec<f32>, n: usize) -> Vec<f32> {
     let b_fft = fourier::fft(b_padded);
 
     let mut multiplied = Vec::with_capacity(a_fft.len());
-    for (i, _) in a_fft.iter().enumerate() {
+    for i in 0..a_fft.len() {
         multiplied.push(a_fft[i] * b_fft[i].conj());
     }
     let ifft = fourier::ifft(multiplied, n);
