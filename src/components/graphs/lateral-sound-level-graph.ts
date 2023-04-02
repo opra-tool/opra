@@ -5,8 +5,8 @@ import { UNIT_DECIBELS } from '../../presentation/units';
 import { ImpulseResponse } from '../../analyzing/impulse-response';
 
 @localized()
-@customElement('lateral-level-graph')
-export class LateralLevelGraph extends LitElement {
+@customElement('lateral-sound-level-graph')
+export class LateralSoundLevelGraph extends LitElement {
   @property({ type: Array })
   impulseResponses: ImpulseResponse[] = [];
 

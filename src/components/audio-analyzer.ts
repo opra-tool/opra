@@ -250,7 +250,7 @@ export class AudioAnalyzer extends LitElement {
 
       ${hasMidSideResults
         ? html`
-            <lateral-level-card
+            <lateral-sound-level-card
               .p0=${this.analyzer.getP0()}
               .impulseResponses=${midSideResponses}
               .earlyLateralSoundLevels=${earlyLateralSoundLevelBands}
@@ -268,7 +268,7 @@ export class AudioAnalyzer extends LitElement {
                 .p0=${this.analyzer.getP0()}
                 @change=${this.onP0SettingChange}
               ></p0-setting>
-            </lateral-level-card>
+            </lateral-sound-level-card>
             <early-lateral-fraction-graph
               .impulseResponses=${midSideResponses}
               .earlyLateralEnergyFraction=${earlyLateralEnergyFractionBands}

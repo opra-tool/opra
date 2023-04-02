@@ -4,8 +4,8 @@ import { customElement, property } from 'lit/decorators.js';
 import { ImpulseResponse } from '../analyzing/impulse-response';
 
 @localized()
-@customElement('lateral-level-card')
-export class LateralLevelCard extends LitElement {
+@customElement('lateral-sound-level-card')
+export class LateralSoundLevelCard extends LitElement {
   @property({ type: Number })
   p0: number | null = null;
 
@@ -45,11 +45,11 @@ export class LateralLevelCard extends LitElement {
     }
 
     return html`
-      <lateral-level-graph
+      <lateral-sound-level-graph
         .impulseResponses=${this.impulseResponses}
         .earlyLateralSoundLevels=${this.earlyLateralSoundLevels}
         .lateLateralSoundLevels=${this.lateLateralSoundLevels}
-      ></lateral-level-graph>
+      ></lateral-sound-level-graph>
       <slot name="p0-notice"></slot>
     `;
   }
