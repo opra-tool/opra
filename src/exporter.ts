@@ -40,8 +40,8 @@ type ExportData = {
       iacc?: number[];
       eiacc?: number[];
       earlyLateralEnergyFraction?: number[];
-      earlyLateralLevel?: number[];
-      lateLateralLevel?: number[];
+      earlyLateralSoundLevel?: number[];
+      lateLateralSoundLevel?: number[];
     };
     singleFigureParameters: {
       bassRatio: number;
@@ -55,7 +55,7 @@ type ExportData = {
       levelAdjustedC80?: number;
       iacc?: number;
       earlyLateralEnergyFraction?: number;
-      lateLateralLevel?: number;
+      lateLateralSoundLevel?: number;
     };
   }[];
 };
@@ -117,8 +117,8 @@ export class Exporter {
           iacc: results.iaccBands,
           eiacc: results.eiaccBands,
           earlyLateralEnergyFraction: results.earlyLateralEnergyFractionBands,
-          earlyLateralLevel: results.earlyLateralSoundLevelBands,
-          lateLateralLevel: results.lateLateralSoundLevelBands,
+          earlyLateralSoundLevel: results.earlyLateralSoundLevelBands,
+          lateLateralSoundLevel: results.lateLateralSoundLevelBands,
         },
         singleFigureParameters: {
           bassRatio: results.bassRatio,
@@ -132,7 +132,7 @@ export class Exporter {
           trebleRatio: results.trebleRatio,
           iacc: (results as BinauralResults).iacc,
           earlyLateralEnergyFraction: results.earlyLateralEnergyFraction,
-          lateLateralLevel: results.lateLateralSoundLevel,
+          lateLateralSoundLevel: results.lateLateralSoundLevel,
         },
       });
     }
