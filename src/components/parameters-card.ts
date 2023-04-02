@@ -45,7 +45,7 @@ export class ParametersCard extends LitElement {
     const parameters: Parameter[] = [
       {
         name: html`${msg('Reverb Time')}, T<sub>20</sub>`,
-        description: `${msg('Perceived reverberation')} • ISO 3382-1`,
+        description: `${msg('Perceived reverberance')} • ISO 3382-1`,
         unit: UNIT_SECONDS,
         responseValues: this.reverbTimes,
         position: 1,

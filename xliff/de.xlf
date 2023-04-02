@@ -299,10 +299,6 @@
   <source>Early Decay Time</source>
   <target>Frühe Abklingzeit</target>
 </trans-unit>
-<trans-unit id="s511236609e55d132">
-  <source>Perceived reverberation</source>
-  <target>Empfundener Nachhall</target>
-</trans-unit>
 <trans-unit id="sa839a71768515684">
   <source>Perceived clarity of sound</source>
   <target>Empfundene Klarheit des Klangs</target>
@@ -334,6 +330,10 @@
 <trans-unit id="sda368d49761aef66">
   <source>Listener envelopment (LEV)</source>
   <target>Zuhörer-Einhüllung (LEV)</target>
+</trans-unit>
+<trans-unit id="sa0cd790a6afc4722">
+  <source>Perceived reverberance</source>
+  <target>Empfundener Nachhall</target>
 </trans-unit>
 </body>
 </file>
