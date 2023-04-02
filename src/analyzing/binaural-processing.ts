@@ -2,7 +2,11 @@ import { BinauralSamples } from './binaural-samples';
 import { e80 } from './early-late-fractions';
 import { calculateIacc } from './iacc';
 import { calculateMeanSquaredIR } from './squared-impulse-response';
-import { MonauralResults, processChannel } from './monaural-processing';
+import {
+  MonauralResults,
+  IntermediateResults,
+  processChannel,
+} from './monaural-processing';
 import { octfiltBinaural } from '../octave-band-filtering/octave-band-filtering';
 import { correctStarttimeBinaural } from './starttime';
 
@@ -15,7 +19,7 @@ export type BinauralResults = MonauralResults & {
 export async function processBinauralAudio(
   samples: BinauralSamples,
   sampleRate: number
-): Promise<BinauralResults> {
+): Promise<[BinauralResults, IntermediateResults]> {
   const starttimeCorrected = correctStarttimeBinaural(samples);
   const bands = await octfiltBinaural(starttimeCorrected, sampleRate);
 
@@ -52,16 +56,19 @@ export async function processBinauralAudio(
     return meanBand;
   });
 
-  const meanResults = await processChannel(
+  const [monauralResults, monauralIntermediateResults] = await processChannel(
     squaredIR,
     meanSquaredBands,
     sampleRate
   );
 
-  return {
-    iacc,
-    iaccBands,
-    eiaccBands,
-    ...meanResults,
-  };
+  return [
+    {
+      ...monauralResults,
+      iacc,
+      iaccBands,
+      eiaccBands,
+    },
+    monauralIntermediateResults,
+  ];
 }

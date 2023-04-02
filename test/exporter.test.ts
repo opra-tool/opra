@@ -4,8 +4,6 @@ import {
   ImpulseResponse,
 } from '../src/analyzing/impulse-response';
 import { Exporter } from '../src/exporter';
-import { Strengths } from '../src/analyzing/strength';
-import { LateralLevel } from '../src/analyzing/lateral-level';
 
 const makeResponse = (type: ImpulseResponseType) => ({
   id: 'testId',
@@ -28,8 +26,10 @@ const makeMonauralResults = () => ({
   l80BandsSquaredSum: [1, 2, 3, 4, 5, 6, 7, 8],
   c50Bands: [1, 2, 3, 4, 5, 6, 7, 8],
   c80Bands: [1, 2, 3, 4, 5, 6, 7, 8],
+  c80: 1,
   edtBands: [1, 2, 3, 4, 5, 6, 7, 8],
   reverbTimeBands: [1, 2, 3, 4, 5, 6, 7, 8],
+  reverbTime: 1,
   bassRatio: 1,
   centreTime: 2,
   squaredIRPoints: [{ x: 1, y: 2 }],
@@ -40,12 +40,6 @@ const makeSource = () => ({
     return [makeResponse('monaural')];
   },
   getResultsOrThrow: makeMonauralResults,
-  getLateralLevelResults(): LateralLevel | null {
-    return null;
-  },
-  getStrengthResults(): Strengths | null {
-    return null;
-  },
   getP0(): number | null {
     return null;
   },
@@ -87,7 +81,7 @@ it('it generates a binaural export', async () => {
   expect(actual).to.equal(expected);
 });
 
-it('it generates a mid/side export including lateral level values', async () => {
+it('it generates a mid/side export', async () => {
   const source = makeSource();
   source.getP0 = () => 0.01;
   source.getResponses = () => [makeResponse('mid-side')];
@@ -95,11 +89,9 @@ it('it generates a mid/side export including lateral level values', async () => 
     ...makeMonauralResults(),
     earlyLateralEnergyFractionBands: [1, 2, 3, 4, 5, 6, 7, 8],
     earlyLateralEnergyFraction: 1,
-  });
-  source.getLateralLevelResults = () => ({
-    earlyLateralLevelBands: [1, 2, 3, 4, 5, 6, 7, 8],
-    lateLateralLevelBands: [1, 2, 3, 4, 5, 6, 7, 8],
-    lateLateralLevel: 1,
+    earlyLateralSoundLevelBands: [1, 2, 3, 4, 5, 6, 7, 8],
+    lateLateralSoundLevelBands: [1, 2, 3, 4, 5, 6, 7, 8],
+    lateLateralSoundLevel: 1,
   });
   const exporter = new Exporter(source);
 
@@ -114,15 +106,16 @@ it('it generates a mid/side export including lateral level values', async () => 
 it('includes strength values', async () => {
   const source = makeSource();
   source.getP0 = () => 0.01;
-  source.getStrengthResults = () => ({
-    averageStrength: 1,
-    aWeighted: 1,
+  source.getResultsOrThrow = () => ({
+    ...makeMonauralResults(),
+    strength: 1,
+    aWeightedStrength: 1,
     earlyBassLevel: 1,
     levelAdjustedC80: 1,
     trebleRatio: 1,
-    strength: [1, 2, 3, 4, 5, 6, 7, 8],
-    earlyStrength: [1, 2, 3, 4, 5, 6, 7, 8],
-    lateStrength: [1, 2, 3, 4, 5, 6, 7, 8],
+    strengthBands: [1, 2, 3, 4, 5, 6, 7, 8],
+    earlyStrengthBands: [1, 2, 3, 4, 5, 6, 7, 8],
+    lateStrengthBands: [1, 2, 3, 4, 5, 6, 7, 8],
   });
   const exporter = new Exporter(source);
 

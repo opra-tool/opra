@@ -6,21 +6,27 @@ import { arraySum } from '../math/arraySum';
 import { octfilt } from '../octave-band-filtering/octave-band-filtering';
 import { calculateReverberation } from './reverberation';
 import { correctStarttimeMonaural } from './starttime';
+import { meanDecibel } from '../math/decibels';
 
 type Point = {
   x: number;
   y: number;
 };
 
-export type MonauralResults = {
+export type IntermediateResults = {
   bandsSquaredSum: number[];
   e50BandsSquaredSum: number[];
   e80BandsSquaredSum: number[];
   l80BandsSquaredSum: number[];
+};
+
+export type MonauralResults = {
   edtBands: number[];
   reverbTimeBands: number[];
+  reverbTime: number;
   c50Bands: number[];
   c80Bands: number[];
+  c80: number;
   squaredIRPoints: Point[];
   centreTime: number;
   bassRatio: number;
@@ -29,7 +35,7 @@ export type MonauralResults = {
 export async function processMonauralAudio(
   samples: Float32Array,
   sampleRate: number
-): Promise<MonauralResults> {
+): Promise<[MonauralResults, IntermediateResults]> {
   const starttimeCorrected = correctStarttimeMonaural(samples);
   const squaredIR = calculateSquaredIR(starttimeCorrected);
 
@@ -43,7 +49,7 @@ export async function processChannel(
   squaredIR: Float32Array,
   bandsSquared: Float32Array[],
   sampleRate: number
-): Promise<MonauralResults> {
+): Promise<[MonauralResults, IntermediateResults]> {
   const fractions = bandsSquared.map(band =>
     earlyLateFractions(band, sampleRate)
   );
@@ -56,10 +62,14 @@ export async function processChannel(
     c80Bands.push(c80);
   }
 
+  const c80 = meanDecibel(c80Bands[3], c80Bands[4]);
+
   const { edtBands, reverbTimeBands } = calculateReverberation(
     bandsSquared,
     sampleRate
   );
+
+  const reverbTime = (reverbTimeBands[3] + reverbTimeBands[4]) / 2;
 
   const bassRatio =
     (reverbTimeBands[1] + reverbTimeBands[2]) /
@@ -80,17 +90,23 @@ export async function processChannel(
   const e80BandsSquaredSum = fractions.map(val => val.e80).map(arraySum);
   const l80BandsSquaredSum = fractions.map(val => val.l80).map(arraySum);
 
-  return {
-    bandsSquaredSum,
-    e50BandsSquaredSum,
-    e80BandsSquaredSum,
-    l80BandsSquaredSum,
-    edtBands,
-    reverbTimeBands,
-    c50Bands,
-    c80Bands,
-    bassRatio,
-    centreTime,
-    squaredIRPoints,
-  };
+  return [
+    {
+      edtBands,
+      reverbTimeBands,
+      reverbTime,
+      c50Bands,
+      c80Bands,
+      c80,
+      bassRatio,
+      centreTime,
+      squaredIRPoints,
+    },
+    {
+      bandsSquaredSum,
+      e50BandsSquaredSum,
+      e80BandsSquaredSum,
+      l80BandsSquaredSum,
+    },
+  ];
 }

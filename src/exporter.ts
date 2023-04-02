@@ -2,20 +2,13 @@ import {
   ImpulseResponseType,
   ImpulseResponse,
 } from './analyzing/impulse-response';
-import { MonauralResults } from './analyzing/monaural-processing';
 import { BinauralResults } from './analyzing/binaural-processing';
-import { MidSideResults } from './analyzing/mid-side-processing';
 import { getFrequencyValues } from './analyzing/octave-band-frequencies';
-import { Strengths } from './analyzing/strength';
-import { LateralLevel } from './analyzing/lateral-level';
+import { Results } from './analyzing/analyzer';
 
 interface ResponseResultsSource {
   getResponses(): ImpulseResponse[];
-  getResultsOrThrow(
-    responseId: string
-  ): MonauralResults | BinauralResults | MidSideResults;
-  getStrengthResults(responseId: string): Strengths | null;
-  getLateralLevelResults(responseId: string): LateralLevel | null;
+  getResultsOrThrow(responseId: string): Results;
 }
 
 interface EnvironmentParametersSource {
@@ -51,8 +44,10 @@ type ExportData = {
       lateLateralLevel?: number[];
     };
     singleFigureParameters: {
-      centreTime: number;
       bassRatio: number;
+      c80: number;
+      centreTime: number;
+      reverbTime: number;
       soundStrength?: number;
       trebleRatio?: number;
       earlyBassLevel?: number;
@@ -105,10 +100,6 @@ export class Exporter {
 
     for (const response of responses) {
       const results = this.source.getResultsOrThrow(response.id);
-      const strengthResults = this.source.getStrengthResults(response.id);
-      const lateralLevelResults = this.source.getLateralLevelResults(
-        response.id
-      );
 
       exportData.impulseResponses.push({
         type: response.type,
@@ -120,28 +111,28 @@ export class Exporter {
           c80: results.c80Bands,
           edt: results.edtBands,
           reverbTime: results.reverbTimeBands,
-          earlySoundStrength: strengthResults?.earlyStrength,
-          lateSoundStrength: strengthResults?.lateStrength,
-          soundStrength: strengthResults?.strength,
-          iacc: (results as BinauralResults).iaccBands,
-          eiacc: (results as BinauralResults).eiaccBands,
-          earlyLateralEnergyFraction: (results as MidSideResults)
-            .earlyLateralEnergyFractionBands,
-          earlyLateralLevel: lateralLevelResults?.earlyLateralLevelBands,
-          lateLateralLevel: lateralLevelResults?.lateLateralLevelBands,
+          earlySoundStrength: results.earlyStrengthBands,
+          lateSoundStrength: results.lateStrengthBands,
+          soundStrength: results.strengthBands,
+          iacc: results.iaccBands,
+          eiacc: results.eiaccBands,
+          earlyLateralEnergyFraction: results.earlyLateralEnergyFractionBands,
+          earlyLateralLevel: results.earlyLateralSoundLevelBands,
+          lateLateralLevel: results.lateLateralSoundLevelBands,
         },
         singleFigureParameters: {
           bassRatio: results.bassRatio,
+          c80: results.c80,
           centreTime: results.centreTime,
-          aWeightedSoundStrength: strengthResults?.aWeighted,
-          soundStrength: strengthResults?.averageStrength,
-          earlyBassLevel: strengthResults?.earlyBassLevel,
-          levelAdjustedC80: strengthResults?.levelAdjustedC80,
-          trebleRatio: strengthResults?.trebleRatio,
+          reverbTime: results.reverbTime,
+          aWeightedSoundStrength: results.aWeightedStrength,
+          soundStrength: results.strength,
+          earlyBassLevel: results.earlyBassLevel,
+          levelAdjustedC80: results.levelAdjustedC80,
+          trebleRatio: results.trebleRatio,
           iacc: (results as BinauralResults).iacc,
-          earlyLateralEnergyFraction: (results as MidSideResults)
-            .earlyLateralEnergyFraction,
-          lateLateralLevel: lateralLevelResults?.lateLateralLevel,
+          earlyLateralEnergyFraction: results.earlyLateralEnergyFraction,
+          lateLateralLevel: results.lateLateralSoundLevel,
         },
       });
     }

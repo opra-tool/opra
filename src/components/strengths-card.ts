@@ -2,8 +2,6 @@ import { msg, localized } from '@lit/localize';
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { ImpulseResponse } from '../analyzing/impulse-response';
-import { isFreeOfNullValues } from '../arrays';
-import { Strengths } from '../analyzing/strength';
 
 @localized()
 @customElement('strengths-card')
@@ -15,7 +13,13 @@ export class StrengthsCard extends LitElement {
   impulseResponses: ImpulseResponse[] = [];
 
   @property({ type: Array })
-  strengths: (Strengths | null)[] = [];
+  strengths: number[][] = [];
+
+  @property({ type: Array })
+  earlyStrengths: number[][] = [];
+
+  @property({ type: Array })
+  lateStrengths: number[][] = [];
 
   render() {
     return html`
@@ -36,7 +40,11 @@ export class StrengthsCard extends LitElement {
       `;
     }
 
-    if (this.strengths.length === 0 || !isFreeOfNullValues(this.strengths)) {
+    if (
+      this.strengths.length === 0 ||
+      this.earlyStrengths.length === 0 ||
+      this.lateStrengths.length === 0
+    ) {
       return html`<sl-spinner></sl-spinner>`;
     }
 
@@ -44,6 +52,8 @@ export class StrengthsCard extends LitElement {
       <strengths-graph
         .impulseResponses=${this.impulseResponses}
         .strengths=${this.strengths}
+        .earlyStrengths=${this.earlyStrengths}
+        .lateStrengths=${this.lateStrengths}
       ></strengths-graph>
       <slot name="p0-notice"></slot>
     `;

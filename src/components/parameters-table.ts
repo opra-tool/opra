@@ -8,8 +8,7 @@ export type Parameter = {
   badge?: string;
   description?: string;
   unit?: string;
-  responseValues: (number | null)[];
-  position: number;
+  responseValues: (number | undefined)[];
 };
 
 @customElement('parameters-table')
@@ -25,11 +24,7 @@ export class ParametersTable extends LitElement {
       return null;
     }
 
-    const sortedParameters = this.parameters.sort(
-      (a, b) => a.position - b.position
-    );
-
-    const { responseValues: firstResponseValues } = sortedParameters[0];
+    const { responseValues: firstResponseValues } = this.parameters[0];
 
     return html`
       <div class="scroll-container">
@@ -47,7 +42,7 @@ export class ParametersTable extends LitElement {
               `
             : null}
           <tbody>
-            ${sortedParameters.map(ParametersTable.renderParameter)}
+            ${this.parameters.map(ParametersTable.renderParameter)}
           </tbody>
         </table>
       </div>
@@ -96,7 +91,7 @@ export class ParametersTable extends LitElement {
         ${coloredValues.map(
           value =>
             html`<td class="value">
-              ${value !== null
+              ${value !== undefined
                 ? html`${value.toFixed(2)}${ParametersTable.renderUnit(unit)}`
                 : html`&mdash;`}
             </td>`

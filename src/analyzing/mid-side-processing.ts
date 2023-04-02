@@ -8,17 +8,24 @@ import { calculateSquaredIR } from './squared-impulse-response';
 import { correctStarttimeBinaural } from './starttime';
 import { meanDecibel } from '../math/decibels';
 
-export type MidSideResults = MonauralResults & {
-  earlyLateralEnergyFractionBands: number[];
-  earlyLateralEnergyFraction: number;
+type IntermediateResults = {
+  bandsSquaredSum: number[];
+  e50BandsSquaredSum: number[];
+  e80BandsSquaredSum: number[];
+  l80BandsSquaredSum: number[];
   sideE80BandsSquaredSum: number[];
   sideL80BandsSquaredSum: number[];
+};
+
+type MidSideResults = MonauralResults & {
+  earlyLateralEnergyFractionBands: number[];
+  earlyLateralEnergyFraction: number;
 };
 
 export async function processMidSideAudio(
   samples: BinauralSamples,
   sampleRate: number
-): Promise<MidSideResults> {
+): Promise<[MidSideResults, IntermediateResults]> {
   const starttimeCorrected = correctStarttimeBinaural(samples);
   const bands = await octfiltBinaural(starttimeCorrected, sampleRate);
 
@@ -26,7 +33,7 @@ export async function processMidSideAudio(
   const sideBandsSquared = bands.map(b => calculateSquaredIR(b.rightChannel));
 
   const squaredIR = calculateSquaredIR(starttimeCorrected.leftChannel);
-  const monauralResults = await processChannel(
+  const [monauralResults, monauralIntermediateResults] = await processChannel(
     squaredIR,
     midBandsSquared,
     sampleRate
@@ -44,16 +51,21 @@ export async function processMidSideAudio(
     sampleRate
   );
 
-  return {
-    ...monauralResults,
-    earlyLateralEnergyFractionBands,
-    earlyLateralEnergyFraction: meanDecibel(
-      earlyLateralEnergyFractionBands[1],
-      earlyLateralEnergyFractionBands[2],
-      earlyLateralEnergyFractionBands[3],
-      earlyLateralEnergyFractionBands[4]
-    ),
-    sideE80BandsSquaredSum,
-    sideL80BandsSquaredSum,
-  };
+  return [
+    {
+      ...monauralResults,
+      earlyLateralEnergyFractionBands,
+      earlyLateralEnergyFraction: meanDecibel(
+        earlyLateralEnergyFractionBands[1],
+        earlyLateralEnergyFractionBands[2],
+        earlyLateralEnergyFractionBands[3],
+        earlyLateralEnergyFractionBands[4]
+      ),
+    },
+    {
+      ...monauralIntermediateResults,
+      sideE80BandsSquaredSum,
+      sideL80BandsSquaredSum,
+    },
+  ];
 }

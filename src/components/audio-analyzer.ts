@@ -10,34 +10,11 @@ import {
   FileListConvertEvent,
   FileListMarkEvent,
 } from './file-list-entry-options';
-import { BinauralResults } from '../analyzing/binaural-processing';
-import { MonauralResults } from '../analyzing/monaural-processing';
-import { MidSideResults } from '../analyzing/mid-side-processing';
 import { FileDropChangeEvent } from './file-drop';
 import { P0SettingChangeEvent } from './p0-setting';
 import { P0Dialog, P0DialogChangeEvent } from './p0-dialog';
-import { mapArrayParam } from '../arrays';
 import { toastSuccess, toastWarning } from './toast';
 import { P0_VAR } from '../presentation/p0-format';
-import { meanDecibel } from '../math/decibels';
-
-type Results = MonauralResults | BinauralResults | MidSideResults;
-
-/**
- * @deprecated
- */
-function isBinauralResults(results: Results): results is BinauralResults {
-  return (results as BinauralResults).iaccBands !== undefined;
-}
-
-/**
- * @deprecated
- */
-function isMidSideResults(results: Results): results is MidSideResults {
-  return (
-    (results as MidSideResults).earlyLateralEnergyFractionBands !== undefined
-  );
-}
 
 @localized()
 @customElement('audio-analyzer')
@@ -186,67 +163,44 @@ export class AudioAnalyzer extends LitElement {
       return html`<progress-indicator></progress-indicator>`;
     }
 
-    const results = responses.map(r => this.analyzer.getResultsOrThrow(r.id));
-
-    // monaural
-    const edt = mapArrayParam(results, 'edtBands');
-    const reverbTimeBands = mapArrayParam(results, 'reverbTimeBands');
-    const c50 = mapArrayParam(results, 'c50Bands');
-    const c80 = mapArrayParam(results, 'c80Bands');
-    const squaredIRPoints = mapArrayParam(results, 'squaredIRPoints');
-    const centreTimes = mapArrayParam(results, 'centreTime');
-    const bassRatios = mapArrayParam(results, 'bassRatio');
-    const meanC80s = c80.map(value => meanDecibel(value[3], value[4]));
-    const reverbTimes = reverbTimeBands.map(value => (value[3] + value[4]) / 2);
-
-    // binaural
     const binauralResponses = responses.filter(
       ({ type }) => type === 'binaural'
     );
-    const binauralResults = results.filter(isBinauralResults);
-    const iaccs = results.map(r => {
-      if (isBinauralResults(r)) {
-        return r.iacc;
-      }
-
-      return null;
-    });
-    const iaccBands = mapArrayParam(binauralResults, 'iaccBands');
-    const eiaccBands = mapArrayParam(binauralResults, 'eiaccBands');
-
-    // mid/side
     const midSideResponses = responses.filter(
       ({ type }) => type === 'mid-side'
     );
-    const midSideResults = results.filter(isMidSideResults);
-    const earlyLateralEnergyFractionBands = mapArrayParam(
-      midSideResults,
-      'earlyLateralEnergyFractionBands'
-    );
-    const lateralLevelBands = midSideResponses.map(r =>
-      this.analyzer.getLateralLevelResults(r.id)
-    );
-    const lateLateralLevels = responses
-      .map(r => this.analyzer.getLateralLevelResults(r.id))
-      .map(v => (v ? v.lateLateralLevel : null));
-    const earlyLateralEnergyFractions = results.map(r => {
-      if (isMidSideResults(r)) {
-        return r.earlyLateralEnergyFraction;
-      }
 
-      return null;
-    });
+    const hasBinauralResponses = binauralResponses.length > 0;
+    const hasMidSideResults = midSideResponses.length > 0;
 
-    // strengths
-    const strengths = responses.map(r =>
-      this.analyzer.getStrengthResults(r.id)
-    );
+    const results = responses.map(r => this.analyzer.getResultsOrThrow(r.id));
 
-    const hasBinauralResults = binauralResults.length > 0;
-    const hasMidSideResults = midSideResults.length > 0;
+    const edtBands = results.map(r => r.edtBands);
+    const reverbTimeBands = results.map(r => r.reverbTimeBands);
+    const c50Bands = results.map(r => r.c50Bands);
+    const c80Bands = results.map(r => r.c80Bands);
+    const squaredIRPoints = results.map(r => r.squaredIRPoints);
+    const strengthBands = results.map(r => r.strengthBands).filter(isDefined);
+    const earlyStrengthBands = results
+      .map(r => r.earlyStrengthBands)
+      .filter(isDefined);
+    const lateStrengthBands = results
+      .map(r => r.lateStrengthBands)
+      .filter(isDefined);
+    const iaccBands = results.map(r => r.iaccBands).filter(isDefined);
+    const eiaccBands = results.map(r => r.eiaccBands).filter(isDefined);
+    const earlyLateralEnergyFractionBands = results
+      .map(r => r.earlyLateralEnergyFractionBands)
+      .filter(isDefined);
+    const earlyLateralSoundLevelBands = results
+      .map(r => r.earlyLateralSoundLevelBands)
+      .filter(isDefined);
+    const lateLateralSoundLevelBands = results
+      .map(r => r.lateLateralSoundLevelBands)
+      .filter(isDefined);
 
     return html`
-      ${hasBinauralResults
+      ${hasBinauralResponses
         ? html`<binaural-note-card></binaural-note-card>`
         : null}
       <impulse-response-graph
@@ -254,17 +208,7 @@ export class AudioAnalyzer extends LitElement {
         .squaredIRPoints=${squaredIRPoints}
       ></impulse-response-graph>
 
-      <parameters-card
-        .impulseResponses=${responses}
-        .centreTimes=${centreTimes}
-        .bassRatios=${bassRatios}
-        .c80s=${meanC80s}
-        .reverbTimes=${reverbTimes}
-        .iaccs=${iaccs}
-        .strengths=${strengths}
-        .lateLateralLevels=${lateLateralLevels}
-        .earlyLateralEnergyFractions=${earlyLateralEnergyFractions}
-      >
+      <parameters-card .impulseResponses=${responses} .results=${results}>
         <p0-notice
           .p0=${this.analyzer.getP0()}
           .temperature=${this.analyzer.getAirTemperature()}
@@ -275,20 +219,22 @@ export class AudioAnalyzer extends LitElement {
 
       <reverb-graph
         .impulseResponses=${responses}
-        .edt=${edt}
+        .edt=${edtBands}
         .reverbTime=${reverbTimeBands}
       ></reverb-graph>
 
       <c50c80-graph
         .impulseResponses=${responses}
-        .c50=${c50}
-        .c80=${c80}
+        .c50=${c50Bands}
+        .c80=${c80Bands}
       ></c50c80-graph>
 
       <strengths-card
         .p0=${this.analyzer.getP0()}
         .impulseResponses=${responses}
-        .strengths=${strengths}
+        .strengths=${strengthBands}
+        .earlyStrengths=${earlyStrengthBands}
+        .lateStrengths=${lateStrengthBands}
       >
         <p0-notice
           slot="p0-notice"
@@ -309,7 +255,8 @@ export class AudioAnalyzer extends LitElement {
             <lateral-level-card
               .p0=${this.analyzer.getP0()}
               .impulseResponses=${midSideResponses}
-              .lateralLevels=${lateralLevelBands}
+              .earlyLateralSoundLevels=${earlyLateralSoundLevelBands}
+              .lateLateralSoundLevels=${lateLateralSoundLevelBands}
             >
               <p0-notice
                 slot="p0-notice"
@@ -330,7 +277,7 @@ export class AudioAnalyzer extends LitElement {
             ></early-lateral-fraction-graph>
           `
         : null}
-      ${hasBinauralResults
+      ${hasBinauralResponses
         ? html`<iacc-graph
             .impulseResponses=${binauralResponses}
             .iacc=${iaccBands}
@@ -339,7 +286,7 @@ export class AudioAnalyzer extends LitElement {
         : null}
 
       <convolver-card
-        class=${classMap({ expand: hasBinauralResults })}
+        class=${classMap({ expand: hasBinauralResponses })}
         .responses=${responses}
       ></convolver-card>
     `;
@@ -462,4 +409,8 @@ export class AudioAnalyzer extends LitElement {
       grid-column: 1 / -1;
     }
   `;
+}
+
+function isDefined(v: number[] | undefined): v is number[] {
+  return v !== undefined;
 }

@@ -22,7 +22,9 @@
       },
       "singleFigureParameters": {
         "bassRatio": 1,
+        "c80": 1,
         "centreTime": 2,
+        "reverbTime": 1,
         "earlyLateralEnergyFraction": 1,
         "lateLateralLevel": 1
       }

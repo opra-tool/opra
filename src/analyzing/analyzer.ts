@@ -9,13 +9,12 @@ import {
   retrieveValue,
   retrieveValueOrDefault,
 } from '../persistence';
-import { BinauralResults, processBinauralAudio } from './binaural-processing';
+import { processBinauralAudio } from './binaural-processing';
 import { binauralSamplesFromBuffer } from './binaural-samples';
 import { ImpulseResponse } from './impulse-response';
-import { calculateLateralLevel, LateralLevel } from './lateral-level';
-import { MidSideResults, processMidSideAudio } from './mid-side-processing';
-import { MonauralResults, processMonauralAudio } from './monaural-processing';
-import { calculateStrengths, Strengths } from './strength';
+import { processMidSideAudio } from './mid-side-processing';
+import { processMonauralAudio } from './monaural-processing';
+import { calculateStrengths } from './strength';
 
 const P0_STORAGE_KEY = 'strengths-p0';
 const TEMPERATURE_STORAGE_KEY = 'strengths-temperature';
@@ -40,13 +39,46 @@ const FILE_COLORS = [
 
 const MAX_FILE_COUNT = FILE_COLORS.length;
 
-type Results = MonauralResults | BinauralResults | MidSideResults;
+type IntermediateResults = {
+  bandsSquaredSum: number[];
+  e50BandsSquaredSum: number[];
+  e80BandsSquaredSum: number[];
+  l80BandsSquaredSum: number[];
+  sideE80BandsSquaredSum?: number[];
+  sideL80BandsSquaredSum?: number[];
+};
 
-function isMidSideResults(results: Results): results is MidSideResults {
-  return (
-    (results as MidSideResults).earlyLateralEnergyFractionBands !== undefined
-  );
-}
+export type Results = {
+  /* monaural parameters */
+  edtBands: number[];
+  reverbTimeBands: number[];
+  reverbTime: number;
+  c50Bands: number[];
+  c80Bands: number[];
+  c80: number;
+  squaredIRPoints: { x: number; y: number }[];
+  centreTime: number;
+  bassRatio: number;
+  /* strength-based monaural parameters */
+  strengthBands?: number[];
+  earlyStrengthBands?: number[];
+  lateStrengthBands?: number[];
+  strength?: number;
+  aWeightedStrength?: number;
+  trebleRatio?: number;
+  earlyBassLevel?: number;
+  levelAdjustedC80?: number;
+  /* binaural parameters */
+  iacc?: number;
+  iaccBands?: number[];
+  eiaccBands?: number[];
+  /* mid/side parameters */
+  earlyLateralEnergyFractionBands?: number[];
+  earlyLateralEnergyFraction?: number;
+  earlyLateralSoundLevelBands?: number[];
+  lateLateralSoundLevelBands?: number[];
+  lateLateralSoundLevel?: number;
+};
 
 export class MaximumFileCountReachedError extends Error {
   readonly maxFileCount: number;
@@ -83,11 +115,9 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
 
   private responses: ImpulseResponse[] = [];
 
+  private intermediateResults: Map<string, IntermediateResults> = new Map();
+
   private results: Map<string, Results> = new Map();
-
-  private strengthResults: Map<string, Strengths> = new Map();
-
-  private lateralLevelResults: Map<string, LateralLevel> = new Map();
 
   constructor() {
     super();
@@ -199,8 +229,7 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
     this.responses = this.responses.filter(el => el.id !== id);
 
     this.results.delete(id);
-    this.strengthResults.delete(id);
-    this.lateralLevelResults.delete(id);
+    this.intermediateResults.delete(id);
 
     this.dispatchEvent('change', undefined);
 
@@ -265,12 +294,18 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
     return maybeResults;
   }
 
-  getStrengthResults(responseId: string): Strengths | null {
-    return this.strengthResults.get(responseId) || null;
-  }
+  private getIntermediateResultsOrThrow(
+    responseId: string
+  ): IntermediateResults {
+    const maybeResults = this.intermediateResults.get(responseId);
 
-  getLateralLevelResults(responseId: string): LateralLevel | null {
-    return this.lateralLevelResults.get(responseId) || null;
+    if (!maybeResults) {
+      throw new Error(
+        `expected to find intermediate results for id ${responseId}`
+      );
+    }
+
+    return maybeResults;
   }
 
   private getResponseOrThrow(id: string): ImpulseResponse {
@@ -292,45 +327,43 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
   }: ImpulseResponse) {
     try {
       let results;
+      let intermediateResults;
       if (type === 'monaural') {
-        results = await processMonauralAudio(
+        [results, intermediateResults] = await processMonauralAudio(
           buffer.getChannelData(0),
           sampleRate
         );
       } else if (type === 'binaural') {
-        results = await processBinauralAudio(
+        [results, intermediateResults] = await processBinauralAudio(
           binauralSamplesFromBuffer(buffer),
           sampleRate
         );
       } else {
-        results = await processMidSideAudio(
+        [results, intermediateResults] = await processMidSideAudio(
           binauralSamplesFromBuffer(buffer),
           sampleRate
         );
       }
 
-      this.results.set(id, results);
+      this.intermediateResults.set(id, intermediateResults);
 
       if (this.p0 !== null) {
-        this.strengthResults.set(
-          id,
-          await calculateStrengths(results, {
-            p0: this.p0,
-            relativeHumidity: this.humidity,
-            temperature: this.temperature,
-          })
-        );
-      }
-
-      if (this.p0 !== null && isMidSideResults(results)) {
-        this.lateralLevelResults.set(
-          id,
-          await calculateLateralLevel(results, {
-            p0: this.p0,
-            relativeHumidity: this.humidity,
-            temperature: this.temperature,
-          })
-        );
+        this.results.set(id, {
+          ...results,
+          ...(await calculateStrengths(
+            {
+              ...intermediateResults,
+              c80Bands: results.c80Bands,
+            },
+            {
+              p0: this.p0,
+              relativeHumidity: this.humidity,
+              temperature: this.temperature,
+            }
+          )),
+        });
+      } else {
+        this.results.set(id, results);
       }
     } catch (err) {
       // eslint-disable-next-line no-console
@@ -354,28 +387,25 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
 
     for (const response of this.responses) {
       const results = this.getResultsOrThrow(response.id);
-
-      this.strengthResults.set(
-        response.id,
-        // eslint-disable-next-line no-await-in-loop
-        await calculateStrengths(results, {
-          p0: this.p0,
-          relativeHumidity: this.humidity,
-          temperature: this.temperature,
-        })
+      const intermediateResults = this.getIntermediateResultsOrThrow(
+        response.id
       );
 
-      if (isMidSideResults(results)) {
-        this.lateralLevelResults.set(
-          response.id,
-          // eslint-disable-next-line no-await-in-loop
-          await calculateLateralLevel(results, {
+      this.results.set(response.id, {
+        ...results,
+        // eslint-disable-next-line no-await-in-loop
+        ...(await calculateStrengths(
+          {
+            ...intermediateResults,
+            c80Bands: results.c80Bands,
+          },
+          {
             p0: this.p0,
             relativeHumidity: this.humidity,
             temperature: this.temperature,
-          })
-        );
-      }
+          }
+        )),
+      });
     }
 
     this.dispatchEvent('change', undefined);

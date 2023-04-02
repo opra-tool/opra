@@ -2,7 +2,6 @@ import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { localized, msg } from '@lit/localize';
 import { UNIT_DECIBELS } from '../../presentation/units';
-import { Strengths } from '../../analyzing/strength';
 import { ImpulseResponse } from '../../analyzing/impulse-response';
 
 @localized()
@@ -12,32 +11,38 @@ export class StrengthGraph extends LitElement {
   impulseResponses: ImpulseResponse[] = [];
 
   @property({ type: Array })
-  strengths: Strengths[] = [];
+  strengths: number[][] = [];
+
+  @property({ type: Array })
+  earlyStrengths: number[][] = [];
+
+  @property({ type: Array })
+  lateStrengths: number[][] = [];
 
   render() {
     const params = [
       {
         key: 'strength',
         label: msg('Sound Strength'),
-        datasets: this.strengths.map(({ strength }, index) => ({
+        datasets: this.strengths.map((values, index) => ({
           color: this.impulseResponses[index].color,
-          values: strength,
+          values,
         })),
       },
       {
         key: 'earlyStrength',
         label: msg('Early Sound Strength'),
-        datasets: this.strengths.map(({ earlyStrength }, index) => ({
+        datasets: this.earlyStrengths.map((values, index) => ({
           color: this.impulseResponses[index].color,
-          values: earlyStrength,
+          values,
         })),
       },
       {
         key: 'lateStrength',
         label: msg('Late Sound Strength'),
-        datasets: this.strengths.map(({ lateStrength }, index) => ({
+        datasets: this.lateStrengths.map((values, index) => ({
           color: this.impulseResponses[index].color,
-          values: lateStrength,
+          values,
         })),
       },
     ];

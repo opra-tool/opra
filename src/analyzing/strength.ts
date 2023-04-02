@@ -1,18 +1,26 @@
 import { getFrequencyValues } from './octave-band-frequencies';
 import { calculateSoundDampingInAir } from './dampening';
 import { calculateLpe10 } from './lpe10';
-import { addDecibel, meanDecibel } from '../math/decibels';
+import {
+  addDecibel,
+  meanDecibel,
+  meanDecibelEnergetic,
+} from '../math/decibels';
 import { safeLog10 } from '../math/safeLog10';
 
-export type Strengths = {
-  strength: number[];
-  earlyStrength: number[];
-  lateStrength: number[];
-  averageStrength: number;
+type Strengths = {
+  strengthBands: number[];
+  earlyStrengthBands: number[];
+  lateStrengthBands: number[];
+  strength: number;
+  aWeightedStrength: number;
   trebleRatio: number;
   earlyBassLevel: number;
-  aWeighted: number;
   levelAdjustedC80: number;
+  /* strength-based mid/side parameters */
+  earlyLateralSoundLevelBands?: number[];
+  lateLateralSoundLevelBands?: number[];
+  lateLateralSoundLevel?: number;
 };
 
 type Input = {
@@ -21,6 +29,8 @@ type Input = {
   e80BandsSquaredSum: number[];
   l80BandsSquaredSum: number[];
   c80Bands: number[];
+  sideE80BandsSquaredSum?: number[];
+  sideL80BandsSquaredSum?: number[];
 };
 
 type Options = {
@@ -51,6 +61,8 @@ export async function calculateStrengths(
     e50BandsSquaredSum,
     e80BandsSquaredSum,
     l80BandsSquaredSum,
+    sideE80BandsSquaredSum,
+    sideL80BandsSquaredSum,
     c80Bands,
   }: Input,
   { p0, temperature, relativeHumidity }: Options
@@ -60,26 +72,55 @@ export async function calculateStrengths(
   );
   const lpe10 = await calculateLpe10(airCoeffs);
 
-  const strength = calculateSoundStrength(bandsSquaredSum, p0, lpe10);
-  const earlyStrength = calculateSoundStrength(e80BandsSquaredSum, p0, lpe10);
-  const lateStrength = calculateSoundStrength(l80BandsSquaredSum, p0, lpe10);
-  const averageStrength = calculateMeanSoundStrength(strength);
-  const trebleRatio = calculateTrebleRatio(lateStrength);
+  const strengthBands = calculateSoundStrength(bandsSquaredSum, p0, lpe10);
+  const earlyStrengthBands = calculateSoundStrength(
+    e80BandsSquaredSum,
+    p0,
+    lpe10
+  );
+  const lateStrengthBands = calculateSoundStrength(
+    l80BandsSquaredSum,
+    p0,
+    lpe10
+  );
+  const strength = calculateMeanSoundStrength(strengthBands);
+  const aWeightedStrength = calculateAWeightedSoundStrength(strengthBands);
+  const trebleRatio = calculateTrebleRatio(lateStrengthBands);
   const earlyBassLevel = calculateEarlyBassLevel(
     calculateSoundStrength(e50BandsSquaredSum, p0, lpe10)
   );
-  const aWeighted = calculateAWeightedSoundStrength(strength);
-  const levelAdjustedC80 = calculateLevelAdjustedC80(c80Bands, aWeighted);
+  const levelAdjustedC80 = calculateLevelAdjustedC80(
+    c80Bands,
+    aWeightedStrength
+  );
+
+  const earlyLateralSoundLevelBands = sideE80BandsSquaredSum
+    ? calculateSoundStrength(sideE80BandsSquaredSum, p0, lpe10)
+    : undefined;
+  const lateLateralSoundLevelBands = sideL80BandsSquaredSum
+    ? calculateSoundStrength(sideL80BandsSquaredSum, p0, lpe10)
+    : undefined;
+  const lateLateralSoundLevel = lateLateralSoundLevelBands
+    ? meanDecibelEnergetic(
+        lateLateralSoundLevelBands[1],
+        lateLateralSoundLevelBands[2],
+        lateLateralSoundLevelBands[3],
+        lateLateralSoundLevelBands[4]
+      )
+    : undefined;
 
   return {
+    strengthBands,
+    earlyStrengthBands,
+    lateStrengthBands,
     strength,
-    earlyStrength,
-    lateStrength,
-    averageStrength,
     trebleRatio,
     earlyBassLevel,
-    aWeighted,
+    aWeightedStrength,
     levelAdjustedC80,
+    earlyLateralSoundLevelBands,
+    lateLateralSoundLevelBands,
+    lateLateralSoundLevel,
   };
 }
 

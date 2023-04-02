@@ -1,8 +1,6 @@
 import { localized, msg } from '@lit/localize';
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { isFreeOfNullValues } from '../arrays';
-import { LateralLevel } from '../analyzing/lateral-level';
 import { ImpulseResponse } from '../analyzing/impulse-response';
 
 @localized()
@@ -15,7 +13,10 @@ export class LateralLevelCard extends LitElement {
   impulseResponses: ImpulseResponse[] = [];
 
   @property({ type: Array })
-  lateralLevels: (LateralLevel | null)[] = [];
+  earlyLateralSoundLevels: number[][] = [];
+
+  @property({ type: Array })
+  lateLateralSoundLevels: number[][] = [];
 
   render() {
     return html`
@@ -37,8 +38,8 @@ export class LateralLevelCard extends LitElement {
     }
 
     if (
-      this.lateralLevels.length === 0 ||
-      !isFreeOfNullValues(this.lateralLevels)
+      this.earlyLateralSoundLevels.length === 0 ||
+      this.lateLateralSoundLevels.length === 0
     ) {
       return html`<sl-spinner></sl-spinner>`;
     }
@@ -46,7 +47,8 @@ export class LateralLevelCard extends LitElement {
     return html`
       <lateral-level-graph
         .impulseResponses=${this.impulseResponses}
-        .lateralLevels=${this.lateralLevels}
+        .earlyLateralSoundLevels=${this.earlyLateralSoundLevels}
+        .lateLateralSoundLevels=${this.lateLateralSoundLevels}
       ></lateral-level-graph>
       <slot name="p0-notice"></slot>
     `;
