@@ -44,7 +44,7 @@ export class LineGraph extends LitElement {
     this.chart = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: this.config.labels || ['lala', 'lulu'],
+        labels: this.config.labels,
         datasets: this.config.datasets,
       },
       options: this.config.options,

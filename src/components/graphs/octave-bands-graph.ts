@@ -47,6 +47,8 @@ export class OctaveBandsGraph extends LitElement {
             label: param.name,
             data: dataset.values,
             borderColor: dataset.color,
+            backgroundColor: dataset.color,
+            pointRadius: 4,
             borderDash: LINE_STYLES[paramIndex],
           });
         });
