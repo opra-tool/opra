@@ -18,7 +18,7 @@ export class ImpulseResponseGraph extends LitElement {
   @property({ type: Array })
   impulseResponses: ImpulseResponse[] = [];
 
-  squaredIRPoints: Map<
+  private squaredIRPoints: Map<
     string,
     {
       color: string;
@@ -32,11 +32,11 @@ export class ImpulseResponseGraph extends LitElement {
     }
   }
 
-  willUpdate(changedProperties: PropertyValues<this>) {
-    if (changedProperties.get('impulseResponses') === undefined) {
-      return;
-    }
+  shouldUpdate(changedProperties: PropertyValues<this>): boolean {
+    return changedProperties.has('impulseResponses');
+  }
 
+  willUpdate(changedProperties: PropertyValues<this>) {
     // delete responses no longer present in properties
     for (const [responseId] of this.squaredIRPoints) {
       if (!this.impulseResponses.find(r => r.id === responseId)) {
@@ -44,11 +44,15 @@ export class ImpulseResponseGraph extends LitElement {
       }
     }
 
+    // is undefined on first render
+    const previousResponses: ImpulseResponse[] | undefined =
+      changedProperties.get('impulseResponses');
+
     for (const response of this.impulseResponses) {
       if (
-        changedProperties
-          .get('impulseResponses')
-          .find(r => r.id === response.id)?.buffer !== response.buffer
+        !previousResponses ||
+        previousResponses.find(r => r.id === response.id)?.buffer !==
+          response.buffer
       ) {
         this.updateResponseIR(response);
       }
@@ -117,7 +121,6 @@ export class ImpulseResponseGraph extends LitElement {
     buffer,
     color,
     sampleRate,
-    fileName,
   }: ImpulseResponse) {
     const points = [];
 
