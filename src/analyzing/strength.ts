@@ -174,7 +174,5 @@ function calculateLevelAdjustedC80(
   c80Bands: number[],
   aWeighted: number
 ): number {
-  const mean500Hz1000Hz = meanDecibel(c80Bands[3], c80Bands[4]);
-
-  return addDecibel(mean500Hz1000Hz, 0.62 * aWeighted);
+  return (c80Bands[3] + c80Bands[4]) / 2 + 0.62 * aWeighted;
 }
