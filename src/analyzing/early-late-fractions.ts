@@ -60,6 +60,7 @@ export function l80(samples: Float32Array, sampleRate: number): Float32Array {
 /**
  * Calculate E50, L50, E80 and L80 as defined in ISO 3382-1.
  *
+ * @deprecated use e50(), e80(), l50(), l80() directly
  * @param samples Audio samples
  * @param sampleRate Sample rate of audio
  * @returns An object containing E50, L50, E80 and L80.
