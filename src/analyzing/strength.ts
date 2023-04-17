@@ -1,11 +1,5 @@
-import { getFrequencyValues } from './octave-band-frequencies';
-import { calculateSoundDampingInAir } from './dampening';
 import { calculateLpe10 } from './lpe10';
-import {
-  addDecibel,
-  meanDecibel,
-  meanDecibelEnergetic,
-} from '../math/decibels';
+import { meanDecibel, meanDecibelEnergetic } from '../math/decibels';
 import { safeLog10 } from '../math/safeLog10';
 
 type Strengths = {
@@ -33,10 +27,10 @@ type Input = {
   sideL80BandsSquaredSum?: number[];
 };
 
-type Options = {
-  p0: number;
-  temperature: number;
+type EnvironmentParameters = {
+  airTemperature: number;
   relativeHumidity: number;
+  distanceFromSource: number;
 };
 
 /**
@@ -56,6 +50,8 @@ const A_WEIGHTING_CORRECTIONS = [
 ];
 
 export async function calculateStrengths(
+  samples: Float32Array,
+  sampleRate: number,
   {
     bandsSquaredSum,
     e50BandsSquaredSum,
@@ -65,29 +61,18 @@ export async function calculateStrengths(
     sideL80BandsSquaredSum,
     c80Bands,
   }: Input,
-  { p0, temperature, relativeHumidity }: Options
+  environment: EnvironmentParameters
 ): Promise<Strengths> {
-  const airCoeffs = getFrequencyValues().map(frequency =>
-    calculateSoundDampingInAir(temperature, relativeHumidity, frequency)
-  );
-  const lpe10 = await calculateLpe10(airCoeffs);
+  const lpe10 = await calculateLpe10(samples, sampleRate, environment);
 
-  const strengthBands = calculateSoundStrength(bandsSquaredSum, p0, lpe10);
-  const earlyStrengthBands = calculateSoundStrength(
-    e80BandsSquaredSum,
-    p0,
-    lpe10
-  );
-  const lateStrengthBands = calculateSoundStrength(
-    l80BandsSquaredSum,
-    p0,
-    lpe10
-  );
+  const strengthBands = calculateSoundStrength(bandsSquaredSum, lpe10);
+  const earlyStrengthBands = calculateSoundStrength(e80BandsSquaredSum, lpe10);
+  const lateStrengthBands = calculateSoundStrength(l80BandsSquaredSum, lpe10);
   const strength = calculateMeanSoundStrength(strengthBands);
   const aWeightedStrength = calculateAWeightedSoundStrength(strengthBands);
   const trebleRatio = calculateTrebleRatio(lateStrengthBands);
   const earlyBassLevel = calculateEarlyBassLevel(
-    calculateSoundStrength(e50BandsSquaredSum, p0, lpe10)
+    calculateSoundStrength(e50BandsSquaredSum, lpe10)
   );
   const levelAdjustedC80 = calculateLevelAdjustedC80(
     c80Bands,
@@ -95,10 +80,10 @@ export async function calculateStrengths(
   );
 
   const earlyLateralSoundLevelBands = sideE80BandsSquaredSum
-    ? calculateSoundStrength(sideE80BandsSquaredSum, p0, lpe10)
+    ? calculateSoundStrength(sideE80BandsSquaredSum, lpe10)
     : undefined;
   const lateLateralSoundLevelBands = sideL80BandsSquaredSum
-    ? calculateSoundStrength(sideL80BandsSquaredSum, p0, lpe10)
+    ? calculateSoundStrength(sideL80BandsSquaredSum, lpe10)
     : undefined;
   const lateLateralSoundLevel = lateLateralSoundLevelBands
     ? meanDecibelEnergetic(
@@ -124,20 +109,17 @@ export async function calculateStrengths(
   };
 }
 
-export function calculateSoundStrength(
+function calculateSoundStrength(
   bandsSquaredSum: number[],
-  p0: number,
   lpe10: number[]
 ): number[] {
   if (bandsSquaredSum.length !== lpe10.length) {
     throw new Error('expected bands length to match lpe10 length');
   }
 
-  return bandsSquaredSum.map((bandSum, i) => {
-    const lpe = 10 * safeLog10(bandSum / p0 ** 2);
-
-    return lpe - lpe10[i];
-  });
+  return bandsSquaredSum.map(
+    (bandSum, i) => 10 * safeLog10(bandSum) - lpe10[i]
+  );
 }
 
 function calculateAWeightedSoundStrength(strength: number[]): number {

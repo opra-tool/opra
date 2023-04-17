@@ -1,7 +1,7 @@
 import { BinauralSamples } from './binaural-samples';
 import { earlyLateFractions } from './early-late-fractions';
 import { calculateEarlyLateralEnergyFraction } from './early-lateral-fraction';
-import { arraySum } from '../math/arraySum';
+import { arraySum } from '../math/arrays';
 import { MonauralResults, processChannel } from './monaural-processing';
 import { octfiltBinaural } from '../octave-band-filtering/octave-band-filtering';
 import { calculateSquaredIR } from './squared-impulse-response';
@@ -32,9 +32,7 @@ export async function processMidSideAudio(
   const midBandsSquared = bands.map(b => calculateSquaredIR(b.leftChannel));
   const sideBandsSquared = bands.map(b => calculateSquaredIR(b.rightChannel));
 
-  const squaredIR = calculateSquaredIR(starttimeCorrected.leftChannel);
   const [monauralResults, monauralIntermediateResults] = await processChannel(
-    squaredIR,
     midBandsSquared,
     sampleRate
   );

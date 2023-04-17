@@ -1,10 +1,5 @@
 {
   "octaveBandsFrequencies": [62.5,125,250,500,1000,2000,4000,8000],
-  "environmentParameters": {
-    "p0": 0.01,
-    "airTemperature": 20,
-    "relativeHumidity": 50
-  },
   "impulseResponses": [
     {
       "type": "mid-side",
@@ -27,6 +22,14 @@
         "reverbTime": 1,
         "earlyLateralEnergyFraction": 1,
         "lateLateralSoundLevel": 1
+      },
+      "environmentValues": {
+        "airTemperature": 20,
+        "distanceFromSource": 10,
+        "relativeHumidity": 50,
+        "airDensity": 1.2,
+        "referencePressure": 0.01,
+        "sourcePower": 1
       }
     }
   ]

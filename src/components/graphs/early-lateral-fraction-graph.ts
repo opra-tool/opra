@@ -2,7 +2,6 @@ import { localized, msg } from '@lit/localize';
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { ImpulseResponse } from '../../analyzing/impulse-response';
-import { UNIT_DECIBELS } from '../../presentation/units';
 
 type BandValues = number[];
 

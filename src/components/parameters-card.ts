@@ -3,11 +3,6 @@ import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { Results } from '../analyzing/analyzer';
 import { ImpulseResponse } from '../analyzing/impulse-response';
-import {
-  UNIT_DECIBELS,
-  UNIT_DECIBELS_A,
-  UNIT_SECONDS,
-} from '../presentation/units';
 import { Parameter } from './parameters-table';
 
 @localized()
@@ -24,20 +19,20 @@ export class ParametersCard extends LitElement {
       {
         name: html`${msg('Reverb Time')}, T<sub>20</sub>`,
         description: `${msg('Perceived reverberance')} • ISO 3382-1`,
-        unit: UNIT_SECONDS,
+        unit: 's',
         responseValues: this.results.map(r => r.reverbTime),
       },
       {
         name: html`${msg('Centre Time')}, T<sub>S</sub>`,
         description: `${msg('Perceived clarity of sound')} • ISO 3382-1`,
-        unit: UNIT_SECONDS,
+        unit: 's',
         responseValues: this.results.map(r => r.centreTime),
       },
       {
         name: html`${msg('Sound Strength')}, G`,
         description: `${msg('Subjective level of sound')} • ISO 3382-1`,
         responseValues: this.results.map(r => r.strength),
-        unit: UNIT_DECIBELS,
+        unit: 'dB',
       },
       {
         name: html`${msg('A-weighted Sound Strength')}, G(A)`,
@@ -45,12 +40,12 @@ export class ParametersCard extends LitElement {
           'Soulodre and Bradley (1995)'
         )}`,
         responseValues: this.results.map(r => r.aWeightedStrength),
-        unit: UNIT_DECIBELS_A,
+        unit: 'dB',
       },
       {
         name: html`${msg('Clarity')}, C<sub>80</sub>`,
         description: `${msg('Perceived clarity of sound')} • ISO 3382-1`,
-        unit: UNIT_DECIBELS,
+        unit: 'dB',
         responseValues: this.results.map(r => r.c80),
       },
       {
@@ -59,7 +54,7 @@ export class ParametersCard extends LitElement {
           'Soulodre and Bradley (1995)'
         )}`,
         responseValues: this.results.map(r => r.levelAdjustedC80),
-        unit: UNIT_DECIBELS_A,
+        unit: 'dB',
       },
       {
         name: msg('Treble Ratio'),
@@ -67,7 +62,7 @@ export class ParametersCard extends LitElement {
           'Soulodre and Bradley (1995)'
         )}`,
         responseValues: this.results.map(r => r.trebleRatio),
-        unit: UNIT_DECIBELS,
+        unit: 'dB',
       },
       {
         name: `${msg('Bass Ratio')}, BR`,
@@ -80,7 +75,7 @@ export class ParametersCard extends LitElement {
           'Soulodre and Bradley (1995)'
         )}`,
         responseValues: this.results.map(r => r.earlyBassLevel),
-        unit: UNIT_DECIBELS,
+        unit: 'dB',
       },
       {
         name: `${msg('Interaural Cross Correlation')}, IACC`,
@@ -96,7 +91,7 @@ export class ParametersCard extends LitElement {
         name: html`${msg('Late Lateral Sound Level')}, L<sub>J</sub>`,
         description: `${msg('Listener envelopment (LEV)')} • ISO 3382-1`,
         responseValues: this.results.map(r => r.lateLateralSoundLevel),
-        unit: UNIT_DECIBELS,
+        unit: 'dB',
       },
     ];
 
@@ -106,7 +101,6 @@ export class ParametersCard extends LitElement {
           .impulseResponses=${this.impulseResponses}
           .parameters=${parameters}
         ></parameters-table>
-        <slot></slot>
       </titled-card>
     `;
   }

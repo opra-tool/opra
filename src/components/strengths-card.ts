@@ -6,9 +6,6 @@ import { ImpulseResponse } from '../analyzing/impulse-response';
 @localized()
 @customElement('strengths-card')
 export class StrengthsCard extends LitElement {
-  @property({ type: Number })
-  p0: number | null = null;
-
   @property({ type: Array })
   impulseResponses: ImpulseResponse[] = [];
 
@@ -32,14 +29,6 @@ export class StrengthsCard extends LitElement {
   }
 
   private renderCardContent() {
-    if (this.p0 === null) {
-      return html`
-        <div class="p0-setting">
-          <slot name="p0-setting"></slot>
-        </div>
-      `;
-    }
-
     if (
       this.strengths.length === 0 ||
       this.earlyStrengths.length === 0 ||
@@ -55,18 +44,6 @@ export class StrengthsCard extends LitElement {
         .earlyStrengths=${this.earlyStrengths}
         .lateStrengths=${this.lateStrengths}
       ></strengths-graph>
-      <slot name="p0-notice"></slot>
     `;
   }
-
-  static styles = css`
-    .p0-setting {
-      display: grid;
-      justify-content: center;
-      align-items: center;
-      max-width: 14rem;
-      margin: 0 auto;
-      padding: 2rem;
-    }
-  `;
 }

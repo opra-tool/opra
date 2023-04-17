@@ -1,27 +1,19 @@
+import { Persistence } from '../persistence';
 import { readAudioFile } from '../audio/audio-file-reading';
 import { convertBetweenBinauralAndMidSide } from '../conversion';
 import { EventEmitter } from '../event-emitter';
-import {
-  getResponses,
-  persistResponse,
-  persistValue,
-  removeResponse,
-  retrieveValue,
-  retrieveValueOrDefault,
-} from '../persistence';
 import { processBinauralAudio } from './binaural-processing';
 import { binauralSamplesFromBuffer } from './binaural-samples';
+import { EnvironmentValues } from './environment-values';
 import { ImpulseResponse } from './impulse-response';
 import { processMidSideAudio } from './mid-side-processing';
 import { processMonauralAudio } from './monaural-processing';
 import { calculateStrengths } from './strength';
 
-const P0_STORAGE_KEY = 'strengths-p0';
-const TEMPERATURE_STORAGE_KEY = 'strengths-temperature';
-const HUMIDITY_STORAGE_KEY = 'strengths-humidity';
-
-const DEFAULT_HUMIDITY = 50;
-const DEFAULT_TEMPERATURE = 20;
+const DEFAULT_RELATIVE_HUMIDITY = 50;
+const DEFAULT_AIR_TEMPERATURE = 20;
+const DEFAULT_DISTANCE_FROM_SOURCE = 10;
+const DEFAULT_AIR_DENSITY = 1.2;
 
 const COLOR_WHITE = 'rgba(255, 255, 255, 0.75)';
 const COLOR_BLUE = 'rgba(153, 102, 255, 0.5)';
@@ -95,22 +87,19 @@ export class MaximumFileCountReachedError extends Error {
 type AnalyzerEventMap = {
   'file-adding-error': { fileName: string; error: Error };
   'file-processing-error': { id: string; fileName: string; error: Error };
-  'p0-air-values-update': { p0: number; temperature: number; humidity: number };
+  'environment-values-update': {};
   change: undefined;
 };
 
 export class Analyzer extends EventEmitter<AnalyzerEventMap> {
-  private p0 = retrieveValue(P0_STORAGE_KEY);
+  private persistence: Persistence = new Persistence();
 
-  private temperature = retrieveValueOrDefault(
-    TEMPERATURE_STORAGE_KEY,
-    DEFAULT_TEMPERATURE
-  );
-
-  private humidity = retrieveValueOrDefault(
-    HUMIDITY_STORAGE_KEY,
-    DEFAULT_HUMIDITY
-  );
+  private environment: EnvironmentValues = {
+    airTemperature: DEFAULT_AIR_TEMPERATURE,
+    relativeHumidity: DEFAULT_RELATIVE_HUMIDITY,
+    distanceFromSource: DEFAULT_DISTANCE_FROM_SOURCE,
+    airDensity: DEFAULT_AIR_DENSITY,
+  };
 
   private responses: ImpulseResponse[] = [];
 
@@ -121,50 +110,37 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
   constructor() {
     super();
 
-    getResponses().then(responses => {
-      for (const response of responses) {
-        this.responses.push(response);
-        this.analyzeResponse(response);
-      }
+    this.persistence.init().then(() => {
+      this.persistence.getResponses().then(responses => {
+        for (const response of responses) {
+          this.responses.push(response);
+          this.analyzeResponse(response);
+        }
 
-      this.dispatchEvent('change', undefined);
+        this.dispatchEvent('change', undefined);
+      });
+      this.persistence.getEnvironmentValues().then(values => {
+        if (values) {
+          this.environment = values;
+        }
+      });
     });
   }
 
-  getP0(): number | null {
-    return this.p0;
+  getEnvironmentValues(): EnvironmentValues {
+    return this.environment;
   }
 
-  setP0(p0: number) {
-    this.setP0AndAirValues(p0, this.temperature, this.humidity);
-  }
-
-  setP0AndAirValues(p0: number, temperature: number, humidity: number) {
-    this.p0 = p0;
-    this.temperature = temperature;
-    this.humidity = humidity;
+  setEnvironmentValues(values: EnvironmentValues) {
+    this.environment = values;
 
     setTimeout(() => {
-      this.dispatchEvent('p0-air-values-update', {
-        p0,
-        temperature,
-        humidity,
-      });
+      this.dispatchEvent('environment-values-update', {});
 
       this.recalculateStrengths();
 
-      persistValue(P0_STORAGE_KEY, p0);
-      persistValue(TEMPERATURE_STORAGE_KEY, temperature);
-      persistValue(HUMIDITY_STORAGE_KEY, humidity);
+      this.persistence.saveEnvironmentValues(values);
     }, 0);
-  }
-
-  getAirTemperature(): number {
-    return this.temperature;
-  }
-
-  getRelativeHumidity(): number {
-    return this.humidity;
   }
 
   getResponses(): ImpulseResponse[] {
@@ -218,7 +194,7 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
     setTimeout(() => {
       this.dispatchEvent('change', undefined);
 
-      persistResponse(response);
+      this.persistence.saveResponse(response);
 
       this.analyzeResponse(response);
     }, 0);
@@ -232,8 +208,7 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
 
     this.dispatchEvent('change', undefined);
 
-    // eslint-disable-next-line no-console
-    removeResponse(id).catch(console.error);
+    this.persistence.deleteResponse(id);
   }
 
   markResponseAs(id: string, markAs: 'binaural' | 'mid-side') {
@@ -250,10 +225,7 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
 
     this.dispatchEvent('change', undefined);
 
-    // TODO: do more elegantly
-    // eslint-disable-next-line no-console
-    removeResponse(id).catch(console.error);
-    persistResponse(response);
+    this.persistence.saveResponse(response);
   }
 
   convertResponse(id: string) {
@@ -273,10 +245,7 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
 
     this.dispatchEvent('change', undefined);
 
-    // TODO: do more elegantly
-    // eslint-disable-next-line no-console
-    removeResponse(id).catch(console.error);
-    persistResponse(newResponse);
+    this.persistence.saveResponse(newResponse);
   }
 
   hasResults(responseId: string): boolean {
@@ -346,24 +315,18 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
 
       this.intermediateResults.set(id, intermediateResults);
 
-      if (this.p0 !== null) {
-        this.results.set(id, {
-          ...results,
-          ...(await calculateStrengths(
-            {
-              ...intermediateResults,
-              c80Bands: results.c80Bands,
-            },
-            {
-              p0: this.p0,
-              relativeHumidity: this.humidity,
-              temperature: this.temperature,
-            }
-          )),
-        });
-      } else {
-        this.results.set(id, results);
-      }
+      this.results.set(id, {
+        ...results,
+        ...(await calculateStrengths(
+          buffer.getChannelData(0),
+          sampleRate,
+          {
+            ...intermediateResults,
+            c80Bands: results.c80Bands,
+          },
+          this.environment
+        )),
+      });
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error(err);
@@ -380,10 +343,6 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
   }
 
   private async recalculateStrengths() {
-    if (!this.p0) {
-      throw new Error('expected p0 to be defined when recalcuation strengths');
-    }
-
     for (const response of this.responses) {
       const results = this.getResultsOrThrow(response.id);
       const intermediateResults = this.getIntermediateResultsOrThrow(
@@ -394,15 +353,13 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
         ...results,
         // eslint-disable-next-line no-await-in-loop
         ...(await calculateStrengths(
+          response.buffer.getChannelData(0),
+          response.buffer.sampleRate,
           {
             ...intermediateResults,
             c80Bands: results.c80Bands,
           },
-          {
-            p0: this.p0,
-            relativeHumidity: this.humidity,
-            temperature: this.temperature,
-          }
+          this.environment
         )),
       });
     }

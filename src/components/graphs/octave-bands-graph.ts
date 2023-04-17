@@ -2,7 +2,6 @@ import { localized, msg } from '@lit/localize';
 import { ChartDataset } from 'chart.js';
 import { css, html, LitElement, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
-import { UNIT_HERTZ } from '../../presentation/units';
 import { getFrequencyLabels } from './common';
 import { GraphConfig } from './line-graph';
 
@@ -69,7 +68,7 @@ export class OctaveBandsGraph extends LitElement {
           x: {
             title: {
               display: true,
-              text: `${msg('Frequency in')} ${UNIT_HERTZ}`,
+              text: msg('Frequency in Hz'),
             },
           },
         },

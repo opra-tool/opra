@@ -2,7 +2,7 @@ import { c50c80 } from './c50c80';
 import { calculateCentreTime } from './centre-time';
 import { earlyLateFractions } from './early-late-fractions';
 import { calculateSquaredIR } from './squared-impulse-response';
-import { arraySum } from '../math/arraySum';
+import { arraySum } from '../math/arrays';
 import { octfilt } from '../octave-band-filtering/octave-band-filtering';
 import { calculateReverberation } from './reverberation';
 import { correctStarttimeMonaural } from './starttime';
@@ -31,16 +31,14 @@ export async function processMonauralAudio(
   sampleRate: number
 ): Promise<[MonauralResults, IntermediateResults]> {
   const starttimeCorrected = correctStarttimeMonaural(samples);
-  const squaredIR = calculateSquaredIR(starttimeCorrected);
 
   const bands = await octfilt(starttimeCorrected, sampleRate);
   const bandsSquared = bands.map(calculateSquaredIR);
 
-  return processChannel(squaredIR, bandsSquared, sampleRate);
+  return processChannel(bandsSquared, sampleRate);
 }
 
 export async function processChannel(
-  squaredIR: Float32Array,
   bandsSquared: Float32Array[],
   sampleRate: number
 ): Promise<[MonauralResults, IntermediateResults]> {

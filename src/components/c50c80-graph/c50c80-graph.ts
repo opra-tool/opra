@@ -1,7 +1,6 @@
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { ImpulseResponse } from '../../analyzing/impulse-response';
-import { UNIT_DECIBELS } from '../../presentation/units';
 
 type BandValues = number[];
 
@@ -38,7 +37,7 @@ export class C50C80Graph extends LitElement {
       <help-card cardTitle="C50 / C80">
         <octave-bands-graph
           .params=${params}
-          .yAxisLabel=${UNIT_DECIBELS}
+          yAxisLabel="dB"
         ></octave-bands-graph>
         <c50c80-graph-help slot="help"></c50c80-graph-help>
       </help-card>

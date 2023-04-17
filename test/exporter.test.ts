@@ -1,4 +1,5 @@
 import { expect } from '@esm-bundle/chai';
+import { EnvironmentValues } from '../src/analyzing/environment-values';
 import {
   ImpulseResponseType,
   ImpulseResponse,
@@ -20,10 +21,6 @@ const makeResponse = (type: ImpulseResponseType) => ({
 });
 
 const makeMonauralResults = () => ({
-  bandsSquaredSum: [1, 2, 3, 4, 5, 6, 7, 8],
-  e50BandsSquaredSum: [1, 2, 3, 4, 5, 6, 7, 8],
-  e80BandsSquaredSum: [1, 2, 3, 4, 5, 6, 7, 8],
-  l80BandsSquaredSum: [1, 2, 3, 4, 5, 6, 7, 8],
   c50Bands: [1, 2, 3, 4, 5, 6, 7, 8],
   c80Bands: [1, 2, 3, 4, 5, 6, 7, 8],
   c80: 1,
@@ -39,14 +36,15 @@ const makeSource = () => ({
     return [makeResponse('monaural')];
   },
   getResultsOrThrow: makeMonauralResults,
-  getP0(): number | null {
-    return null;
-  },
-  getAirTemperature(): number {
-    return 20;
-  },
-  getRelativeHumidity(): number {
-    return 50;
+  getEnvironmentValues(): EnvironmentValues {
+    return {
+      airTemperature: 20,
+      distanceFromSource: 10,
+      relativeHumidity: 50,
+      airDensity: 1.2,
+      referencePressure: 0.01,
+      sourcePower: 1,
+    };
   },
 });
 
@@ -82,7 +80,6 @@ it('it generates a binaural export', async () => {
 
 it('it generates a mid/side export', async () => {
   const source = makeSource();
-  source.getP0 = () => 0.01;
   source.getResponses = () => [makeResponse('mid-side')];
   source.getResultsOrThrow = () => ({
     ...makeMonauralResults(),
@@ -104,7 +101,6 @@ it('it generates a mid/side export', async () => {
 
 it('includes strength values', async () => {
   const source = makeSource();
-  source.getP0 = () => 0.01;
   source.getResultsOrThrow = () => ({
     ...makeMonauralResults(),
     strength: 1,

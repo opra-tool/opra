@@ -5,25 +5,19 @@ import {
 import { BinauralResults } from './analyzing/binaural-processing';
 import { getFrequencyValues } from './analyzing/octave-band-frequencies';
 import { Results } from './analyzing/analyzer';
+import { EnvironmentValues } from './analyzing/environment-values';
 
 interface ResponseResultsSource {
   getResponses(): ImpulseResponse[];
   getResultsOrThrow(responseId: string): Results;
 }
 
-interface EnvironmentParametersSource {
-  getP0(): number | null;
-  getAirTemperature(): number;
-  getRelativeHumidity(): number;
+interface EnvironmentValuesSource {
+  getEnvironmentValues(): EnvironmentValues;
 }
 
 type ExportData = {
   octaveBandsFrequencies: number[];
-  environmentParameters: {
-    p0: number | null;
-    airTemperature: number;
-    relativeHumidity: number;
-  };
   impulseResponses: {
     type: ImpulseResponseType;
     fileName: string;
@@ -57,13 +51,14 @@ type ExportData = {
       earlyLateralEnergyFraction?: number;
       lateLateralSoundLevel?: number;
     };
+    environmentValues: EnvironmentValues;
   }[];
 };
 
 export class Exporter {
-  private source: ResponseResultsSource & EnvironmentParametersSource;
+  private source: ResponseResultsSource & EnvironmentValuesSource;
 
-  constructor(source: ResponseResultsSource & EnvironmentParametersSource) {
+  constructor(source: ResponseResultsSource & EnvironmentValuesSource) {
     this.source = source;
   }
 
@@ -90,11 +85,6 @@ export class Exporter {
 
     const exportData: ExportData = {
       octaveBandsFrequencies: getFrequencyValues(),
-      environmentParameters: {
-        p0: this.source.getP0(),
-        airTemperature: this.source.getAirTemperature(),
-        relativeHumidity: this.source.getRelativeHumidity(),
-      },
       impulseResponses: [],
     };
 
@@ -134,6 +124,7 @@ export class Exporter {
           earlyLateralEnergyFraction: results.earlyLateralEnergyFraction,
           lateLateralSoundLevel: results.lateLateralSoundLevel,
         },
+        environmentValues: this.source.getEnvironmentValues(),
       });
     }
 

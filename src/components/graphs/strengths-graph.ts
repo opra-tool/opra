@@ -1,7 +1,6 @@
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { localized, msg } from '@lit/localize';
-import { UNIT_DECIBELS } from '../../presentation/units';
 import { ImpulseResponse } from '../../analyzing/impulse-response';
 
 @localized()
@@ -50,7 +49,7 @@ export class StrengthGraph extends LitElement {
     return html`
       <octave-bands-graph
         .params=${params}
-        .yAxisLabel=${UNIT_DECIBELS}
+        yAxisLabel="dB"
       ></octave-bands-graph>
     `;
   }

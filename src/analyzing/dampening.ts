@@ -45,11 +45,6 @@ export function calculateSoundDampingInAir(
           0.1068 *
             (Math.exp(-3352 / airTemperatureKelvin) /
               (frN + (frequency * frequency) / frN))));
-  let dbHumid = 100 * alpha;
 
-  if (dbHumid < 0.0001) {
-    dbHumid = 0;
-  }
-
-  return Math.round(1000 * alpha) / 1000;
+  return alpha;
 }

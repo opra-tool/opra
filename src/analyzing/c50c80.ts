@@ -1,4 +1,4 @@
-import { arraySum } from '../math/arraySum';
+import { arraySum } from '../math/arrays';
 import { safeLog10 } from '../math/safeLog10';
 
 type EarlyLateFractions = {

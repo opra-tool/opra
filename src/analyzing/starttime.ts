@@ -1,5 +1,5 @@
 import { BinauralSamples } from './binaural-samples';
-import { arrayMaxAbs } from '../math/arrayMaxAbs';
+import { arrayMaxAbs } from '../math/arrays';
 
 /**
  * Corrects the starttime of an audio signal according to ISO 3382-1.

@@ -2,7 +2,6 @@ import { localized, msg } from '@lit/localize';
 import { SlMenuItem } from '@shoelace-style/shoelace';
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { FileListRemoveEvent } from './file-list';
 
 export class FileListMarkEvent extends CustomEvent<{
   id: string;
@@ -34,6 +33,34 @@ export class FileListConvertEvent extends CustomEvent<{
   }
 }
 
+export class FileListRemoveEvent extends CustomEvent<{
+  id: string;
+}> {
+  constructor(id: string) {
+    super('remove-file', {
+      detail: {
+        id,
+      },
+      bubbles: true,
+      composed: true,
+    });
+  }
+}
+
+export class FileListSetEnvironmentEvent extends CustomEvent<{
+  id: string;
+}> {
+  constructor(id: string) {
+    super('set-environment', {
+      detail: {
+        id,
+      },
+      bubbles: true,
+      composed: true,
+    });
+  }
+}
+
 @localized()
 @customElement('file-list-entry-options')
 export class FileListEntryOptions extends LitElement {
@@ -41,7 +68,7 @@ export class FileListEntryOptions extends LitElement {
   id: string = '';
 
   @property({ type: String })
-  type: 'binaural' | 'mid-side' = 'binaural';
+  type: 'monaural' | 'binaural' | 'mid-side' = 'binaural';
 
   @property({ type: Boolean })
   converted: boolean = false;
@@ -55,6 +82,9 @@ export class FileListEntryOptions extends LitElement {
           title=${msg('More options for this impulse response')}
         ></sl-icon-button>
         <sl-menu @sl-select=${this.onMenuSelect}>
+          <sl-menu-item value="set-environment">
+            ${msg('Set environment values')}
+          </sl-menu-item>
           ${this.renderConversionOptions()}
           <sl-divider></sl-divider>
           <sl-menu-item value="remove">${msg('Discard')}</sl-menu-item>
@@ -64,6 +94,10 @@ export class FileListEntryOptions extends LitElement {
   }
 
   private renderConversionOptions() {
+    if (this.type === 'monaural') {
+      return null;
+    }
+
     if (this.converted && this.type === 'mid-side') {
       return html`
         <sl-menu-item value="convert"> ${msg('Undo conversion')} </sl-menu-item>
@@ -101,6 +135,9 @@ export class FileListEntryOptions extends LitElement {
         break;
       case 'convert':
         this.dispatchEvent(new FileListConvertEvent(this.id));
+        break;
+      case 'set-environment':
+        this.dispatchEvent(new FileListSetEnvironmentEvent(this.id));
         break;
       case 'remove':
         this.dispatchEvent(new FileListRemoveEvent(this.id));

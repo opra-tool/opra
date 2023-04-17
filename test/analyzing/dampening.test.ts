@@ -1,5 +1,6 @@
 import { expect } from '@esm-bundle/chai';
 import { calculateSoundDampingInAir } from '../../src/analyzing/dampening';
+import { expectArraysApproximatelyEqual } from '../arrays-approx-equality';
 
 it('fails for frequencies < 50Hz and > 10kHz', () => {
   const anyTemperature = 1;
@@ -56,11 +57,11 @@ it('calculates sound dampening', () => {
     },
   ];
 
-  const outputs = [0, 0.03, 0.105];
+  const expected = [0, 0.03, 0.105];
 
-  inputs.forEach(({ temperature, humidity, frequency }, i) => {
-    expect(
-      calculateSoundDampingInAir(temperature, humidity, frequency)
-    ).to.equal(outputs[i]);
-  });
+  const actual = inputs.map(({ temperature, humidity, frequency }) =>
+    calculateSoundDampingInAir(temperature, humidity, frequency)
+  );
+
+  expectArraysApproximatelyEqual(actual, expected, 0.01);
 });

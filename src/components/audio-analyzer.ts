@@ -4,17 +4,18 @@ import { classMap } from 'lit/directives/class-map.js';
 import { localized, msg, str } from '@lit/localize';
 import { Exporter } from '../exporter';
 import { Analyzer, MaximumFileCountReachedError } from '../analyzing/analyzer';
-import { UNIT_CELCIUS } from '../presentation/units';
-import { FileListToggleEvent, FileListRemoveEvent } from './file-list';
+import { FileListToggleEvent } from './file-list';
 import {
   FileListConvertEvent,
   FileListMarkEvent,
+  FileListRemoveEvent,
 } from './file-list-entry-options';
 import { FileDropChangeEvent } from './file-drop';
-import { P0SettingChangeEvent } from './p0-setting';
-import { P0Dialog, P0DialogChangeEvent } from './p0-dialog';
+import {
+  EnvironmentDialog,
+  EnvironmentChangeEvent,
+} from './environment-dialog';
 import { toastSuccess, toastWarning } from './toast';
-import { P0_VAR } from '../presentation/p0-format';
 
 @localized()
 @customElement('audio-analyzer')
@@ -30,8 +31,8 @@ export class AudioAnalyzer extends LitElement {
   @state()
   private error: Error | null = null;
 
-  @query('.p0-dialog', true)
-  private p0Dialog!: P0Dialog;
+  @query('.environment-dialog', true)
+  private environmentDialog!: EnvironmentDialog;
 
   constructor() {
     super();
@@ -60,13 +61,8 @@ export class AudioAnalyzer extends LitElement {
       }
     );
 
-    this.analyzer.addEventListener(
-      'p0-air-values-update',
-      ({ p0, temperature, humidity }) =>
-        toastSuccess(
-          html`${msg('Successfully set')} ${P0_VAR} = ${p0},
-          ${temperature}${UNIT_CELCIUS}, ${humidity}%`
-        )
+    this.analyzer.addEventListener('environment-values-update', () =>
+      toastSuccess(msg('Successfully set environment values'))
     );
   }
 
@@ -112,15 +108,15 @@ export class AudioAnalyzer extends LitElement {
                     @remove-file=${this.onRemoveFile}
                     @mark-file=${this.onMarkFile}
                     @convert-file=${this.onConvertFile}
+                    @set-environment=${this.onShowEnvironmentDialog}
                   ></file-list>
                 `
               : null}
           </section>
           <section class="settings">
-            <p0-setting
-              .p0=${this.analyzer.getP0()}
-              @change=${this.onP0SettingChange}
-            ></p0-setting>
+            <environment-notice
+              @show-dialog=${this.onShowEnvironmentDialog}
+            ></environment-notice>
             <sl-button @click=${this.onExport}>
               <sl-icon slot="prefix" name="download"></sl-icon>
               ${msg('Download Results')}
@@ -138,13 +134,11 @@ export class AudioAnalyzer extends LitElement {
           ></file-dropdown>`
         : null}
 
-      <p0-dialog
-        .p0=${this.analyzer.getP0()}
-        relativeHumidity=${this.analyzer.getRelativeHumidity()}
-        temperature=${this.analyzer.getAirTemperature()}
-        class="p0-dialog"
-        @change=${this.onP0DialogChange}
-      ></p0-dialog>
+      <environment-dialog
+        .values=${this.analyzer.getEnvironmentValues()}
+        class="environment-dialog"
+        @change=${this.onEnvironmentChange}
+      ></environment-dialog>
     `;
   }
 
@@ -206,14 +200,10 @@ export class AudioAnalyzer extends LitElement {
         .impulseResponses=${responses}
       ></impulse-response-graph>
 
-      <parameters-card .impulseResponses=${responses} .results=${results}>
-        <p0-notice
-          .p0=${this.analyzer.getP0()}
-          .temperature=${this.analyzer.getAirTemperature()}
-          .relativeHumidity=${this.analyzer.getRelativeHumidity()}
-          @show-p0-dialog=${this.onShowP0Dialog}
-        ></p0-notice>
-      </parameters-card>
+      <parameters-card
+        .impulseResponses=${responses}
+        .results=${results}
+      ></parameters-card>
 
       <reverb-graph
         .impulseResponses=${responses}
@@ -228,47 +218,19 @@ export class AudioAnalyzer extends LitElement {
       ></c50c80-graph>
 
       <strengths-card
-        .p0=${this.analyzer.getP0()}
         .impulseResponses=${responses}
         .strengths=${strengthBands}
         .earlyStrengths=${earlyStrengthBands}
         .lateStrengths=${lateStrengthBands}
-      >
-        <p0-notice
-          slot="p0-notice"
-          .p0=${this.analyzer.getP0()}
-          .temperature=${this.analyzer.getAirTemperature()}
-          .relativeHumidity=${this.analyzer.getRelativeHumidity()}
-          @show-p0-dialog=${this.onShowP0Dialog}
-        ></p0-notice>
-        <p0-setting
-          slot="p0-setting"
-          .p0=${this.analyzer.getP0()}
-          @change=${this.onP0SettingChange}
-        ></p0-setting>
-      </strengths-card>
+      ></strengths-card>
 
       ${hasMidSideResults
         ? html`
             <lateral-sound-level-card
-              .p0=${this.analyzer.getP0()}
               .impulseResponses=${midSideResponses}
               .earlyLateralSoundLevels=${earlyLateralSoundLevelBands}
               .lateLateralSoundLevels=${lateLateralSoundLevelBands}
-            >
-              <p0-notice
-                slot="p0-notice"
-                .p0=${this.analyzer.getP0()}
-                .temperature=${this.analyzer.getAirTemperature()}
-                .relativeHumidity=${this.analyzer.getRelativeHumidity()}
-                @show-p0-dialog=${this.onShowP0Dialog}
-              ></p0-notice>
-              <p0-setting
-                slot="p0-setting"
-                .p0=${this.analyzer.getP0()}
-                @change=${this.onP0SettingChange}
-              ></p0-setting>
-            </lateral-sound-level-card>
+            ></lateral-sound-level-card>
             <early-lateral-fraction-graph
               .impulseResponses=${midSideResponses}
               .earlyLateralEnergyFraction=${earlyLateralEnergyFractionBands}
@@ -290,22 +252,13 @@ export class AudioAnalyzer extends LitElement {
     `;
   }
 
-  private onP0SettingChange({ detail: { p0 } }: P0SettingChangeEvent) {
-    this.analyzer.setP0(p0);
-
-    this.p0Dialog.hide();
+  private onEnvironmentChange({ detail }: EnvironmentChangeEvent) {
+    this.analyzer.setEnvironmentValues(detail);
+    this.environmentDialog.hide();
   }
 
-  private onP0DialogChange({
-    detail: { p0, relativeHumidity, temperature },
-  }: P0DialogChangeEvent) {
-    this.analyzer.setP0AndAirValues(p0, temperature, relativeHumidity);
-
-    this.p0Dialog.hide();
-  }
-
-  private onShowP0Dialog() {
-    this.p0Dialog.show();
+  private onShowEnvironmentDialog() {
+    this.environmentDialog.show();
   }
 
   private onRemoveFile({ detail: { id } }: FileListRemoveEvent) {

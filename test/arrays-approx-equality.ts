@@ -1,8 +1,8 @@
 import { expect } from '@esm-bundle/chai';
 
 export function expectArraysApproximatelyEqual(
-  actual: Float32Array,
-  expected: Float32Array,
+  actual: Float32Array | number[],
+  expected: Float32Array | number[],
   epsilon: number
 ) {
   expect(actual.length).to.equal(expected.length);

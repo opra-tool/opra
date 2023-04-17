@@ -3,7 +3,6 @@ import { SlSwitch } from '@shoelace-style/shoelace';
 import { css, html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { ImpulseResponseType } from '../analyzing/impulse-response';
-import { UNIT_HERTZ, UNIT_SECONDS } from '../presentation/units';
 
 export type FileListEntry = {
   type: ImpulseResponseType;
@@ -23,20 +22,6 @@ export class FileListToggleEvent extends CustomEvent<{
 }> {
   constructor(id: string) {
     super('toggle-file', {
-      detail: {
-        id,
-      },
-      bubbles: true,
-      composed: true,
-    });
-  }
-}
-
-export class FileListRemoveEvent extends CustomEvent<{
-  id: string;
-}> {
-  constructor(id: string) {
-    super('remove-file', {
       detail: {
         id,
       },
@@ -116,23 +101,13 @@ export class FileList extends LitElement {
 
     const convertedString = converted ? ` (${msg('converted')})` : '';
 
-    return html`${names[type]}${convertedString} • ${sampleRate}${UNIT_HERTZ} •
-    ${duration.toFixed(2)}${UNIT_SECONDS}`;
+    return html`${names[type]}${convertedString} • ${sampleRate} Hz •
+    ${duration.toFixed(2)} s`;
   }
 
   private renderFileOptions({ type, id, converted }: FileListEntry) {
     if (this.hideOptions) {
       return null;
-    }
-
-    if (type === 'monaural') {
-      return html`
-        <sl-icon-button
-          name="trash"
-          title=${msg('Discard')}
-          @click=${() => this.dispatchEvent(new FileListRemoveEvent(id))}
-        ></sl-icon-button>
-      `;
     }
 
     return html`

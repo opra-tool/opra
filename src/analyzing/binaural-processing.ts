@@ -1,7 +1,6 @@
 import { BinauralSamples } from './binaural-samples';
 import { e80 } from './early-late-fractions';
 import { calculateIacc } from './iacc';
-import { calculateMeanSquaredIR } from './squared-impulse-response';
 import {
   MonauralResults,
   IntermediateResults,
@@ -46,8 +45,6 @@ export async function processBinauralAudio(
 
   // calculate squared impulse response of binaural audio by taking
   // the arithmetic mean of the squared IR of each channel
-  const squaredIR = calculateMeanSquaredIR(starttimeCorrected);
-
   const meanSquaredBands = bands.map(band => {
     const meanBand = new Float32Array(band.length);
     for (let i = 0; i < band.length; i += 1) {
@@ -57,7 +54,6 @@ export async function processBinauralAudio(
   });
 
   const [monauralResults, monauralIntermediateResults] = await processChannel(
-    squaredIR,
     meanSquaredBands,
     sampleRate
   );
