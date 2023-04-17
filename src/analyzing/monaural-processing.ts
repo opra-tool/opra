@@ -29,13 +29,16 @@ export type MonauralResults = {
 export async function processMonauralAudio(
   samples: Float32Array,
   sampleRate: number
-): Promise<[MonauralResults, IntermediateResults]> {
+): Promise<[MonauralResults, IntermediateResults, Float32Array]> {
   const starttimeCorrected = correctStarttimeMonaural(samples);
 
   const bands = await octfilt(starttimeCorrected, sampleRate);
   const bandsSquared = bands.map(calculateSquaredIR);
 
-  return processChannel(bandsSquared, sampleRate);
+  return [
+    ...(await processChannel(bandsSquared, sampleRate)),
+    calculateSquaredIR(starttimeCorrected),
+  ];
 }
 
 export async function processChannel(

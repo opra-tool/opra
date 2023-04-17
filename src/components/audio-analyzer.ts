@@ -198,6 +198,7 @@ export class AudioAnalyzer extends LitElement {
         : null}
       <impulse-response-graph
         .impulseResponses=${responses}
+        .analyzer=${this.analyzer}
       ></impulse-response-graph>
 
       <parameters-card

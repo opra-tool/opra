@@ -107,6 +107,8 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
 
   private results: Map<string, Results> = new Map();
 
+  private squaredIRs: Map<string, Float32Array> = new Map();
+
   constructor() {
     super();
 
@@ -205,6 +207,7 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
 
     this.results.delete(id);
     this.intermediateResults.delete(id);
+    this.squaredIRs.delete(id);
 
     this.dispatchEvent('change', undefined);
 
@@ -246,6 +249,18 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
     this.dispatchEvent('change', undefined);
 
     this.persistence.saveResponse(newResponse);
+  }
+
+  getSquaredIR(responseId: string): Float32Array {
+    const maybeSquaredIR = this.squaredIRs.get(responseId);
+
+    if (!maybeSquaredIR) {
+      throw new Error(
+        `expected to find squared impulse response for id '${responseId}'`
+      );
+    }
+
+    return maybeSquaredIR;
   }
 
   hasResults(responseId: string): boolean {
@@ -296,25 +311,26 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
     try {
       let results;
       let intermediateResults;
+      let squaredIR;
       if (type === 'monaural') {
-        [results, intermediateResults] = await processMonauralAudio(
+        [results, intermediateResults, squaredIR] = await processMonauralAudio(
           buffer.getChannelData(0),
           sampleRate
         );
       } else if (type === 'binaural') {
-        [results, intermediateResults] = await processBinauralAudio(
+        [results, intermediateResults, squaredIR] = await processBinauralAudio(
           binauralSamplesFromBuffer(buffer),
           sampleRate
         );
       } else {
-        [results, intermediateResults] = await processMidSideAudio(
+        [results, intermediateResults, squaredIR] = await processMidSideAudio(
           binauralSamplesFromBuffer(buffer),
           sampleRate
         );
       }
 
+      this.squaredIRs.set(id, squaredIR);
       this.intermediateResults.set(id, intermediateResults);
-
       this.results.set(id, {
         ...results,
         ...(await calculateStrengths(

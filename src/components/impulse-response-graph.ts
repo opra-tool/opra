@@ -1,157 +1,180 @@
 import { msg, localized } from '@lit/localize';
-import { LitElement, html, css, PropertyValues } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { Chart } from 'chart.js';
+import { LitElement, html, PropertyValues } from 'lit';
+import { customElement, property, query } from 'lit/decorators.js';
 import { ImpulseResponse } from '../analyzing/impulse-response';
-import { GraphConfig } from './graphs/line-graph';
+import { Analyzer } from '../analyzing/analyzer';
+import { largestTriangleThreeBuckets } from '../math/decimation';
 
-type Point = {
-  x: number;
-  y: number;
-};
-
-const MAX_X = 0.5;
-const DECIMATION_SAMPLES = 500;
+const LOWER_LIMIT = 1e-10;
 
 @localized()
 @customElement('impulse-response-graph')
 export class ImpulseResponseGraph extends LitElement {
+  @property({ type: Object })
+  analyzer!: Analyzer;
+
   @property({ type: Array })
   impulseResponses: ImpulseResponse[] = [];
 
-  private squaredIRPoints: Map<
-    string,
-    {
-      color: string;
-      points: Point[];
-    }
-  > = new Map();
+  @query('#canvas')
+  private canvas!: HTMLCanvasElement;
+
+  private chart: Chart | null = null;
 
   firstUpdated() {
-    for (const response of this.impulseResponses) {
-      this.updateResponseIR(response);
+    const ctx = this.canvas.getContext('2d');
+    if (ctx === null) {
+      throw new Error('canvas 2D context required for drawing graph');
     }
+
+    // This setTimeout() call is an ugly hack to circumvent a possible bug
+    // in Firefox. If the chart is created synchronously an NS_ERROR_FAILURE
+    // error is thrown. It seems the error is related to font rendering /
+    // sizing of elements.
+    setTimeout(() => {
+      this.chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          datasets: [],
+        },
+        options: {
+          scales: {
+            y: {
+              max: 1,
+              min: LOWER_LIMIT,
+              title: {
+                display: true,
+                text: msg('Sound energy'),
+              },
+              type: 'logarithmic',
+              ticks: {
+                callback: val => {
+                  if (
+                    typeof val === 'number' &&
+                    val.toExponential().startsWith('1e')
+                  ) {
+                    return val.toExponential();
+                  }
+
+                  return null;
+                },
+              },
+            },
+            x: {
+              beginAtZero: true,
+              type: 'linear',
+              title: {
+                display: true,
+                text: msg('Time [s]'),
+              },
+            },
+          },
+          animation: false,
+          plugins: {
+            tooltip: {
+              enabled: false,
+            },
+          },
+        },
+      });
+
+      this.updateGraphDatasets();
+      this.chart.update();
+    }, 0);
   }
 
   shouldUpdate(changedProperties: PropertyValues<this>): boolean {
-    return changedProperties.has('impulseResponses');
-  }
-
-  willUpdate(changedProperties: PropertyValues<this>) {
-    // delete responses no longer present in properties
-    for (const [responseId] of this.squaredIRPoints) {
-      if (!this.impulseResponses.find(r => r.id === responseId)) {
-        this.squaredIRPoints.delete(responseId);
-      }
+    if (!changedProperties.has('impulseResponses')) {
+      return false;
     }
 
     // is undefined on first render
     const previousResponses: ImpulseResponse[] | undefined =
       changedProperties.get('impulseResponses');
 
-    for (const response of this.impulseResponses) {
-      if (
+    if (previousResponses === undefined) {
+      return true;
+    }
+
+    if (this.impulseResponses.length !== previousResponses.length) {
+      return true;
+    }
+
+    return this.impulseResponses.some(
+      response =>
         !previousResponses ||
         previousResponses.find(r => r.id === response.id)?.buffer !==
           response.buffer
-      ) {
-        this.updateResponseIR(response);
-      }
+    );
+  }
+
+  willUpdate(changedProperties: PropertyValues<this>) {
+    if (changedProperties.get('impulseResponses') === undefined) {
+      return;
     }
+
+    if (!this.chart) {
+      return;
+    }
+
+    this.chart.data.datasets = [];
+
+    this.updateGraphDatasets();
+  }
+
+  updated() {
+    this.chart?.update();
   }
 
   render() {
-    const datasets = [];
-    for (const [_, { points, color }] of this.squaredIRPoints) {
-      datasets.push({
-        data: points,
-        fill: false,
-        borderColor: color,
-        borderWidth: 1,
-        pointRadius: 0,
-      });
-    }
-
-    const config: GraphConfig = {
-      datasets,
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true,
-            title: {
-              display: true,
-              text: msg('Energy relative to sample rate'),
-            },
-          },
-          x: {
-            type: 'linear',
-            title: {
-              display: true,
-              text: msg('Time (seconds)'),
-            },
-            max: MAX_X,
-          },
-        },
-        parsing: false,
-        animation: false,
-        plugins: {
-          decimation: {
-            enabled: true,
-            algorithm: 'lttb',
-            samples: DECIMATION_SAMPLES,
-          },
-        },
-      },
-    };
-
-    // This component does not use the <titled-card> component,
-    // as this seems to trigger a bug in Firefox (https://bugzilla.mozilla.org/show_bug.cgi?id=941146).
-    // It is not entirely clear why this error occurs with this component
-    // and not other graphs. Possibly caused by a certain nesting of web components.
     return html`
-      <base-card>
-        <h3>${msg('Squared Impulse Response')}</h3>
-        <line-graph .config=${config} height="100"></line-graph>
-      </base-card>
+      <titled-card .cardTitle=${msg('Squared Impulse Response')}>
+        <div>
+          <canvas id="canvas" width="400" height="100"></canvas>
+        </div>
+      </titled-card>
     `;
   }
 
-  private updateResponseIR({
-    id,
-    type,
-    buffer,
-    color,
-    sampleRate,
-  }: ImpulseResponse) {
-    const points = [];
+  private updateGraphDatasets() {
+    if (!this.chart) {
+      throw new Error('expected graph to be defined');
+    }
 
-    for (let i = 0; i < buffer.length; i += 1) {
-      let y;
-      if (type === 'binaural') {
-        y =
-          (buffer.getChannelData(0)[i] ** 2 +
-            buffer.getChannelData(1)[i] ** 2) /
-          2;
-      } else {
-        y = buffer.getChannelData(0)[i] ** 2;
+    for (const response of this.impulseResponses) {
+      const points = [];
+      const squaredIR = this.analyzer.getSquaredIR(response.id);
+
+      let lastIndexOfInterest = squaredIR.length - 1;
+      for (let i = squaredIR.length - 1; i >= 0; i -= 1) {
+        if (squaredIR[i] < LOWER_LIMIT) {
+          lastIndexOfInterest = i;
+        } else {
+          break;
+        }
       }
 
-      points.push({
-        x: (i + 1) / sampleRate,
-        y,
+      const squaredIROfInterest = squaredIR.subarray(
+        0,
+        lastIndexOfInterest + 1
+      );
+
+      for (let i = 0; i < squaredIROfInterest.length; i += 1) {
+        points.push({
+          x: (i + 1) / response.sampleRate,
+          y: squaredIROfInterest[i],
+        });
+      }
+
+      const decimated = largestTriangleThreeBuckets(points, 400);
+
+      this.chart.data.datasets.push({
+        data: decimated,
+        fill: false,
+        backgroundColor: response.color,
+        barThickness: 'flex',
       });
     }
-
-    this.squaredIRPoints.set(id, {
-      color,
-      points,
-    });
   }
-
-  static styles = css`
-    h3 {
-      margin: 0.5rem 0 2rem 0;
-      font-size: 1rem;
-      letter-spacing: 1px;
-    }
-  `;
 }

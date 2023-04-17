@@ -1,10 +1,13 @@
 import {
   Chart,
   LineController,
+  BarController,
+  PointElement,
+  BarElement,
   LineElement,
   LinearScale,
+  LogarithmicScale,
   CategoryScale,
-  PointElement,
   Tooltip,
 } from 'chart.js';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
@@ -65,9 +68,12 @@ setBasePath('/shoelace');
 
 // prepare chart.js library
 Chart.register(
+  BarElement,
   LineController,
+  BarController,
   LineElement,
   LinearScale,
+  LogarithmicScale,
   CategoryScale,
   PointElement,
   Tooltip

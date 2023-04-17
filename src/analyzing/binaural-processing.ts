@@ -18,7 +18,7 @@ export type BinauralResults = MonauralResults & {
 export async function processBinauralAudio(
   samples: BinauralSamples,
   sampleRate: number
-): Promise<[BinauralResults, IntermediateResults]> {
+): Promise<[BinauralResults, IntermediateResults, Float32Array]> {
   const starttimeCorrected = correctStarttimeBinaural(samples);
   const bands = await octfiltBinaural(starttimeCorrected, sampleRate);
 
@@ -53,6 +53,14 @@ export async function processBinauralAudio(
     return meanBand;
   });
 
+  const meanSquaredIR = new Float32Array(starttimeCorrected.length);
+  for (let i = 0; i < starttimeCorrected.length; i += 1) {
+    meanSquaredIR[i] =
+      (starttimeCorrected.leftChannel[i] ** 2 +
+        starttimeCorrected.rightChannel[i] ** 2) /
+      2;
+  }
+
   const [monauralResults, monauralIntermediateResults] = await processChannel(
     meanSquaredBands,
     sampleRate
@@ -66,5 +74,6 @@ export async function processBinauralAudio(
       eiaccBands,
     },
     monauralIntermediateResults,
+    meanSquaredIR,
   ];
 }

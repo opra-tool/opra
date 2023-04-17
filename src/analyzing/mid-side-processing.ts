@@ -25,7 +25,7 @@ type MidSideResults = MonauralResults & {
 export async function processMidSideAudio(
   samples: BinauralSamples,
   sampleRate: number
-): Promise<[MidSideResults, IntermediateResults]> {
+): Promise<[MidSideResults, IntermediateResults, Float32Array]> {
   const starttimeCorrected = correctStarttimeBinaural(samples);
   const bands = await octfiltBinaural(starttimeCorrected, sampleRate);
 
@@ -65,5 +65,6 @@ export async function processMidSideAudio(
       sideE80BandsSquaredSum,
       sideL80BandsSquaredSum,
     },
+    calculateSquaredIR(starttimeCorrected.leftChannel),
   ];
 }
