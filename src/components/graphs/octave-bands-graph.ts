@@ -84,7 +84,7 @@ export class OctaveBandsGraph extends LitElement {
             @sl-change=${() => this.onToggleLabelItem(param.key)}
           >
             <span class="legend-item-label">
-              <span>${param.label}</span>
+              <small>${param.label}</small>
               <svg class="legend-item-dash" viewBox="0 0 30 4">
                 <line
                   x1="0"
