@@ -10,20 +10,20 @@ export class StrengthGraph extends LitElement {
   impulseResponses: ImpulseResponse[] = [];
 
   @property({ type: Array })
-  strengths: number[][] = [];
+  soundStrengths: number[][] = [];
 
   @property({ type: Array })
-  earlyStrengths: number[][] = [];
+  earlySoundStrengths: number[][] = [];
 
   @property({ type: Array })
-  lateStrengths: number[][] = [];
+  lateSoundStrengths: number[][] = [];
 
   render() {
     const params = [
       {
         key: 'strength',
         label: msg('Sound Strength'),
-        datasets: this.strengths.map((values, index) => ({
+        datasets: this.soundStrengths.map((values, index) => ({
           color: this.impulseResponses[index].color,
           values,
         })),
@@ -31,7 +31,7 @@ export class StrengthGraph extends LitElement {
       {
         key: 'earlyStrength',
         label: msg('Early Sound Strength'),
-        datasets: this.earlyStrengths.map((values, index) => ({
+        datasets: this.earlySoundStrengths.map((values, index) => ({
           color: this.impulseResponses[index].color,
           values,
         })),
@@ -39,7 +39,7 @@ export class StrengthGraph extends LitElement {
       {
         key: 'lateStrength',
         label: msg('Late Sound Strength'),
-        datasets: this.lateStrengths.map((values, index) => ({
+        datasets: this.lateSoundStrengths.map((values, index) => ({
           color: this.impulseResponses[index].color,
           values,
         })),
@@ -47,10 +47,14 @@ export class StrengthGraph extends LitElement {
     ];
 
     return html`
-      <octave-bands-graph
-        .params=${params}
-        yAxisLabel="dB"
-      ></octave-bands-graph>
+      <help-card cardTitle=${msg('Sound Strength')}>
+        <octave-bands-graph
+          .params=${params}
+          yAxisLabel="dB"
+        ></octave-bands-graph>
+
+        <div slot="help">TODO</div>
+      </help-card>
     `;
   }
 }

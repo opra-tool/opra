@@ -62,7 +62,6 @@ import './components/environment-notice';
 import './components/parameters-card';
 import './components/parameters-table';
 import './components/progress-indicator';
-import './components/strengths-card';
 
 setBasePath('/shoelace');
 

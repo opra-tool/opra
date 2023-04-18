@@ -8,7 +8,7 @@ import { EnvironmentValues } from './environment-values';
 import { ImpulseResponse } from './impulse-response';
 import { processMidSideAudio } from './mid-side-processing';
 import { processMonauralAudio } from './monaural-processing';
-import { calculateStrengths } from './strength';
+import { calculateStrengths } from './sound-strength';
 
 const DEFAULT_RELATIVE_HUMIDITY = 50;
 const DEFAULT_AIR_TEMPERATURE = 20;
@@ -51,11 +51,11 @@ export type Results = {
   centreTime: number;
   bassRatio: number;
   /* strength-based monaural parameters */
-  strengthBands?: number[];
-  earlyStrengthBands?: number[];
-  lateStrengthBands?: number[];
-  strength?: number;
-  aWeightedStrength?: number;
+  soundStrengthBands?: number[];
+  earlySoundStrengthBands?: number[];
+  lateSoundStrengthBands?: number[];
+  soundStrength?: number;
+  aWeightedSoundStrength?: number;
   trebleRatio?: number;
   earlyBassLevel?: number;
   levelAdjustedC80?: number;

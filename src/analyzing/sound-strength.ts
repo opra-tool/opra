@@ -2,12 +2,12 @@ import { calculateLpe10 } from './lpe10';
 import { meanDecibel, meanDecibelEnergetic } from '../math/decibels';
 import { safeLog10 } from '../math/safeLog10';
 
-type Strengths = {
-  strengthBands: number[];
-  earlyStrengthBands: number[];
-  lateStrengthBands: number[];
-  strength: number;
-  aWeightedStrength: number;
+type SoundStrengths = {
+  soundStrengthBands: number[];
+  earlySoundStrengthBands: number[];
+  lateSoundStrengthBands: number[];
+  soundStrength: number;
+  aWeightedSoundStrength: number;
   trebleRatio: number;
   earlyBassLevel: number;
   levelAdjustedC80: number;
@@ -62,21 +62,28 @@ export async function calculateStrengths(
     c80Bands,
   }: Input,
   environment: EnvironmentParameters
-): Promise<Strengths> {
+): Promise<SoundStrengths> {
   const lpe10 = await calculateLpe10(samples, sampleRate, environment);
 
-  const strengthBands = calculateSoundStrength(bandsSquaredSum, lpe10);
-  const earlyStrengthBands = calculateSoundStrength(e80BandsSquaredSum, lpe10);
-  const lateStrengthBands = calculateSoundStrength(l80BandsSquaredSum, lpe10);
-  const strength = calculateMeanSoundStrength(strengthBands);
-  const aWeightedStrength = calculateAWeightedSoundStrength(strengthBands);
-  const trebleRatio = calculateTrebleRatio(lateStrengthBands);
+  const soundStrengthBands = calculateSoundStrength(bandsSquaredSum, lpe10);
+  const earlySoundStrengthBands = calculateSoundStrength(
+    e80BandsSquaredSum,
+    lpe10
+  );
+  const lateSoundStrengthBands = calculateSoundStrength(
+    l80BandsSquaredSum,
+    lpe10
+  );
+  const soundStrength = calculateMeanSoundStrength(soundStrengthBands);
+  const aWeightedSoundStrength =
+    calculateAWeightedSoundStrength(soundStrengthBands);
+  const trebleRatio = calculateTrebleRatio(lateSoundStrengthBands);
   const earlyBassLevel = calculateEarlyBassLevel(
     calculateSoundStrength(e50BandsSquaredSum, lpe10)
   );
   const levelAdjustedC80 = calculateLevelAdjustedC80(
     c80Bands,
-    aWeightedStrength
+    aWeightedSoundStrength
   );
 
   const earlyLateralSoundLevelBands = sideE80BandsSquaredSum
@@ -95,13 +102,13 @@ export async function calculateStrengths(
     : undefined;
 
   return {
-    strengthBands,
-    earlyStrengthBands,
-    lateStrengthBands,
-    strength,
+    soundStrengthBands,
+    earlySoundStrengthBands,
+    lateSoundStrengthBands,
+    soundStrength,
     trebleRatio,
     earlyBassLevel,
-    aWeightedStrength,
+    aWeightedSoundStrength,
     levelAdjustedC80,
     earlyLateralSoundLevelBands,
     lateLateralSoundLevelBands,
@@ -122,30 +129,37 @@ function calculateSoundStrength(
   );
 }
 
-function calculateAWeightedSoundStrength(strength: number[]): number {
+function calculateAWeightedSoundStrength(soundStrength: number[]): number {
   return calculateMeanSoundStrength(
-    strength.map((val, i) => val + A_WEIGHTING_CORRECTIONS[i])
+    soundStrength.map((val, i) => val + A_WEIGHTING_CORRECTIONS[i])
   );
 }
 
-function calculateMeanSoundStrength(strength: number[]): number {
-  return meanDecibel(strength[3], strength[4]);
+function calculateMeanSoundStrength(soundStrength: number[]): number {
+  return meanDecibel(soundStrength[3], soundStrength[4]);
 }
 
 /**
  * As defined in G.A. Soulodre and J. S. Bradley (1995): Subjective evaluation
 of new room acoustic measures
  */
-function calculateTrebleRatio(lateStrength: number[]): number {
-  return lateStrength[6] - meanDecibel(lateStrength[4], lateStrength[5]);
+function calculateTrebleRatio(lateSoundStrength: number[]): number {
+  return (
+    lateSoundStrength[6] -
+    meanDecibel(lateSoundStrength[4], lateSoundStrength[5])
+  );
 }
 
 /**
  * As defined in G.A. Soulodre and J. S. Bradley (1995): Subjective evaluation
 of new room acoustic measures
  */
-function calculateEarlyBassLevel(earlyStrength: number[]): number {
-  return meanDecibel(earlyStrength[1], earlyStrength[2], earlyStrength[3]);
+function calculateEarlyBassLevel(earlySoundStrength: number[]): number {
+  return meanDecibel(
+    earlySoundStrength[1],
+    earlySoundStrength[2],
+    earlySoundStrength[3]
+  );
 }
 
 /**

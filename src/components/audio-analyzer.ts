@@ -173,12 +173,14 @@ export class AudioAnalyzer extends LitElement {
     const reverbTimeBands = results.map(r => r.reverbTimeBands);
     const c50Bands = results.map(r => r.c50Bands);
     const c80Bands = results.map(r => r.c80Bands);
-    const strengthBands = results.map(r => r.strengthBands).filter(isDefined);
-    const earlyStrengthBands = results
-      .map(r => r.earlyStrengthBands)
+    const soundStrengthBands = results
+      .map(r => r.soundStrengthBands)
       .filter(isDefined);
-    const lateStrengthBands = results
-      .map(r => r.lateStrengthBands)
+    const earlySoundStrengthBands = results
+      .map(r => r.earlySoundStrengthBands)
+      .filter(isDefined);
+    const lateSoundStrengthBands = results
+      .map(r => r.lateSoundStrengthBands)
       .filter(isDefined);
     const iaccBands = results.map(r => r.iaccBands).filter(isDefined);
     const eiaccBands = results.map(r => r.eiaccBands).filter(isDefined);
@@ -218,12 +220,12 @@ export class AudioAnalyzer extends LitElement {
         .c80=${c80Bands}
       ></c50c80-graph>
 
-      <strengths-card
+      <strengths-graph
         .impulseResponses=${responses}
-        .strengths=${strengthBands}
-        .earlyStrengths=${earlyStrengthBands}
-        .lateStrengths=${lateStrengthBands}
-      ></strengths-card>
+        .soundStrengths=${soundStrengthBands}
+        .earlySoundStrengths=${earlySoundStrengthBands}
+        .lateSoundStrengths=${lateSoundStrengthBands}
+      ></strengths-graph>
 
       ${hasMidSideResults
         ? html`

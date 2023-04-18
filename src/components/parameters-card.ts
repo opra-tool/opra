@@ -31,7 +31,7 @@ export class ParametersCard extends LitElement {
       {
         name: html`${msg('Sound Strength')}, G`,
         description: `${msg('Subjective level of sound')} • ISO 3382-1`,
-        responseValues: this.results.map(r => r.strength),
+        responseValues: this.results.map(r => r.soundStrength),
         unit: 'dB',
       },
       {
@@ -39,7 +39,7 @@ export class ParametersCard extends LitElement {
         description: `${msg('Subjective level of sound')} • ${msg(
           'Soulodre and Bradley (1995)'
         )}`,
-        responseValues: this.results.map(r => r.aWeightedStrength),
+        responseValues: this.results.map(r => r.aWeightedSoundStrength),
         unit: 'dB',
       },
       {

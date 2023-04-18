@@ -103,14 +103,14 @@ it('includes strength values', async () => {
   const source = makeSource();
   source.getResultsOrThrow = () => ({
     ...makeMonauralResults(),
-    strength: 1,
-    aWeightedStrength: 1,
+    soundStrength: 1,
+    aWeightedSoundStrength: 1,
     earlyBassLevel: 1,
     levelAdjustedC80: 1,
     trebleRatio: 1,
-    strengthBands: [1, 2, 3, 4, 5, 6, 7, 8],
-    earlyStrengthBands: [1, 2, 3, 4, 5, 6, 7, 8],
-    lateStrengthBands: [1, 2, 3, 4, 5, 6, 7, 8],
+    soundStrengthBands: [1, 2, 3, 4, 5, 6, 7, 8],
+    earlySoundStrengthBands: [1, 2, 3, 4, 5, 6, 7, 8],
+    lateSoundStrengthBands: [1, 2, 3, 4, 5, 6, 7, 8],
   });
   const exporter = new Exporter(source);
 
