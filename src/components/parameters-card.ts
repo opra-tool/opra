@@ -1,7 +1,7 @@
 import { msg, localized } from '@lit/localize';
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { Results } from '../analyzing/analyzer';
+import { Results } from '../analyzing/processing';
 import { ImpulseResponse } from '../analyzing/impulse-response';
 import { Parameter } from './parameters-table';
 

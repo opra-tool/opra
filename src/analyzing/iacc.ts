@@ -1,15 +1,11 @@
 import { iacc as wasmIacc } from 'wasm-raqi-online-toolbox';
-import { BinauralSamples } from './binaural-samples';
+import { IRBuffer } from './buffer';
 
 /**
- * Calculates the interaural cross correlation on binaural audio as defined in ISO 3382-1.
- *
- * @param audio Binaural audio
- * @returns IACC for the given audio channels
+ * Calculates the interaural cross correlation as defined in ISO 3382-1.
  */
-export function calculateIacc({
-  leftChannel,
-  rightChannel,
-}: BinauralSamples): number {
-  return wasmIacc(leftChannel, rightChannel);
+export function calculateIacc(buffer: IRBuffer): number {
+  buffer.assertStereo();
+
+  return wasmIacc(buffer.getChannel(0), buffer.getChannel(1));
 }

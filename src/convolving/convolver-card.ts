@@ -181,7 +181,7 @@ export class ConvolverCard extends LitElement {
   }
 
   private async onFilesAdded({ detail: { files } }: FileDropChangeEvent) {
-    for (let i = 0; i < files.length; i += 1) {
+    for (let i = 0; i < files.length; i++) {
       const fileName = files[i].name;
       const id = `custom_${fileName}`;
       // eslint-disable-next-line no-await-in-loop

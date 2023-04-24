@@ -160,7 +160,7 @@ export class ImpulseResponseGraph extends LitElement {
         lastIndexOfInterest + 1
       );
 
-      for (let i = 0; i < squaredIROfInterest.length; i += 1) {
+      for (let i = 0; i < squaredIROfInterest.length; i++) {
         points.push({
           x: (i + 1) / response.sampleRate,
           y: squaredIROfInterest[i],

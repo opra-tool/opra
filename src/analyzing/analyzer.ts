@@ -2,13 +2,15 @@ import { Persistence } from '../persistence';
 import { readAudioFile } from '../audio/audio-file-reading';
 import { convertBetweenBinauralAndMidSide } from '../conversion';
 import { EventEmitter } from '../event-emitter';
-import { processBinauralAudio } from './binaural-processing';
-import { binauralSamplesFromBuffer } from './binaural-samples';
 import { EnvironmentValues } from './environment-values';
 import { ImpulseResponse } from './impulse-response';
-import { processMidSideAudio } from './mid-side-processing';
-import { processMonauralAudio } from './monaural-processing';
+import {
+  processImpulseResponse,
+  IntermediateResults,
+  Results,
+} from './processing';
 import { calculateStrengths } from './sound-strength';
+import { IRBuffer } from './buffer';
 
 const DEFAULT_RELATIVE_HUMIDITY = 50;
 const DEFAULT_AIR_TEMPERATURE = 20;
@@ -30,52 +32,6 @@ const FILE_COLORS = [
 ];
 
 const MAX_FILE_COUNT = FILE_COLORS.length;
-
-type IntermediateResults = {
-  bandsSquaredSum: number[];
-  e50BandsSquaredSum: number[];
-  e80BandsSquaredSum: number[];
-  l80BandsSquaredSum: number[];
-  sideE80BandsSquaredSum?: number[];
-  sideL80BandsSquaredSum?: number[];
-};
-
-export type Results = {
-  /* monaural parameters */
-  edtBands: number[];
-  reverbTimeBands: number[];
-  edt: number;
-  reverbTime: number;
-  c50Bands: number[];
-  c80Bands: number[];
-  c50: number;
-  c80: number;
-  centreTime: number;
-  bassRatio: number;
-  /* strength-based monaural parameters */
-  soundStrengthBands?: number[];
-  earlySoundStrengthBands?: number[];
-  lateSoundStrengthBands?: number[];
-  soundStrength?: number;
-  earlySoundStrength?: number;
-  lateSoundStrength?: number;
-  aWeightedSoundStrength?: number;
-  trebleRatio?: number;
-  earlyBassLevel?: number;
-  levelAdjustedC80?: number;
-  /* binaural parameters */
-  iacc?: number;
-  eiacc?: number;
-  iaccBands?: number[];
-  eiaccBands?: number[];
-  /* mid/side parameters */
-  earlyLateralEnergyFractionBands?: number[];
-  earlyLateralEnergyFraction?: number;
-  earlyLateralSoundLevelBands?: number[];
-  lateLateralSoundLevelBands?: number[];
-  earlyLateralSoundLevel?: number;
-  lateLateralSoundLevel?: number;
-};
 
 export class MaximumFileCountReachedError extends Error {
   readonly maxFileCount: number;
@@ -158,7 +114,7 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
   async addResponseFiles(files: FileList) {
     const totalFileCount = this.responses.length + files.length;
 
-    for (let i = 0; i < files.length; i += 1) {
+    for (let i = 0; i < files.length; i++) {
       if (this.responses.length >= MAX_FILE_COUNT) {
         throw new MaximumFileCountReachedError(
           MAX_FILE_COUNT,
@@ -307,41 +263,18 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
     return response;
   }
 
-  private async analyzeResponse({
-    id,
-    type,
-    sampleRate,
-    fileName,
-    buffer,
-  }: ImpulseResponse) {
+  private async analyzeResponse(ir: ImpulseResponse) {
     try {
-      let results;
-      let intermediateResults;
-      let squaredIR;
-      if (type === 'monaural') {
-        [results, intermediateResults, squaredIR] = await processMonauralAudio(
-          buffer.getChannelData(0),
-          sampleRate
-        );
-      } else if (type === 'binaural') {
-        [results, intermediateResults, squaredIR] = await processBinauralAudio(
-          binauralSamplesFromBuffer(buffer),
-          sampleRate
-        );
-      } else {
-        [results, intermediateResults, squaredIR] = await processMidSideAudio(
-          binauralSamplesFromBuffer(buffer),
-          sampleRate
-        );
-      }
+      const buffer = IRBuffer.fromAudioBuffer(ir.buffer);
+      const [results, intermediateResults, squaredIR] =
+        await processImpulseResponse(ir.type, buffer);
 
-      this.squaredIRs.set(id, squaredIR);
-      this.intermediateResults.set(id, intermediateResults);
-      this.results.set(id, {
+      this.squaredIRs.set(ir.id, squaredIR);
+      this.intermediateResults.set(ir.id, intermediateResults);
+      this.results.set(ir.id, {
         ...results,
         ...(await calculateStrengths(
-          buffer.getChannelData(0),
-          sampleRate,
+          buffer,
           {
             ...intermediateResults,
             c80Bands: results.c80Bands,
@@ -354,8 +287,8 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
       console.error(err);
       if (err instanceof Error) {
         this.dispatchEvent('file-processing-error', {
-          id,
-          fileName,
+          id: ir.id,
+          fileName: ir.fileName,
           error: err,
         });
       }
@@ -375,8 +308,7 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
         ...results,
         // eslint-disable-next-line no-await-in-loop
         ...(await calculateStrengths(
-          response.buffer.getChannelData(0),
-          response.buffer.sampleRate,
+          IRBuffer.fromAudioBuffer(response.buffer),
           {
             ...intermediateResults,
             c80Bands: results.c80Bands,

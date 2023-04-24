@@ -16,6 +16,7 @@ import {
   EnvironmentChangeEvent,
 } from './environment-dialog';
 import { toastSuccess, toastWarning } from './toast';
+import { OctaveBandValues } from '../analyzing/octave-bands';
 
 @localized()
 @customElement('audio-analyzer')
@@ -365,6 +366,6 @@ export class AudioAnalyzer extends LitElement {
   `;
 }
 
-function isDefined(v: number[] | undefined): v is number[] {
+function isDefined(v: OctaveBandValues | undefined): v is OctaveBandValues {
   return v !== undefined;
 }

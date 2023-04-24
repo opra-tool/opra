@@ -1,38 +1,41 @@
 import { expect } from '@esm-bundle/chai';
-import { BinauralSamples } from '../../src/analyzing/binaural-samples';
-import {
-  correctStarttimeBinaural,
-  correctStarttimeMonaural,
-} from '../../src/analyzing/starttime';
+import { correctStarttime } from '../../src/analyzing/starttime';
+import { IRBuffer } from '../../src/analyzing/buffer';
 
 it('trims samples to correct starttime', () => {
-  const samples = new Float32Array([
-    0, 0, 0.001, 0.001, 0.01, 0.02, 0.03, 0.04, 1, 0.001, 0, 0,
-  ]);
+  const buffer = new IRBuffer(
+    new Float32Array([
+      0, 0, 0.001, 0.001, 0.01, 0.02, 0.03, 0.04, 1, 0.001, 0, 0,
+    ]),
+    48_000
+  );
 
-  const result = correctStarttimeMonaural(samples);
+  const result = correctStarttime(buffer);
 
-  expect(result).deep.equal(
+  expect(result.getChannel(0)).deep.equal(
     new Float32Array([0.02, 0.03, 0.04, 1, 0.001, 0, 0])
   );
 });
 
 it('trims binaural samples to correct starttime', () => {
-  const leftSamples = new Float32Array([
-    0, 0, 0.001, 0.001, 0.01, 0.02, 0.03, 0.04, 1, 0.001, 0,
-  ]);
-  const rightSamples = new Float32Array([
-    0, 0.001, 0.001, 0.01, 0.02, 0.03, 0.04, 1, 0.001, 0, 0,
-  ]);
-
-  const result = correctStarttimeBinaural(
-    new BinauralSamples(leftSamples, rightSamples)
+  const buffer = new IRBuffer(
+    [
+      new Float32Array([
+        0, 0, 0.001, 0.001, 0.01, 0.02, 0.03, 0.04, 1, 0.001, 0,
+      ]),
+      new Float32Array([
+        0, 0.001, 0.001, 0.01, 0.02, 0.03, 0.04, 1, 0.001, 0, 0,
+      ]),
+    ],
+    48_000
   );
 
-  expect(result.leftChannel).deep.equal(
+  const result = correctStarttime(buffer);
+
+  expect(result.getChannel(0)).deep.equal(
     new Float32Array([0.01, 0.02, 0.03, 0.04, 1, 0.001, 0])
   );
-  expect(result.rightChannel).deep.equal(
+  expect(result.getChannel(1)).deep.equal(
     new Float32Array([0.02, 0.03, 0.04, 1, 0.001, 0, 0])
   );
 });

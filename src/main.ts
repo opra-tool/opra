@@ -57,7 +57,6 @@ import './components/reverb-graph/reverb-graph';
 import './components/reverb-graph/reverb-graph-help';
 import './components/graphs/strengths-graph';
 import './localization/language-select';
-import './components/lateral-sound-level-card';
 import './components/environment-notice';
 import './components/parameters-card';
 import './components/parameters-table';

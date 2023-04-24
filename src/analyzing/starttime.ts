@@ -1,43 +1,23 @@
-import { BinauralSamples } from './binaural-samples';
 import { arrayMaxAbs } from '../math/arrays';
+import { IRBuffer } from './buffer';
 
 /**
- * Corrects the starttime of an audio signal according to ISO 3382-1.
  * Returns the samples after the signal intensity first rises above
- * a value of 20dB below the maximum intensity.
+ * a value of 20dB below the maximum intensity (according to ISO 3382-1).
  *
- *
- * @param samples Samples of an audio signal
- * @returns Trimmed samples
+ * In case a stereo buffer has different starttimes for each channel,
+ * the earlier is used for both channels.
  */
-export function correctStarttimeMonaural(samples: Float32Array): Float32Array {
-  const index = findIndexOfFirstSample20dBBelowMax(samples);
+export function correctStarttime(buffer: IRBuffer): IRBuffer {
+  let index = +Infinity;
+  for (let i = 0; i < buffer.numberOfChannels; i++) {
+    index = Math.min(
+      index,
+      findIndexOfFirstSample20dBBelowMax(buffer.getChannel(i))
+    );
+  }
 
-  return trimSamples(samples, index);
-}
-
-/**
- * Corrects the starttime of a binaural audio signal according to ISO 3382-1.
- * In case the channels have different starttimes, the earlier one is used for both channels.
- *
- * @see correctStarttimeMonaural
- *
- * @param audio Binaural audio
- * @returns Trimmed binaural audio
- */
-export function correctStarttimeBinaural({
-  leftChannel: leftSamples,
-  rightChannel: rightSamples,
-}: BinauralSamples): BinauralSamples {
-  const leftIndex = findIndexOfFirstSample20dBBelowMax(leftSamples);
-  const rightIndex = findIndexOfFirstSample20dBBelowMax(rightSamples);
-
-  const index = Math.min(leftIndex, rightIndex);
-
-  return new BinauralSamples(
-    trimSamples(leftSamples, index),
-    trimSamples(rightSamples, index)
-  );
+  return buffer.transform(channel => trimSamples(channel, index));
 }
 
 function findIndexOfFirstSample20dBBelowMax(samples: Float32Array): number {

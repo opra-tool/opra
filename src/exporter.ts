@@ -2,9 +2,8 @@ import {
   ImpulseResponseType,
   ImpulseResponse,
 } from './analyzing/impulse-response';
-import { BinauralResults } from './analyzing/binaural-processing';
 import { getFrequencyValues } from './analyzing/octave-band-frequencies';
-import { Results } from './analyzing/analyzer';
+import { Results } from './analyzing/processing';
 import { EnvironmentValues } from './analyzing/environment-values';
 
 interface ResponseResultsSource {
@@ -97,18 +96,19 @@ export class Exporter {
         duration: response.duration,
         sampleRate: response.sampleRate,
         octaveBandParameters: {
-          c50: results.c50Bands,
-          c80: results.c80Bands,
-          edt: results.edtBands,
-          reverbTime: results.reverbTimeBands,
-          earlySoundStrength: results.earlySoundStrengthBands,
-          lateSoundStrength: results.lateSoundStrengthBands,
-          soundStrength: results.soundStrengthBands,
-          iacc: results.iaccBands,
-          eiacc: results.eiaccBands,
-          earlyLateralEnergyFraction: results.earlyLateralEnergyFractionBands,
-          earlyLateralSoundLevel: results.earlyLateralSoundLevelBands,
-          lateLateralSoundLevel: results.lateLateralSoundLevelBands,
+          c50: results.c50Bands.raw(),
+          c80: results.c80Bands.raw(),
+          edt: results.edtBands.raw(),
+          reverbTime: results.reverbTimeBands.raw(),
+          earlySoundStrength: results.earlySoundStrengthBands?.raw(),
+          lateSoundStrength: results.lateSoundStrengthBands?.raw(),
+          soundStrength: results.soundStrengthBands?.raw(),
+          iacc: results.iaccBands?.raw(),
+          eiacc: results.eiaccBands?.raw(),
+          earlyLateralEnergyFraction:
+            results.earlyLateralEnergyFractionBands?.raw(),
+          earlyLateralSoundLevel: results.earlyLateralSoundLevelBands?.raw(),
+          lateLateralSoundLevel: results.lateLateralSoundLevelBands?.raw(),
         },
         singleFigureParameters: {
           bassRatio: results.bassRatio,
@@ -120,7 +120,7 @@ export class Exporter {
           earlyBassLevel: results.earlyBassLevel,
           levelAdjustedC80: results.levelAdjustedC80,
           trebleRatio: results.trebleRatio,
-          iacc: (results as BinauralResults).iacc,
+          iacc: results.iacc,
           earlyLateralEnergyFraction: results.earlyLateralEnergyFraction,
           lateLateralSoundLevel: results.lateLateralSoundLevel,
         },

@@ -2,8 +2,7 @@ import { localized, msg } from '@lit/localize';
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { ImpulseResponse } from '../../analyzing/impulse-response';
-
-type BandValues = number[];
+import { OctaveBandValues } from '../../analyzing/octave-bands';
 
 @localized()
 @customElement('early-lateral-fraction-graph')
@@ -11,7 +10,8 @@ export class earlyLateralEnergyFractionGraph extends LitElement {
   @property({ type: Array })
   impulseResponses: ImpulseResponse[] = [];
 
-  @property({ type: Array }) earlyLateralEnergyFraction: BandValues[] = [];
+  @property({ type: Array }) earlyLateralEnergyFraction: OctaveBandValues[] =
+    [];
 
   render() {
     const params = [
@@ -20,7 +20,7 @@ export class earlyLateralEnergyFractionGraph extends LitElement {
         label: msg('Early Lateral Energy Fraction'),
         datasets: this.earlyLateralEnergyFraction.map((values, index) => ({
           color: this.impulseResponses[index].color,
-          values,
+          values: values.raw(),
         })),
       },
     ];

@@ -1,57 +1,45 @@
-import { BinauralSamples } from '../analyzing/binaural-samples';
+import { IRBuffer } from '../analyzing/buffer';
+import { OctaveBands } from '../analyzing/octave-bands';
 import { octaveBandpassFilterCoefficients } from './bandpass';
 
 const ZERO_PADDING_LENGTH = 10000;
 const CENTER_FREQUENCIES = [62.5, 125, 250, 500, 1000, 2000, 4000, 8000];
 
 /**
- * Perform octave band filtering on binaural audio
+ * Perform octave band filtering.
  *
- * @see octfilt
+ * Returns octave bands from 62.5 Hz to 8 kHz.
  */
-export async function octfiltBinaural(
-  { leftChannel: leftSamples, rightChannel: rightSamples }: BinauralSamples,
-  sampleRate: number
-): Promise<BinauralSamples[]> {
-  const leftOctaves = await octfilt(leftSamples, sampleRate);
-  const rightOctaves = await octfilt(rightSamples, sampleRate);
-
-  const res = [];
-  for (let i = 0; i < leftOctaves.length; i += 1) {
-    res.push(new BinauralSamples(leftOctaves[i], rightOctaves[i]));
-  }
-
-  return res;
-}
-
-/**
- *  Perform octave band filtering.
- *
- * // TODO: pass in audio buffer directly?
- */
-export function octfilt(
-  samples: Float32Array,
-  sampleRate: number
-): Promise<Float32Array[]> {
-  const buffer = new AudioBuffer({
-    numberOfChannels: 1,
-    length: samples.length + ZERO_PADDING_LENGTH,
-    sampleRate,
+export async function octfilt(buffer: IRBuffer): Promise<OctaveBands> {
+  const sourceBuffer = new AudioBuffer({
+    numberOfChannels: buffer.numberOfChannels,
+    length: buffer.length + ZERO_PADDING_LENGTH,
+    sampleRate: buffer.sampleRate,
   });
 
-  buffer.copyToChannel(samples, 0);
+  for (let i = 0; i < buffer.numberOfChannels; i++) {
+    sourceBuffer.copyToChannel(buffer.getChannel(i), i);
+  }
 
-  return Promise.all(
-    CENTER_FREQUENCIES.map(f => filterOctaveBand(buffer, f, sampleRate))
+  const resultBuffers = await Promise.all(
+    CENTER_FREQUENCIES.map(f =>
+      filterOctaveBand(sourceBuffer, f, sourceBuffer.sampleRate)
+    )
   );
+
+  return new OctaveBands(resultBuffers.map(IRBuffer.fromAudioBuffer));
 }
 
 function filterOctaveBand(
   buffer: AudioBuffer,
   centerFrequency: number,
   sampleRate: number
-): Promise<Float32Array> {
-  const ctx = new OfflineAudioContext(1, buffer.length, sampleRate);
+): Promise<AudioBuffer> {
+  const ctx = new OfflineAudioContext(
+    buffer.numberOfChannels,
+    buffer.length,
+    sampleRate
+  );
 
   const source = ctx.createBufferSource();
   source.buffer = buffer;
@@ -74,9 +62,5 @@ function filterOctaveBand(
 
   source.start();
 
-  return new Promise(resolve => {
-    ctx.startRendering().then(renderedBuffer => {
-      resolve(renderedBuffer.getChannelData(0));
-    });
-  });
+  return ctx.startRendering();
 }

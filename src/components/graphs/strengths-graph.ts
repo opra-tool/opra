@@ -2,6 +2,7 @@ import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { localized, msg } from '@lit/localize';
 import { ImpulseResponse } from '../../analyzing/impulse-response';
+import { OctaveBandValues } from '../../analyzing/octave-bands';
 
 @localized()
 @customElement('strengths-graph')
@@ -10,13 +11,13 @@ export class StrengthGraph extends LitElement {
   impulseResponses: ImpulseResponse[] = [];
 
   @property({ type: Array })
-  soundStrengths: number[][] = [];
+  soundStrengths: OctaveBandValues[] = [];
 
   @property({ type: Array })
-  earlySoundStrengths: number[][] = [];
+  earlySoundStrengths: OctaveBandValues[] = [];
 
   @property({ type: Array })
-  lateSoundStrengths: number[][] = [];
+  lateSoundStrengths: OctaveBandValues[] = [];
 
   render() {
     const params = [
@@ -25,7 +26,7 @@ export class StrengthGraph extends LitElement {
         label: msg('Sound Strength'),
         datasets: this.soundStrengths.map((values, index) => ({
           color: this.impulseResponses[index].color,
-          values,
+          values: values.raw(),
         })),
       },
       {
@@ -33,7 +34,7 @@ export class StrengthGraph extends LitElement {
         label: msg('Early Sound Strength'),
         datasets: this.earlySoundStrengths.map((values, index) => ({
           color: this.impulseResponses[index].color,
-          values,
+          values: values.raw(),
         })),
       },
       {
@@ -41,7 +42,7 @@ export class StrengthGraph extends LitElement {
         label: msg('Late Sound Strength'),
         datasets: this.lateSoundStrengths.map((values, index) => ({
           color: this.impulseResponses[index].color,
-          values,
+          values: values.raw(),
         })),
       },
     ];

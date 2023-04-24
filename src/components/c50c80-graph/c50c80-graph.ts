@@ -1,17 +1,16 @@
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { ImpulseResponse } from '../../analyzing/impulse-response';
-
-type BandValues = number[];
+import { OctaveBandValues } from '../../analyzing/octave-bands';
 
 @customElement('c50c80-graph')
 export class C50C80Graph extends LitElement {
   @property({ type: Array })
   impulseResponses: ImpulseResponse[] = [];
 
-  @property({ type: Array }) c50: BandValues[] = [];
+  @property({ type: Array }) c50: OctaveBandValues[] = [];
 
-  @property({ type: Array }) c80: BandValues[] = [];
+  @property({ type: Array }) c80: OctaveBandValues[] = [];
 
   render() {
     const params = [
@@ -20,7 +19,7 @@ export class C50C80Graph extends LitElement {
         label: 'C50',
         datasets: this.c50.map((values, index) => ({
           color: this.impulseResponses[index].color,
-          values,
+          values: values.raw(),
         })),
       },
       {
@@ -28,7 +27,7 @@ export class C50C80Graph extends LitElement {
         label: 'C80',
         datasets: this.c80.map((values, index) => ({
           color: this.impulseResponses[index].color,
-          values,
+          values: values.raw(),
         })),
       },
     ];

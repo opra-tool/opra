@@ -1,11 +1,13 @@
 import { calculateLpe10 } from './lpe10';
 import { meanDecibel, meanDecibelEnergetic } from '../math/decibels';
 import { safeLog10 } from '../math/safeLog10';
+import { IRBuffer } from './buffer';
+import { OctaveBandValues } from './octave-bands';
 
 type SoundStrengths = {
-  soundStrengthBands: number[];
-  earlySoundStrengthBands: number[];
-  lateSoundStrengthBands: number[];
+  soundStrengthBands: OctaveBandValues;
+  earlySoundStrengthBands: OctaveBandValues;
+  lateSoundStrengthBands: OctaveBandValues;
   soundStrength: number;
   earlySoundStrength: number;
   lateSoundStrength: number;
@@ -14,20 +16,20 @@ type SoundStrengths = {
   earlyBassLevel: number;
   levelAdjustedC80: number;
   /* strength-based mid/side parameters */
-  earlyLateralSoundLevelBands?: number[];
-  lateLateralSoundLevelBands?: number[];
+  earlyLateralSoundLevelBands?: OctaveBandValues;
+  lateLateralSoundLevelBands?: OctaveBandValues;
   earlyLateralSoundLevel?: number;
   lateLateralSoundLevel?: number;
 };
 
 type Input = {
-  bandsSquaredSum: number[];
-  e50BandsSquaredSum: number[];
-  e80BandsSquaredSum: number[];
-  l80BandsSquaredSum: number[];
-  c80Bands: number[];
-  sideE80BandsSquaredSum?: number[];
-  sideL80BandsSquaredSum?: number[];
+  bandsSquaredSum: OctaveBandValues;
+  e50BandsSquaredSum: OctaveBandValues;
+  e80BandsSquaredSum: OctaveBandValues;
+  l80BandsSquaredSum: OctaveBandValues;
+  c80Bands: OctaveBandValues;
+  sideE80BandsSquaredSum?: OctaveBandValues;
+  sideL80BandsSquaredSum?: OctaveBandValues;
 };
 
 type EnvironmentParameters = {
@@ -53,8 +55,7 @@ const A_WEIGHTING_CORRECTIONS = [
 ];
 
 export async function calculateStrengths(
-  samples: Float32Array,
-  sampleRate: number,
+  buffer: IRBuffer,
   {
     bandsSquaredSum,
     e50BandsSquaredSum,
@@ -66,7 +67,7 @@ export async function calculateStrengths(
   }: Input,
   environment: EnvironmentParameters
 ): Promise<SoundStrengths> {
-  const lpe10 = await calculateLpe10(samples, sampleRate, environment);
+  const lpe10 = await calculateLpe10(buffer, environment);
 
   const soundStrengthBands = calculateSoundStrength(bandsSquaredSum, lpe10);
   const earlySoundStrengthBands = calculateSoundStrength(
@@ -101,18 +102,18 @@ export async function calculateStrengths(
     : undefined;
   const earlyLateralSoundLevel = earlyLateralSoundLevelBands
     ? meanDecibelEnergetic(
-        earlyLateralSoundLevelBands[1],
-        earlyLateralSoundLevelBands[2],
-        earlyLateralSoundLevelBands[3],
-        earlyLateralSoundLevelBands[4]
+        earlyLateralSoundLevelBands.band(1),
+        earlyLateralSoundLevelBands.band(2),
+        earlyLateralSoundLevelBands.band(3),
+        earlyLateralSoundLevelBands.band(4)
       )
     : undefined;
   const lateLateralSoundLevel = lateLateralSoundLevelBands
     ? meanDecibelEnergetic(
-        lateLateralSoundLevelBands[1],
-        lateLateralSoundLevelBands[2],
-        lateLateralSoundLevelBands[3],
-        lateLateralSoundLevelBands[4]
+        lateLateralSoundLevelBands.band(1),
+        lateLateralSoundLevelBands.band(2),
+        lateLateralSoundLevelBands.band(3),
+        lateLateralSoundLevelBands.band(4)
       )
     : undefined;
 
@@ -134,37 +135,39 @@ export async function calculateStrengths(
   };
 }
 
-function calculateSoundStrength(
-  bandsSquaredSum: number[],
-  lpe10: number[]
-): number[] {
-  if (bandsSquaredSum.length !== lpe10.length) {
-    throw new Error('expected bands length to match lpe10 length');
-  }
-
-  return bandsSquaredSum.map(
-    (bandSum, i) => 10 * safeLog10(bandSum) - lpe10[i]
+export function calculateSoundStrength(
+  bandsSquaredSum: OctaveBandValues,
+  lpe10: OctaveBandValues
+): OctaveBandValues {
+  return bandsSquaredSum.transform(
+    (bandSum, i) => 10 * safeLog10(bandSum) - lpe10.band(i)
   );
 }
 
-function calculateAWeightedSoundStrength(soundStrength: number[]): number {
+export function calculateAWeightedSoundStrength(
+  soundStrength: OctaveBandValues
+): number {
   return calculateMeanSoundStrength(
-    soundStrength.map((val, i) => val + A_WEIGHTING_CORRECTIONS[i])
+    soundStrength.transform((val, i) => val + A_WEIGHTING_CORRECTIONS[i])
   );
 }
 
-function calculateMeanSoundStrength(soundStrength: number[]): number {
-  return meanDecibel(soundStrength[3], soundStrength[4]);
+export function calculateMeanSoundStrength(
+  soundStrength: OctaveBandValues
+): number {
+  return meanDecibel(soundStrength.band(3), soundStrength.band(4));
 }
 
 /**
  * As defined in G.A. Soulodre and J. S. Bradley (1995): Subjective evaluation
 of new room acoustic measures
  */
-function calculateTrebleRatio(lateSoundStrength: number[]): number {
+export function calculateTrebleRatio(
+  lateSoundStrength: OctaveBandValues
+): number {
   return (
-    lateSoundStrength[6] -
-    meanDecibel(lateSoundStrength[4], lateSoundStrength[5])
+    lateSoundStrength.band(6) -
+    meanDecibel(lateSoundStrength.band(4), lateSoundStrength.band(5))
   );
 }
 
@@ -172,11 +175,13 @@ function calculateTrebleRatio(lateSoundStrength: number[]): number {
  * As defined in G.A. Soulodre and J. S. Bradley (1995): Subjective evaluation
 of new room acoustic measures
  */
-function calculateEarlyBassLevel(earlySoundStrength: number[]): number {
+export function calculateEarlyBassLevel(
+  earlySoundStrength: OctaveBandValues
+): number {
   return meanDecibel(
-    earlySoundStrength[1],
-    earlySoundStrength[2],
-    earlySoundStrength[3]
+    earlySoundStrength.band(1),
+    earlySoundStrength.band(2),
+    earlySoundStrength.band(3)
   );
 }
 
@@ -184,9 +189,9 @@ function calculateEarlyBassLevel(earlySoundStrength: number[]): number {
  * As defined in G.A. Soulodre and J. S. Bradley (1995): Subjective evaluation
 of new room acoustic measures
  */
-function calculateLevelAdjustedC80(
-  c80Bands: number[],
+export function calculateLevelAdjustedC80(
+  c80Bands: OctaveBandValues,
   aWeighted: number
 ): number {
-  return (c80Bands[3] + c80Bands[4]) / 2 + 0.62 * aWeighted;
+  return (c80Bands.band(3) + c80Bands.band(4)) / 2 + 0.62 * aWeighted;
 }

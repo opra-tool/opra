@@ -4,43 +4,47 @@ import { EnvironmentValues } from '../analyzing/environment-values';
 import { getFrequencyValues } from './octave-band-frequencies';
 import { calculateSoundDampingInAir } from './dampening';
 import { arrayMaxAbs, arraySquaredSum } from '../math/arrays';
+import { IRBuffer } from './buffer';
+import { OctaveBandValues } from './octave-bands';
 
 export async function calculateLpe10(
-  samples: Float32Array,
-  sampleRate: number,
+  buffer: IRBuffer,
   environmentValues: EnvironmentValues
-): Promise<number[]> {
-  const airDamping1m = getFrequencyValues().map(frequency =>
-    calculateSoundDampingInAir(
-      environmentValues.airTemperature,
-      environmentValues.relativeHumidity,
-      frequency
+): Promise<OctaveBandValues> {
+  // TODO: this could be prettier
+  const airDamping1m = new OctaveBandValues(
+    getFrequencyValues().map(frequency =>
+      calculateSoundDampingInAir(
+        environmentValues.airTemperature,
+        environmentValues.relativeHumidity,
+        frequency
+      )
     )
   );
-  const airDamping10m = airDamping1m.map(x => 10 * x);
-  const airDampingX = airDamping1m.map(
+  const airDamping10m = airDamping1m.transform(x => 10 * x);
+  const airDampingX = airDamping1m.transform(
     x => environmentValues.distanceFromSource * x
   );
   const airDampingCompensation = calculateAirDampingCompensation(airDampingX);
 
-  const dirac = createDiracImpulse(samples, sampleRate, environmentValues);
+  const dirac = createDiracImpulse(buffer, environmentValues);
 
-  const bands = await octfilt(dirac, sampleRate);
+  const bands = await octfilt(dirac);
 
-  return bands.map(
+  // FIXME: using getChannel(0) here could lead to problems with binaural files
+  return bands.collect(
     (band, i) =>
-      10 * safeLog10(arraySquaredSum(band)) +
+      10 * safeLog10(arraySquaredSum(band.getChannel(0))) +
       20 * Math.log(environmentValues.distanceFromSource / 10) +
       airDampingCompensation +
-      -airDamping10m[i]
+      -airDamping10m.band(i)
   );
 }
 
 function createDiracImpulse(
-  samples: Float32Array,
-  sampleRate: number,
+  buffer: IRBuffer,
   { airTemperature, referencePressure, sourcePower }: EnvironmentValues
-): Float32Array {
+): IRBuffer {
   let diracEnergy;
   if (sourcePower !== undefined && referencePressure !== undefined) {
     const airDensity = 1.2;
@@ -51,24 +55,24 @@ function createDiracImpulse(
         sourcePower * airDensity * ((speedOfSound / 4) * Math.PI * 10 ** 2)
       );
   } else {
-    diracEnergy = arrayMaxAbs(samples) / Math.SQRT2;
+    diracEnergy = arrayMaxAbs(buffer.getChannel(0)) / Math.SQRT2;
   }
 
   // one second dirac impulse with its spike placed at the approximate
   // time it takes for sound waves to travel a distance of 10m
-  const dirac = new Float32Array(sampleRate);
-  const spikeIndex = Math.floor(0.03 * sampleRate);
+  const dirac = new Float32Array(buffer.sampleRate);
+  const spikeIndex = Math.floor(0.03 * buffer.sampleRate);
   dirac[spikeIndex] = diracEnergy;
 
-  return dirac;
+  return new IRBuffer(dirac, buffer.sampleRate);
 }
 
-function calculateAirDampingCompensation(airDamping: number[]) {
+function calculateAirDampingCompensation(airDamping: OctaveBandValues) {
   const _unnnamed = 2 ** airDamping.length - 1;
 
   let accumulator = 0;
-  for (let i = 0; i < airDamping.length; i += 1) {
-    accumulator += (2 ** i / _unnnamed) * 10 ** (airDamping[i] / 10);
+  for (let i = 0; i < airDamping.length; i++) {
+    accumulator += (2 ** i / _unnnamed) * 10 ** (airDamping.band(i) / 10);
   }
 
   return 10 * safeLog10(accumulator);

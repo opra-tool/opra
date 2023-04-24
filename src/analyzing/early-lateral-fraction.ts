@@ -1,34 +1,19 @@
-import { e80 } from './early-late-fractions';
+import { e80Calc } from './early-late-fractions';
 import { arraySum } from '../math/arrays';
+import { IRBuffer } from './buffer';
 
 /**
  * Calculates early lateral energy fraction as defined in ISO 3382-1.
- *
- * @param midBandsSquared Squared octave bands of a signal measured with an omnidirectional microphone.
- * @param sideBandsSquared Squared octave bands of a signal measured with a figure-of-eight pattern microphone.
  */
-export function calculateEarlyLateralEnergyFraction(
-  midBandsSquared: Float32Array[],
-  sideBandsSquared: Float32Array[],
-  sampleRate: number
-): number[] {
-  if (midBandsSquared.length !== sideBandsSquared.length) {
-    throw new Error(
-      'expected mid and side signals to have the same number of octave bands'
-    );
-  }
+export function calculateEarlyLateralEnergyFraction(buffer: IRBuffer): number {
+  buffer.assertStereo();
 
-  const startTime = Math.round(0.005 * sampleRate);
+  const startTime = Math.round(0.005 * buffer.sampleRate);
 
-  const res = [];
-  for (let i = 0; i < midBandsSquared.length; i += 1) {
-    const numerator = arraySum(
-      e80(sideBandsSquared[i], sampleRate).subarray(startTime)
-    );
-    const denominator = arraySum(e80(midBandsSquared[i], sampleRate));
+  const e80 = e80Calc(buffer);
 
-    res.push(numerator / denominator);
-  }
+  const numerator = arraySum(e80.getChannel(1).subarray(startTime));
+  const denominator = arraySum(e80.getChannel(0));
 
-  return res;
+  return numerator / denominator;
 }
