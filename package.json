@@ -75,6 +75,13 @@
       "import/no-unresolved": "off",
       "import/extensions": "off",
       "max-classes-per-file": "off",
+      "no-redeclare": "off",
+      "no-plusplus": [
+        "warn",
+        {
+          "allowForLoopAfterthoughts": true
+        }
+      ],
       "no-use-before-define": [
         "error",
         {

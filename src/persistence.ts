@@ -155,7 +155,7 @@ function responseToRecord({
 }: ImpulseResponse): ImpulseResponseRecord {
   const samples: Float32Array[] = [];
 
-  for (let i = 0; i < buffer.numberOfChannels; i += 1) {
+  for (let i = 0; i < buffer.numberOfChannels; i++) {
     samples[i] = new Float32Array(buffer.length);
     buffer.copyFromChannel(samples[i], i);
   }
@@ -163,7 +163,7 @@ function responseToRecord({
   let originalSamples: Float32Array[] | undefined;
   if (originalBuffer) {
     originalSamples = [];
-    for (let i = 0; i < originalBuffer.numberOfChannels; i += 1) {
+    for (let i = 0; i < originalBuffer.numberOfChannels; i++) {
       originalSamples[i] = new Float32Array(originalBuffer.length);
       originalBuffer.copyFromChannel(originalSamples[i], i);
     }
@@ -188,7 +188,7 @@ function recordToResponse({
     length: samples[0].length,
   });
 
-  for (let i = 0; i < samples.length; i += 1) {
+  for (let i = 0; i < samples.length; i++) {
     buffer.copyToChannel(samples[i], i);
   }
 
@@ -200,7 +200,7 @@ function recordToResponse({
       length: originalSamples[0].length,
     });
 
-    for (let i = 0; i < originalSamples.length; i += 1) {
+    for (let i = 0; i < originalSamples.length; i++) {
       originalBuffer.copyToChannel(originalSamples[i], i);
     }
   }

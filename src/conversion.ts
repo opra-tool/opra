@@ -35,7 +35,7 @@ export function convertBetweenBinauralAndMidSide({
     const channel0 = buffer.getChannelData(0);
     const channel1 = buffer.getChannelData(1);
 
-    for (let i = 0; i < buffer.length; i += 1) {
+    for (let i = 0; i < buffer.length; i++) {
       newBuffer.getChannelData(0)[i] = (channel0[i] + channel1[i]) / Math.SQRT2;
       newBuffer.getChannelData(1)[i] = (channel0[i] - channel1[i]) / Math.SQRT2;
     }

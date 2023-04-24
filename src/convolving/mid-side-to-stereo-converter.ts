@@ -8,7 +8,7 @@ class MidSideToStereoConverter extends AudioWorkletProcessor {
     const output = outputs[0];
 
     if (input[0]) {
-      for (let i = 0; i < input[0].length; i += 1) {
+      for (let i = 0; i < input[0].length; i++) {
         // L = (M + S) / sqrt(2)
         output[0][i] = (input[0][i] + input[1][i]) / Math.SQRT2;
 

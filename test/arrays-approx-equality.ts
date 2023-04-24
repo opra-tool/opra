@@ -7,7 +7,7 @@ export function expectArraysApproximatelyEqual(
 ) {
   expect(actual.length).to.equal(expected.length);
 
-  for (let i = 0; i < actual.length; i += 1) {
+  for (let i = 0; i < actual.length; i++) {
     expect(actual[i]).to.be.approximately(
       expected[i],
       epsilon,

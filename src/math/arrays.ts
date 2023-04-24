@@ -21,7 +21,7 @@ export function arraySquaredSum(array: Float32Array | Float64Array): number {
 export function arrayMax(array: Float32Array | Float64Array): number {
   let max = -Infinity;
 
-  for (let i = 0; i < array.length; i += 1) {
+  for (let i = 0; i < array.length; i++) {
     if (array[i] > max) {
       max = array[i];
     }
@@ -33,7 +33,7 @@ export function arrayMax(array: Float32Array | Float64Array): number {
 export function arrayMaxAbs(array: Float32Array | Float64Array): number {
   let max = -Infinity;
 
-  for (let i = 0; i < array.length; i += 1) {
+  for (let i = 0; i < array.length; i++) {
     if (Math.abs(array[i]) > max) {
       max = Math.abs(array[i]);
     }

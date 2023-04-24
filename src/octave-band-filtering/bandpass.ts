@@ -43,7 +43,7 @@ export function octaveBandpassFilterCoefficients(
 
   const b = [1, 0, -1];
 
-  for (let i = 0; i < numberOfFilters; i += 1) {
+  for (let i = 0; i < numberOfFilters; i++) {
     const k = i + 1;
     const theta = ((2 * k - 1) * Math.PI) / (2 * numberOfFilters);
 

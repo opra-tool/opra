@@ -32,7 +32,7 @@ export function largestTriangleThreeBuckets(
   sampled[sampledIndex] = data[a]; // Always add the first point
   sampledIndex += 1;
 
-  for (let i = 0; i < threshold - 2; i += 1) {
+  for (let i = 0; i < threshold - 2; i++) {
     // Calculate point average for next bucket (containing c)
     let avgX = 0;
     let avgY = 0;
