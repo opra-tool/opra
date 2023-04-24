@@ -1,4 +1,30 @@
+import { IRBuffer } from './analyzing/buffer';
 import { ImpulseResponse } from './analyzing/impulse-response';
+
+/**
+ * Converts a binaural to a mid/side buffer.
+ *
+ * For conversion the following formulae are used:
+ *
+ * M = (L + R) / sqrt(2)
+ * S = (L - R) / sqrt(2)
+ */
+export function binauralToMidSide(buffer: IRBuffer): IRBuffer {
+  buffer.assertStereo();
+
+  const leftChannel = buffer.getChannel(0);
+  const rightChannel = buffer.getChannel(1);
+
+  const midChannel = new Float32Array(buffer.length);
+  const sideChannel = new Float32Array(buffer.length);
+
+  for (let i = 0; i < buffer.length; i++) {
+    midChannel[i] = (leftChannel[i] + rightChannel[i]) / Math.SQRT2;
+    sideChannel[i] = (leftChannel[i] - rightChannel[i]) / Math.SQRT2;
+  }
+
+  return new IRBuffer([midChannel, sideChannel], buffer.sampleRate);
+}
 
 /**
  * Converts a binaural to a mid/side response or a mid/side to a binaural response.
@@ -14,6 +40,7 @@ import { ImpulseResponse } from './analyzing/impulse-response';
  * If a response has been converted previously (original buffer is present), conversion yields the original response.
  *
  * @param response A binaural or mid/side impulse response
+ * @deprecated
  * @returns The converted response
  */
 export function convertBetweenBinauralAndMidSide({

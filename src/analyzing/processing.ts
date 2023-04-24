@@ -10,6 +10,7 @@ import { e50Calc, e80Calc, l80Calc } from './early-late-fractions';
 import { calculateEarlyLateralEnergyFraction } from './early-lateral-fraction';
 import { calculateSquaredIR } from './squared-impulse-response';
 import { OctaveBandValues } from './octave-bands';
+import { binauralToMidSide } from '../conversion';
 import { arraySum } from '../math/arrays';
 
 export type IntermediateResults = {
@@ -111,6 +112,10 @@ export async function processImpulseResponse(
       }
       return new IRBuffer([newChannel], band.sampleRate);
     });
+
+    midSideSquaredBands = bands
+      .transform(binauralToMidSide)
+      .transform(band => band.transform(calculateSquaredIR));
 
     rawSamples = new Float32Array(buffer.length);
     for (let i = 0; i < buffer.length; i++) {

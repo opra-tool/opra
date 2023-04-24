@@ -161,12 +161,11 @@ export class AudioAnalyzer extends LitElement {
     const binauralResponses = responses.filter(
       ({ type }) => type === 'binaural'
     );
-    const midSideResponses = responses.filter(
-      ({ type }) => type === 'mid-side'
+    const notMonauralResponses = responses.filter(
+      ({ type }) => type === 'binaural' || type === 'mid-side'
     );
 
     const hasBinauralResponses = binauralResponses.length > 0;
-    const hasMidSideResults = midSideResponses.length > 0;
 
     const results = responses.map(r => this.analyzer.getResultsOrThrow(r.id));
 
@@ -228,20 +227,24 @@ export class AudioAnalyzer extends LitElement {
         .lateSoundStrengths=${lateSoundStrengthBands}
       ></strengths-graph>
 
-      ${hasMidSideResults
+      ${earlyLateralSoundLevelBands.length > 0
         ? html`
-            <lateral-sound-level-card
-              .impulseResponses=${midSideResponses}
+            <lateral-sound-level-graph
+              .impulseResponses=${notMonauralResponses}
               .earlyLateralSoundLevels=${earlyLateralSoundLevelBands}
               .lateLateralSoundLevels=${lateLateralSoundLevelBands}
-            ></lateral-sound-level-card>
+            ></lateral-sound-level-graph>
+          `
+        : null}
+      ${earlyLateralEnergyFractionBands.length > 0
+        ? html`
             <early-lateral-fraction-graph
-              .impulseResponses=${midSideResponses}
+              .impulseResponses=${notMonauralResponses}
               .earlyLateralEnergyFraction=${earlyLateralEnergyFractionBands}
             ></early-lateral-fraction-graph>
           `
         : null}
-      ${hasBinauralResponses
+      ${iaccBands.length > 0
         ? html`<iacc-graph
             .impulseResponses=${binauralResponses}
             .iacc=${iaccBands}
