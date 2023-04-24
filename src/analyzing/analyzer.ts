@@ -44,9 +44,11 @@ export type Results = {
   /* monaural parameters */
   edtBands: number[];
   reverbTimeBands: number[];
+  edt: number;
   reverbTime: number;
   c50Bands: number[];
   c80Bands: number[];
+  c50: number;
   c80: number;
   centreTime: number;
   bassRatio: number;
@@ -55,12 +57,15 @@ export type Results = {
   earlySoundStrengthBands?: number[];
   lateSoundStrengthBands?: number[];
   soundStrength?: number;
+  earlySoundStrength?: number;
+  lateSoundStrength?: number;
   aWeightedSoundStrength?: number;
   trebleRatio?: number;
   earlyBassLevel?: number;
   levelAdjustedC80?: number;
   /* binaural parameters */
   iacc?: number;
+  eiacc?: number;
   iaccBands?: number[];
   eiaccBands?: number[];
   /* mid/side parameters */
@@ -68,6 +73,7 @@ export type Results = {
   earlyLateralEnergyFraction?: number;
   earlyLateralSoundLevelBands?: number[];
   lateLateralSoundLevelBands?: number[];
+  earlyLateralSoundLevel?: number;
   lateLateralSoundLevel?: number;
 };
 

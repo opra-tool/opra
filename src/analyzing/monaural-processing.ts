@@ -18,9 +18,11 @@ export type IntermediateResults = {
 export type MonauralResults = {
   edtBands: number[];
   reverbTimeBands: number[];
+  edt: number;
   reverbTime: number;
   c50Bands: number[];
   c80Bands: number[];
+  c50: number;
   c80: number;
   centreTime: number;
   bassRatio: number;
@@ -57,6 +59,7 @@ export async function processChannel(
     c80Bands.push(c80);
   }
 
+  const c50 = meanDecibel(c50Bands[3], c50Bands[4]);
   const c80 = meanDecibel(c80Bands[3], c80Bands[4]);
 
   const { edtBands, reverbTimeBands } = calculateReverberation(
@@ -64,6 +67,7 @@ export async function processChannel(
     sampleRate
   );
 
+  const edt = (edtBands[3] + edtBands[4]) / 2;
   const reverbTime = (reverbTimeBands[3] + reverbTimeBands[4]) / 2;
 
   const bassRatio =
@@ -81,9 +85,11 @@ export async function processChannel(
     {
       edtBands,
       reverbTimeBands,
+      edt,
       reverbTime,
       c50Bands,
       c80Bands,
+      c50,
       c80,
       bassRatio,
       centreTime,

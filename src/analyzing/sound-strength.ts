@@ -7,6 +7,8 @@ type SoundStrengths = {
   earlySoundStrengthBands: number[];
   lateSoundStrengthBands: number[];
   soundStrength: number;
+  earlySoundStrength: number;
+  lateSoundStrength: number;
   aWeightedSoundStrength: number;
   trebleRatio: number;
   earlyBassLevel: number;
@@ -14,6 +16,7 @@ type SoundStrengths = {
   /* strength-based mid/side parameters */
   earlyLateralSoundLevelBands?: number[];
   lateLateralSoundLevelBands?: number[];
+  earlyLateralSoundLevel?: number;
   lateLateralSoundLevel?: number;
 };
 
@@ -75,6 +78,10 @@ export async function calculateStrengths(
     lpe10
   );
   const soundStrength = calculateMeanSoundStrength(soundStrengthBands);
+  const earlySoundStrength = calculateMeanSoundStrength(
+    earlySoundStrengthBands
+  );
+  const lateSoundStrength = calculateMeanSoundStrength(lateSoundStrengthBands);
   const aWeightedSoundStrength =
     calculateAWeightedSoundStrength(soundStrengthBands);
   const trebleRatio = calculateTrebleRatio(lateSoundStrengthBands);
@@ -92,6 +99,14 @@ export async function calculateStrengths(
   const lateLateralSoundLevelBands = sideL80BandsSquaredSum
     ? calculateSoundStrength(sideL80BandsSquaredSum, lpe10)
     : undefined;
+  const earlyLateralSoundLevel = earlyLateralSoundLevelBands
+    ? meanDecibelEnergetic(
+        earlyLateralSoundLevelBands[1],
+        earlyLateralSoundLevelBands[2],
+        earlyLateralSoundLevelBands[3],
+        earlyLateralSoundLevelBands[4]
+      )
+    : undefined;
   const lateLateralSoundLevel = lateLateralSoundLevelBands
     ? meanDecibelEnergetic(
         lateLateralSoundLevelBands[1],
@@ -106,12 +121,15 @@ export async function calculateStrengths(
     earlySoundStrengthBands,
     lateSoundStrengthBands,
     soundStrength,
+    earlySoundStrength,
+    lateSoundStrength,
     trebleRatio,
     earlyBassLevel,
     aWeightedSoundStrength,
     levelAdjustedC80,
     earlyLateralSoundLevelBands,
     lateLateralSoundLevelBands,
+    earlyLateralSoundLevel,
     lateLateralSoundLevel,
   };
 }

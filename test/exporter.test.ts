@@ -23,9 +23,11 @@ const makeResponse = (type: ImpulseResponseType) => ({
 const makeMonauralResults = () => ({
   c50Bands: [1, 2, 3, 4, 5, 6, 7, 8],
   c80Bands: [1, 2, 3, 4, 5, 6, 7, 8],
+  c50: 1,
   c80: 1,
   edtBands: [1, 2, 3, 4, 5, 6, 7, 8],
   reverbTimeBands: [1, 2, 3, 4, 5, 6, 7, 8],
+  edt: 1,
   reverbTime: 1,
   bassRatio: 1,
   centreTime: 2,
