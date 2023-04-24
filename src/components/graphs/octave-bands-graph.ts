@@ -68,7 +68,7 @@ export class OctaveBandsGraph extends LitElement {
           x: {
             title: {
               display: true,
-              text: msg('Frequency in Hz'),
+              text: msg('Frequency [Hz]'),
             },
           },
         },

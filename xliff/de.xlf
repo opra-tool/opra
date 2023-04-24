@@ -271,6 +271,82 @@
   <source>Cannot activate, as the maximum number of displayed impulse responses is reached.</source>
   <target>Kann nicht deaktiviert werden, da das Limit an gleichzeitig aktiven Impulsantworten erreicht ist.</target>
 </trans-unit>
+<trans-unit id="s794bcbe84b9b3840">
+  <source>Set environment values</source>
+  <target>Umgebungswerte setzen</target>
+</trans-unit>
+<trans-unit id="sa5dc5b21b42f8e51">
+  <source>Set environment values for sound strength and related parameters.</source>
+  <target>Umgebungswerte für Stärkemaß und verwandte Parameter setzen.</target>
+</trans-unit>
+<trans-unit id="s01b3b23ccba74fd8">
+  <source>Air Temperature [°C]</source>
+  <target>Lufttemperatur [°C]</target>
+</trans-unit>
+<trans-unit id="saca513c2aba139b1">
+  <source>Relative humidity [%]</source>
+  <target>Relative Luftfeuchtigkeit [%]</target>
+</trans-unit>
+<trans-unit id="s8407ec11c3fa5991">
+  <source>Distance from sound source [m]</source>
+  <target>Distanz zur Schallquelle [m]</target>
+</trans-unit>
+<trans-unit id="s38389353bdfc8bcb">
+  <source>More accurate results can be achieved when the power of the sound source and the reference pressure are known.</source>
+  <target>Genauere Ergebnisse können erzielt werden, wenn die Leistung der Schallquelle und der Referenzdruck bekannt sind.</target>
+</trans-unit>
+<trans-unit id="s2568b2b00044bb29">
+  <source>The reference pressure is expected to define the digital amplitude which equals a sound pressure of 1 Pascal.</source>
+  <target>Als Referenzdruck wird hier der Wert der digitale Amplitude erwartet, welcher einem Schalldruck von 1 Pascal entspricht.</target>
+</trans-unit>
+<trans-unit id="s25090109e492e0f9">
+  <source>Sound source power [W]</source>
+  <target>Leistung der Schallquelle [W]</target>
+</trans-unit>
+<trans-unit id="sfba93af00dca196b">
+  <source>Air density</source>
+  <target>Luftdichte</target>
+</trans-unit>
+<trans-unit id="sacc7d7ed03aa6261">
+  <source>Reference pressure</source>
+  <target>Referenzdruck</target>
+</trans-unit>
+<trans-unit id="sc58d9c161092732d">
+  <source>This parameter is required when a sound source power is set.</source>
+  <target>Dieser Parameter wird benötigt, da die Leistung der Schallquelle angegeben ist.</target>
+</trans-unit>
+<trans-unit id="s16bb1dcb244b6f78">
+  <source>This parameter is required when a reference pressure is set.</source>
+  <target>Dieser Parameter wird benötigt, da der Referenzdruck angegeben ist.</target>
+</trans-unit>
+<trans-unit id="sc49fb4f16606971a">
+  <source>This parameter is required when a reference pressure or sound source power is set.</source>
+  <target>Dieser Parameter wird benötigt, da der Referenzdruck oder die Leistung der Schallquelle angegeben ist.</target>
+</trans-unit>
+<trans-unit id="s0f2b2dc9fb9dd86d">
+  <source>Successfully set environment values</source>
+  <target>Umgebungswerte erfolgreich gesetzt</target>
+</trans-unit>
+<trans-unit id="s6b838cf87783f9bd">
+  <source>Time [s]</source>
+  <target>Zeit [s]</target>
+</trans-unit>
+<trans-unit id="s40d760cc51e1ad71">
+  <source>Environment values are assumed for sound strength and related parameters.</source>
+  <target>Für das Stärkemaß und verwandte Parameter werden Umgebungswerte angenommen.</target>
+</trans-unit>
+<trans-unit id="sc2af25399372651e">
+  <source>Show and set environment values</source>
+  <target>Umgebungswerte anzeigen und setzen</target>
+</trans-unit>
+<trans-unit id="sce52b3eced130d0a">
+  <source>These values are optional.</source>
+  <target>Diese Werte sind optional.</target>
+</trans-unit>
+<trans-unit id="se1efccbe41b18f79">
+  <source>Frequency [Hz]</source>
+  <target>Frequenz [Hz]</target>
+</trans-unit>
 </body>
 </file>
 </xliff>

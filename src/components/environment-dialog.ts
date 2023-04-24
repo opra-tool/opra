@@ -103,7 +103,7 @@ export class EnvironmentDialog extends LitElement {
               ${msg(
                 'The reference pressure is expected to define the digital amplitude which equals a sound pressure of 1 Pascal.'
               )}
-              ${msg('These parameters are optional.')}
+              ${msg('These values are optional.')}
             </p>
 
             <sl-input
