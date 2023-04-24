@@ -9,7 +9,6 @@ const RESPONSE: ImpulseResponse = {
     sampleRate: 44100,
   }),
   originalBuffer: undefined,
-  color: '',
   duration: 0,
   fileName: '',
   id: 'id',
@@ -47,11 +46,11 @@ it('updates a response', async () => {
   await persistence.saveResponse(RESPONSE);
   await persistence.saveResponse({
     ...RESPONSE,
-    color: 'other',
+    type: 'binaural',
   });
   const saved = await persistence.getResponses();
 
-  expect(saved[0].color).to.equal('other');
+  expect(saved[0].type).to.equal('binaural');
 });
 
 async function clearAllIndexedDBs() {

@@ -6,7 +6,6 @@ import { expectArraysApproximatelyEqual } from './arrays-approx-equality';
 it('throws when attempting to convert a monaural impulse response', () => {
   const response: ImpulseResponse = {
     id: 'any id',
-    color: 'any color',
     duration: 1,
     fileName: 'any filename',
     sampleRate: 44100,
@@ -20,7 +19,6 @@ it('throws when attempting to convert a monaural impulse response', () => {
 it('throws when attempting to convert a mid-side response without original buffer', () => {
   const response: ImpulseResponse = {
     id: 'any id',
-    color: 'any color',
     duration: 1,
     fileName: 'any filename',
     sampleRate: 44100,
@@ -35,7 +33,6 @@ it('preserves metadata while converting', () => {
   const buffer = makeAudioBuffer();
   const converted = convertBetweenBinauralAndMidSide({
     id: 'any id',
-    color: 'any color',
     duration: 1,
     fileName: 'any filename',
     sampleRate: 44100,
@@ -44,7 +41,6 @@ it('preserves metadata while converting', () => {
   });
 
   expect(converted.id).to.equal('any id');
-  expect(converted.color).to.equal('any color');
   expect(converted.duration).to.equal(1);
   expect(converted.fileName).to.equal('any filename');
   expect(converted.sampleRate).to.equal(44100);
@@ -58,7 +54,6 @@ it('converts binaural response to mid/side response', () => {
   const buffer = makeAudioBuffer();
   const converted = convertBetweenBinauralAndMidSide({
     id: 'any id',
-    color: 'any color',
     duration: 1,
     fileName: 'any filename',
     sampleRate: 44100,
@@ -85,7 +80,6 @@ it('undoes a conversion', () => {
   const originalBuffer = makeAudioBuffer();
   const converted = convertBetweenBinauralAndMidSide({
     id: 'any id',
-    color: 'any color',
     duration: 1,
     fileName: 'any filename',
     sampleRate: 44100,

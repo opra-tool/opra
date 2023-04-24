@@ -1,9 +1,9 @@
 import { LitElement, html, css } from 'lit';
 import { customElement, query, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { localized, msg, str } from '@lit/localize';
+import { localized, msg } from '@lit/localize';
 import { Exporter } from '../exporter';
-import { Analyzer, MaximumFileCountReachedError } from '../analyzing/analyzer';
+import { Analyzer } from '../analyzing/analyzer';
 import { FileListToggleEvent } from './file-list';
 import {
   FileListConvertEvent,
@@ -17,6 +17,17 @@ import {
 } from './environment-dialog';
 import { toastSuccess, toastWarning } from './toast';
 import { OctaveBandValues } from '../analyzing/octave-bands';
+import { ImpulseResponse } from '../analyzing/impulse-response';
+
+const COLOR_WHITE = 'rgba(255, 255, 255, 0.75)';
+const COLOR_BLUE = 'rgba(153, 102, 255, 0.5)';
+const COLOR_RED = 'rgba(255, 99, 132, 0.5)';
+const COLOR_YELLOW = 'rgba(128, 128, 0, 0.5)';
+const COLOR_GREEN = 'rgba(93, 163, 153, 0.5)';
+
+const COLORS = [COLOR_WHITE, COLOR_BLUE, COLOR_RED, COLOR_YELLOW, COLOR_GREEN];
+
+const MAX_DISPLAY_COUNT = COLORS.length;
 
 @localized()
 @customElement('audio-analyzer')
@@ -25,7 +36,7 @@ export class AudioAnalyzer extends LitElement {
 
   private exporter = new Exporter(this.analyzer);
 
-  private hiddenResponses = new Map<string, true>();
+  private enabledResponses = new Map<string, { color: string }>();
 
   private errors = new Map<string, Error>();
 
@@ -38,7 +49,13 @@ export class AudioAnalyzer extends LitElement {
   constructor() {
     super();
 
-    this.analyzer.addEventListener('change', () => this.requestUpdate());
+    this.analyzer.addEventListener('change', () => this.requestUpdate()); // TODO: replace with more specific events
+    this.analyzer.addEventListener('response-added', ({ id }) =>
+      this.onResponseAdded(id)
+    );
+    this.analyzer.addEventListener('response-removed', ({ id }) =>
+      this.onResponseRemoved(id)
+    );
     this.analyzer.addEventListener(
       'file-adding-error',
       ({ fileName, error }) => {
@@ -70,28 +87,18 @@ export class AudioAnalyzer extends LitElement {
   protected render() {
     const fileListEntries = this.analyzer
       .getResponses()
-      .map(
-        ({
-          type,
-          id,
-          color,
-          duration,
-          sampleRate,
-          fileName,
-          originalBuffer,
-        }) => ({
-          type,
-          id,
-          color,
-          duration,
-          isEnabled: !this.hiddenResponses.has(id),
-          sampleRate,
-          fileName,
-          hasResults: this.analyzer.hasResults(id),
-          error: this.errors.get(id),
-          converted: !!originalBuffer,
-        })
-      );
+      .map(({ type, id, duration, sampleRate, fileName, originalBuffer }) => ({
+        type,
+        id,
+        duration,
+        isEnabled: this.enabledResponses.has(id),
+        color: this.enabledResponses.get(id)?.color,
+        sampleRate,
+        fileName,
+        hasResults: this.analyzer.hasResults(id),
+        error: this.errors.get(id),
+        converted: !!originalBuffer,
+      }));
 
     return html`
       <section class="grid">
@@ -105,6 +112,8 @@ export class AudioAnalyzer extends LitElement {
               ? html`
                   <file-list
                     .entries=${fileListEntries}
+                    .canEnableFiles=${this.enabledResponses.size <
+                    MAX_DISPLAY_COUNT}
                     @toggle-file=${this.onToggleFile}
                     @remove-file=${this.onRemoveFile}
                     @mark-file=${this.onMarkFile}
@@ -148,11 +157,15 @@ export class AudioAnalyzer extends LitElement {
       return null;
     }
 
-    const responses = this.analyzer
+    const responses: (ImpulseResponse & { color: string })[] = this.analyzer
       .getResponses()
       .filter(
-        r => !this.hiddenResponses.has(r.id) && this.analyzer.hasResults(r.id)
-      );
+        r => this.enabledResponses.has(r.id) && this.analyzer.hasResults(r.id)
+      )
+      .map(r => ({
+        ...r,
+        color: this.enabledResponses.get(r.id)?.color as string,
+      }));
 
     if (!responses.length) {
       return html`<progress-indicator></progress-indicator>`;
@@ -281,29 +294,31 @@ export class AudioAnalyzer extends LitElement {
   }
 
   private onToggleFile({ detail: { id } }: FileListToggleEvent) {
-    if (this.hiddenResponses.has(id)) {
-      this.hiddenResponses.delete(id);
+    if (this.enabledResponses.has(id)) {
+      this.enabledResponses.delete(id);
     } else {
-      this.hiddenResponses.set(id, true);
+      this.enabledResponses.set(id, { color: this.findAvailableColor() });
     }
 
     this.requestUpdate();
   }
 
   private async onFilesAdded({ detail: { files } }: FileDropChangeEvent) {
-    try {
-      await this.analyzer.addResponseFiles(files);
-    } catch (err) {
-      if (err instanceof MaximumFileCountReachedError) {
-        toastWarning(
-          msg(
-            str`Maximum file count (${err.maxFileCount}) reached. Skipped ${err.skippedFileCount} files.`
-          )
-        );
-      } else {
-        throw err;
-      }
+    await this.analyzer.addResponseFiles(files);
+  }
+
+  private onResponseAdded(id: string) {
+    if (this.enabledResponses.size < MAX_DISPLAY_COUNT) {
+      this.enabledResponses.set(id, { color: this.findAvailableColor() });
     }
+
+    this.requestUpdate();
+  }
+
+  private onResponseRemoved(id: string) {
+    this.enabledResponses.delete(id);
+
+    this.requestUpdate();
   }
 
   private onExport() {
@@ -317,6 +332,22 @@ export class AudioAnalyzer extends LitElement {
     link.download = `raqi-export-${new Date().toISOString()}.json`;
 
     link.click();
+  }
+
+  private findAvailableColor(): string {
+    const takenColors: string[] = [];
+    for (const { color } of this.enabledResponses.values()) {
+      takenColors.push(color);
+    }
+    const color = COLORS.find(c => !takenColors.includes(c));
+
+    if (!color) {
+      throw new Error(
+        `could not find available color takenColors=${takenColors}`
+      );
+    }
+
+    return color;
   }
 
   static styles = css`

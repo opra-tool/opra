@@ -1,7 +1,6 @@
 import { LitElement, html, css, TemplateResult } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
-import { ImpulseResponse } from '../analyzing/impulse-response';
 
 export type Parameter = {
   name: string | TemplateResult;
@@ -14,7 +13,7 @@ export type Parameter = {
 @customElement('parameters-table')
 export class ParametersTable extends LitElement {
   @property({ type: Array })
-  impulseResponses: ImpulseResponse[] = [];
+  impulseResponses: { color: string; fileName: string }[] = [];
 
   @property({ type: Array, attribute: false })
   parameters: Parameter[] = [];

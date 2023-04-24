@@ -70,14 +70,6 @@
 <trans-unit id="s2a2957356ab1c7fe">
   <source>Level-Adjusted</source>
 </trans-unit>
-<trans-unit id="s81ee24b15aa0408a">
-  <source>Maximum file count (<x id="0" equiv-text="${err.maxFileCount}"/>) reached. Skipped <x id="1" equiv-text="${err.skippedFileCount}"/> files.</source>
-  <target>Maximale Anzahl von (<x id="0" equiv-text="${err.maxFileCount}"/>) Dateien erreicht. <x id="1" equiv-text="${err.skippedFileCount}"/> Dateien ignoriert.</target>
-</trans-unit>
-<trans-unit id="s828755644aff07e4">
-  <source>Successfully set</source>
-  <target>Erfolgreiche Zuweisung von</target>
-</trans-unit>
 <trans-unit id="s5787e20cab57b383">
   <source>Unknown error</source>
   <target>Unbekannter Fehler</target>
@@ -118,10 +110,6 @@
   <source>Toggle visibility in graphs</source>
   <target>Sichtbarkeit in Graphen umschalten</target>
 </trans-unit>
-<trans-unit id="s0710721d5743524b">
-  <source>Cannot deactivate, as this is the only active impulse response</source>
-  <target>Nicht deaktivierbar, da dies die einzig aktive Impulsantwort ist</target>
-</trans-unit>
 <trans-unit id="sd2ffce103eac0816">
   <source>Early Lateral Sound Level</source>
   <target>Früher seitlicher Schallpegel</target>
@@ -134,45 +122,9 @@
   <source>Lateral Sound Level</source>
   <target>Seitlicher Schallpegel</target>
 </trans-unit>
-<trans-unit id="se40908c6bd9acc56">
-  <source>Air Temperature in <x id="0" equiv-text="${UNIT_CELCIUS}"/></source>
-  <target>Lufttemperatur in <x id="0" equiv-text="${UNIT_CELCIUS}"/></target>
-</trans-unit>
-<trans-unit id="s58a862deb4175e28">
-  <source>Relative humidity in percent</source>
-  <target>Relative Luftfeuchtigkeit in Prozent</target>
-</trans-unit>
-<trans-unit id="sea5e5bff614a370f">
-  <source>Set values</source>
-  <target>Werte setzen</target>
-</trans-unit>
 <trans-unit id="s9ed630bbd4e1a4d6">
   <source>Values are stored in the browser for your next visit.</source>
   <target>Die Werte werden im Browser für deinen nächsten Besuch gespeichert.</target>
-</trans-unit>
-<trans-unit id="h55173f1799401028">
-  <source>Set <x id="0" equiv-text="${P0_VAR}"/> and air parameters</source>
-  <target><x id="0" equiv-text="${P0_VAR}"/> und Luftparameter setzen</target>
-</trans-unit>
-<trans-unit id="h18e73ffa52a6ab3c">
-  <source>Further values require <x id="0" equiv-text="${P0_VAR}"/> to be set.</source>
-  <target>Um weitere Werte zu berechnen, wird <x id="0" equiv-text="${P0_VAR}"/> benötigt.</target>
-</trans-unit>
-<trans-unit id="hade4a196e0bbae85">
-  <source>Set <x id="0" equiv-text="${P0_VAR}"/></source>
-  <target><x id="0" equiv-text="${P0_VAR}"/> setzen</target>
-</trans-unit>
-<trans-unit id="s2f64461723d3df5d">
-  <source>Change</source>
-  <target>Ändern</target>
-</trans-unit>
-<trans-unit id="h59277fa7920c0581">
-  <source><x id="0" equiv-text="${P0_VAR}"/> is required for sound strength calculations.</source>
-  <target><x id="0" equiv-text="${P0_VAR}"/> wird für Stärkemaß-Berechnungen benötigt.</target>
-</trans-unit>
-<trans-unit id="sd86237254884db99">
-  <source>e.g. 0.015 or 1e-6</source>
-  <target>z.B. 0.015 oder 1e-6</target>
 </trans-unit>
 <trans-unit id="s979ceb45938c45d4">
   <source>Analyzing file(s) ...</source>
@@ -190,33 +142,9 @@
   <source>Early IACC</source>
   <target>Frühe IACC</target>
 </trans-unit>
-<trans-unit id="saa6ef41d71e052e8">
-  <source>Energy relative to sample rate</source>
-  <target>Energie relativ zur Abtastrate</target>
-</trans-unit>
-<trans-unit id="s6f08f8dee433d4c8">
-  <source>Time (seconds)</source>
-  <target>Zeit (Sekunden)</target>
-</trans-unit>
 <trans-unit id="s5eebbc96bcf77fac">
   <source>Squared Impulse Response</source>
   <target>Quadrierte Impulsantwort</target>
-</trans-unit>
-<trans-unit id="s333e1c2ed29fa049">
-  <source>An air temperature of</source>
-  <target>EIne Lufttemperatur von</target>
-</trans-unit>
-<trans-unit id="s9f333e8ebc86b700">
-  <source>and humidity of</source>
-  <target>und eine Luftfeuchtigkeit von</target>
-</trans-unit>
-<trans-unit id="sb4f187b5af127533">
-  <source>is assumed.</source>
-  <target>wird angenommen.</target>
-</trans-unit>
-<trans-unit id="s1093e7c731b35120">
-  <source>Frequency in</source>
-  <target>Frequenz in</target>
 </trans-unit>
 <trans-unit id="s4b3ab99331bfc6c7">
   <source>Reverberation</source>
@@ -334,6 +262,14 @@
 <trans-unit id="sa0cd790a6afc4722">
   <source>Perceived reverberance</source>
   <target>Empfundener Nachhall</target>
+</trans-unit>
+<trans-unit id="s44444cdb4765019f">
+  <source>Cannot deactivate, as this is the only active impulse response.</source>
+  <target>Kann nicht deaktiviert werden, da keine andere Impulsantwort aktiv ist.</target>
+</trans-unit>
+<trans-unit id="s8855c508722fe598">
+  <source>Cannot activate, as the maximum number of displayed impulse responses is reached.</source>
+  <target>Kann nicht deaktiviert werden, da das Limit an gleichzeitig aktiven Impulsantworten erreicht ist.</target>
 </trans-unit>
 </body>
 </file>

@@ -1,14 +1,13 @@
 import { LitElement, html } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { localized, msg } from '@lit/localize';
-import { ImpulseResponse } from '../../analyzing/impulse-response';
 import { OctaveBandValues } from '../../analyzing/octave-bands';
 
 @localized()
 @customElement('lateral-sound-level-graph')
 export class LateralSoundLevelGraph extends LitElement {
   @property({ type: Array })
-  impulseResponses: ImpulseResponse[] = [];
+  impulseResponses: { color: string }[] = [];
 
   @property({ type: Array })
   earlyLateralSoundLevels: OctaveBandValues[] = [];

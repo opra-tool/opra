@@ -2,7 +2,6 @@ import { msg, localized } from '@lit/localize';
 import { Chart } from 'chart.js';
 import { LitElement, html, PropertyValues } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
-import { ImpulseResponse } from '../analyzing/impulse-response';
 import { Analyzer } from '../analyzing/analyzer';
 import { largestTriangleThreeBuckets } from '../math/decimation';
 
@@ -15,7 +14,7 @@ export class ImpulseResponseGraph extends LitElement {
   analyzer!: Analyzer;
 
   @property({ type: Array })
-  impulseResponses: ImpulseResponse[] = [];
+  impulseResponses: { id: string; color: string; buffer: AudioBuffer }[] = [];
 
   @query('#canvas')
   private canvas!: HTMLCanvasElement;
@@ -90,8 +89,9 @@ export class ImpulseResponseGraph extends LitElement {
     }
 
     // is undefined on first render
-    const previousResponses: ImpulseResponse[] | undefined =
-      changedProperties.get('impulseResponses');
+    const previousResponses:
+      | { id: string; color: string; buffer: AudioBuffer }[]
+      | undefined = changedProperties.get('impulseResponses');
 
     if (previousResponses === undefined) {
       return true;
@@ -162,7 +162,7 @@ export class ImpulseResponseGraph extends LitElement {
 
       for (let i = 0; i < squaredIROfInterest.length; i++) {
         points.push({
-          x: (i + 1) / response.sampleRate,
+          x: (i + 1) / response.buffer.sampleRate,
           y: squaredIROfInterest[i],
         });
       }

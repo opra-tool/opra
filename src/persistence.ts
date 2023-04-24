@@ -227,7 +227,6 @@ function isValidResponseRecord(record: unknown): boolean {
   return (
     typeof response.type === 'string' &&
     typeof response.id === 'string' &&
-    typeof response.color === 'string' &&
     typeof response.duration === 'number' &&
     typeof response.fileName === 'string' &&
     typeof response.sampleRate === 'number' &&

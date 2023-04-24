@@ -10,7 +10,7 @@ export type FileListEntry = {
   fileName: string;
   hasResults: boolean;
   isEnabled: boolean;
-  color: string;
+  color?: string;
   duration: number;
   sampleRate: number;
   error?: string;
@@ -40,6 +40,9 @@ export class FileList extends LitElement {
   @property({ type: Boolean })
   hideOptions = false;
 
+  @property({ type: Boolean })
+  canEnableFiles = true;
+
   protected render() {
     return html`
       <section>${this.entries.map(file => this.renderListEntry(file))}</section>
@@ -54,7 +57,12 @@ export class FileList extends LitElement {
           <p>${entry.fileName}</p>
           <small>${FileList.renderSummary(entry)}</small>
         </div>
-        <div class="color" .style=${`background-color: ${entry.color}`}></div>
+        ${entry.isEnabled
+          ? html`<div
+              class="color"
+              .style=${`background-color: ${entry.color}`}
+            ></div>`
+          : null}
         ${this.renderFileOptions(entry)}
       </div>
     `;
@@ -72,15 +80,25 @@ export class FileList extends LitElement {
       ></sl-icon>`;
     }
 
-    const cannotToggle = isEnabled && this.getEnabledCount() === 1;
+    const cannotToggleTooMany = !isEnabled && !this.canEnableFiles;
+    const cannotToggleLastActive = isEnabled && this.getEnabledCount() === 1;
 
-    const toggleTitle = cannotToggle
-      ? msg('Cannot deactivate, as this is the only active impulse response')
-      : msg('Toggle visibility in graphs');
+    let toggleTitle;
+    if (cannotToggleLastActive) {
+      toggleTitle = msg(
+        'Cannot deactivate, as this is the only active impulse response.'
+      );
+    } else if (cannotToggleTooMany) {
+      toggleTitle = msg(
+        'Cannot activate, as the maximum number of displayed impulse responses is reached.'
+      );
+    } else {
+      toggleTitle = msg('Toggle visibility in graphs');
+    }
 
     return html`<sl-switch
       ?checked=${isEnabled}
-      ?disabled=${cannotToggle}
+      ?disabled=${cannotToggleTooMany || cannotToggleLastActive}
       title=${toggleTitle}
       value=${id}
       @sl-change=${this.onSwitch}
@@ -138,7 +156,9 @@ export class FileList extends LitElement {
       border-radius: 0.5rem;
       padding: 0.25rem;
       height: 100%;
+      max-height: 20rem;
       box-sizing: border-box;
+      overflow-y: auto;
     }
 
     .file-list-entry {
@@ -158,6 +178,10 @@ export class FileList extends LitElement {
 
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    file-list-entry-options {
+      grid-column: -1;
     }
 
     .head {

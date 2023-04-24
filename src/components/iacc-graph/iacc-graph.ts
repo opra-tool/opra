@@ -1,14 +1,13 @@
 import { msg, localized } from '@lit/localize';
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { ImpulseResponse } from '../../analyzing/impulse-response';
 import { OctaveBandValues } from '../../analyzing/octave-bands';
 
 @localized()
 @customElement('iacc-graph')
 export class IACCGraph extends LitElement {
   @property({ type: Array })
-  impulseResponses: ImpulseResponse[] = [];
+  impulseResponses: { color: string }[] = [];
 
   @property({ type: Array }) iacc: OctaveBandValues[] = [];
 

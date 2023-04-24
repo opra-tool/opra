@@ -1,12 +1,11 @@
 import { html, LitElement } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { ImpulseResponse } from '../../analyzing/impulse-response';
 import { OctaveBandValues } from '../../analyzing/octave-bands';
 
 @customElement('c50c80-graph')
 export class C50C80Graph extends LitElement {
   @property({ type: Array })
-  impulseResponses: ImpulseResponse[] = [];
+  impulseResponses: { color: string }[] = [];
 
   @property({ type: Array }) c50: OctaveBandValues[] = [];
 

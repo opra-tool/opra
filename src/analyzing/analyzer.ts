@@ -17,39 +17,12 @@ const DEFAULT_AIR_TEMPERATURE = 20;
 const DEFAULT_DISTANCE_FROM_SOURCE = 10;
 const DEFAULT_AIR_DENSITY = 1.2;
 
-const COLOR_WHITE = 'rgba(255, 255, 255, 0.75)';
-const COLOR_BLUE = 'rgba(153, 102, 255, 0.5)';
-const COLOR_RED = 'rgba(255, 99, 132, 0.5)';
-const COLOR_YELLOW = 'rgba(128, 128, 0, 0.5)';
-const COLOR_GREEN = 'rgba(93, 163, 153, 0.5)';
-
-const FILE_COLORS = [
-  COLOR_WHITE,
-  COLOR_BLUE,
-  COLOR_RED,
-  COLOR_YELLOW,
-  COLOR_GREEN,
-];
-
-const MAX_FILE_COUNT = FILE_COLORS.length;
-
-export class MaximumFileCountReachedError extends Error {
-  readonly maxFileCount: number;
-
-  readonly skippedFileCount: number;
-
-  constructor(maxFileCount: number, skippedFileCount: number) {
-    super();
-
-    this.maxFileCount = maxFileCount;
-    this.skippedFileCount = skippedFileCount;
-  }
-}
-
 type AnalyzerEventMap = {
   'file-adding-error': { fileName: string; error: Error };
   'file-processing-error': { id: string; fileName: string; error: Error };
   'environment-values-update': {};
+  'response-added': { id: string };
+  'response-removed': { id: string };
   change: undefined;
 };
 
@@ -79,9 +52,9 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
         for (const response of responses) {
           this.responses.push(response);
           this.analyzeResponse(response);
-        }
 
-        this.dispatchEvent('change', undefined);
+          this.dispatchEvent('response-added', { id: response.id });
+        }
       });
       this.persistence.getEnvironmentValues().then(values => {
         if (values) {
@@ -111,20 +84,13 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
     return this.responses;
   }
 
-  async addResponseFiles(files: FileList) {
-    const totalFileCount = this.responses.length + files.length;
-
+  async addResponseFiles(files: FileList): Promise<void> {
     for (let i = 0; i < files.length; i++) {
-      if (this.responses.length >= MAX_FILE_COUNT) {
-        throw new MaximumFileCountReachedError(
-          MAX_FILE_COUNT,
-          totalFileCount - MAX_FILE_COUNT
-        );
-      }
-
       try {
         // eslint-disable-next-line no-await-in-loop
-        await this.addResponseFile(files[i]);
+        const id = await this.addResponseFile(files[i]);
+
+        this.dispatchEvent('response-added', { id });
       } catch (err) {
         this.dispatchEvent('file-adding-error', {
           fileName: files[i].name,
@@ -134,7 +100,7 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
     }
   }
 
-  private async addResponseFile(file: File) {
+  private async addResponseFile(file: File): Promise<string> {
     const buffer = await readAudioFile(file);
 
     if (buffer.numberOfChannels < 1 || buffer.numberOfChannels > 2) {
@@ -150,18 +116,17 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
       buffer,
       duration: buffer.duration,
       sampleRate: buffer.sampleRate,
-      color: this.findAvailableColor(),
     };
 
     this.responses.push(response);
 
     setTimeout(() => {
-      this.dispatchEvent('change', undefined);
-
       this.persistence.saveResponse(response);
 
       this.analyzeResponse(response);
     }, 0);
+
+    return id;
   }
 
   removeResponse(id: string) {
@@ -319,19 +284,6 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
     }
 
     this.dispatchEvent('change', undefined);
-  }
-
-  private findAvailableColor(): string {
-    const takenColors = this.responses.map(r => r.color);
-    const color = FILE_COLORS.find(c => !takenColors.includes(c));
-
-    if (!color) {
-      throw new Error(
-        `could not find available color takenColors=${takenColors}`
-      );
-    }
-
-    return color;
   }
 
   /**
