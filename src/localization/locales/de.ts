@@ -36,7 +36,6 @@ export const templates = {
   s50dc09393c99feda: `Monaural`,
   s516f1f455d0b7007: `Sichtbarkeit in Graphen umschalten`,
   s5787e20cab57b383: `Unbekannter Fehler`,
-  s5eebbc96bcf77fac: `Quadrierte Impulsantwort`,
   s5fe5299a9789b5c0: `Frühe IACC`,
   s65d9ceb799192a39: `konvertiert`,
   s6b838cf87783f9bd: `Zeit [s]`,
@@ -55,6 +54,7 @@ export const templates = {
   s88ad31dce26701b3: `Schwerpunktzeit`,
   s8cf84c09568b1264: `Für dieses Element gibt es noch keine Hilfe.`,
   s9224ed62985fbd03: `Kein Effekt`,
+  s97128b8913cdfc3b: `Impulsantwort`,
   s979ceb45938c45d4: `Analysiere Datei(en) ...`,
   s9ed630bbd4e1a4d6: `Die Werte werden im Browser für deinen nächsten Besuch gespeichert.`,
   sa0cd790a6afc4722: `Empfundener Nachhall`,
@@ -105,7 +105,6 @@ export const templates = {
   s031a9496c1493f6d: `The interaural cross correlation coefficient is then calculated as`,
   s57888e24d55cc080: `See `,
   sa47afde5e77c98a7: `IACC on the ASA website`,
-  s2ddf3c6324337b20: `Sound energy`,
   hf6f7adaf3d69e3bb: html`
     The reverberation time <i>T</i> is defined by ISO 3382-1 as the
     <q

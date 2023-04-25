@@ -1,7 +1,7 @@
-import { msg, localized } from '@lit/localize';
+import { msg, localized, LocaleStatusEventDetail } from '@lit/localize';
 import { Chart } from 'chart.js';
 import { LitElement, html, PropertyValues } from 'lit';
-import { customElement, property, query } from 'lit/decorators.js';
+import { customElement, property, query, state } from 'lit/decorators.js';
 import { Analyzer } from '../analyzing/analyzer';
 import { largestTriangleThreeBuckets } from '../math/decimation';
 
@@ -16,10 +16,31 @@ export class ImpulseResponseGraph extends LitElement {
   @property({ type: Array })
   impulseResponses: { id: string; color: string; buffer: AudioBuffer }[] = [];
 
+  @state()
+  localeChanged: boolean = false;
+
   @query('#canvas')
   private canvas!: HTMLCanvasElement;
 
   private chart: Chart | null = null;
+
+  connectedCallback() {
+    super.connectedCallback();
+
+    window.addEventListener('lit-localize-status', this.onLocaleChange);
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+
+    window.removeEventListener('lit-localize-status', this.onLocaleChange);
+  }
+
+  onLocaleChange = (event: CustomEvent<LocaleStatusEventDetail>) => {
+    if (event.detail.status === 'ready') {
+      this.localeChanged = true;
+    }
+  };
 
   firstUpdated() {
     const ctx = this.canvas.getContext('2d');
@@ -44,7 +65,7 @@ export class ImpulseResponseGraph extends LitElement {
               min: LOWER_LIMIT,
               title: {
                 display: true,
-                text: msg('Sound energy'),
+                text: 'dB',
               },
               type: 'logarithmic',
               ticks: {
@@ -84,6 +105,10 @@ export class ImpulseResponseGraph extends LitElement {
   }
 
   shouldUpdate(changedProperties: PropertyValues<this>): boolean {
+    if (changedProperties.has('localeChanged')) {
+      return true;
+    }
+
     if (!changedProperties.has('impulseResponses')) {
       return false;
     }
@@ -124,12 +149,13 @@ export class ImpulseResponseGraph extends LitElement {
   }
 
   updated() {
+    this.localeChanged = false;
     this.chart?.update();
   }
 
   render() {
     return html`
-      <titled-card .cardTitle=${msg('Squared Impulse Response')}>
+      <titled-card .cardTitle=${msg('Impulse Response')}>
         <div>
           <canvas id="canvas" width="400" height="100"></canvas>
         </div>

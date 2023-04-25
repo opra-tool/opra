@@ -142,10 +142,6 @@
   <source>Early IACC</source>
   <target>Frühe IACC</target>
 </trans-unit>
-<trans-unit id="s5eebbc96bcf77fac">
-  <source>Squared Impulse Response</source>
-  <target>Quadrierte Impulsantwort</target>
-</trans-unit>
 <trans-unit id="s4b3ab99331bfc6c7">
   <source>Reverberation</source>
   <target>Nachhall</target>
@@ -346,6 +342,10 @@
 <trans-unit id="se1efccbe41b18f79">
   <source>Frequency [Hz]</source>
   <target>Frequenz [Hz]</target>
+</trans-unit>
+<trans-unit id="s97128b8913cdfc3b">
+  <source>Impulse Response</source>
+  <target>Impulsantwort</target>
 </trans-unit>
 </body>
 </file>
