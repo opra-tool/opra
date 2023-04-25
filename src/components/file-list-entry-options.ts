@@ -19,20 +19,6 @@ export class FileListMarkEvent extends CustomEvent<{
   }
 }
 
-export class FileListConvertEvent extends CustomEvent<{
-  id: string;
-}> {
-  constructor(id: string) {
-    super('convert-file', {
-      detail: {
-        id,
-      },
-      bubbles: true,
-      composed: true,
-    });
-  }
-}
-
 export class FileListRemoveEvent extends CustomEvent<{
   id: string;
 }> {
@@ -70,9 +56,6 @@ export class FileListEntryOptions extends LitElement {
   @property({ type: String })
   type: 'monaural' | 'binaural' | 'mid-side' = 'binaural';
 
-  @property({ type: Boolean })
-  converted: boolean = false;
-
   protected render() {
     return html`
       <sl-dropdown placement="bottom-end">
@@ -98,19 +81,10 @@ export class FileListEntryOptions extends LitElement {
       return null;
     }
 
-    if (this.converted && this.type === 'mid-side') {
-      return html`
-        <sl-menu-item value="convert"> ${msg('Undo conversion')} </sl-menu-item>
-      `;
-    }
-
     return this.type === 'binaural'
       ? html`
           <sl-menu-item value="mark:mid-side">
             ${msg('Treat as Mid/Side impulse response')}
-          </sl-menu-item>
-          <sl-menu-item value="convert">
-            ${msg('Convert to Mid/Side impulse response')}
           </sl-menu-item>
         `
       : html`
@@ -132,9 +106,6 @@ export class FileListEntryOptions extends LitElement {
         }
 
         this.dispatchEvent(new FileListMarkEvent(this.id, type));
-        break;
-      case 'convert':
-        this.dispatchEvent(new FileListConvertEvent(this.id));
         break;
       case 'set-environment':
         this.dispatchEvent(new FileListSetEnvironmentEvent(this.id));

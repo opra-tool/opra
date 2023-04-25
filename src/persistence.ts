@@ -5,12 +5,8 @@ import { ImpulseResponse } from './analyzing/impulse-response';
 const RESPONSES_STORE = 'saved-response';
 const ENVIRONMENT_VALUES_STORE = 'environment-values';
 
-type ImpulseResponseRecord = Omit<
-  ImpulseResponse,
-  'buffer' | 'originalBuffer'
-> & {
+type ImpulseResponseRecord = Omit<ImpulseResponse, 'buffer'> & {
   samples: Float32Array[];
-  originalSamples?: Float32Array[];
 };
 
 type DBSchema = {
@@ -150,7 +146,6 @@ function isEnvironmentValues(
 
 function responseToRecord({
   buffer,
-  originalBuffer,
   ...rest
 }: ImpulseResponse): ImpulseResponseRecord {
   const samples: Float32Array[] = [];
@@ -160,25 +155,14 @@ function responseToRecord({
     buffer.copyFromChannel(samples[i], i);
   }
 
-  let originalSamples: Float32Array[] | undefined;
-  if (originalBuffer) {
-    originalSamples = [];
-    for (let i = 0; i < originalBuffer.numberOfChannels; i++) {
-      originalSamples[i] = new Float32Array(originalBuffer.length);
-      originalBuffer.copyFromChannel(originalSamples[i], i);
-    }
-  }
-
   return {
     samples,
-    originalSamples,
     ...rest,
   };
 }
 
 function recordToResponse({
   samples,
-  originalSamples,
   sampleRate,
   ...rest
 }: ImpulseResponseRecord): ImpulseResponse {
@@ -192,22 +176,8 @@ function recordToResponse({
     buffer.copyToChannel(samples[i], i);
   }
 
-  let originalBuffer;
-  if (originalSamples) {
-    originalBuffer = new AudioBuffer({
-      sampleRate,
-      numberOfChannels: originalSamples.length,
-      length: originalSamples[0].length,
-    });
-
-    for (let i = 0; i < originalSamples.length; i++) {
-      originalBuffer.copyToChannel(originalSamples[i], i);
-    }
-  }
-
   return {
     buffer,
-    originalBuffer,
     sampleRate,
     ...rest,
   };
@@ -230,8 +200,6 @@ function isValidResponseRecord(record: unknown): boolean {
     typeof response.duration === 'number' &&
     typeof response.fileName === 'string' &&
     typeof response.sampleRate === 'number' &&
-    response.samples instanceof Array &&
-    (typeof response.originalSamples === 'undefined' ||
-      response.originalSamples instanceof Array)
+    response.samples instanceof Array
   );
 }

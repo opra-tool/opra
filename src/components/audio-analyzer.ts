@@ -6,7 +6,6 @@ import { Exporter } from '../exporter';
 import { Analyzer } from '../analyzing/analyzer';
 import { FileListToggleEvent } from './file-list';
 import {
-  FileListConvertEvent,
   FileListMarkEvent,
   FileListRemoveEvent,
 } from './file-list-entry-options';
@@ -91,7 +90,7 @@ export class AudioAnalyzer extends LitElement {
   protected render() {
     const fileListEntries = this.analyzer
       .getResponses()
-      .map(({ type, id, duration, sampleRate, fileName, originalBuffer }) => ({
+      .map(({ type, id, duration, sampleRate, fileName }) => ({
         type,
         id,
         duration,
@@ -101,7 +100,6 @@ export class AudioAnalyzer extends LitElement {
         fileName,
         hasResults: this.analyzer.hasResults(id),
         error: this.errors.get(id),
-        converted: !!originalBuffer,
       }));
 
     const hasResponses = this.analyzer.getResponses().length > 0;
@@ -123,7 +121,6 @@ export class AudioAnalyzer extends LitElement {
                     @toggle-file=${this.onToggleFile}
                     @remove-file=${this.onRemoveFile}
                     @mark-file=${this.onMarkFile}
-                    @convert-file=${this.onConvertFile}
                     @set-environment=${this.onShowEnvironmentDialog}
                   ></file-list>
                 `
@@ -306,10 +303,6 @@ export class AudioAnalyzer extends LitElement {
 
   private onMarkFile({ detail: { id, markAs } }: FileListMarkEvent) {
     this.analyzer.markResponseAs(id, markAs);
-  }
-
-  private onConvertFile({ detail: { id } }: FileListConvertEvent) {
-    this.analyzer.convertResponse(id);
   }
 
   private onToggleFile({ detail: { id } }: FileListToggleEvent) {

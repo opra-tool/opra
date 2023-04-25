@@ -10,7 +10,7 @@ import { e50Calc, e80Calc, l80Calc } from './early-late-fractions';
 import { calculateEarlyLateralEnergyFraction } from './early-lateral-fraction';
 import { calculateSquaredIR } from './squared-impulse-response';
 import { OctaveBandValues } from './octave-bands';
-import { binauralToMidSide } from '../conversion';
+import { binauralToMidSide, binauralToMonaural } from '../conversion';
 import { arraySum } from '../math/arrays';
 
 export type IntermediateResults = {
@@ -103,24 +103,16 @@ export async function processImpulseResponse(
         eiaccBands.band(4000)) /
       6;
 
-    bandsSquared = bands.transform(band => {
-      const leftChannel = band.getChannel(0);
-      const rightChannel = band.getChannel(1);
-      const newChannel = new Float32Array(band.length);
-      for (let i = 0; i < band.length; i++) {
-        newChannel[i] = (leftChannel[i] ** 2 + rightChannel[i] ** 2) / 2;
-      }
-      return new IRBuffer([newChannel], band.sampleRate);
-    });
+    const monauralBuffer = await binauralToMonaural(starttimeCorrected);
+    bandsSquared = (await octfilt(monauralBuffer)).transform(band =>
+      band.transform(calculateSquaredIR)
+    );
 
     midSideSquaredBands = bands
       .transform(binauralToMidSide)
       .transform(band => band.transform(calculateSquaredIR));
 
-    rawSamples = new Float32Array(buffer.length);
-    for (let i = 0; i < buffer.length; i++) {
-      rawSamples[i] = (buffer.getChannel(0)[i] + buffer.getChannel(1)[i]) / 2;
-    }
+    rawSamples = monauralBuffer.getChannel(0);
   } else if (type === 'mid-side') {
     midSideSquaredBands = bands.transform(band =>
       band.transform(calculateSquaredIR)

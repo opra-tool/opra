@@ -29,3 +29,29 @@ export function frequencyResponse(
 
   return magnitude[0];
 }
+
+export function filterChainFrequencyResponse(
+  filters: IIRFilterNode[],
+  evaluationFrequencies: Float32Array
+): Float32Array {
+  const result = new Float32Array(evaluationFrequencies.length);
+  for (let i = 0; i < result.length; i++) {
+    result[i] = 1;
+  }
+
+  for (const filter of filters) {
+    const magnitude = new Float32Array(evaluationFrequencies.length);
+
+    filter.getFrequencyResponse(
+      evaluationFrequencies,
+      magnitude,
+      new Float32Array(evaluationFrequencies.length)
+    );
+
+    for (let i = 0; i < magnitude.length; i++) {
+      result[i] *= magnitude[i];
+    }
+  }
+
+  return result;
+}

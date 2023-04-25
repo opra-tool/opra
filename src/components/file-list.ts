@@ -14,7 +14,6 @@ export type FileListEntry = {
   duration: number;
   sampleRate: number;
   error?: string;
-  converted: boolean;
 };
 
 export class FileListToggleEvent extends CustomEvent<{
@@ -105,25 +104,17 @@ export class FileList extends LitElement {
     ></sl-switch>`;
   }
 
-  private static renderSummary({
-    type,
-    duration,
-    sampleRate,
-    converted,
-  }: FileListEntry) {
+  private static renderSummary({ type, duration, sampleRate }: FileListEntry) {
     const names = {
       monaural: msg('Monaural'),
       binaural: msg('Binaural'),
       'mid-side': msg('Mid/Side'),
     };
 
-    const convertedString = converted ? ` (${msg('converted')})` : '';
-
-    return html`${names[type]}${convertedString} • ${sampleRate} Hz •
-    ${duration.toFixed(2)} s`;
+    return html`${names[type]} • ${sampleRate} Hz • ${duration.toFixed(2)} s`;
   }
 
-  private renderFileOptions({ type, id, converted }: FileListEntry) {
+  private renderFileOptions({ type, id }: FileListEntry) {
     if (this.hideOptions) {
       return null;
     }
@@ -132,7 +123,6 @@ export class FileList extends LitElement {
       <file-list-entry-options
         .id=${id}
         .type=${type}
-        .converted=${converted}
       ></file-list-entry-options>
     `;
   }

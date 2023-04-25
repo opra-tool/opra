@@ -203,21 +203,9 @@
   <source>Mid/Side</source>
   <target>Mitten/Seiten</target>
 </trans-unit>
-<trans-unit id="s65d9ceb799192a39">
-  <source>converted</source>
-  <target>konvertiert</target>
-</trans-unit>
-<trans-unit id="sd95fff9731b3bfad">
-  <source>Undo conversion</source>
-  <target>Konvertierung rückgängig machen</target>
-</trans-unit>
 <trans-unit id="s78cb1ae8a1d79653">
   <source>Treat as Mid/Side impulse response</source>
   <target>Als Mitten/Seiten Impulsantwort behandeln</target>
-</trans-unit>
-<trans-unit id="saf8a00fbc745150f">
-  <source>Convert to Mid/Side impulse response</source>
-  <target>In eine Mitten/Seiten Impulsantwort konvertieren</target>
 </trans-unit>
 <trans-unit id="s6ffa4e2d558d55af">
   <source>Early Decay Time</source>

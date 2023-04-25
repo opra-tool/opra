@@ -1,6 +1,5 @@
 import { Persistence } from '../persistence';
 import { readAudioFile } from '../audio/audio-file-reading';
-import { convertBetweenBinauralAndMidSide } from '../conversion';
 import { EventEmitter } from '../event-emitter';
 import { EnvironmentValues } from './environment-values';
 import { ImpulseResponse } from './impulse-response';
@@ -162,26 +161,6 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
     this.dispatchEvent('change', undefined);
 
     this.persistence.saveResponse(response);
-  }
-
-  convertResponse(id: string) {
-    const response = this.getResponseOrThrow(id);
-
-    const newResponse = convertBetweenBinauralAndMidSide(response);
-    this.analyzeResponse(newResponse);
-
-    this.results.delete(id);
-    this.responses = this.responses.map(r => {
-      if (r.id === id) {
-        return newResponse;
-      }
-
-      return r;
-    });
-
-    this.dispatchEvent('change', undefined);
-
-    this.persistence.saveResponse(newResponse);
   }
 
   getSquaredIR(responseId: string): Float32Array {

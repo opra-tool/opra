@@ -39,7 +39,6 @@ export const templates = {
   s516f1f455d0b7007: `Sichtbarkeit in Graphen umschalten`,
   s5787e20cab57b383: `Unbekannter Fehler`,
   s5fe5299a9789b5c0: `Frühe IACC`,
-  s65d9ceb799192a39: `konvertiert`,
   s6b838cf87783f9bd: `Zeit [s]`,
   s6bc84d43b3db4bd0: `Höhenverhältnis`,
   s6ff0144bf13be05e: `Hilfe schließen`,
@@ -68,7 +67,6 @@ export const templates = {
   sacc7d7ed03aa6261: `Referenzdruck`,
   sad69d8cf37fd5551: `aktivierte Raumimpulsantwort(en)`,
   sadf9ac04abb2c03e: `Technische Details`,
-  saf8a00fbc745150f: `In eine Mitten/Seiten Impulsantwort konvertieren`,
   safa8613aa4ab25b3: `Ergebnisse herunterladen`,
   sb743e7f938d6d433: `Soulodre und Bradley (1995)`,
   sc00a88b90cd60661: `Entfernen`,
@@ -87,7 +85,6 @@ export const templates = {
           und aus dieser Mittelung dann monaurale Parameter berechnet.
           Die Head-Related Transfer Function kann Einfluss auf monaurale Parameter haben.`,
   sd80e4b4178b216ca: `Raumimpulsantwortdateien hier ablegen`,
-  sd95fff9731b3bfad: `Konvertierung rückgängig machen`,
   sda368d49761aef66: `Zuhörer-Einhüllung (LEV)`,
   se1efccbe41b18f79: `Frequenz [Hz]`,
   se511606cf6a6c4b5: `Bestätigung notwendig`,

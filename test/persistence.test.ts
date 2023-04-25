@@ -8,7 +8,6 @@ const RESPONSE: ImpulseResponse = {
     length: 1,
     sampleRate: 44100,
   }),
-  originalBuffer: undefined,
   duration: 0,
   fileName: '',
   id: 'id',

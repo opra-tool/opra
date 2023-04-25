@@ -128,6 +128,14 @@ export class OctaveBands {
     return new OctaveBands(this.map(callback));
   }
 
+  async asyncTransform(
+    callback: (band: IRBuffer) => Promise<IRBuffer>
+  ): Promise<OctaveBands> {
+    const bands = await Promise.all(this.bands.map(callback));
+
+    return new OctaveBands(bands);
+  }
+
   collect(
     callback: (band: IRBuffer, centerFrequency: number, index: number) => number
   ): OctaveBandValues {
