@@ -265,7 +265,7 @@
 </trans-unit>
 <trans-unit id="s8855c508722fe598">
   <source>Cannot activate, as the maximum number of displayed impulse responses is reached.</source>
-  <target>Kann nicht deaktiviert werden, da das Limit an gleichzeitig aktiven Impulsantworten erreicht ist.</target>
+  <target>Kann nicht aktiviert werden, da das Limit an gleichzeitig aktiven Impulsantworten erreicht ist.</target>
 </trans-unit>
 <trans-unit id="s794bcbe84b9b3840">
   <source>Set environment values</source>
@@ -346,6 +346,26 @@
 <trans-unit id="s97128b8913cdfc3b">
   <source>Impulse Response</source>
   <target>Impulsantwort</target>
+</trans-unit>
+<trans-unit id="se511606cf6a6c4b5">
+  <source>Confirmation required</source>
+  <target>Bestätigung notwendig</target>
+</trans-unit>
+<trans-unit id="sfcb0080cab096498">
+  <source>Are you sure to discard all room impulse responses?</source>
+  <target>Bist du sicher, dass alle Raumimpulsantworten entfernt werden sollen?</target>
+</trans-unit>
+<trans-unit id="s8e8396b2db5b7c6c">
+  <source>No, take me back</source>
+  <target>Nein, doch nicht</target>
+</trans-unit>
+<trans-unit id="s21117c76540f5fe1">
+  <source>Yes, discard all</source>
+  <target>Ja, alle entfernen</target>
+</trans-unit>
+<trans-unit id="s284f9a007a222dc2">
+  <source>Discard all responses</source>
+  <target>Alle Impulsantworten entfernen</target>
 </trans-unit>
 </body>
 </file>

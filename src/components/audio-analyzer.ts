@@ -18,6 +18,7 @@ import {
 import { toastSuccess, toastWarning } from './toast';
 import { OctaveBandValues } from '../analyzing/octave-bands';
 import { ImpulseResponse } from '../analyzing/impulse-response';
+import { DiscardAllDialog } from './discard-all-dialog';
 
 const COLOR_WHITE = 'rgba(255, 255, 255, 0.75)';
 const COLOR_BLUE = 'rgba(153, 102, 255, 0.5)';
@@ -45,6 +46,9 @@ export class AudioAnalyzer extends LitElement {
 
   @query('.environment-dialog', true)
   private environmentDialog!: EnvironmentDialog;
+
+  @query('.discard-all-dialog', true)
+  private discardAllDialog!: DiscardAllDialog;
 
   constructor() {
     super();
@@ -100,6 +104,8 @@ export class AudioAnalyzer extends LitElement {
         converted: !!originalBuffer,
       }));
 
+    const hasResponses = this.analyzer.getResponses().length > 0;
+
     return html`
       <section class="grid">
         <base-card class="controls-card">
@@ -127,9 +133,16 @@ export class AudioAnalyzer extends LitElement {
             <environment-notice
               @show-dialog=${this.onShowEnvironmentDialog}
             ></environment-notice>
-            <sl-button @click=${this.onExport}>
+            <sl-button @click=${this.onExport} .disabled=${!hasResponses}>
               <sl-icon slot="prefix" name="download"></sl-icon>
               ${msg('Download Results')}
+            </sl-button>
+            <sl-button
+              @click=${this.onDiscardAllResponses}
+              .disabled=${!hasResponses}
+            >
+              <sl-icon slot="prefix" name="trash"></sl-icon>
+              ${msg('Discard all responses')}
             </sl-button>
           </section>
         </base-card>
@@ -149,6 +162,12 @@ export class AudioAnalyzer extends LitElement {
         class="environment-dialog"
         @change=${this.onEnvironmentChange}
       ></environment-dialog>
+
+      <discard-all-dialog
+        class="discard-all-dialog"
+        @confirm=${this.onDiscardAllResponsesConfirmed}
+        @cancel=${() => this.discardAllDialog.hide()}
+      ></discard-all-dialog>
     `;
   }
 
@@ -321,6 +340,15 @@ export class AudioAnalyzer extends LitElement {
     this.requestUpdate();
   }
 
+  private onDiscardAllResponses() {
+    this.discardAllDialog.show();
+  }
+
+  private onDiscardAllResponsesConfirmed() {
+    this.discardAllDialog.hide();
+    this.analyzer.removeAllResponses();
+  }
+
   private onExport() {
     const json = this.exporter.generateExportFile();
     const blob = new Blob([json], {
@@ -375,8 +403,8 @@ export class AudioAnalyzer extends LitElement {
     }
 
     section.settings {
-      display: flex;
-      justify-content: space-between;
+      display: grid;
+      grid-template-columns: 1fr min-content min-content;
       gap: 1rem;
       margin-block-start: 1rem;
     }

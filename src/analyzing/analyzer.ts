@@ -129,6 +129,12 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
     return id;
   }
 
+  removeAllResponses() {
+    for (const response of this.responses) {
+      this.removeResponse(response.id);
+    }
+  }
+
   removeResponse(id: string) {
     this.responses = this.responses.filter(el => el.id !== id);
 

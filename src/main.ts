@@ -38,6 +38,7 @@ import './components/cards/titled-card';
 import './components/cards/help-card';
 import './components/binaural-note-card';
 import './convolving/convolver-card';
+import './components/discard-all-dialog';
 import './components/error-details';
 import './components/environment-dialog';
 import './components/file-drop';
