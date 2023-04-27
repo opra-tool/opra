@@ -1,19 +1,17 @@
 import { safeLog10 } from '../math/safeLog10';
 import { octfilt } from '../octave-band-filtering/octave-band-filtering';
 import { EnvironmentValues } from '../analyzing/environment-values';
-import { getFrequencyValues } from './octave-band-frequencies';
+import { CENTER_FREQUENCIES, OctaveBandValues } from './octave-bands';
 import { calculateSoundDampingInAir } from './dampening';
 import { arrayMaxAbs, arraySquaredSum } from '../math/arrays';
 import { IRBuffer } from './buffer';
-import { OctaveBandValues } from './octave-bands';
 
 export async function calculateLpe10(
   buffer: IRBuffer,
   environmentValues: EnvironmentValues
 ): Promise<OctaveBandValues> {
-  // TODO: this could be prettier
   const airDamping1m = new OctaveBandValues(
-    getFrequencyValues().map(frequency =>
+    CENTER_FREQUENCIES.map(frequency =>
       calculateSoundDampingInAir(
         environmentValues.airTemperature,
         environmentValues.relativeHumidity,
@@ -33,11 +31,11 @@ export async function calculateLpe10(
 
   // FIXME: using getChannel(0) here could lead to problems with binaural files
   return bands.collect(
-    (band, i) =>
+    (band, centerFrequency) =>
       10 * safeLog10(arraySquaredSum(band.getChannel(0))) +
       20 * Math.log(environmentValues.distanceFromSource / 10) +
       airDampingCompensation +
-      -airDamping10m.band(i)
+      -airDamping10m.band(centerFrequency)
   );
 }
 
@@ -68,12 +66,16 @@ function createDiracImpulse(
 }
 
 function calculateAirDampingCompensation(airDamping: OctaveBandValues) {
-  const _unnnamed = 2 ** airDamping.length - 1;
+  const _unnnamed = 2 ** airDamping.numberOfBands - 1;
 
-  let accumulator = 0;
-  for (let i = 0; i < airDamping.length; i++) {
-    accumulator += (2 ** i / _unnnamed) * 10 ** (airDamping.band(i) / 10);
-  }
-
-  return 10 * safeLog10(accumulator);
+  return (
+    10 *
+    safeLog10(
+      airDamping
+        .transform(
+          (value, _, index) => (2 ** index / _unnnamed) * 10 ** (value / 10)
+        )
+        .sum()
+    )
+  );
 }

@@ -43,7 +43,7 @@ type EnvironmentParameters = {
  *
  * Note: The value for 1kHz has been rounded to 0
  */
-const A_WEIGHTING_CORRECTIONS = [
+const A_WEIGHTING_CORRECTIONS = new OctaveBandValues([
   -26.3567, // 62.5 Hz
   -16.1897, // 125 Hz
   -8.67483, // 250 Hz
@@ -52,7 +52,7 @@ const A_WEIGHTING_CORRECTIONS = [
   1.20167, // 2000 Hz
   0.963598, // 4000 Hz
   -1.14688, // 8000 Hz
-];
+]);
 
 export async function calculateStrengths(
   buffer: IRBuffer,
@@ -102,18 +102,18 @@ export async function calculateStrengths(
     : undefined;
   const earlyLateralSoundLevel = earlyLateralSoundLevelBands
     ? meanDecibelEnergetic(
-        earlyLateralSoundLevelBands.band(1),
-        earlyLateralSoundLevelBands.band(2),
-        earlyLateralSoundLevelBands.band(3),
-        earlyLateralSoundLevelBands.band(4)
+        earlyLateralSoundLevelBands.band(125),
+        earlyLateralSoundLevelBands.band(250),
+        earlyLateralSoundLevelBands.band(500),
+        earlyLateralSoundLevelBands.band(1000)
       )
     : undefined;
   const lateLateralSoundLevel = lateLateralSoundLevelBands
     ? meanDecibelEnergetic(
-        lateLateralSoundLevelBands.band(1),
-        lateLateralSoundLevelBands.band(2),
-        lateLateralSoundLevelBands.band(3),
-        lateLateralSoundLevelBands.band(4)
+        lateLateralSoundLevelBands.band(125),
+        lateLateralSoundLevelBands.band(250),
+        lateLateralSoundLevelBands.band(500),
+        lateLateralSoundLevelBands.band(1000)
       )
     : undefined;
 
@@ -139,8 +139,9 @@ export function calculateSoundStrength(
   bandsSquaredSum: OctaveBandValues,
   lpe10: OctaveBandValues
 ): OctaveBandValues {
-  return bandsSquaredSum.transform(
-    (bandSum, i) => 10 * safeLog10(bandSum) - lpe10.band(i)
+  return bandsSquaredSum.combine(
+    lpe10,
+    (value, lpe10Value) => 10 * safeLog10(value) - lpe10Value
   );
 }
 
@@ -148,14 +149,17 @@ export function calculateAWeightedSoundStrength(
   soundStrength: OctaveBandValues
 ): number {
   return calculateMeanSoundStrength(
-    soundStrength.transform((val, i) => val + A_WEIGHTING_CORRECTIONS[i])
+    soundStrength.combine(
+      A_WEIGHTING_CORRECTIONS,
+      (value, correction) => value + correction
+    )
   );
 }
 
 export function calculateMeanSoundStrength(
   soundStrength: OctaveBandValues
 ): number {
-  return meanDecibel(soundStrength.band(3), soundStrength.band(4));
+  return meanDecibel(soundStrength.band(500), soundStrength.band(1000));
 }
 
 /**
@@ -166,8 +170,8 @@ export function calculateTrebleRatio(
   lateSoundStrength: OctaveBandValues
 ): number {
   return (
-    lateSoundStrength.band(6) -
-    meanDecibel(lateSoundStrength.band(4), lateSoundStrength.band(5))
+    lateSoundStrength.band(4000) -
+    meanDecibel(lateSoundStrength.band(1000), lateSoundStrength.band(2000))
   );
 }
 
@@ -179,9 +183,9 @@ export function calculateEarlyBassLevel(
   earlySoundStrength: OctaveBandValues
 ): number {
   return meanDecibel(
-    earlySoundStrength.band(1),
-    earlySoundStrength.band(2),
-    earlySoundStrength.band(3)
+    earlySoundStrength.band(125),
+    earlySoundStrength.band(250),
+    earlySoundStrength.band(500)
   );
 }
 
@@ -193,5 +197,5 @@ export function calculateLevelAdjustedC80(
   c80Bands: OctaveBandValues,
   aWeighted: number
 ): number {
-  return (c80Bands.band(3) + c80Bands.band(4)) / 2 + 0.62 * aWeighted;
+  return (c80Bands.band(500) + c80Bands.band(1000)) / 2 + 0.62 * aWeighted;
 }

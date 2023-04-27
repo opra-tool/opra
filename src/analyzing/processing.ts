@@ -86,21 +86,21 @@ export async function processImpulseResponse(
     eiaccBands = bands.transform(e80Calc).collect(calculateIacc);
 
     iacc =
-      (iaccBands.band(1) +
-        iaccBands.band(2) +
-        iaccBands.band(3) +
-        iaccBands.band(4) +
-        iaccBands.band(5) +
-        iaccBands.band(6)) /
+      (iaccBands.band(125) +
+        iaccBands.band(250) +
+        iaccBands.band(500) +
+        iaccBands.band(1000) +
+        iaccBands.band(2000) +
+        iaccBands.band(4000)) /
       6;
 
     eiacc =
-      (eiaccBands.band(1) +
-        eiaccBands.band(2) +
-        eiaccBands.band(3) +
-        eiaccBands.band(4) +
-        eiaccBands.band(5) +
-        eiaccBands.band(6)) /
+      (eiaccBands.band(125) +
+        eiaccBands.band(250) +
+        eiaccBands.band(500) +
+        eiaccBands.band(1000) +
+        eiaccBands.band(2000) +
+        eiaccBands.band(4000)) /
       6;
 
     bandsSquared = bands.transform(band => {
@@ -139,10 +139,10 @@ export async function processImpulseResponse(
       calculateEarlyLateralEnergyFraction
     );
     earlyLateralEnergyFraction =
-      (earlyLateralEnergyFractionBands.band(1) +
-        earlyLateralEnergyFractionBands.band(2) +
-        earlyLateralEnergyFractionBands.band(3) +
-        earlyLateralEnergyFractionBands.band(4)) /
+      (earlyLateralEnergyFractionBands.band(125) +
+        earlyLateralEnergyFractionBands.band(250) +
+        earlyLateralEnergyFractionBands.band(500) +
+        earlyLateralEnergyFractionBands.band(1000)) /
       4;
     sideE80BandsSquaredSum = midSideSquaredBands
       .transform(e80Calc)
@@ -155,17 +155,18 @@ export async function processImpulseResponse(
   const c50Bands = bandsSquared.collect(c50Calc);
   const c80Bands = bandsSquared.collect(c80Calc);
 
-  const c50 = (c50Bands.band(3) + c50Bands.band(4)) / 2;
-  const c80 = (c80Bands.band(3) + c80Bands.band(4)) / 2;
+  const c50 = (c50Bands.band(500) + c50Bands.band(1000)) / 2;
+  const c80 = (c80Bands.band(500) + c80Bands.band(1000)) / 2;
 
   const { edtBands, reverbTimeBands } = reverberationTimes(bandsSquared);
 
-  const edt = (edtBands.band(3) + edtBands.band(4)) / 2;
-  const reverbTime = (reverbTimeBands.band(3) + reverbTimeBands.band(4)) / 2;
+  const edt = (edtBands.band(500) + edtBands.band(1000)) / 2;
+  const reverbTime =
+    (reverbTimeBands.band(500) + reverbTimeBands.band(1000)) / 2;
 
   const bassRatio =
-    (reverbTimeBands.band(1) + reverbTimeBands.band(2)) /
-    (reverbTimeBands.band(3) + reverbTimeBands.band(4));
+    (reverbTimeBands.band(125) + reverbTimeBands.band(250)) /
+    (reverbTimeBands.band(500) + reverbTimeBands.band(1000));
 
   const centreTime = calculateCentreTime(bandsSquared);
 

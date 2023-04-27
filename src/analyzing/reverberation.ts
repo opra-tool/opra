@@ -1,7 +1,6 @@
 import { calculate_reverberation as wasmCalculateReverberation } from 'wasm-raqi-online-toolbox';
 import { OctaveBands, OctaveBandValues } from './octave-bands';
 
-// TODO: only calculate for a single octave band
 export function reverberationTimes(bands: OctaveBands): {
   edtBands: OctaveBandValues;
   reverbTimeBands: OctaveBandValues;

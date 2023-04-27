@@ -2,7 +2,7 @@ import {
   ImpulseResponseType,
   ImpulseResponse,
 } from './analyzing/impulse-response';
-import { getFrequencyValues } from './analyzing/octave-band-frequencies';
+import { CENTER_FREQUENCIES } from './analyzing/octave-bands';
 import { Results } from './analyzing/processing';
 import { EnvironmentValues } from './analyzing/environment-values';
 
@@ -83,7 +83,7 @@ export class Exporter {
     const responses = this.source.getResponses();
 
     const exportData: ExportData = {
-      octaveBandsFrequencies: getFrequencyValues(),
+      octaveBandsFrequencies: CENTER_FREQUENCIES,
       impulseResponses: [],
     };
 

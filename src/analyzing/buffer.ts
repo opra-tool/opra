@@ -1,12 +1,21 @@
 import { arraySum } from '../math/arrays';
 
 export class IRBuffer {
-  readonly sampleRate;
+  readonly sampleRate: number;
 
-  private channels;
+  private channels: Float32Array[];
 
   constructor(channels: Float32Array | Float32Array[], sampleRate: number) {
-    // TODO: length validation
+    if (channels instanceof Array) {
+      if (channels.length > 2) {
+        throw new Error('more than two channels are not supported');
+      }
+
+      if (channels[1] && channels[0].length !== channels[1].length) {
+        throw new Error('expected channels to have the same lengths');
+      }
+    }
+
     this.channels = channels instanceof Array ? channels : [channels];
     this.sampleRate = sampleRate;
   }
@@ -35,13 +44,6 @@ export class IRBuffer {
     return new IRBuffer(this.channels.map(callback), this.sampleRate);
   }
 
-  // TODO: better name?
-  transformAll(
-    callback: (channels: Float32Array[]) => Float32Array[]
-  ): IRBuffer {
-    return new IRBuffer(callback(this.channels), this.sampleRate);
-  }
-
   sum(): number {
     this.assertMono();
 
@@ -63,12 +65,11 @@ export class IRBuffer {
   [Symbol.iterator](): Iterator<Float32Array> {
     let index = 0;
     return {
-      next: () =>
+      next: () => ({
         // eslint-disable-next-line no-plusplus
-        ({
-          value: this.channels[index++],
-          done: index >= this.channels.length,
-        }),
+        value: this.channels[index++],
+        done: index > this.channels.length,
+      }),
     };
   }
 }

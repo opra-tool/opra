@@ -1,9 +1,8 @@
 import { IRBuffer } from '../analyzing/buffer';
-import { OctaveBands } from '../analyzing/octave-bands';
+import { CENTER_FREQUENCIES, OctaveBands } from '../analyzing/octave-bands';
 import { octaveBandpassFilterCoefficients } from './bandpass';
 
 const ZERO_PADDING_LENGTH = 10000;
-const CENTER_FREQUENCIES = [62.5, 125, 250, 500, 1000, 2000, 4000, 8000];
 
 /**
  * Perform octave band filtering.
