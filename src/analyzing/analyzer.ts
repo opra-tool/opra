@@ -141,7 +141,7 @@ export class Analyzer extends EventEmitter<AnalyzerEventMap> {
     this.intermediateResults.delete(id);
     this.squaredIRs.delete(id);
 
-    this.dispatchEvent('change', undefined);
+    this.dispatchEvent('response-removed', { id });
 
     this.persistence.deleteResponse(id);
   }
