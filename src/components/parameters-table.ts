@@ -4,8 +4,12 @@ import { classMap } from 'lit/directives/class-map.js';
 
 export type Parameter = {
   name: string | TemplateResult;
-  badge?: string;
-  description?: string;
+  description: string;
+  source: {
+    shortName: string;
+    longName: string;
+    url: string;
+  };
   unit?: string;
   responseValues: (number | undefined)[];
 };
@@ -64,30 +68,27 @@ export class ParametersTable extends LitElement {
 
   private static renderParameter({
     name,
-    badge,
     description,
+    source,
     unit,
-    responseValues: coloredValues,
+    responseValues,
   }: Parameter) {
     const classes = classMap({
       'has-description': !!description,
     });
 
+    const sourceLink = html`<sl-tooltip content=${source.longName}
+      ><a href=${source.url}>${source.shortName}</a></sl-tooltip
+    >`;
+
     return html`
       <tr class=${classes}>
         <td>
           <span>${name}</span>
-          ${badge
-            ? html`<sl-badge variant="neutral" pill>${badge}</sl-badge>`
-            : null}
-          ${description
-            ? html`
-                <br />
-                <small>${description}</small>
-              `
-            : null}
+          <br />
+          <small>${description} • ${sourceLink}</small>
         </td>
-        ${coloredValues.map(
+        ${responseValues.map(
           value =>
             html`<td class="value">
               ${value !== undefined
@@ -164,6 +165,14 @@ export class ParametersTable extends LitElement {
 
     .unit {
       color: var(--sl-color-neutral-600);
+    }
+
+    a {
+      color: inherit;
+    }
+
+    sl-tooltip {
+      --max-width: none;
     }
   `;
 }
