@@ -44,6 +44,22 @@ npm run start
 - `test` runs the test suite with Web Test Runner
 - `lint` runs the linter for the project
 
+## Localization
+
+Localization is implemented using [lit-localize](https://lit.dev/docs/localization/overview/).
+To extract strings needing localization, run
+
+```shell
+./node_modules/.bin/lit-localize extract
+```
+
+Then edit `xliff/[lang].xlf` until you're happy with the results.
+To include translations back into the application, run
+
+```shell
+./node_modules/.bin/lit-localize build
+```
+
 ## Tooling configs
 
 For most of the tools, the configuration is in the `package.json` to reduce the amount of files in the project.
