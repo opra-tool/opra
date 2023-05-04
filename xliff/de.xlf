@@ -219,17 +219,9 @@
   <source>Perceived bass</source>
   <target>Empfundener Bass</target>
 </trans-unit>
-<trans-unit id="s001d4f16b5820bf0">
-  <source>Spatial impression</source>
-  <target>Räumliche Wirkung</target>
-</trans-unit>
 <trans-unit id="sf26193ea9ec517e1">
   <source>Subjective level of sound</source>
   <target>Subjektiver Schallpegel</target>
-</trans-unit>
-<trans-unit id="sb743e7f938d6d433">
-  <source>Soulodre and Bradley (1995)</source>
-  <target>Soulodre und Bradley (1995)</target>
 </trans-unit>
 <trans-unit id="s8635817f218ac8bc">
   <source>Perceived treble</source>
@@ -354,6 +346,94 @@
 <trans-unit id="s284f9a007a222dc2">
   <source>Discard all responses</source>
   <target>Alle Impulsantworten entfernen</target>
+</trans-unit>
+<trans-unit id="s477ffb0841b2808d">
+  <source>
+            The Reverberation time has been a popular parameter to rate room acoustical impressions for well over a century.
+            It describes the time needed, until the sound energy has decreased by 60 dB after the source emission stopped
+          </source>
+  <target>
+            Die Nachhallzeit ist seit mehr als einem Jahrhundert ein weit verbreiteter Parameter zur Bewertung raumakustischer Eindrücke.
+            Sie beschreibt die Zeit, die nach dem Abschalten der Schallquelle benötigt wird, bis die Schallenergie um 60 dB abgenommen hat
+          </target>
+</trans-unit>
+<trans-unit id="ha195ddcb3696a80c">
+  <source>
+            It is usually infeasible to measure a sound energy decrease of 60 dB.  
+            The reverberation time is thus measured by extrapolating a linear regression line fitted to the decrease from -5dB to -25dB.
+            The early decay time is similarly calculated using 0 and -10dB to fit the regression line.
+          </source>
+  <target>
+            In der Regel ist es nicht möglich, eine Abnahme der Schallenergie von 60 dB zu messen.  
+            Die Nachhallzeit wird daher durch Extrapolation einer linearen Regressionslinie gemessen, die an die Abnahme von -5 dB bis -25 dB angepasst wird.
+            Die frühe Abklingzeit wird auf ähnliche Weise berechnet, wobei 0 und -10 dB zur Anpassung der Regressionslinie verwendet werden.
+          </target>
+</trans-unit>
+<trans-unit id="h9316bd703223dc0f">
+  <source>
+            <x id="0" equiv-text="${c50}"/> and <x id="1" equiv-text="${c80}"/> describe the balance between early- and late-arriving energy in a room impulse response.
+            <x id="2" equiv-text="${c50}"/> is primarily meant to rate speech, while <x id="3" equiv-text="${c80}"/> is usually used to rate music.
+            Both are defined by ISO 3382-1 as
+          </source>
+  <target>
+
+            <x id="0" equiv-text="${c50}"/> und <x id="1" equiv-text="${c80}"/> beschreiben die Balance zwischen dem frühen und späten Schallanteil einer Raumimpulsantwort.
+            <x id="2" equiv-text="${c50}"/> wird hauptsächlich zur Bewertung von Sprache herangezogen, während <x id="3" equiv-text="${c80}"/> für Musik verwendet wird.
+            Beide Parameter sind in ISO 3382-1 definiert durch
+          </target>
+</trans-unit>
+<trans-unit id="s6ad389116e8ea757">
+  <source>
+            The interaural cross correlation (IACC) is calculated for binaural room impulse responses.
+            These are recorded using an artificial head that simulates the characteristic reflections of the auricle.
+            The IACC measures the difference between the impulse response at the right ear and that at the left ear.
+            To capture early reflections, the early IACC is calculated over the first 80ms of the impulse response.
+            Both are defined by ISO 3382-1 using the interaural cross correlation function (IACF)
+          </source>
+  <target>
+            Die interaurale Kreuzkorrelation (IACC) wird für binaurale Raumimpulsantworten berechnet.
+            Diese werden mit Hilfe eines Kunstkopfes aufgenommen, der die charakteristischen Reflektionen der Ohrmuschel simuliert.
+            Die IACC misst den Unterschied zwischen der Impulsantwort am rechten und der am linken Ohr.
+            Um frühe Reflektionen zu berücksichtigen, wird zusätzlich der frühe IACC über die ersten 80ms der Impulsantwort berechnet. 
+            Beide Parameter sind in der ISO 3382-1 durch die interaurale Kreuzkorrelationsfunktion (IACF) definiert
+          </target>
+</trans-unit>
+<trans-unit id="s8a478db342bc2d89">
+  <source>
+            Sound strength is a measure of the subjective bass level.
+            It is defined as the logarithmic ratio between the sound energy of the impulse response to that of another
+            response measured at a distance of 10 meters from the sound source.
+            The early sound strength is calculated on samples before the 80ms mark, the late sound strength on samples after 80ms.
+            ISO 3382-1 defines the sound strength as
+          </source>
+  <target>
+            Das Stärkemaß ist ein Maß des subjektiven Basspegels.
+            Sie ist definiert als das logarithmische Verhältnis zwischen der Schallenergie der Impulsantwort zu der einer anderen,
+            im Abstand von 10 Metern zu der Schallquelle gemessenen Impulsantwort.
+            Das frühe Stärkemaß wird für Schall vor der 80ms-Marke berechnet,
+            das späte Stärkemaß für Schall nach der 80ms-Marke.
+            ISO 3382-1 definiert das Stärkemaß als
+          </target>
+</trans-unit>
+<trans-unit id="sd2f6b812a5a3e468">
+  <source>
+            The early lateral energy fraction is a measure of the apparent source width of a room impulse response.
+            ISO 3382-1 defines it as
+          </source>
+  <target>
+            Der frühe seitliche Energieanteil ist ein Maß für die scheinbare Breite einer Schallquelle.
+            ISO 3382-1 definiert ihn als
+          </target>
+</trans-unit>
+<trans-unit id="s0edccf8ccc576146">
+  <source>
+            The early and late lateral sound level parameters are calculated as a measure of listener envelopment.
+            ISO 3382-1 defines them as
+          </source>
+  <target>
+            Der frühe und späte seitliche Schallpegel wird als Maß für die Zuhörer-Einhüllung berechnet.
+            ISO 3382-1 definiert sie als
+          </target>
 </trans-unit>
 </body>
 </file>

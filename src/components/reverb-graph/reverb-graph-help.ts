@@ -6,45 +6,32 @@ import { customElement } from 'lit/decorators.js';
 @customElement('reverb-graph-help')
 export class ReverbGraphHelp extends LitElement {
   render() {
-    // TODO: translate
     return html`
       <div>
         <p>
-          ${msg(html`
-            The reverberation time <i>T</i> is defined by ISO 3382-1 as the
-            <q
-              >duration required for the space-averaged sound energy density in
-              an enclosure to decrease by 60 dB after the source emission has
-              stopped</q
-            >.
-          `)}
-        </p>
-
-        <p>
-          ${msg(html`
-            It is usually not possible to measure a drop of 60dB. Often, a drop
-            in 20 dB will be measured and extrapolated.
-          `)}
-        </p>
-
-        <p>
-          ${msg(html`
-            This implementation measures the drop time it takes for the audio
-            signal to drop from -5dB to -25dB. It then uses athe least-squares
-            algorithm to fit a linear regression line, which can be used to
-            calculate <i>T</i>.
-          `)}
-        </p>
-
-        <p>
           ${msg(`
-          The early decay time is similarly calculated by fitting a line to
-          the regression between 0 and -10dB of the original signal.
-        `)}
+            The Reverberation time has been a popular parameter to rate room acoustical impressions for well over a century.
+            It describes the time needed, until the sound energy has decreased by 60 dB after the source emission stopped
+          `)}
+          <source-paper paper="iso3382-1" parenthesis></source-paper>.
+        </p>
+
+        <p>
+          ${msg(html`
+            It is usually infeasible to measure a sound energy decrease of 60
+            dB. The reverberation time is thus measured by extrapolating a
+            linear regression line fitted to the decrease from -5dB to -25dB.
+            The early decay time is similarly calculated using 0 and -10dB to
+            fit the regression line.
+          `)}
         </p>
       </div>
     `;
   }
 
-  static styles = css``;
+  static styles = css`
+    p {
+      line-height: 1.5;
+    }
+  `;
 }

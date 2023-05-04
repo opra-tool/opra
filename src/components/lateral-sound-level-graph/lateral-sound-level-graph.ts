@@ -42,7 +42,9 @@ export class LateralSoundLevelGraph extends LitElement {
           yAxisLabel="dB"
         ></octave-bands-graph>
 
-        <div slot="help">TODO</div>
+        <lateral-sound-level-graph-help
+          slot="help"
+        ></lateral-sound-level-graph-help>
       </help-card>
     `;
   }

@@ -47,21 +47,25 @@ import './components/file-list';
 import './components/file-list-entry-options';
 import './components/c50c80-graph/c50c80-graph';
 import './components/c50c80-graph/c50c80-graph-help';
-import './components/graphs/early-lateral-fraction-graph';
+import './components/early-lateral-fraction-graph/early-lateral-fraction-graph';
+import './components/early-lateral-fraction-graph/early-lateral-fraction-graph-help';
 import './components/iacc-graph/iacc-graph';
 import './components/iacc-graph/iacc-graph-help';
 import './components/impulse-response-graph';
-import './components/graphs/lateral-sound-level-graph';
+import './components/lateral-sound-level-graph/lateral-sound-level-graph';
+import './components/lateral-sound-level-graph/lateral-sound-level-graph-help';
 import './components/graphs/line-graph';
 import './components/graphs/octave-bands-graph';
 import './components/reverb-graph/reverb-graph';
 import './components/reverb-graph/reverb-graph-help';
-import './components/graphs/strengths-graph';
+import './components/strengths-graph/strengths-graph';
+import './components/strengths-graph/strengths-graph-help';
 import './localization/language-select';
 import './components/environment-notice';
 import './components/parameters-card';
 import './components/parameters-table';
 import './components/progress-indicator';
+import './components/source-paper';
 
 setBasePath('/shoelace');
 

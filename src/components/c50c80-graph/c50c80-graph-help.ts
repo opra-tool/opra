@@ -3,35 +3,38 @@ import { css, html, LitElement } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { c50C80Formula } from './formulae';
 
+const c50 = html`<i>C<sub>50</sub></i>`;
+const c80 = html`<i>C<sub>80</sub></i>`;
+
 @localized()
 @customElement('c50c80-graph-help')
 export class C50C80GraphHelp extends LitElement {
   render() {
-    // TODO: translate
     return html`
       <div>
         <p>
-          <i>C<sub>50</sub></i>
-          ${msg(' and ')}
-          <i>C<sub>80</sub></i>
-          ${msg(
-            'describe the balance between early- and late-arriving energy in a signal'
-          )}
+          ${msg(html`
+            ${c50} and ${c80} describe the balance between early- and
+            late-arriving energy in a room impulse response. ${c50} is primarily
+            meant to rate speech, while ${c80} is usually used to rate music.
+            Both are defined by ISO 3382-1 as
+          `)}
+          <source-paper paper="iso3382-1" parenthesis></source-paper>:
         </p>
 
-        <p>
-          <i>C<sub>50</sub></i>
-          ${msg(' is primarily meant for speech, while ')}
-          <i>C<sub>80</sub></i>
-          ${msg(' is used for music.')}
-        </p>
-
-        <p>${msg('It is defined by')}</p>
-
-        ${c50C80Formula}
+        <div class="formula">${c50C80Formula}</div>
       </div>
     `;
   }
 
-  static styles = css``;
+  static styles = css`
+    p {
+      line-height: 1.5;
+    }
+
+    .formula {
+      padding: 1rem;
+      font-size: 1.25rem;
+    }
+  `;
 }

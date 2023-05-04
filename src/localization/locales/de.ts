@@ -11,9 +11,25 @@ export const templates = {
     <code>normalize</code> Attribut der verwendeten <code>ConvolverNode</code>.
     Eine Änderung dieser Einstellung hat keinen Einfluss auf die aktuelle
     Wiedergabe.`,
-  s001d4f16b5820bf0: `Räumliche Wirkung`,
+  h9316bd703223dc0f: html`
+    ${0} und ${1} beschreiben die Balance zwischen dem frühen und späten
+    Schallanteil einer Raumimpulsantwort. ${2} wird hauptsächlich zur Bewertung
+    von Sprache herangezogen, während ${3} für Musik verwendet wird. Beide
+    Parameter sind in ISO 3382-1 definiert durch
+  `,
+  ha195ddcb3696a80c: html`
+    In der Regel ist es nicht möglich, eine Abnahme der Schallenergie von 60 dB
+    zu messen. Die Nachhallzeit wird daher durch Extrapolation einer linearen
+    Regressionslinie gemessen, die an die Abnahme von -5 dB bis -25 dB angepasst
+    wird. Die frühe Abklingzeit wird auf ähnliche Weise berechnet, wobei 0 und
+    -10 dB zur Anpassung der Regressionslinie verwendet werden.
+  `,
   s01b3b23ccba74fd8: `Lufttemperatur [°C]`,
   s08b05407b5565ca4: `oder`,
+  s0edccf8ccc576146: `
+            Der frühe und späte seitliche Schallpegel wird als Maß für die Zuhörer-Einhüllung berechnet.
+            ISO 3382-1 definiert sie als
+          `,
   s0f2b2dc9fb9dd86d: `Umgebungswerte erfolgreich gesetzt`,
   s15b70d1b44576ead: `Mitten/Seiten`,
   s16bb1dcb244b6f78: `Dieser Parameter wird benötigt, da der Referenzdruck angegeben ist.`,
@@ -32,6 +48,10 @@ export const templates = {
   s3df9c7b795b7e6c5: `ignoriert`,
   s40d760cc51e1ad71: `Für das Stärkemaß und verwandte Parameter werden Umgebungswerte angenommen.`,
   s44444cdb4765019f: `Kann nicht deaktiviert werden, da keine andere Impulsantwort aktiv ist.`,
+  s477ffb0841b2808d: `
+            Die Nachhallzeit ist seit mehr als einem Jahrhundert ein weit verbreiteter Parameter zur Bewertung raumakustischer Eindrücke.
+            Sie beschreibt die Zeit, die nach dem Abschalten der Schallquelle benötigt wird, bis die Schallenergie um 60 dB abgenommen hat
+          `,
   s4b3ab99331bfc6c7: `Nachhall`,
   s4c159fe41145b863: `Binaural`,
   s4e4d23b157b9c659: `Empfundener Bass`,
@@ -39,6 +59,13 @@ export const templates = {
   s516f1f455d0b7007: `Sichtbarkeit in Graphen umschalten`,
   s5787e20cab57b383: `Unbekannter Fehler`,
   s5fe5299a9789b5c0: `Frühe IACC`,
+  s6ad389116e8ea757: `
+            Die interaurale Kreuzkorrelation (IACC) wird für binaurale Raumimpulsantworten berechnet.
+            Diese werden mit Hilfe eines Kunstkopfes aufgenommen, der die charakteristischen Reflektionen der Ohrmuschel simuliert.
+            Die IACC misst den Unterschied zwischen der Impulsantwort am rechten und der am linken Ohr.
+            Um frühe Reflektionen zu berücksichtigen, wird zusätzlich der frühe IACC über die ersten 80ms der Impulsantwort berechnet. 
+            Beide Parameter sind in der ISO 3382-1 durch die interaurale Kreuzkorrelationsfunktion (IACF) definiert
+          `,
   s6b838cf87783f9bd: `Zeit [s]`,
   s6bc84d43b3db4bd0: `Höhenverhältnis`,
   s6ff0144bf13be05e: `Hilfe schließen`,
@@ -53,6 +80,14 @@ export const templates = {
   s8635817f218ac8bc: `Empfundene Höhen`,
   s8855c508722fe598: `Kann nicht aktiviert werden, da das Limit an gleichzeitig aktiven Impulsantworten erreicht ist.`,
   s88ad31dce26701b3: `Schwerpunktzeit`,
+  s8a478db342bc2d89: `
+            Das Stärkemaß ist ein Maß des subjektiven Basspegels.
+            Sie ist definiert als das logarithmische Verhältnis zwischen der Schallenergie der Impulsantwort zu der einer anderen,
+            im Abstand von 10 Metern zu der Schallquelle gemessenen Impulsantwort.
+            Das frühe Stärkemaß wird für Schall vor der 80ms-Marke berechnet,
+            das späte Stärkemaß für Schall nach der 80ms-Marke.
+            ISO 3382-1 definiert das Stärkemaß als
+          `,
   s8cf84c09568b1264: `Für dieses Element gibt es noch keine Hilfe.`,
   s8e8396b2db5b7c6c: `Nein, doch nicht`,
   s9224ed62985fbd03: `Kein Effekt`,
@@ -68,7 +103,6 @@ export const templates = {
   sad69d8cf37fd5551: `aktivierte Raumimpulsantwort(en)`,
   sadf9ac04abb2c03e: `Technische Details`,
   safa8613aa4ab25b3: `Ergebnisse herunterladen`,
-  sb743e7f938d6d433: `Soulodre und Bradley (1995)`,
   sc00a88b90cd60661: `Entfernen`,
   sc2af25399372651e: `Umgebungswerte anzeigen und setzen`,
   sc49fb4f16606971a: `Dieser Parameter wird benötigt, da der Referenzdruck oder die Leistung der Schallquelle angegeben ist.`,
@@ -78,6 +112,10 @@ export const templates = {
   scb830009d3d61b90: `Eigene Audiodateien hier ablegen`,
   sce52b3eced130d0a: `Diese Werte sind optional.`,
   sd14599a1d51f5fa8: `Was ist das?`,
+  sd2f6b812a5a3e468: `
+            Der frühe seitliche Energieanteil ist ein Maß für die scheinbare Breite einer Schallquelle.
+            ISO 3382-1 definiert ihn als
+          `,
   sd2ffce103eac0816: `Früher seitlicher Schallpegel`,
   sd3eac79f739323df: `Klarheitsmaß`,
   sd4076ccc972a1c65: `Früher seitlicher Energieanteil`,
@@ -97,35 +135,5 @@ export const templates = {
   sfd396ad5707a3135: `Bass-Verhältnis`,
   sfd963ba27f135016: `A-Gewichtetes Stärkemaß`,
   sfdb0e52d13786ac6: `Datei(en) auswählen`,
-  s3c0a015edb522c38: ` and `,
-  s9fd4eacd7a627633: `describe the balance between early- and late-arriving energy in a signal`,
-  s825624747ca14523: ` is primarily meant for speech, while `,
-  sa869ed9fc53d2cc2: ` is used for music.`,
-  s358789d116c0ac9a: `It is defined by`,
-  sc334135c51de2184: `The interaural cross correlation describes the covariance of two signals versus their time shift. It produces values from -1 to +1, where:`,
-  s3e7cea755fb55922: `It is defined through the interaural cross correlation function`,
-  s031a9496c1493f6d: `The interaural cross correlation coefficient is then calculated as`,
-  s57888e24d55cc080: `See `,
-  sa47afde5e77c98a7: `IACC on the ASA website`,
-  hf6f7adaf3d69e3bb: html`
-    The reverberation time <i>T</i> is defined by ISO 3382-1 as the
-    <q
-      >duration required for the space-averaged sound energy density in an
-      enclosure to decrease by 60 dB after the source emission has stopped</q
-    >.
-  `,
-  h158c2f19f0bae17b: html`
-    It is usually not possible to measure a drop of 60dB. Often, a drop in 20 dB
-    will be measured and extrapolated.
-  `,
-  h855d72758e058920: html`
-    This implementation measures the drop time it takes for the audio signal to
-    drop from -5dB to -25dB. It then uses athe least-squares algorithm to fit a
-    linear regression line, which can be used to calculate <i>T</i>.
-  `,
-  sd2b22bafa0269790: `
-          The early decay time is similarly calculated by fitting a line to
-          the regression between 0 and -10dB of the original signal.
-        `,
   s2a2957356ab1c7fe: `Level-Adjusted`,
 };

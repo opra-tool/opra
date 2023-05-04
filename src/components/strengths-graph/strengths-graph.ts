@@ -53,7 +53,7 @@ export class StrengthGraph extends LitElement {
           yAxisLabel="dB"
         ></octave-bands-graph>
 
-        <div slot="help">TODO</div>
+        <strengths-graph-help slot="help"></strengths-graph-help>
       </help-card>
     `;
   }

@@ -5,11 +5,7 @@ import { classMap } from 'lit/directives/class-map.js';
 export type Parameter = {
   name: string | TemplateResult;
   description: string;
-  source: {
-    shortName: string;
-    longName: string;
-    url: string;
-  };
+  source: string;
   unit?: string;
   responseValues: (number | undefined)[];
 };
@@ -77,16 +73,14 @@ export class ParametersTable extends LitElement {
       'has-description': !!description,
     });
 
-    const sourceLink = html`<sl-tooltip content=${source.longName}
-      ><a href=${source.url}>${source.shortName}</a></sl-tooltip
-    >`;
-
     return html`
       <tr class=${classes}>
         <td>
           <span>${name}</span>
           <br />
-          <small>${description} • ${sourceLink}</small>
+          <small
+            >${description} • <source-paper paper=${source}></source-paper
+          ></small>
         </td>
         ${responseValues.map(
           value =>
@@ -165,14 +159,6 @@ export class ParametersTable extends LitElement {
 
     .unit {
       color: var(--sl-color-neutral-600);
-    }
-
-    a {
-      color: inherit;
-    }
-
-    sl-tooltip {
-      --max-width: none;
     }
   `;
 }
