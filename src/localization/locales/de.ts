@@ -7,24 +7,33 @@ import { html } from 'lit';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export const templates = {
-  h21b9866c746fbbbf: html`Ausgabe normalisieren: Setzt das
-    <code>normalize</code> Attribut der verwendeten <code>ConvolverNode</code>.
-    Eine Änderung dieser Einstellung hat keinen Einfluss auf die aktuelle
-    Wiedergabe.`,
-  h9316bd703223dc0f: html`
-    ${0} und ${1} beschreiben die Balance zwischen dem frühen und späten
-    Schallanteil einer Raumimpulsantwort. ${2} wird hauptsächlich zur Bewertung
-    von Sprache herangezogen, während ${3} für Musik verwendet wird. Beide
-    Parameter sind in ISO 3382-1 definiert durch
-  `,
-  ha195ddcb3696a80c: html`
+  h1296c4b993992810: html`
     In der Regel ist es nicht möglich, eine Abnahme der Schallenergie von 60 dB
     zu messen. Die Nachhallzeit wird daher durch Extrapolation einer linearen
     Regressionslinie gemessen, die an die Abnahme von -5 dB bis -25 dB angepasst
     wird. Die frühe Abklingzeit wird auf ähnliche Weise berechnet, wobei 0 und
     -10 dB zur Anpassung der Regressionslinie verwendet werden.
   `,
+  h21b9866c746fbbbf: html`Ausgabe normalisieren: Setzt das
+    <code>normalize</code> Attribut der verwendeten <code>ConvolverNode</code>.
+    Eine Änderung dieser Einstellung hat keinen Einfluss auf die aktuelle
+    Wiedergabe.`,
+  h8a362d8a5efdafa7: html`
+    Ein frühes Vorhersagemodell verwendet berechnete technische Parameter, um
+    Parameter des Room Acoustical Quality Inventory (RAQI) abzuleiten ${0}. Es
+    werden unterschiedliche Koeffizienten für monaurale, binaurale und
+    Mitten/Seiten-Impulsantworten verwendet. Die Optimierung für bestimmte
+    Stimuli ermöglicht genauere Ergebnisse. Wähle einen Stimulus, der deinen
+    Anforderungen am besten entspricht.
+  `,
+  hc127057ff7bff775: html`
+    ${0} und ${1} beschreiben die Balance zwischen dem frühen und späten
+    Schallanteil einer Raumimpulsantwort. ${2} wird hauptsächlich zur Bewertung
+    von Sprache herangezogen, während ${3} für Musik verwendet wird. Beide
+    Parameter sind in ISO 3382-1 definiert durch
+  `,
   s01b3b23ccba74fd8: `Lufttemperatur [°C]`,
+  s02b60885fa5281af: `Solo Instrument`,
   s08b05407b5565ca4: `oder`,
   s0edccf8ccc576146: `
             Der frühe und späte seitliche Schallpegel wird als Maß für die Zuhörer-Einhüllung berechnet.
@@ -57,6 +66,7 @@ export const templates = {
   s4e4d23b157b9c659: `Empfundener Bass`,
   s50dc09393c99feda: `Monaural`,
   s516f1f455d0b7007: `Sichtbarkeit in Graphen umschalten`,
+  s568d76d1ddcd938e: `Stimulus auswählen`,
   s5787e20cab57b383: `Unbekannter Fehler`,
   s5fe5299a9789b5c0: `Frühe IACC`,
   s6ad389116e8ea757: `
@@ -98,6 +108,7 @@ export const templates = {
   sa5be1ba4649735f8: `Einzahlwerte`,
   sa5dc5b21b42f8e51: `Umgebungswerte für Stärkemaß und verwandte Parameter setzen.`,
   sa839a71768515684: `Empfundene Klarheit des Klangs`,
+  saa3efba1f0c816b7: `Sprache`,
   saca513c2aba139b1: `Relative Luftfeuchtigkeit [%]`,
   sacc7d7ed03aa6261: `Referenzdruck`,
   sad69d8cf37fd5551: `aktivierte Raumimpulsantwort(en)`,
@@ -130,10 +141,12 @@ export const templates = {
   sefcf950b3cc4fc3b: `Sprache`,
   sf11c26d807a68579: `Seitlicher Schallpegel`,
   sf26193ea9ec517e1: `Subjektiver Schallpegel`,
+  sf4357b448f448288: `Orchester`,
   sfba93af00dca196b: `Luftdichte`,
   sfcb0080cab096498: `Bist du sicher, dass alle Raumimpulsantworten entfernt werden sollen?`,
   sfd396ad5707a3135: `Bass-Verhältnis`,
   sfd963ba27f135016: `A-Gewichtetes Stärkemaß`,
   sfdb0e52d13786ac6: `Datei(en) auswählen`,
   s2a2957356ab1c7fe: `Level-Adjusted`,
+  sf8942e17b918112e: `RAQI Parameters`,
 };
