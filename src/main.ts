@@ -66,6 +66,7 @@ import './components/environment-notice';
 import './components/parameters-card';
 import './components/parameters-table';
 import './components/progress-indicator';
+import './components/raqi-card';
 import './components/source-paper';
 
 setBasePath('/shoelace');

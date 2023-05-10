@@ -22,10 +22,18 @@ const SOURCE_BERANEK = {
     'Beranek, L. L. (1962). Concert Halls and Opera Houses Music, Acoustics, and Architecture',
 };
 
+const SOURCE_RAQI = {
+  url: 'https://doi.org/10.1121/1.5051453',
+  shortName: 'Weinzierl et al., 2018',
+  longName:
+    'Weinzierl, S., Lepa, S., & Ackermann, D. (2018). A measuring instrument for the auditory perception of rooms: The Room Acoustical Quality Inventory (RAQI).',
+};
+
 const sources = new Map([
   ['iso3382-1', SOURCE_ISO_3382_1],
   ['soulodre-bradley1995', SOURCE_SOULODRE_BRADLEY],
   ['beranek1962', SOURCE_BERANEK],
+  ['weinzierl2018', SOURCE_RAQI],
 ]);
 
 @customElement('source-paper')

@@ -237,6 +237,8 @@ export class AudioAnalyzer extends LitElement {
         .results=${results}
       ></parameters-card>
 
+      <raqi-card .impulseResponses=${responses} .results=${results}></raqi-card>
+
       <reverb-graph
         .impulseResponses=${responses}
         .edt=${edtBands}
@@ -405,7 +407,8 @@ export class AudioAnalyzer extends LitElement {
     .controls-card,
     binaural-note-card,
     impulse-response-graph,
-    parameters-card {
+    parameters-card,
+    raqi-card {
       grid-column: 1 / -1;
     }
 
