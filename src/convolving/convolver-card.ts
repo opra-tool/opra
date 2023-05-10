@@ -89,11 +89,9 @@ export class ConvolverCard extends LitElement {
             value=${NO_EFFECT}
             @sl-change=${this.onResponseSelected}
           >
-            <sl-menu-item value=${NO_EFFECT}>${msg('No effect')}</sl-menu-item>
+            <sl-option value=${NO_EFFECT}>${msg('No effect')}</sl-option>
             ${this.responses.map(
-              r => html`
-                <sl-menu-item value=${r.id}>${r.fileName}</sl-menu-item>
-              `
+              r => html` <sl-option value=${r.id}>${r.fileName}</sl-option> `
             )}
           </sl-select>
           <div class="normalize-setting">
