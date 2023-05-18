@@ -12,7 +12,6 @@ type Dataset = {
 
 type Param = {
   key: string;
-  name: string;
   label: string | TemplateResult;
   datasets: Dataset[];
 };
@@ -43,7 +42,6 @@ export class OctaveBandsGraph extends LitElement {
       if (!this.hiddenParams.includes(param.key)) {
         param.datasets.forEach(dataset => {
           datasets.push({
-            label: param.name,
             data: dataset.values,
             borderColor: dataset.color,
             backgroundColor: dataset.color,
