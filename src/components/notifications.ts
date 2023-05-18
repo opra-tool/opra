@@ -1,6 +1,6 @@
 import { html, render, TemplateResult } from 'lit';
 
-function toast(
+function notify(
   message: string | TemplateResult,
   variant: string = 'primary',
   icon = 'info-circle'
@@ -23,10 +23,10 @@ function toast(
   return alert.toast();
 }
 
-export function toastSuccess(message: string | TemplateResult) {
-  return toast(message, 'success', 'check2-circle');
+export function notifySuccess(message: string | TemplateResult) {
+  return notify(message, 'success', 'check2-circle');
 }
 
-export function toastWarning(message: string | TemplateResult): Promise<void> {
-  return toast(message, 'warning', 'exclamation-triangle');
+export function notifyWarning(message: string | TemplateResult): Promise<void> {
+  return notify(message, 'warning', 'exclamation-triangle');
 }

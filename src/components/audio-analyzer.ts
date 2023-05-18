@@ -14,7 +14,7 @@ import {
   EnvironmentDialog,
   EnvironmentChangeEvent,
 } from './environment-dialog';
-import { toastSuccess, toastWarning } from './toast';
+import { notifySuccess, notifyWarning } from './notifications';
 import { OctaveBandValues } from '../analyzing/octave-bands';
 import { ImpulseResponse } from '../analyzing/impulse-response';
 import { DiscardAllDialog } from './discard-all-dialog';
@@ -62,7 +62,7 @@ export class AudioAnalyzer extends LitElement {
     this.analyzer.addEventListener(
       'file-adding-error',
       ({ fileName, error }) => {
-        toastWarning(
+        notifyWarning(
           `${fileName} ${msg('ignored')}: ${
             error.message || msg('Unknown error')
           }`
@@ -73,7 +73,7 @@ export class AudioAnalyzer extends LitElement {
     this.analyzer.addEventListener(
       'file-processing-error',
       ({ id, fileName, error }) => {
-        toastWarning(
+        notifyWarning(
           `${fileName} ${msg('ignored')}: ${
             error.message || msg('Unknown error')
           }`
@@ -83,7 +83,7 @@ export class AudioAnalyzer extends LitElement {
     );
 
     this.analyzer.addEventListener('environment-values-update', () =>
-      toastSuccess(msg('Successfully set environment values'))
+      notifySuccess(msg('Successfully set environment values'))
     );
   }
 
