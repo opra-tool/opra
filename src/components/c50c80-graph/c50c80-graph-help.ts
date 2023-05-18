@@ -22,7 +22,7 @@ export class C50C80GraphHelp extends LitElement {
           <source-paper paper="iso3382-1" parenthesis></source-paper>:
         </p>
 
-        <div class="formula">${c50C80Formula}</div>
+        <math-formula>${c50C80Formula}</math-formula>
       </div>
     `;
   }
@@ -30,11 +30,6 @@ export class C50C80GraphHelp extends LitElement {
   static styles = css`
     p {
       line-height: 1.5;
-    }
-
-    .formula {
-      padding: 1rem;
-      font-size: 1.25rem;
     }
   `;
 }

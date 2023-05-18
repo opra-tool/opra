@@ -55,6 +55,7 @@ import './components/iacc-graph/iacc-graph-help';
 import './components/impulse-response-graph';
 import './components/lateral-sound-level-graph/lateral-sound-level-graph';
 import './components/lateral-sound-level-graph/lateral-sound-level-graph-help';
+import './components/math-formula';
 import './components/graphs/line-graph';
 import './components/graphs/octave-bands-graph';
 import './components/reverb-graph/reverb-graph';

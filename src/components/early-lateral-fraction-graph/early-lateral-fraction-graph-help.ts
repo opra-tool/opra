@@ -17,7 +17,7 @@ export class EarlyLateralFractionGraphHelp extends LitElement {
           <source-paper paper="iso3382-1" parenthesis></source-paper>:
         </p>
 
-        <div class="formula">${earlyLateralFractionFormula}</div>
+        <math-formula>${earlyLateralFractionFormula}</math-formula>
       </div>
     `;
   }
@@ -25,11 +25,6 @@ export class EarlyLateralFractionGraphHelp extends LitElement {
   static styles = css`
     p {
       line-height: 1.5;
-    }
-
-    .formula {
-      padding: 1rem;
-      font-size: 1.25rem;
     }
   `;
 }
