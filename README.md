@@ -1,6 +1,12 @@
-## RAQI Online Toolbox
+<p align="center"><img width="340"src="https://github.com/paulschwoerer/raqi-online-toolbox/assets/22923578/b11d3bea-53cd-48c3-b154-5473dcca481a"></p>
 
-![CI](https://github.com/paulschwoerer/raqi-online-toolbox/actions/workflows/ci.yml/badge.svg)
+<p align="center">
+    <b>Online tool for the prediction of room acoustical qualities</b>
+</p>
+
+<br>
+<br>
+
 
 This application calculates acoustical parameters from room impulse responses, primarily from ISO 3382-1[^1], Soulodre & Bradley[^2] and L.L. Beranek[^3].
 It is in parts based on an earlier implemented Matlab tool[^4].
