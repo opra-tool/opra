@@ -7,26 +7,26 @@ import { html } from 'lit';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export const templates = {
-  h21b9866c746fbbbf: html`Ausgabe normalisieren: Setzt das
-    <code>normalize</code> Attribut der verwendeten <code>ConvolverNode</code>.
-    Eine Änderung dieser Einstellung hat keinen Einfluss auf die aktuelle
-    Wiedergabe.`,
-  h8a362d8a5efdafa7: html`
-    Ein frühes Vorhersagemodell verwendet berechnete technische Parameter, um
-    Parameter des Room Acoustical Quality Inventory (RAQI) abzuleiten ${0}. Es
-    werden unterschiedliche Koeffizienten für monaurale, binaurale und
-    Mitten/Seiten-Impulsantworten verwendet. Die Optimierung für bestimmte
-    Stimuli ermöglicht genauere Ergebnisse. Wähle einen Stimulus, der deinen
-    Anforderungen am besten entspricht.
-  `,
-  h8f62d1ef8b504750: html`
+  h0a28f0f6730f02d0: html`
     In der Regel ist es nicht möglich, eine Abnahme der Schallenergie von 60 dB
     zu messen. Die Nachhallzeit wird daher durch Extrapolation einer linearen
     Regressionslinie gemessen, die an die Abnahme von -5 dB bis -25 dB angepasst
     wird. Die frühe Abklingzeit wird auf ähnliche Weise berechnet, wobei 0 und
     -10 dB zur Anpassung der Regressionslinie verwendet werden.
   `,
-  hc127057ff7bff775: html`
+  h21b9866c746fbbbf: html`Ausgabe normalisieren: Setzt das
+    <code>normalize</code> Attribut der verwendeten <code>ConvolverNode</code>.
+    Eine Änderung dieser Einstellung hat keinen Einfluss auf die aktuelle
+    Wiedergabe.`,
+  h8752ced8d075f7eb: html`
+    Ein frühes Vorhersagemodell verwendet berechnete technische Parameter, um
+    Parameter des Room Acoustical Quality Inventory (RAQI) abzuleiten ${0}. Es
+    werden unterschiedliche Koeffizienten für omnidirektionale, binaurale und
+    Mitten/Seiten-Impulsantworten verwendet. Die Optimierung für bestimmte
+    Stimuli ermöglicht genauere Ergebnisse. Wähle einen Stimulus, der deinen
+    Anforderungen am besten entspricht.
+  `,
+  hc26c472a258dca99: html`
     ${0} und ${1} beschreiben die Balance zwischen dem frühen und späten
     Schallanteil einer Raumimpulsantwort. ${2} wird hauptsächlich zur Bewertung
     von Sprache herangezogen, während ${3} für Musik verwendet wird. Beide
@@ -54,13 +54,13 @@ export const templates = {
   s3810c3632cd9ccce: `Siehe Spezifikation für Details`,
   s38389353bdfc8bcb: `Genauere Ergebnisse können erzielt werden, wenn die Leistung der Schallquelle und der Referenzdruck bekannt sind.`,
   s38beac14eccc0c6f: `Weitere Einstellungen für diese Impulsantwort`,
+  s3b4111074880d540: `Omnidirektional`,
   s3df9c7b795b7e6c5: `ignoriert`,
   s40d760cc51e1ad71: `Für das Stärkemaß und verwandte Parameter werden Umgebungswerte angenommen.`,
   s44444cdb4765019f: `Kann nicht deaktiviert werden, da keine andere Impulsantwort aktiv ist.`,
   s4b3ab99331bfc6c7: `Nachhall`,
   s4c159fe41145b863: `Binaural`,
   s4e4d23b157b9c659: `Empfundener Bass`,
-  s50dc09393c99feda: `Monaural`,
   s516f1f455d0b7007: `Sichtbarkeit in Graphen umschalten`,
   s568d76d1ddcd938e: `Stimulus auswählen`,
   s5787e20cab57b383: `Unbekannter Fehler`,
@@ -133,9 +133,6 @@ export const templates = {
   sd2ffce103eac0816: `Früher seitlicher Schallpegel`,
   sd3eac79f739323df: `Klarheitsmaß`,
   sd4076ccc972a1c65: `Früher seitlicher Energieanteil`,
-  sd6b609963453c5c6: `Bei binauralen Raumimpulsantworten wird eine Mittelung beider Kanäle vorgenommen
-          und aus dieser Mittelung dann monaurale Parameter berechnet.
-          Die Head-Related Transfer Function kann Einfluss auf monaurale Parameter haben.`,
   sd80e4b4178b216ca: `Raumimpulsantwortdateien hier ablegen`,
   sda368d49761aef66: `Zuhörer-Einhüllung (LEV)`,
   se1efccbe41b18f79: `Frequenz [Hz]`,
@@ -145,6 +142,9 @@ export const templates = {
   sf11c26d807a68579: `Seitlicher Schallpegel`,
   sf26193ea9ec517e1: `Subjektiver Schallpegel`,
   sf4357b448f448288: `Orchester`,
+  sf43ea2ac6e5ce802: `Bei binauralen Raumimpulsantworten wird eine Mittelung beider Kanäle vorgenommen
+          und aus dieser Mittelung dann omnidirektionale Parameter berechnet.
+          Die Head-Related Transfer Function kann Einfluss auf omnidirektionale Parameter haben.`,
   sf8942e17b918112e: `RAQI Parameter`,
   sfba93af00dca196b: `Luftdichte`,
   sfcb0080cab096498: `Bist du sicher, dass alle Raumimpulsantworten entfernt werden sollen?`,

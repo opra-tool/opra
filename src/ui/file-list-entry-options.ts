@@ -54,7 +54,7 @@ export class FileListEntryOptions extends LitElement {
   id: string = '';
 
   @property({ type: String })
-  type: 'monaural' | 'binaural' | 'mid-side' = 'binaural';
+  type: 'omnidirectional' | 'binaural' | 'mid-side' = 'binaural';
 
   protected render() {
     return html`
@@ -77,7 +77,7 @@ export class FileListEntryOptions extends LitElement {
   }
 
   private renderConversionOptions() {
-    if (this.type === 'monaural') {
+    if (this.type === 'omnidirectional') {
       return null;
     }
 

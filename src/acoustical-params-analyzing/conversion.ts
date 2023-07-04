@@ -133,12 +133,12 @@ export function binauralToMidSide(
 }
 
 /**
- * Converts binaural audio into monaural audio using a diffus field equalization.
+ * Converts a binaural buffer into an omnidirectional buffer using a diffus field equalization.
  *
  * TODO: extract diffus field equalization to its own file
  * TODO: extract logic copied from octfilt and reuse here and in octfilt?
  */
-export async function binauralToMonaural(
+export async function binauralToOmnidirectional(
   buffer: CustomAudioBuffer
 ): Promise<CustomAudioBuffer> {
   if (buffer.numberOfChannels !== 2) {

@@ -12,7 +12,7 @@ const RESPONSE: ImpulseResponseFile = {
   fileName: '',
   id: 'id',
   sampleRate: 44100,
-  type: 'monaural',
+  type: 'omnidirectional',
 };
 
 beforeEach(clearAllIndexedDBs);

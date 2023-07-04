@@ -15,7 +15,7 @@ export const EARLY_DECAY_TIME_PARAMETER = createOctaveBandParameterDefinition(
     description: () => msg('Perceived reverberance'),
     unit: 's',
     source: REFERENCE_ISO_3382_1_2009,
-    forType: 'monaural',
+    forType: 'omnidirectional',
     environmentDependent: false,
   },
   bands =>
@@ -34,7 +34,7 @@ export const T20_PARAMETER = createOctaveBandParameterDefinition(
     description: () => msg('Perceived reverberance'),
     unit: 's',
     source: REFERENCE_ISO_3382_1_2009,
-    forType: 'monaural',
+    forType: 'omnidirectional',
     environmentDependent: false,
   },
   bands =>

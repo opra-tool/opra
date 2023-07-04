@@ -167,7 +167,7 @@ export class AppLogic extends EventEmitter<EventMap> {
     } while (this.files.has(id));
 
     this.addImpulseResponseFile({
-      type: buffer.numberOfChannels === 1 ? 'monaural' : 'binaural',
+      type: buffer.numberOfChannels === 1 ? 'omnidirectional' : 'binaural',
       id,
       fileName: audioFile.name,
       buffer,

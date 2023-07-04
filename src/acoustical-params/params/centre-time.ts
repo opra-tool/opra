@@ -11,7 +11,7 @@ export const CENTRE_TIME_PARAMETER = createSingleFigureParameterDefinition(
     symbol: html`T<sub>S</sub>`,
     unit: 's',
     source: REFERENCE_ISO_3382_1_2009,
-    forType: 'monaural',
+    forType: 'omnidirectional',
     environmentDependent: false,
   },
   bands => {

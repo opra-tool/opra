@@ -44,7 +44,7 @@ for (const key of Object.keys(json)) {
   id: "${nameEnglish.toLowerCase().replace(/\s/g, '-')}",
   nameEnglish: "${nameEnglish}",
   nameGerman: "${nameGerman}",
-  monaural: ${mapCoefficients(key, 'monaural')},
+  omnidirectional: ${mapCoefficients(key, 'omnidirectional')},
   binaural: ${mapCoefficients(key, 'binaural')},
   'mid-side': ${mapCoefficients(key, 'mid_side')}
 }`;

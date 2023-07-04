@@ -111,7 +111,7 @@ function isCompatibleWithFileType(
       return true;
     }
 
-    if (fileType === 'mid-side' && param.forType === 'monaural') {
+    if (fileType === 'mid-side' && param.forType === 'omnidirectional') {
       return true;
     }
 

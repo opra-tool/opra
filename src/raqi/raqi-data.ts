@@ -3,7 +3,7 @@ export const RAQI_PARAMETERS = [
     id: 'quality',
     nameEnglish: 'Quality',
     nameGerman: 'Qualität',
-    monaural: {
+    omnidirectional: {
       coefficients: {
         bassRatio: 0.139956250427214,
         centreTime: 0,
@@ -82,7 +82,7 @@ export const RAQI_PARAMETERS = [
     id: 'strength',
     nameEnglish: 'Strength',
     nameGerman: 'Stärke',
-    monaural: {
+    omnidirectional: {
       coefficients: {
         bassRatio: 0,
         centreTime: 3.91401143452408,
@@ -161,7 +161,7 @@ export const RAQI_PARAMETERS = [
     id: 'reverberance',
     nameEnglish: 'Reverberance',
     nameGerman: 'Halligkeit',
-    monaural: {
+    omnidirectional: {
       coefficients: {
         bassRatio: 0,
         centreTime: 13.8728529575701,
@@ -240,7 +240,7 @@ export const RAQI_PARAMETERS = [
     id: 'brilliance',
     nameEnglish: 'Brilliance',
     nameGerman: 'Brillianz',
-    monaural: {
+    omnidirectional: {
       coefficients: {
         bassRatio: -0.110575547951796,
         centreTime: 2.70916670117023,
@@ -319,7 +319,7 @@ export const RAQI_PARAMETERS = [
     id: 'irregular-decay',
     nameEnglish: 'Irregular Decay',
     nameGerman: 'Unregelmässiger Nachhall',
-    monaural: {
+    omnidirectional: {
       coefficients: {
         bassRatio: -0.106082693281151,
         centreTime: 8.27878024770517,
@@ -398,7 +398,7 @@ export const RAQI_PARAMETERS = [
     id: 'coloration',
     nameEnglish: 'Coloration',
     nameGerman: 'Coloration',
-    monaural: {
+    omnidirectional: {
       coefficients: {
         bassRatio: 0,
         centreTime: 0,
@@ -477,7 +477,7 @@ export const RAQI_PARAMETERS = [
     id: 'clarity',
     nameEnglish: 'Clarity',
     nameGerman: 'Klarheit',
-    monaural: {
+    omnidirectional: {
       coefficients: {
         bassRatio: 0.133583917064741,
         centreTime: -8.56703913843748,
@@ -556,7 +556,7 @@ export const RAQI_PARAMETERS = [
     id: 'liveliness',
     nameEnglish: 'Liveliness',
     nameGerman: 'Lebendigkeit',
-    monaural: {
+    omnidirectional: {
       coefficients: {
         bassRatio: 0,
         centreTime: 0,
@@ -635,7 +635,7 @@ export const RAQI_PARAMETERS = [
     id: 'intimacy',
     nameEnglish: 'Intimacy',
     nameGerman: 'Initimität',
-    monaural: {
+    omnidirectional: {
       coefficients: {
         bassRatio: 0.133208720603616,
         centreTime: -7.84721032589803,

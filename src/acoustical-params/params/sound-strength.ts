@@ -38,7 +38,7 @@ export const SOUND_STRENGTH_PARAMETER = createOctaveBandParameterDefinition(
     description: () => msg('Subjective level of sound'),
     unit: 'dB',
     source: REFERENCE_ISO_3382_1_2009,
-    forType: 'monaural',
+    forType: 'omnidirectional',
     environmentDependent: true,
   },
   (bands, _, lpe10) =>
@@ -58,7 +58,7 @@ export const EARLY_SOUND_STRENGTH_PARAMETER =
       description: () => msg('Subjective level of sound'),
       unit: 'dB',
       source: REFERENCE_ISO_3382_1_2009,
-      forType: 'monaural',
+      forType: 'omnidirectional',
       environmentDependent: true,
     },
     (bands, _, lpe10) =>
@@ -78,7 +78,7 @@ export const LATE_SOUND_STRENGTH_PARAMETER =
       description: () => msg('Subjective level of sound'),
       unit: 'dB',
       source: REFERENCE_ISO_3382_1_2009,
-      forType: 'monaural',
+      forType: 'omnidirectional',
       environmentDependent: true,
     },
     (bands, _, lpe10) =>
@@ -98,7 +98,7 @@ export const A_WEIGHTED_SOUND_STRENGTH_PARAMETER =
       description: () => msg('Subjective level of sound'),
       unit: 'dB',
       source: REFERENCE_SOULODRE_BRADLEY_1995,
-      forType: 'monaural',
+      forType: 'omnidirectional',
       environmentDependent: true,
     },
     (_, { lookupOctaveBands }) => {
@@ -120,7 +120,7 @@ export const TREBLE_RATIO_PARAMETER = createSingleFigureParameterDefinition(
     description: () => msg('Perceived treble'),
     unit: 'dB',
     source: REFERENCE_SOULODRE_BRADLEY_1995,
-    forType: 'monaural',
+    forType: 'omnidirectional',
     environmentDependent: true,
   },
   (_, { lookupOctaveBands }) => {
@@ -142,7 +142,7 @@ export const EARLY_BASS_LEVEL_PARAMETER = createSingleFigureParameterDefinition(
     description: () => msg('Perceived bass'),
     unit: 'dB',
     source: REFERENCE_SOULODRE_BRADLEY_1995,
-    forType: 'monaural',
+    forType: 'omnidirectional',
     environmentDependent: true,
   },
   (bands, _, lpe10) => {
@@ -167,7 +167,7 @@ export const LEVEL_ADJUSTED_C80_PARAMETER =
       description: () => msg('Perceived clarity of sound'),
       unit: 'dB',
       source: REFERENCE_SOULODRE_BRADLEY_1995,
-      forType: 'monaural',
+      forType: 'omnidirectional',
       environmentDependent: true,
     },
     (_, { lookupSingleFigure, lookupOctaveBands }) => {

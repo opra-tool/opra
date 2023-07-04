@@ -26,7 +26,7 @@ const makeImpulseResponseFile = (type: ImpulseResponseType) => ({
 
 const makeDataSource = () => ({
   getAllImpulseResponseFiles(): ImpulseResponseFile[] {
-    return [makeImpulseResponseFile('monaural')];
+    return [makeImpulseResponseFile('omnidirectional')];
   },
   getEnvironmentValues(): EnvironmentValues {
     return {
@@ -62,7 +62,7 @@ const EXPECTED_EXPORT = `{
   "octaveBandsFrequencies": [62.5,125,250,500,1000,2000,4000,8000],
   "impulseResponseFiles": [
     {
-      "type": "monaural",
+      "type": "omnidirectional",
       "fileName": "audio.wav",
       "duration": 100,
       "sampleRate": 44100,

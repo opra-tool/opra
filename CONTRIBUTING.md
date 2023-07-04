@@ -67,11 +67,11 @@ Built files are stored in `src/localization/`
 ## Defining acoustical params
 
 Acoustical params are defined in `acoustical-params/`, see this directory for example param configurations.
-A param definition requires a `forType` attribute, which can be `monaural`, `binaural` or `mid-side`.
+A param definition requires a `forType` attribute, which can be `omnidirectional`, `binaural` or `mid-side`.
 The analyzing logic then makes sure to supply the calculation function(s) with the appropriate octave bands.
-A `monaural` param will thus receive single-channel octave bands, while params of the other types will receive dual-channel octave bands.
+A `omnidirectional` param will thus receive single-channel octave bands, while params of the other types will receive dual-channel octave bands.
 
-**NOTE:** currently, `monaural` and `mid-side` will receive **squared** octave bands, while `binaural` will receive **non-squared** octave bands. This is subject to change in the future for consistency.
+**NOTE:** currently, `omnidirectional` and `mid-side` will receive **squared** octave bands, while `binaural` will receive **non-squared** octave bands. This is subject to change in the future for consistency.
 
 If `environmentDependent` is set to `true`, the param will be recalculated when the user changes environment values like temperature or humidity.
 

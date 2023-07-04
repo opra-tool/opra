@@ -1,4 +1,4 @@
-export type ImpulseResponseType = 'monaural' | 'binaural' | 'mid-side';
+export type ImpulseResponseType = 'omnidirectional' | 'binaural' | 'mid-side';
 
 export type ImpulseResponseFile = {
   type: ImpulseResponseType;

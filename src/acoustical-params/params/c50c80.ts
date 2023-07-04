@@ -13,7 +13,7 @@ export const C50_PARAMETER = createOctaveBandParameterDefinition(
     unit: 'dB',
     symbol: html`C<sub>50</sub>`,
     source: REFERENCE_ISO_3382_1_2009,
-    forType: 'monaural',
+    forType: 'omnidirectional',
     environmentDependent: false,
   },
   bands =>
@@ -35,7 +35,7 @@ export const C80_PARAMETER = createOctaveBandParameterDefinition(
     symbol: html`C<sub>80</sub>`,
     unit: 'dB',
     source: REFERENCE_ISO_3382_1_2009,
-    forType: 'monaural',
+    forType: 'omnidirectional',
     environmentDependent: false,
   },
   bands =>

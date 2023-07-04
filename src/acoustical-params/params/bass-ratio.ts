@@ -10,7 +10,7 @@ export const BASS_RATIO_PARAMETER = createSingleFigureParameterDefinition(
     description: () => msg('Perceived bass'),
     symbol: 'BR',
     source: REFERENCE_BERANEK_1962,
-    forType: 'monaural',
+    forType: 'omnidirectional',
     environmentDependent: false,
   },
   (_, { lookupOctaveBands }) => {

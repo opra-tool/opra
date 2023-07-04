@@ -151,14 +151,14 @@
   <source>Playback audio based on a room impulse response</source>
   <target>Faltung von Audiodateien anhand von Raumimpulsantworten</target>
 </trans-unit>
-<trans-unit id="sd6b609963453c5c6">
-  <source>For binaural room impulse responses, monaural parameters and graphs are
+<trans-unit id="sf43ea2ac6e5ce802">
+  <source>For binaural room impulse responses, omnidirectional parameters and graphs are
           calculated on the arithmetic mean of the left and right channels. Keep
           in mind that the head-related transfer function might influence these
           results.</source>
   <target>Bei binauralen Raumimpulsantworten wird eine Mittelung beider Kanäle vorgenommen
-          und aus dieser Mittelung dann monaurale Parameter berechnet.
-          Die Head-Related Transfer Function kann Einfluss auf monaurale Parameter haben.</target>
+          und aus dieser Mittelung dann omnidirektionale Parameter berechnet.
+          Die Head-Related Transfer Function kann Einfluss auf omnidirektionale Parameter haben.</target>
 </trans-unit>
 <trans-unit id="safa8613aa4ab25b3">
   <source>Download Results</source>
@@ -176,9 +176,9 @@
   <source>There is no help available for this item.</source>
   <target>Für dieses Element gibt es noch keine Hilfe.</target>
 </trans-unit>
-<trans-unit id="s50dc09393c99feda">
-  <source>Monaural</source>
-  <target>Monaural</target>
+<trans-unit id="s3b4111074880d540">
+  <source>Omnidirectional</source>
+  <target>Omnidirektional</target>
 </trans-unit>
 <trans-unit id="s4c159fe41145b863">
   <source>Binaural</source>
@@ -332,40 +332,9 @@
   <source>Discard all responses</source>
   <target>Alle Impulsantworten entfernen</target>
 </trans-unit>
-<trans-unit id="hc127057ff7bff775">
-  <source>
-            <x id="0" equiv-text="${c50}"/> and <x id="1" equiv-text="${c80}"/> describe the balance between early- and
-            late-arriving energy in a room impulse response. <x id="2" equiv-text="${c50}"/> is primarily
-            meant to rate speech, while <x id="3" equiv-text="${c80}"/> is usually used to rate music.
-            Both are defined by ISO 3382-1 as
-          </source>
-  <target>
-            <x id="0" equiv-text="${c50}"/> und <x id="1" equiv-text="${c80}"/> beschreiben die Balance zwischen dem frühen und späten Schallanteil einer Raumimpulsantwort.
-            <x id="2" equiv-text="${c50}"/> wird hauptsächlich zur Bewertung von Sprache herangezogen, während <x id="3" equiv-text="${c80}"/> für Musik verwendet wird.
-            Beide Parameter sind in ISO 3382-1 definiert durch
-          </target>
-</trans-unit>
 <trans-unit id="sf8942e17b918112e">
   <source>RAQI Parameters</source>
   <target>RAQI Parameter</target>
-</trans-unit>
-<trans-unit id="h8a362d8a5efdafa7">
-  <source>
-              An early prediction model uses calculated technical parameters to
-              infer Room Acoustical Quality Inventory (RAQI) parameters
-              <x id="0" equiv-text="${raqiPaper}"/>. Different coefficients are used for monaural,
-              binaural and mid/side impulse responses. Optimizing for specific
-              stimuli allows for more accurat results. Select a stimulus, which
-              best matches your needs.
-            </source>
-  <target>
-              Ein frühes Vorhersagemodell verwendet berechnete technische Parameter, um
-              Parameter des Room Acoustical Quality Inventory (RAQI) abzuleiten
-              <x id="0" equiv-text="${raqiPaper}"/>. Es werden unterschiedliche Koeffizienten für monaurale,
-              binaurale und Mitten/Seiten-Impulsantworten verwendet. Die Optimierung für bestimmte
-              Stimuli ermöglicht genauere Ergebnisse. Wähle einen Stimulus, der
-              deinen Anforderungen am besten entspricht.
-            </target>
 </trans-unit>
 <trans-unit id="s568d76d1ddcd938e">
   <source>Select a stimulus</source>
@@ -453,20 +422,6 @@
           Sie beschreibt die Zeit, die nach dem Abschalten der Schallquelle benötigt wird, bis die Schallenergie um 60 dB abgenommen hat
         </target>
 </trans-unit>
-<trans-unit id="h8f62d1ef8b504750">
-  <source>
-          It is usually infeasible to measure a sound energy decrease of 60
-          dB. The reverberation time is thus measured by extrapolating a
-          linear regression line fitted to the decrease from -5dB to -25dB.
-          The early decay time is similarly calculated using 0 and -10dB to
-          fit the regression line.
-        </source>
-  <target>
-          In der Regel ist es nicht möglich, eine Abnahme der Schallenergie von 60 dB zu messen.  
-          Die Nachhallzeit wird daher durch Extrapolation einer linearen Regressionslinie gemessen, die an die Abnahme von -5 dB bis -25 dB angepasst wird.
-          Die frühe Abklingzeit wird auf ähnliche Weise berechnet, wobei 0 und -10 dB zur Anpassung der Regressionslinie verwendet werden.
-        </target>
-</trans-unit>
 <trans-unit id="s75b395ea311925b1">
   <source>
           Sound strength is a measure of the subjective bass level.
@@ -483,6 +438,51 @@
           das späte Stärkemaß für Schall nach der 80ms-Marke.
           ISO 3382-1 definiert das Stärkemaß als
         </target>
+</trans-unit>
+<trans-unit id="hc26c472a258dca99">
+  <source>
+          <x id="0" equiv-text="${c50}"/> and <x id="1" equiv-text="${c80}"/> describe the balance between early- and
+          late-arriving energy in a room impulse response. <x id="2" equiv-text="${c50}"/> is primarily
+          meant to rate speech, while <x id="3" equiv-text="${c80}"/> is usually used to rate music. Both
+          are defined by ISO 3382-1 as
+        </source>
+  <target>
+          <x id="0" equiv-text="${c50}"/> und <x id="1" equiv-text="${c80}"/> beschreiben die Balance zwischen dem frühen und späten Schallanteil einer Raumimpulsantwort.
+          <x id="2" equiv-text="${c50}"/> wird hauptsächlich zur Bewertung von Sprache herangezogen, während <x id="3" equiv-text="${c80}"/> für Musik verwendet wird.
+          Beide Parameter sind in ISO 3382-1 definiert durch
+        </target>
+</trans-unit>
+<trans-unit id="h0a28f0f6730f02d0">
+  <source>
+          It is usually infeasible to measure a sound energy decrease of 60 dB.
+          The reverberation time is thus measured by extrapolating a linear
+          regression line fitted to the decrease from -5dB to -25dB. The early
+          decay time is similarly calculated using 0 and -10dB to fit the
+          regression line.
+        </source>
+  <target>
+          In der Regel ist es nicht möglich, eine Abnahme der Schallenergie von 60 dB zu messen.  
+          Die Nachhallzeit wird daher durch Extrapolation einer linearen Regressionslinie gemessen, die an die Abnahme von -5 dB bis -25 dB angepasst wird.
+          Die frühe Abklingzeit wird auf ähnliche Weise berechnet, wobei 0 und -10 dB zur Anpassung der Regressionslinie verwendet werden.
+        </target>
+</trans-unit>
+<trans-unit id="h8752ced8d075f7eb">
+  <source>
+              An early prediction model uses calculated technical parameters to
+              infer Room Acoustical Quality Inventory (RAQI) parameters
+              <x id="0" equiv-text="${raqiPaper}"/>. Different coefficients are used for omnidirectional,
+              binaural and mid/side impulse responses. Optimizing for specific
+              stimuli allows for more accurat results. Select a stimulus, which
+              best matches your needs.
+            </source>
+  <target>
+              Ein frühes Vorhersagemodell verwendet berechnete technische Parameter, um
+              Parameter des Room Acoustical Quality Inventory (RAQI) abzuleiten
+              <x id="0" equiv-text="${raqiPaper}"/>. Es werden unterschiedliche Koeffizienten für omnidirektionale,
+              binaurale und Mitten/Seiten-Impulsantworten verwendet. Die Optimierung für bestimmte
+              Stimuli ermöglicht genauere Ergebnisse. Wähle einen Stimulus, der
+              deinen Anforderungen am besten entspricht.
+            </target>
 </trans-unit>
 </body>
 </file>

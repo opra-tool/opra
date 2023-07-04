@@ -63,7 +63,7 @@ export class RAQICard extends LitElement {
             ${msg(html`
               An early prediction model uses calculated technical parameters to
               infer Room Acoustical Quality Inventory (RAQI) parameters
-              ${raqiPaper}. Different coefficients are used for monaural,
+              ${raqiPaper}. Different coefficients are used for omnidirectional,
               binaural and mid/side impulse responses. Optimizing for specific
               stimuli allows for more accurat results. Select a stimulus, which
               best matches your needs.

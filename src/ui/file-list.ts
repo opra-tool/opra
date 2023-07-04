@@ -111,7 +111,7 @@ export class FileList extends LitElement {
 
   private static renderSummary({ type, duration, sampleRate }: FileListEntry) {
     const names = {
-      monaural: msg('Monaural'),
+      omnidirectional: msg('Omnidirectional'),
       binaural: msg('Binaural'),
       'mid-side': msg('Mid/Side'),
     };

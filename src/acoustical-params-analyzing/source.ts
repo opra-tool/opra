@@ -1,5 +1,5 @@
 import { OctaveBands } from '../transfer-objects/octave-bands';
-import { binauralToMidSide, binauralToMonaural } from './conversion';
+import { binauralToMidSide, binauralToOmnidirectional } from './conversion';
 import { octfilt } from './octave-band-filtering/octave-band-filtering';
 import { CustomAudioBuffer } from '../transfer-objects/audio-buffer';
 import { ImpulseResponseType } from '../transfer-objects/impulse-response-file';
@@ -43,19 +43,21 @@ export class IRSource {
     const bands = await octfilt(starttimeCorrected);
 
     if (type === 'binaural') {
-      const monauralBuffer = await binauralToMonaural(starttimeCorrected);
-      const monauralBandsSquared = (await octfilt(monauralBuffer)).transform(
-        band => band.transform(calculateSquaredIR)
+      const omnidirectionalBuffer = await binauralToOmnidirectional(
+        starttimeCorrected
       );
+      const omnidirectionalBandsSquared = (
+        await octfilt(omnidirectionalBuffer)
+      ).transform(band => band.transform(calculateSquaredIR));
 
       const midSideBandsSquared = bands
         .transform(binauralToMidSide)
         .transform(band => band.transform(calculateSquaredIR));
 
       return new IRSource(
-        calculateSquaredIR(monauralBuffer.getChannel(0)),
+        calculateSquaredIR(omnidirectionalBuffer.getChannel(0)),
         new Map([
-          ['monaural', monauralBandsSquared],
+          ['omnidirectional', omnidirectionalBandsSquared],
           ['binaural', bands],
           ['mid-side', midSideBandsSquared],
         ])
@@ -66,26 +68,26 @@ export class IRSource {
       const midSideBandsSquared = bands.transform(band =>
         band.transform(calculateSquaredIR)
       );
-      const monauralBandsSquared = midSideBandsSquared.transform(
+      const omnidirectionalBandsSquared = midSideBandsSquared.transform(
         band => new CustomAudioBuffer(band.getChannel(0), band.sampleRate)
       );
 
       return new IRSource(
         calculateSquaredIR(buffer.getChannel(0)),
         new Map([
-          ['monaural', monauralBandsSquared],
+          ['omnidirectional', omnidirectionalBandsSquared],
           ['mid-side', midSideBandsSquared],
         ])
       );
     }
 
-    const monauralBandsSquared = bands.transform(band =>
+    const omnidirectionalBandsSquared = bands.transform(band =>
       band.transform(calculateSquaredIR)
     );
 
     return new IRSource(
       calculateSquaredIR(buffer.getChannel(0)),
-      new Map([['monaural', monauralBandsSquared]])
+      new Map([['omnidirectional', omnidirectionalBandsSquared]])
     );
   }
 }
