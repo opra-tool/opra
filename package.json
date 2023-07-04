@@ -22,6 +22,7 @@
     "chart.js": "^3.9.1",
     "codec-parser": "^2.2.0",
     "idb": "^7.1.1",
+    "katex": "^0.16.7",
     "lit": "^2.0.2",
     "wasm-raqi-online-toolbox": "file:wasm/pkg"
   },
@@ -35,6 +36,7 @@
     "@open-wc/testing": "next",
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-node-resolve": "^13.0.6",
+    "@types/katex": "^0.16.0",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
     "@web/dev-server": "^0.1.28",

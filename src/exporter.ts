@@ -1,64 +1,57 @@
 import {
   ImpulseResponseType,
-  ImpulseResponse,
-} from './analyzing/impulse-response';
-import { CENTER_FREQUENCIES } from './analyzing/octave-bands';
-import { Results } from './analyzing/processing';
-import { EnvironmentValues } from './analyzing/environment-values';
+  ImpulseResponseFile,
+} from './transfer-objects/impulse-response-file';
+import {
+  CENTER_FREQUENCIES,
+  OctaveBandValues,
+} from './transfer-objects/octave-bands';
+import { EnvironmentValues } from './transfer-objects/environment-values';
+import {
+  SingleFigureParamDefinition,
+  OctaveBandParamDefinition,
+} from './acoustical-params/param-definition';
 
-interface ResponseResultsSource {
-  getResponses(): ImpulseResponse[];
-  getResultsOrThrow(responseId: string): Results;
-}
-
-interface EnvironmentValuesSource {
+interface DataSource {
+  getAllImpulseResponseFiles(): ImpulseResponseFile[];
   getEnvironmentValues(): EnvironmentValues;
+  getSingleFigureParamResult(
+    paramId: string,
+    fileId: string
+  ): number | undefined;
+  getOctaveBandParamResult(
+    paramId: string,
+    fileId: string
+  ): OctaveBandValues | undefined;
 }
 
 type ExportData = {
   octaveBandsFrequencies: number[];
-  impulseResponses: {
+  impulseResponseFiles: {
     type: ImpulseResponseType;
     fileName: string;
     duration: number;
     sampleRate: number;
-    octaveBandParameters: {
-      edt: number[];
-      reverbTime: number[];
-      c50: number[];
-      c80: number[];
-      soundStrength?: number[];
-      earlySoundStrength?: number[];
-      lateSoundStrength?: number[];
-      iacc?: number[];
-      eiacc?: number[];
-      earlyLateralEnergyFraction?: number[];
-      earlyLateralSoundLevel?: number[];
-      lateLateralSoundLevel?: number[];
-    };
-    singleFigureParameters: {
-      bassRatio: number;
-      c80: number;
-      centreTime: number;
-      reverbTime: number;
-      soundStrength?: number;
-      trebleRatio?: number;
-      earlyBassLevel?: number;
-      aWeightedSoundStrength?: number;
-      levelAdjustedC80?: number;
-      iacc?: number;
-      earlyLateralEnergyFraction?: number;
-      lateLateralSoundLevel?: number;
-    };
+    octaveBandParameters: Record<string, number[]>;
+    singleFigureParameters: Record<string, number>;
     environmentValues: EnvironmentValues;
   }[];
 };
 
-export class Exporter {
-  private source: ResponseResultsSource & EnvironmentValuesSource;
+export class JSONFileExporter {
+  private exportParams: (
+    | SingleFigureParamDefinition
+    | OctaveBandParamDefinition
+  )[];
 
-  constructor(source: ResponseResultsSource & EnvironmentValuesSource) {
-    this.source = source;
+  private dataSource: DataSource;
+
+  constructor(
+    params: (SingleFigureParamDefinition | OctaveBandParamDefinition)[],
+    dataSource: DataSource
+  ) {
+    this.exportParams = params;
+    this.dataSource = dataSource;
   }
 
   generateExportFile(): string {
@@ -80,55 +73,52 @@ export class Exporter {
   }
 
   generateExportObject(): ExportData {
-    const responses = this.source.getResponses();
+    const results = this.getExportableResults();
 
-    const exportData: ExportData = {
+    return {
       octaveBandsFrequencies: CENTER_FREQUENCIES,
-      impulseResponses: [],
+      impulseResponseFiles: results.map(
+        ({ file, singleFigureResults, octaveBandResults }) => ({
+          type: file.type,
+          fileName: file.fileName,
+          duration: file.duration,
+          sampleRate: file.sampleRate,
+          octaveBandParameters: octaveBandResults,
+          singleFigureParameters: singleFigureResults,
+          environmentValues: this.dataSource.getEnvironmentValues(),
+        })
+      ),
     };
+  }
 
-    for (const response of responses) {
-      const results = this.source.getResultsOrThrow(response.id);
+  private getExportableResults() {
+    return this.dataSource.getAllImpulseResponseFiles().map(file => ({
+      file,
+      singleFigureResults: this.exportParams.reduce((acc, param) => {
+        const result = this.dataSource.getSingleFigureParamResult(
+          param.id,
+          file.id
+        );
 
-      exportData.impulseResponses.push({
-        type: response.type,
-        fileName: response.fileName,
-        duration: response.duration,
-        sampleRate: response.sampleRate,
-        octaveBandParameters: {
-          c50: results.c50Bands.raw(),
-          c80: results.c80Bands.raw(),
-          edt: results.edtBands.raw(),
-          reverbTime: results.reverbTimeBands.raw(),
-          earlySoundStrength: results.earlySoundStrengthBands?.raw(),
-          lateSoundStrength: results.lateSoundStrengthBands?.raw(),
-          soundStrength: results.soundStrengthBands?.raw(),
-          iacc: results.iaccBands?.raw(),
-          eiacc: results.eiaccBands?.raw(),
-          earlyLateralEnergyFraction:
-            results.earlyLateralEnergyFractionBands?.raw(),
-          earlyLateralSoundLevel: results.earlyLateralSoundLevelBands?.raw(),
-          lateLateralSoundLevel: results.lateLateralSoundLevelBands?.raw(),
-        },
-        singleFigureParameters: {
-          bassRatio: results.bassRatio,
-          c80: results.c80,
-          centreTime: results.centreTime,
-          reverbTime: results.reverbTime,
-          aWeightedSoundStrength: results.aWeightedSoundStrength,
-          soundStrength: results.soundStrength,
-          earlyBassLevel: results.earlyBassLevel,
-          levelAdjustedC80: results.levelAdjustedC80,
-          trebleRatio: results.trebleRatio,
-          iacc: results.iacc,
-          earlyLateralEnergyFraction: results.earlyLateralEnergyFraction,
-          lateLateralSoundLevel: results.lateLateralSoundLevel,
-        },
-        environmentValues: this.source.getEnvironmentValues(),
-      });
-    }
+        if (result) {
+          acc[param.id] = result;
+        }
 
-    return exportData;
+        return acc;
+      }, {} as Record<string, number>),
+      octaveBandResults: this.exportParams.reduce((acc, param) => {
+        const result = this.dataSource.getOctaveBandParamResult(
+          param.id,
+          file.id
+        );
+
+        if (result) {
+          acc[param.id] = result.raw();
+        }
+
+        return acc;
+      }, {} as Record<string, number[]>),
+    }));
   }
 }
 

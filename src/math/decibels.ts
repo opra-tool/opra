@@ -1,4 +1,3 @@
-import { log } from '@iamsquare/complex.js';
 import { safeLog10 } from './safeLog10';
 
 export function meanDecibel(...values: number[]): number {

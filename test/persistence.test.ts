@@ -1,9 +1,9 @@
 import { expect } from '@esm-bundle/chai';
 import { deleteDB } from 'idb';
-import { ImpulseResponse } from '../src/analyzing/impulse-response';
+import { ImpulseResponseFile } from '../src/transfer-objects/impulse-response-file';
 import { Persistence } from '../src/persistence';
 
-const RESPONSE: ImpulseResponse = {
+const RESPONSE: ImpulseResponseFile = {
   buffer: new AudioBuffer({
     length: 1,
     sampleRate: 44100,
@@ -22,7 +22,7 @@ it('saves a response', async () => {
   await persistence.init();
 
   await persistence.saveResponse(RESPONSE);
-  const saved = await persistence.getResponses();
+  const saved = await persistence.getFiles();
 
   expect(saved).to.deep.equal([RESPONSE]);
 });
@@ -33,7 +33,7 @@ it('deletes a response', async () => {
 
   await persistence.saveResponse(RESPONSE);
   await persistence.deleteResponse(RESPONSE.id);
-  const saved = await persistence.getResponses();
+  const saved = await persistence.getFiles();
 
   expect(saved).to.be.empty;
 });
@@ -47,7 +47,7 @@ it('updates a response', async () => {
     ...RESPONSE,
     type: 'binaural',
   });
-  const saved = await persistence.getResponses();
+  const saved = await persistence.getFiles();
 
   expect(saved[0].type).to.equal('binaural');
 });

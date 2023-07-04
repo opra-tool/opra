@@ -3,7 +3,17 @@ use crate::linear_algebra::linear_function_steepness;
 
 #[wasm_bindgen]
 #[allow(dead_code)]
-pub fn calculate_reverberation(squared_ir: Vec<f32>, fs: f32) -> Vec<f32> {
+pub fn calculate_early_decay_time(squared_ir: Vec<f32>, sample_rate: f32) -> f32 {
+  return extrapolate_curve(calculate_decay_curve(squared_ir), -10.0, 0.0, sample_rate)
+}
+
+#[wasm_bindgen]
+#[allow(dead_code)]
+pub fn calculate_t20(squared_ir: Vec<f32>, sample_rate: f32) -> f32 {
+  return extrapolate_curve(calculate_decay_curve(squared_ir), -25.0, -5.0, sample_rate);
+}
+
+fn calculate_decay_curve(squared_ir: Vec<f32>) -> Vec<f32> {
   let total_energy = squared_ir.iter().sum::<f32>();
 
   let cumulative_sum: Vec<f32> = squared_ir
@@ -23,15 +33,13 @@ pub fn calculate_reverberation(squared_ir: Vec<f32>, fs: f32) -> Vec<f32> {
     .max_by(|a, b| a.partial_cmp(b).unwrap())
     .unwrap();
 
-  let decay_curve = backward_integration
+  return backward_integration
     .iter()
     .map(|val| 10.0 * (val / max_backward_integration).log10())
     .collect();
-
-  return vec![extrapolate_curve(&decay_curve, -10.0, 0.0, fs), extrapolate_curve(&decay_curve, -25.0, -5.0, fs)];
 }
 
-fn extrapolate_curve(decay_curve: &Vec<f32>, min: f32, max: f32, fs: f32) -> f32 {
+fn extrapolate_curve(decay_curve: Vec<f32>, min: f32, max: f32, sample_rate: f32) -> f32 {
   let y_values: Vec<f32> = decay_curve
     .iter()
     .filter(|val| (**val > min && **val < max))
@@ -41,7 +49,7 @@ fn extrapolate_curve(decay_curve: &Vec<f32>, min: f32, max: f32, fs: f32) -> f32
   let x_values = y_values
     .iter()
     .enumerate()
-    .map(|(i, _val)| (1.0 / fs) * (i + 1) as f32)
+    .map(|(i, _val)| (1.0 / sample_rate) * (i + 1) as f32)
     .collect();
 
   return 60.0 / linear_function_steepness(&x_values, &y_values).abs();

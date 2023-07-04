@@ -2,10 +2,6 @@
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
 <file target-language="de" source-language="en" original="lit-localize-inputs" datatype="plaintext">
 <body>
-<trans-unit id="s30a6412eb8b9650e">
-  <source>Reverb Time</source>
-  <target>Nachhallzeit</target>
-</trans-unit>
 <trans-unit id="s88ad31dce26701b3">
   <source>Centre Time</source>
   <target>Schwerpunktzeit</target>
@@ -16,7 +12,7 @@
 </trans-unit>
 <trans-unit id="sea93d3c78c26da12">
   <source>Interaural Cross Correlation</source>
-  <target>Interaurale Kreuzkorrelation (IACC)</target>
+  <target>Interaurale Kreuzkorrelation</target>
 </trans-unit>
 <trans-unit id="s6bc84d43b3db4bd0">
   <source>Treble Ratio</source>
@@ -66,9 +62,6 @@
 <trans-unit id="sfd963ba27f135016">
   <source>A-weighted Sound Strength</source>
   <target>A-Gewichtetes Stärkemaß</target>
-</trans-unit>
-<trans-unit id="s2a2957356ab1c7fe">
-  <source>Level-Adjusted</source>
 </trans-unit>
 <trans-unit id="s5787e20cab57b383">
   <source>Unknown error</source>
@@ -138,17 +131,9 @@
   <source>or</source>
   <target>oder</target>
 </trans-unit>
-<trans-unit id="s5fe5299a9789b5c0">
-  <source>Early IACC</source>
-  <target>Frühe IACC</target>
-</trans-unit>
 <trans-unit id="s4b3ab99331bfc6c7">
   <source>Reverberation</source>
   <target>Nachhall</target>
-</trans-unit>
-<trans-unit id="s1d239e20ebb93f76">
-  <source>Time in seconds</source>
-  <target>Zeit in Sekunden</target>
 </trans-unit>
 <trans-unit id="s29a26d2ca3ba8d74">
   <source>Early Sound Strength</source>
@@ -347,30 +332,6 @@
   <source>Discard all responses</source>
   <target>Alle Impulsantworten entfernen</target>
 </trans-unit>
-<trans-unit id="s477ffb0841b2808d">
-  <source>
-            The Reverberation time has been a popular parameter to rate room acoustical impressions for well over a century.
-            It describes the time needed, until the sound energy has decreased by 60 dB after the source emission stopped
-          </source>
-  <target>
-            Die Nachhallzeit ist seit mehr als einem Jahrhundert ein weit verbreiteter Parameter zur Bewertung raumakustischer Eindrücke.
-            Sie beschreibt die Zeit, die nach dem Abschalten der Schallquelle benötigt wird, bis die Schallenergie um 60 dB abgenommen hat
-          </target>
-</trans-unit>
-<trans-unit id="h1296c4b993992810">
-  <source>
-            It is usually infeasible to measure a sound energy decrease of 60
-            dB. The reverberation time is thus measured by extrapolating a
-            linear regression line fitted to the decrease from -5dB to -25dB.
-            The early decay time is similarly calculated using 0 and -10dB to
-            fit the regression line.
-          </source>
-  <target>
-            In der Regel ist es nicht möglich, eine Abnahme der Schallenergie von 60 dB zu messen.  
-            Die Nachhallzeit wird daher durch Extrapolation einer linearen Regressionslinie gemessen, die an die Abnahme von -5 dB bis -25 dB angepasst wird.
-            Die frühe Abklingzeit wird auf ähnliche Weise berechnet, wobei 0 und -10 dB zur Anpassung der Regressionslinie verwendet werden.
-          </target>
-</trans-unit>
 <trans-unit id="hc127057ff7bff775">
   <source>
             <x id="0" equiv-text="${c50}"/> and <x id="1" equiv-text="${c80}"/> describe the balance between early- and
@@ -379,67 +340,14 @@
             Both are defined by ISO 3382-1 as
           </source>
   <target>
-
             <x id="0" equiv-text="${c50}"/> und <x id="1" equiv-text="${c80}"/> beschreiben die Balance zwischen dem frühen und späten Schallanteil einer Raumimpulsantwort.
             <x id="2" equiv-text="${c50}"/> wird hauptsächlich zur Bewertung von Sprache herangezogen, während <x id="3" equiv-text="${c80}"/> für Musik verwendet wird.
             Beide Parameter sind in ISO 3382-1 definiert durch
           </target>
 </trans-unit>
-<trans-unit id="s6ad389116e8ea757">
-  <source>
-            The interaural cross correlation (IACC) is calculated for binaural room impulse responses.
-            These are recorded using an artificial head that simulates the characteristic reflections of the auricle.
-            The IACC measures the difference between the impulse response at the right ear and that at the left ear.
-            To capture early reflections, the early IACC is calculated over the first 80ms of the impulse response.
-            Both are defined by ISO 3382-1 using the interaural cross correlation function (IACF)
-          </source>
-  <target>
-            Die interaurale Kreuzkorrelation (IACC) wird für binaurale Raumimpulsantworten berechnet.
-            Diese werden mit Hilfe eines Kunstkopfes aufgenommen, der die charakteristischen Reflektionen der Ohrmuschel simuliert.
-            Die IACC misst den Unterschied zwischen der Impulsantwort am rechten und der am linken Ohr.
-            Um frühe Reflektionen zu berücksichtigen, wird zusätzlich der frühe IACC über die ersten 80ms der Impulsantwort berechnet. 
-            Beide Parameter sind in der ISO 3382-1 durch die interaurale Kreuzkorrelationsfunktion (IACF) definiert
-          </target>
-</trans-unit>
-<trans-unit id="s8a478db342bc2d89">
-  <source>
-            Sound strength is a measure of the subjective bass level.
-            It is defined as the logarithmic ratio between the sound energy of the impulse response to that of another
-            response measured at a distance of 10 meters from the sound source.
-            The early sound strength is calculated on samples before the 80ms mark, the late sound strength on samples after 80ms.
-            ISO 3382-1 defines the sound strength as
-          </source>
-  <target>
-            Das Stärkemaß ist ein Maß des subjektiven Basspegels.
-            Sie ist definiert als das logarithmische Verhältnis zwischen der Schallenergie der Impulsantwort zu der einer anderen,
-            im Abstand von 10 Metern zu der Schallquelle gemessenen Impulsantwort.
-            Das frühe Stärkemaß wird für Schall vor der 80ms-Marke berechnet,
-            das späte Stärkemaß für Schall nach der 80ms-Marke.
-            ISO 3382-1 definiert das Stärkemaß als
-          </target>
-</trans-unit>
-<trans-unit id="sd2f6b812a5a3e468">
-  <source>
-            The early lateral energy fraction is a measure of the apparent source width of a room impulse response.
-            ISO 3382-1 defines it as
-          </source>
-  <target>
-            Der frühe seitliche Energieanteil ist ein Maß für die scheinbare Breite einer Schallquelle.
-            ISO 3382-1 definiert ihn als
-          </target>
-</trans-unit>
-<trans-unit id="s0edccf8ccc576146">
-  <source>
-            The early and late lateral sound level parameters are calculated as a measure of listener envelopment.
-            ISO 3382-1 defines them as
-          </source>
-  <target>
-            Der frühe und späte seitliche Schallpegel wird als Maß für die Zuhörer-Einhüllung berechnet.
-            ISO 3382-1 definiert sie als
-          </target>
-</trans-unit>
 <trans-unit id="sf8942e17b918112e">
   <source>RAQI Parameters</source>
+  <target>RAQI Parameter</target>
 </trans-unit>
 <trans-unit id="h8a362d8a5efdafa7">
   <source>
@@ -474,6 +382,107 @@
 <trans-unit id="saa3efba1f0c816b7">
   <source>Speech</source>
   <target>Sprache</target>
+</trans-unit>
+<trans-unit id="s77c9bcca6141c2c9">
+  <source>Perceived clarity of sound, primarily speech</source>
+  <target>Empfundene Klarheit des Klangs, insbesondere Sprache</target>
+</trans-unit>
+<trans-unit id="s8cf4c19d9e6341c2">
+  <source>Perceived clarity of sound, primarily music</source>
+  <target>Empfundene Klarheit des Klangs, insbesondere Musik</target>
+</trans-unit>
+<trans-unit id="s7dd0d11d0666abc5">
+  <source>Early lateral energy fraction</source>
+  <target>Früher seitlicher Energieanteil</target>
+</trans-unit>
+<trans-unit id="s5d99af582b5dee00">
+  <source>
+          The early lateral energy fraction is a measure of the apparent source width of a room impulse response.
+          ISO 3382-1 defines it as
+        </source>
+  <target>
+          Der frühe seitliche Energieanteil ist ein Maß für die scheinbare Breite einer Schallquelle.
+          ISO 3382-1 definiert ihn als
+        </target>
+</trans-unit>
+<trans-unit id="s001d4f16b5820bf0">
+  <source>Spatial impression</source>
+  <target>Raumeindruck</target>
+</trans-unit>
+<trans-unit id="s2dadad736c7b6fb7">
+  <source>Early Interaural Cross Correlation</source>
+  <target>Frühe Interaurale Kreuzkorrelation</target>
+</trans-unit>
+<trans-unit id="s8074acfc94d2b637">
+  <source>
+          The interaural cross correlation (IACC) is calculated for binaural room impulse responses.
+          These are recorded using an artificial head that simulates the characteristic reflections of the auricle.
+          The IACC measures the difference between the impulse response at the right ear and that at the left ear.
+          To capture early reflections, the early IACC is calculated over the first 80ms of the impulse response.
+          Both are defined by ISO 3382-1 using the interaural cross correlation function (IACF)
+        </source>
+  <target>
+          Die interaurale Kreuzkorrelation (IACC) wird für binaurale Raumimpulsantworten berechnet.
+          Diese werden mit Hilfe eines Kunstkopfes aufgenommen, der die charakteristischen Reflektionen der Ohrmuschel simuliert.
+          Die IACC misst den Unterschied zwischen der Impulsantwort am rechten und der am linken Ohr.
+          Um frühe Reflektionen zu berücksichtigen, wird zusätzlich der frühe IACC über die ersten 80ms der Impulsantwort berechnet. 
+          Beide Parameter sind in der ISO 3382-1 durch die interaurale Kreuzkorrelationsfunktion (IACF) definiert
+        </target>
+</trans-unit>
+<trans-unit id="s08f4561f5b03c946">
+  <source>
+          The early and late lateral sound level parameters are calculated as a measure of listener envelopment.
+          ISO 3382-1 defines them as
+        </source>
+  <target>
+          Der frühe und späte seitliche Schallpegel wird als Maß für die Zuhörer-Einhüllung berechnet.
+          ISO 3382-1 definiert sie als
+        </target>
+</trans-unit>
+<trans-unit id="s989fbc332957a304">
+  <source>Reverberation Time</source>
+  <target>Nachhallzeit</target>
+</trans-unit>
+<trans-unit id="s59338a7cc76df92d">
+  <source>
+          The Reverberation time has been a popular parameter to rate room acoustical impressions for well over a century.
+          It describes the time needed, until the sound energy has decreased by 60 dB after the source emission stopped
+        </source>
+  <target>
+          Die Nachhallzeit ist seit mehr als einem Jahrhundert ein weit verbreiteter Parameter zur Bewertung raumakustischer Eindrücke.
+          Sie beschreibt die Zeit, die nach dem Abschalten der Schallquelle benötigt wird, bis die Schallenergie um 60 dB abgenommen hat
+        </target>
+</trans-unit>
+<trans-unit id="h8f62d1ef8b504750">
+  <source>
+          It is usually infeasible to measure a sound energy decrease of 60
+          dB. The reverberation time is thus measured by extrapolating a
+          linear regression line fitted to the decrease from -5dB to -25dB.
+          The early decay time is similarly calculated using 0 and -10dB to
+          fit the regression line.
+        </source>
+  <target>
+          In der Regel ist es nicht möglich, eine Abnahme der Schallenergie von 60 dB zu messen.  
+          Die Nachhallzeit wird daher durch Extrapolation einer linearen Regressionslinie gemessen, die an die Abnahme von -5 dB bis -25 dB angepasst wird.
+          Die frühe Abklingzeit wird auf ähnliche Weise berechnet, wobei 0 und -10 dB zur Anpassung der Regressionslinie verwendet werden.
+        </target>
+</trans-unit>
+<trans-unit id="s75b395ea311925b1">
+  <source>
+          Sound strength is a measure of the subjective bass level.
+          It is defined as the logarithmic ratio between the sound energy of the impulse response to that of another
+          response measured at a distance of 10 meters from the sound source.
+          The early sound strength is calculated on samples before the 80ms mark, the late sound strength on samples after 80ms.
+          ISO 3382-1 defines the sound strength as
+        </source>
+  <target>
+          Das Stärkemaß ist ein Maß des subjektiven Basspegels.
+          Sie ist definiert als das logarithmische Verhältnis zwischen der Schallenergie der Impulsantwort zu der einer anderen,
+          im Abstand von 10 Metern zu der Schallquelle gemessenen Impulsantwort.
+          Das frühe Stärkemaß wird für Schall vor der 80ms-Marke berechnet,
+          das späte Stärkemaß für Schall nach der 80ms-Marke.
+          ISO 3382-1 definiert das Stärkemaß als
+        </target>
 </trans-unit>
 </body>
 </file>

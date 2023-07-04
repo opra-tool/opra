@@ -4,7 +4,10 @@
     "module": "esnext",
     "moduleResolution": "node",
     "noEmitOnError": true,
-    "lib": ["es2017", "dom"],
+    "lib": [
+      "es2017",
+      "dom"
+    ],
     "strict": true,
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
@@ -16,7 +19,20 @@
     "inlineSources": true,
     "rootDir": "./",
     "incremental": true,
-    "typeRoots": ["node_modules/@types", "src/_types"]
+    "typeRoots": [
+      "node_modules/@types",
+      "src/_types"
+    ],
+    "plugins": [
+      {
+        "name": "ts-lint-plugin",
+        "rules": {
+          "no-missing-import": "off"
+        }
+      }
+    ]
   },
-  "include": ["**/*.ts"]
+  "include": [
+    "**/*.ts"
+  ]
 }

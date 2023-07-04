@@ -15,7 +15,7 @@ const json = JSON.parse(fileContents);
 
 const parameters = [];
 
-function lala(key, type) {
+function mapCoefficients(key, type) {
   const data = json[key][type];
   
   return `{
@@ -41,11 +41,12 @@ for (const key of Object.keys(json)) {
     .replace('oe', 'ö');
 
   const parameterStr = `{
+  id: "${nameEnglish.toLowerCase().replace(/\s/g, '-')}",
   nameEnglish: "${nameEnglish}",
   nameGerman: "${nameGerman}",
-  monaural: ${lala(key, 'monaural')},
-  binaural: ${lala(key, 'binaural')},
-  'mid-side': ${lala(key, 'mid_side')}
+  monaural: ${mapCoefficients(key, 'monaural')},
+  binaural: ${mapCoefficients(key, 'binaural')},
+  'mid-side': ${mapCoefficients(key, 'mid_side')}
 }`;
 
   parameters.push(parameterStr)

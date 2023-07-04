@@ -18,48 +18,11 @@ Both tools were programmed at the [Institute of Sound and Vibration Engineeringâ
 
 A staging environment reflecting the current state of the `main` branch is availabe at [raqi-staging.paulschwoerer.de](https://raqi-staging.paulschwoerer.de/).
 
-## Test files
+## Room impulse response files
 
-A large collection of room impulse responses can be at [github.com/RoyJames/room-impulse-responses](https://github.com/RoyJames/room-impulse-responses).
+Room impulse response files can be obtained through [github.com/RoyJames/room-impulse-responses](https://github.com/RoyJames/room-impulse-responses).
+Some are also stored in this repository in [testfiles/](./testfiles/).
 
-## Development Quickstart
+## Contributing
 
-To get started:
-
-```sh
-# requires rust, cargo and wasm-pack
-cd wasm
-wasm-pack build --target web
-
-# requires node 10 & npm 6 or higher
-npm install
-npm run start
-```
-
-## Scripts
-
-- `start` runs the app for development, reloading on file changes
-- `start:build` runs the app after it has been built using the build command
-- `build` builds the app and outputs it in the `dist` directory
-- `test` runs the test suite with Web Test Runner
-- `lint` runs the linter for the project
-
-## Localization
-
-Localization is implemented using [lit-localize](https://lit.dev/docs/localization/overview/).
-To extract strings needing localization, run
-
-```shell
-./node_modules/.bin/lit-localize extract
-```
-
-Then edit `xliff/[lang].xlf` until you're happy with the results.
-To include translations back into the application, run
-
-```shell
-./node_modules/.bin/lit-localize build
-```
-
-## Tooling configs
-
-For most of the tools, the configuration is in the `package.json` to reduce the amount of files in the project.
+See [CONTRIBUTING.md](./CONTRIBUTING.md);

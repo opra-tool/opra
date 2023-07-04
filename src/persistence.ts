@@ -1,11 +1,11 @@
 import { openDB, IDBPDatabase } from 'idb';
-import { EnvironmentValues } from './analyzing/environment-values';
-import { ImpulseResponse } from './analyzing/impulse-response';
+import { EnvironmentValues } from './transfer-objects/environment-values';
+import { ImpulseResponseFile } from './transfer-objects/impulse-response-file';
 
 const RESPONSES_STORE = 'saved-response';
 const ENVIRONMENT_VALUES_STORE = 'environment-values';
 
-type ImpulseResponseRecord = Omit<ImpulseResponse, 'buffer'> & {
+type ImpulseResponseRecord = Omit<ImpulseResponseFile, 'buffer'> & {
   samples: Float32Array[];
 };
 
@@ -57,7 +57,7 @@ export class Persistence {
     await this.db.add(ENVIRONMENT_VALUES_STORE, values);
   }
 
-  async getResponses(): Promise<ImpulseResponse[]> {
+  async getFiles(): Promise<ImpulseResponseFile[]> {
     if (!this.db) {
       throw new Error('expected DB to be available');
     }
@@ -76,7 +76,7 @@ export class Persistence {
     return responses;
   }
 
-  async saveResponse(response: ImpulseResponse): Promise<void> {
+  async saveResponse(response: ImpulseResponseFile): Promise<void> {
     if (!this.db) {
       throw new Error('expected DB to be available');
     }
@@ -147,7 +147,7 @@ function isEnvironmentValues(
 function responseToRecord({
   buffer,
   ...rest
-}: ImpulseResponse): ImpulseResponseRecord {
+}: ImpulseResponseFile): ImpulseResponseRecord {
   const samples: Float32Array[] = [];
 
   for (let i = 0; i < buffer.numberOfChannels; i++) {
@@ -165,7 +165,7 @@ function recordToResponse({
   samples,
   sampleRate,
   ...rest
-}: ImpulseResponseRecord): ImpulseResponse {
+}: ImpulseResponseRecord): ImpulseResponseFile {
   const buffer = new AudioBuffer({
     sampleRate,
     numberOfChannels: samples.length,

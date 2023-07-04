@@ -1,87 +1,92 @@
+import { AppLogic } from './app-logic';
+import { CLARITY_GROUP } from './acoustical-params/groups/clarity-group';
+import { EARLY_LATERAL_ENERGY_FRACTION_GROUP } from './acoustical-params/groups/early-lateral-energy-fraction-group';
+import { IACC_GROUP } from './acoustical-params/groups/iacc-group';
+import { LATERAL_SOUND_LEVEL_GROUP } from './acoustical-params/groups/lateral-sound-level-group';
+import { REVERBERATION_GROUP } from './acoustical-params/groups/reverberation-group';
+import { SOUND_STRENGTH_GROUP } from './acoustical-params/groups/sound-strength-group';
+import { BASS_RATIO_PARAMETER } from './acoustical-params/params/bass-ratio';
 import {
-  Chart,
-  LineController,
-  BarController,
-  PointElement,
-  BarElement,
-  LineElement,
-  LinearScale,
-  LogarithmicScale,
-  CategoryScale,
-  Tooltip,
-} from 'chart.js';
-import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
+  C50_PARAMETER,
+  C80_PARAMETER,
+} from './acoustical-params/params/c50c80';
+import { CENTRE_TIME_PARAMETER } from './acoustical-params/params/centre-time';
+import { EARLY_LATERAL_ENERGY_FRACTION_PARAMETER } from './acoustical-params/params/early-lateral-energy-fraction';
+import {
+  EARLY_IACC_PARAMETER,
+  IACC_PARAMETER,
+} from './acoustical-params/params/iacc';
+import {
+  EARLY_LATERAL_SOUND_LEVEL_PARAMETER,
+  LATE_LATERAL_SOUND_LEVEL_PARAMETER,
+} from './acoustical-params/params/lateral-sound-level';
+import {
+  EARLY_DECAY_TIME_PARAMETER,
+  T20_PARAMETER,
+} from './acoustical-params/params/reverberation';
+import {
+  A_WEIGHTED_SOUND_STRENGTH_PARAMETER,
+  EARLY_BASS_LEVEL_PARAMETER,
+  EARLY_SOUND_STRENGTH_PARAMETER,
+  LATE_SOUND_STRENGTH_PARAMETER,
+  LEVEL_ADJUSTED_C80_PARAMETER,
+  SOUND_STRENGTH_PARAMETER,
+  TREBLE_RATIO_PARAMETER,
+} from './acoustical-params/params/sound-strength';
+import { JSONFileExporter } from './exporter';
+import { AppUI } from './ui/app-ui';
+import { initUi } from './ui/init';
 
-// shoelace components
-import '@shoelace-style/shoelace/dist/components/alert/alert.js';
-import '@shoelace-style/shoelace/dist/components/button/button.js';
-import '@shoelace-style/shoelace/dist/components/checkbox/checkbox.js';
-import '@shoelace-style/shoelace/dist/components/details/details.js';
-import '@shoelace-style/shoelace/dist/components/dialog/dialog.js';
-import '@shoelace-style/shoelace/dist/components/divider/divider.js';
-import '@shoelace-style/shoelace/dist/components/dropdown/dropdown.js';
-import '@shoelace-style/shoelace/dist/components/icon-button/icon-button.js';
-import '@shoelace-style/shoelace/dist/components/icon/icon.js';
-import '@shoelace-style/shoelace/dist/components/input/input.js';
-import '@shoelace-style/shoelace/dist/components/menu/menu.js';
-import '@shoelace-style/shoelace/dist/components/menu-item/menu-item.js';
-import '@shoelace-style/shoelace/dist/components/option/option.js';
-import '@shoelace-style/shoelace/dist/components/select/select.js';
-import '@shoelace-style/shoelace/dist/components/spinner/spinner.js';
-import '@shoelace-style/shoelace/dist/components/switch/switch.js';
-import '@shoelace-style/shoelace/dist/components/tooltip/tooltip.js';
+const allParams = [
+  EARLY_DECAY_TIME_PARAMETER,
+  T20_PARAMETER,
+  CENTRE_TIME_PARAMETER,
+  C50_PARAMETER,
+  C80_PARAMETER,
+  SOUND_STRENGTH_PARAMETER,
+  EARLY_SOUND_STRENGTH_PARAMETER,
+  LATE_SOUND_STRENGTH_PARAMETER,
+  A_WEIGHTED_SOUND_STRENGTH_PARAMETER,
+  LEVEL_ADJUSTED_C80_PARAMETER,
+  TREBLE_RATIO_PARAMETER,
+  BASS_RATIO_PARAMETER,
+  EARLY_BASS_LEVEL_PARAMETER,
+  EARLY_LATERAL_SOUND_LEVEL_PARAMETER,
+  LATE_LATERAL_SOUND_LEVEL_PARAMETER,
+  EARLY_LATERAL_ENERGY_FRACTION_PARAMETER,
+  IACC_PARAMETER,
+  EARLY_IACC_PARAMETER,
+];
 
-// register web components
-import './components/audio-analyzer';
-import './components/base-app';
-import './components/cards/base-card';
-import './components/cards/titled-card';
-import './components/cards/help-card';
-import './components/binaural-note-card';
-import './convolving/convolver-card';
-import './components/discard-all-dialog';
-import './components/error-details';
-import './components/environment-dialog';
-import './components/file-drop';
-import './components/file-dropdown';
-import './components/file-list';
-import './components/file-list-entry-options';
-import './components/c50c80-graph/c50c80-graph';
-import './components/c50c80-graph/c50c80-graph-help';
-import './components/early-lateral-fraction-graph/early-lateral-fraction-graph';
-import './components/early-lateral-fraction-graph/early-lateral-fraction-graph-help';
-import './components/iacc-graph/iacc-graph';
-import './components/iacc-graph/iacc-graph-help';
-import './components/impulse-response-graph';
-import './components/lateral-sound-level-graph/lateral-sound-level-graph';
-import './components/lateral-sound-level-graph/lateral-sound-level-graph-help';
-import './components/math-formula';
-import './components/graphs/line-graph';
-import './components/graphs/octave-bands-graph';
-import './components/reverb-graph/reverb-graph';
-import './components/reverb-graph/reverb-graph-help';
-import './components/strengths-graph/strengths-graph';
-import './components/strengths-graph/strengths-graph-help';
-import './localization/language-select';
-import './components/environment-notice';
-import './components/parameters-card';
-import './components/parameters-table';
-import './components/progress-indicator';
-import './components/raqi-card';
-import './components/source-paper';
+const displayedParams = [
+  T20_PARAMETER,
+  CENTRE_TIME_PARAMETER,
+  SOUND_STRENGTH_PARAMETER,
+  A_WEIGHTED_SOUND_STRENGTH_PARAMETER,
+  C50_PARAMETER,
+  C80_PARAMETER,
+  LEVEL_ADJUSTED_C80_PARAMETER,
+  TREBLE_RATIO_PARAMETER,
+  BASS_RATIO_PARAMETER,
+  EARLY_BASS_LEVEL_PARAMETER,
+  IACC_PARAMETER,
+  EARLY_LATERAL_ENERGY_FRACTION_PARAMETER,
+  LATE_LATERAL_SOUND_LEVEL_PARAMETER,
+];
 
-setBasePath('/shoelace');
+const displayedParamGroups = [
+  REVERBERATION_GROUP,
+  CLARITY_GROUP,
+  SOUND_STRENGTH_GROUP,
+  LATERAL_SOUND_LEVEL_GROUP,
+  EARLY_LATERAL_ENERGY_FRACTION_GROUP,
+  IACC_GROUP,
+];
 
-// prepare chart.js library
-Chart.register(
-  BarElement,
-  LineController,
-  BarController,
-  LineElement,
-  LinearScale,
-  LogarithmicScale,
-  CategoryScale,
-  PointElement,
-  Tooltip
-);
-Chart.defaults.font.size = 15;
+const appLogic = new AppLogic(allParams);
+const exporter = new JSONFileExporter(allParams, appLogic);
+
+initUi(new AppUI(displayedParams, displayedParamGroups, appLogic, exporter));
+
+// eslint-disable-next-line no-console
+appLogic.init().catch(console.error);
