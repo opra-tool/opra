@@ -58,7 +58,7 @@ fn extrapolate_curve(decay_curve: Vec<f32>, min: f32, max: f32, sample_rate: f32
 #[cfg(test)]
 mod tests {
   use approx::{assert_relative_eq};
-  use crate::reverberation::calculate_reverberation;
+  use crate::reverberation::calculate_t20;
 
   #[test]
   #[allow(unused_must_use)]
@@ -71,12 +71,9 @@ mod tests {
       squared_ir.push(squared_ir[i - 1] / 2.0);
     }
 
-    let reverb = calculate_reverberation(squared_ir, sample_rate);
+    let reverb = calculate_t20(squared_ir, sample_rate);
 
-    // edt should predict drop of 60dB at around 20 samples
-    assert_relative_eq!(reverb[0], 20.0, epsilon=0.1);
-
-    // T20 should predict drop of 60dB at around 20 samples
-    assert_relative_eq!(reverb[1], 20.0, epsilon=0.1);
+    // should predict drop of 60dB at around 20 samples
+    assert_relative_eq!(reverb, 20.0, epsilon=0.1);
   }
 }
