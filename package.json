@@ -1,8 +1,8 @@
 {
-  "name": "raqi-online-toolbox",
-  "description": "Webcomponent raqi-online-toolbox following open-wc recommendations",
+  "name": "opra",
+  "description": "Online tool for the prediction of room acoustical qualities",
   "license": "MIT",
-  "author": "raqi-online-toolbox",
+  "author": "Paul Schwörer <hello@paulschwoerer.de>",
   "version": "0.0.0",
   "scripts": {
     "lint": "eslint --ext .ts,.html . --ignore-path .gitignore && prettier \"**/*.ts\" --check --ignore-path .gitignore",
@@ -24,7 +24,7 @@
     "idb": "^7.1.1",
     "katex": "^0.16.7",
     "lit": "^2.0.2",
-    "wasm-raqi-online-toolbox": "file:wasm/pkg"
+    "opra-wasm-module": "file:wasm/pkg"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.16.4",

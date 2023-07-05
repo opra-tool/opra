@@ -1,4 +1,4 @@
-<p align="center"><img width="340"src="https://github.com/paulschwoerer/raqi-online-toolbox/assets/22923578/b11d3bea-53cd-48c3-b154-5473dcca481a"></p>
+<p align="center"><img width="340"src="https://github.com/opra-tool/opra/assets/22923578/a415253e-78dc-44db-97d5-61b863897a92"></p>
 
 <p align="center">
     <b>Online tool for the prediction of room acoustical qualities</b>

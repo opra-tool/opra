@@ -3,7 +3,7 @@ import { html } from 'lit';
 import {
   calculate_early_decay_time as wasmCalculateEarlyDecayTime,
   calculate_t20 as wasmCalculateT20,
-} from 'wasm-raqi-online-toolbox';
+} from 'opra-wasm-module';
 import { createOctaveBandParameterDefinition } from '../param-definition';
 import { REFERENCE_ISO_3382_1_2009 } from '../references';
 

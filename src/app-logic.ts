@@ -1,4 +1,4 @@
-import initWasm from 'wasm-raqi-online-toolbox';
+import initWasm from 'opra-wasm-module';
 import {
   OctaveBandParamDefinition,
   SingleFigureParamDefinition,

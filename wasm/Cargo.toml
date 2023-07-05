@@ -1,5 +1,5 @@
 [package]
-name = "wasm-raqi-online-toolbox"
+name = "opra-wasm-module"
 version = "0.1.0"
 authors = ["Paul Schwörer <hello@paulschwoerer.de>"]
 edition = "2018"

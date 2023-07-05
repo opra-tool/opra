@@ -1,6 +1,6 @@
 import { msg } from '@lit/localize';
 import { html } from 'lit';
-import { iacc as wasmIacc } from 'wasm-raqi-online-toolbox';
+import { iacc as wasmIacc } from 'opra-wasm-module';
 import { createOctaveBandParameterDefinition } from '../param-definition';
 import { e80Calc } from '../early-late-fractions';
 import { REFERENCE_ISO_3382_1_2009 } from '../references';
