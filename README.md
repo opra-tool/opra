@@ -1,4 +1,10 @@
-<p align="center"><img width="340"src="https://github.com/opra-tool/opra/assets/22923578/a415253e-78dc-44db-97d5-61b863897a92"></p>
+<p align="center">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://github.com/opra-tool/opra/assets/22923578/c0760cb2-1990-44d6-b71f-bb4a64913f65">
+      <source media="(prefers-color-scheme: light)" srcset="https://github.com/opra-tool/opra/assets/22923578/a415253e-78dc-44db-97d5-61b863897a92">
+      <img alt="The OPRA Logo, where the A transitions into a visual representation of a room impulse response" src="https://github.com/opra-tool/opra/assets/22923578/a07b44ba-ea00-4de8-b4de-4ab41f697792">
+    </picture>
+</p>
 
 <p align="center">
     <b>Online tool for the prediction of room acoustical qualities</b>
