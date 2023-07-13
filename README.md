@@ -38,3 +38,12 @@ Some are also stored in this repository in [testfiles/](./testfiles/).
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md);
+
+## Known Issues
+
+### Stuttering in Chromium-based browsers on Linux
+
+There seems to be a bug in chromium-based browsers with certain Linux configurations.
+`createIIRFilter()` takes around 50ms to complete, while on Firefox, it takes <1ms.
+This causes the UI to be unresponsive during file analyzing ([minimal example](https://gist.github.com/paulschwoerer/57e92f20ffb11fee4db4c286d717db3f)).
+Consider switching to Firefox.
