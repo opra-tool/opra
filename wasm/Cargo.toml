@@ -2,7 +2,7 @@
 name = "opra-wasm-module"
 version = "0.1.0"
 authors = ["Paul Schwörer <hello@paulschwoerer.de>"]
-edition = "2018"
+edition = "2021"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
@@ -31,5 +31,5 @@ rand = "0.8.5"
 approx = "0.5.1"
 
 [profile.release]
-# Tell `rustc` to optimize for small code size.
-opt-level = "s"
+opt-level = 3
+lto = true
