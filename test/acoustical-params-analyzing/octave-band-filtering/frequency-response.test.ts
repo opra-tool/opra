@@ -1,5 +1,5 @@
 import { expect } from '@esm-bundle/chai';
-import { frequencyResponse } from '../../../src/acoustical-params-analyzing/octave-band-filtering/frequency-response';
+import { frequencyResponse } from '../../../src/acoustical-param-analyzing/octave-band-filtering/frequency-response';
 
 it('throws when given coefficients not matching in length', () => {
   const anyNumber = 0;

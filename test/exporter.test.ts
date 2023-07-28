@@ -5,10 +5,6 @@ import {
 } from '../src/transfer-objects/impulse-response-file';
 import { EnvironmentValues } from '../src/transfer-objects/environment-values';
 import { JSONFileExporter } from '../src/exporter';
-import {
-  C50_PARAMETER,
-  C80_PARAMETER,
-} from '../src/acoustical-params/params/c50c80';
 import { OctaveBandValues } from '../src/transfer-objects/octave-bands';
 
 const makeImpulseResponseFile = (type: ImpulseResponseType) => ({
@@ -87,10 +83,7 @@ const EXPECTED_EXPORT = `{
 }`;
 
 it('it generates an export including all results', async () => {
-  const exporter = new JSONFileExporter(
-    [C50_PARAMETER, C80_PARAMETER],
-    makeDataSource()
-  );
+  const exporter = new JSONFileExporter(['c50', 'c80'], makeDataSource());
 
   const actual = exporter.generateExportFile();
 

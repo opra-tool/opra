@@ -1,5 +1,5 @@
 import { expect } from '@esm-bundle/chai';
-import { correctStarttime } from '../../src/acoustical-params-analyzing/starttime';
+import { correctStarttime } from '../../src/acoustical-param-analyzing/starttime';
 import { CustomAudioBuffer } from '../../src/transfer-objects/audio-buffer';
 
 it('trims samples to correct starttime', () => {

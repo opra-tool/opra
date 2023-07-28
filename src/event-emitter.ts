@@ -21,10 +21,7 @@ export class EventEmitter<TEventMap extends Record<string, any>> {
     this.listeners[type] = this.listeners[type]?.filter(l => l !== listener);
   }
 
-  protected dispatchEvent<K extends keyof TEventMap>(
-    type: K,
-    payload: TEventMap[K]
-  ) {
+  dispatchEvent<K extends keyof TEventMap>(type: K, payload: TEventMap[K]) {
     this.listeners[type]?.forEach(l => l(payload));
   }
 }

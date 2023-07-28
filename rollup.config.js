@@ -17,15 +17,16 @@ function iconPath(iconName) {
 export default {
   input: 'index.html',
   output: {
-    entryFileNames: '[hash].js',
-    chunkFileNames: '[hash].js',
-    assetFileNames: '[hash][extname]',
+    entryFileNames: '[name]-[hash].js',
+    chunkFileNames: '[name]-[hash].js',
+    assetFileNames: '[name]-[hash][extname]',
     format: 'es',
     dir: 'dist',
   },
   preserveEntrySignatures: false,
 
   plugins: [
+    bundleWorkers(),
     /** Enable using HTML as rollup entrypoint */
     html({
       minify: true,
@@ -131,3 +132,66 @@ export default {
     }),
   ],
 };
+
+/**
+ * Finds web worker creations like 
+ * 
+ *  new Worker(new URL('./path/to/worker.js', import.meta.url))
+ *  new Worker(new URL("./path/to/worker.js", import.meta.url), { type: "module" })
+ * 
+ * and emits a web worker bundle file including a hash in its name.
+*/
+function bundleWorkers() {
+  const WORKER_REGEX = /new\s+Worker\(\s*new\s+URL\(('.*?'|".*?")\s*,\s*import\.meta\.url\)/g;
+  
+  return {
+    name: 'bundle-workers',
+    /**
+     * @param {string} code 
+     * @param {string} id 
+     */
+    async transform(code, id) {
+      const matches = code.matchAll(WORKER_REGEX);
+
+      const workerFilesQuoted = [...matches]
+        .map(([, workerPath]) => workerPath);
+
+      if (workerFilesQuoted.length === 0) {
+        return {
+          code
+        }
+      }
+
+      const uniqueWorkerFilesUnquoted = workerFilesQuoted
+        .map(workerPath => workerPath.slice(1, -1)) // remove surrounding quotes
+        .filter((workerPath, index, all) => all.indexOf(workerPath) === index); // only unique worker paths
+     
+
+      const resolvedFiles = await Promise.all(uniqueWorkerFilesUnquoted.map(workerPath => this.resolve(workerPath, id).then(resolved => ({
+        workerPath,
+        resolved
+      }))));
+
+      let output = code;
+      for (const workerPathQuoted of workerFilesQuoted) {
+        const workerPathUnquoted = workerPathQuoted.slice(1, -1);
+
+        const resolvedFile = resolvedFiles.find(r => r.workerPath === workerPathUnquoted);
+        if (!resolvedFile.resolved) {
+          return this.error(`Cannot find script for web worker '${workerPathUnquoted}', defined in '${id}'`);
+        }
+
+        const chunkRefId = this.emitFile({
+          id: resolvedFile.resolved.id,
+          type: "chunk"
+        });
+
+        output = output.replaceAll(workerPathQuoted, `import.meta.ROLLUP_FILE_URL_${chunkRefId}`);
+      }
+
+      return {
+        code: output
+      }      
+    }
+  }
+}

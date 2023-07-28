@@ -1,6 +1,6 @@
 import { expect } from '@esm-bundle/chai';
-import { octaveBandpassFilterCoefficients } from '../../../src/acoustical-params-analyzing/octave-band-filtering/bandpass';
-import { frequencyResponse } from '../../../src/acoustical-params-analyzing/octave-band-filtering/frequency-response';
+import { octaveBandpassFilterCoefficients } from '../../../src/acoustical-param-analyzing/octave-band-filtering/bandpass';
+import { frequencyResponse } from '../../../src/acoustical-param-analyzing/octave-band-filtering/frequency-response';
 
 it('calculates coefficients for a 6th order bandpass filter consisting of three biquad filters', () => {
   const sampleRate = 48000;

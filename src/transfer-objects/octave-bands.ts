@@ -150,6 +150,10 @@ export class OctaveBands {
     return this.collect(band => band.sum());
   }
 
+  raw(): CustomAudioBuffer[] {
+    return this.bands;
+  }
+
   private map<U>(
     callback: (
       band: CustomAudioBuffer,

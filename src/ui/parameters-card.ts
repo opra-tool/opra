@@ -25,7 +25,7 @@ type Results = {
     shortName: string;
     longName: string;
   };
-  symbol?: string | TemplateResult;
+  symbol?: () => string | TemplateResult;
   unit?: string;
   irResults: {
     color: string;
@@ -50,7 +50,7 @@ export class ParametersCard extends LitElement {
       description: parameterResult.description(),
       source: parameterResult.source,
       unit: parameterResult.unit,
-      symbol: parameterResult.symbol,
+      symbol: parameterResult.symbol ? parameterResult.symbol() : undefined,
       responseValues: parameterResult.irResults.map(r => r.result),
     }));
 

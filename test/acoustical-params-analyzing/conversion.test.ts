@@ -1,5 +1,5 @@
 import { expect } from '@esm-bundle/chai';
-import { binauralToMidSide } from '../../src/acoustical-params-analyzing/conversion';
+import { binauralToMidSide } from '../../src/acoustical-param-analyzing/conversion';
 import { CustomAudioBuffer } from '../../src/transfer-objects/audio-buffer';
 
 it('throws when attempting to convert a mono buffer', () => {

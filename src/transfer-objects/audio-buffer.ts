@@ -54,6 +54,10 @@ export class CustomAudioBuffer {
     return arraySum(this.channels[0]);
   }
 
+  raw(): Float32Array[] {
+    return this.channels;
+  }
+
   [Symbol.iterator](): Iterator<Float32Array> {
     let index = 0;
     return {

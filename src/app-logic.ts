@@ -1,20 +1,15 @@
-import initWasm from 'opra-wasm-module';
-import {
-  OctaveBandParamDefinition,
-  SingleFigureParamDefinition,
-} from './acoustical-params/param-definition';
 import { readAudioFile } from './audio-files/audio-file-reading';
 import { EventEmitter } from './event-emitter';
 import { ImpulseResponseFile } from './transfer-objects/impulse-response-file';
 import { OctaveBandValues } from './transfer-objects/octave-bands';
 import { Persistence } from './persistence';
 import { EnvironmentValues } from './transfer-objects/environment-values';
-import { analyzeFile } from './acoustical-params-analyzing/file-analyzing';
 import { calcRAQIScore } from './raqi/raqi-calculation';
 import { RAQI_PARAMETERS } from './raqi/raqi-data';
 import { CustomAudioBuffer } from './transfer-objects/audio-buffer';
-import { calculateLpe10 } from './acoustical-params-analyzing/lpe10';
-import { IRSource } from './acoustical-params-analyzing/source';
+import { calculateLpe10 } from './acoustical-param-analyzing/lpe10';
+import { separateIntoBandsAndSquaredIR } from './acoustical-param-analyzing/buffer-separation';
+import { analyzingQueue } from './acoustical-param-analyzing/queue/analyzing-queue';
 
 const DEFAULT_RELATIVE_HUMIDITY = 50;
 const DEFAULT_AIR_TEMPERATURE = 20;
@@ -27,7 +22,7 @@ type EventMap = {
   'file-changed': { id: string };
   'file-removed': { id: string };
   'file-processing-error': { id: string; fileName: string; error: Error };
-  'results-available': { id: string };
+  'file-results-available': { id: string };
 };
 
 type RAQIResults = {
@@ -45,11 +40,6 @@ export class AppLogic extends EventEmitter<EventMap> {
     airDensity: DEFAULT_AIR_DENSITY,
   };
 
-  private acousticalParams: (
-    | SingleFigureParamDefinition
-    | OctaveBandParamDefinition
-  )[];
-
   private results = new Map<
     string,
     {
@@ -65,21 +55,15 @@ export class AppLogic extends EventEmitter<EventMap> {
 
   private irSamples = new Map<string, Float32Array>();
 
-  constructor(
-    acousticalParams: (
-      | SingleFigureParamDefinition
-      | OctaveBandParamDefinition
-    )[]
-  ) {
+  private analyzingQueue = analyzingQueue();
+
+  constructor() {
     super();
 
-    this.acousticalParams = acousticalParams;
     this.persistence = new Persistence();
   }
 
   async init() {
-    await initWasm();
-
     await this.persistence.init();
 
     const storedFiles = await this.persistence.getFiles();
@@ -90,22 +74,11 @@ export class AppLogic extends EventEmitter<EventMap> {
     }
 
     for (const file of storedFiles) {
-      this.addImpulseResponseFile(file);
+      // eslint-disable-next-line no-await-in-loop
+      await this.addImpulseResponseFile(file, true);
     }
 
     this.dispatchEvent('initialized', {});
-  }
-
-  getAcousticalParamDefinition(
-    id: string
-  ): SingleFigureParamDefinition | OctaveBandParamDefinition {
-    const param = this.acousticalParams.find(p => p.id === id);
-
-    if (!param) {
-      throw new Error(`expected to find param definition ${id}`);
-    }
-
-    return param;
   }
 
   getSingleFigureParamResult(
@@ -193,7 +166,7 @@ export class AppLogic extends EventEmitter<EventMap> {
     this.files.set(fileId, newFile);
 
     this.results.delete(fileId);
-    this.analyzeFile(this.acousticalParams, newFile);
+    this.analyzeFile(newFile, { onlyEnvironmentBasedParams: false });
     this.persistence.saveResponse(newFile);
 
     this.dispatchEvent('file-changed', { id: fileId });
@@ -218,45 +191,60 @@ export class AppLogic extends EventEmitter<EventMap> {
     return this.results.has(fileId);
   }
 
-  private addImpulseResponseFile(file: ImpulseResponseFile) {
+  private async addImpulseResponseFile(
+    file: ImpulseResponseFile,
+    skipPersistence: boolean = false
+  ) {
     this.files.set(file.id, file);
 
-    this.analyzeFile(this.acousticalParams, file);
-    this.persistence.saveResponse(file);
+    await this.analyzeFile(file, { onlyEnvironmentBasedParams: false });
+
+    if (!skipPersistence) {
+      await this.persistence.saveResponse(file);
+    }
 
     this.dispatchEvent('file-added', { id: file.id });
   }
 
   private async analyzeFile(
-    params: (SingleFigureParamDefinition | OctaveBandParamDefinition)[],
-    file: ImpulseResponseFile
+    file: ImpulseResponseFile,
+    { onlyEnvironmentBasedParams }: { onlyEnvironmentBasedParams: boolean }
   ) {
     try {
       const previousResults = this.results.get(file.id) || [];
 
       const buffer = CustomAudioBuffer.fromNativeAudioBuffer(file.buffer);
       const lpe10 = await calculateLpe10(buffer, this.environmentValues);
-      const source = await IRSource.create(file.type, buffer);
+      const { squaredIRSamples, ...bands } =
+        await separateIntoBandsAndSquaredIR(file.type, buffer);
 
-      const fileResults = await analyzeFile(params)(
-        file.type,
-        source,
-        lpe10,
-        previousResults
-      );
+      // do not await, so that others can start performing work
+      this.analyzingQueue
+        .analyzeFile(file.id, {
+          bands,
+          fileType: file.type,
+          lpe10,
+          previousResults,
+          sampleRate: file.sampleRate,
+          onlyEnvironmentBasedParams,
+        })
+        .then(fileResults => {
+          // make sure to only add results when the file has not been deleted in the meantime
+          if (this.files.has(file.id)) {
+            this.results.set(file.id, fileResults);
 
-      this.results.set(file.id, fileResults);
+            this.irSamples.set(file.id, squaredIRSamples);
 
-      this.irSamples.set(file.id, source.squaredIR);
+            this.raqiResults.set(
+              file.id,
+              RAQI_PARAMETERS.map(param =>
+                calcRAQIScore(param, file.type, fileResults)
+              )
+            );
 
-      this.raqiResults.set(
-        file.id,
-        RAQI_PARAMETERS.map(param =>
-          calcRAQIScore(param, file.type, fileResults)
-        )
-      );
-
-      this.dispatchEvent('results-available', { id: file.id });
+            this.dispatchEvent('file-results-available', { id: file.id });
+          }
+        });
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error(err);
@@ -271,12 +259,10 @@ export class AppLogic extends EventEmitter<EventMap> {
   }
 
   private async recalculateEnvironmentBasedParams() {
-    const environmentDependentParams = this.acousticalParams.filter(
-      p => p.environmentDependent
-    );
-
     for (const file of this.getAllImpulseResponseFiles()) {
-      this.analyzeFile(environmentDependentParams, file);
+      this.analyzeFile(file, {
+        onlyEnvironmentBasedParams: true,
+      });
     }
   }
 }

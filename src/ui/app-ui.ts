@@ -3,11 +3,8 @@ import { LitElement, TemplateResult, css, html } from 'lit';
 import { customElement, query, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { AppLogic } from '../app-logic';
-import { AcousticalParamGroupDefinition } from '../acoustical-params/group-definition';
-import {
-  OctaveBandParamDefinition,
-  SingleFigureParamDefinition,
-} from '../acoustical-params/param-definition';
+import { AcousticalParamGroup } from '../acoustical-param-definition/param-group';
+import { AcousticalParam } from '../acoustical-param-definition/param';
 import {
   EnvironmentChangeEvent,
   EnvironmentDialog,
@@ -44,12 +41,9 @@ export class AppUI extends LitElement {
 
   private errors = new Map<string, Error>();
 
-  private singleFigureParams: (
-    | SingleFigureParamDefinition
-    | OctaveBandParamDefinition
-  )[];
+  private params: AcousticalParam[];
 
-  private paramGroups: AcousticalParamGroupDefinition[];
+  private paramGroups: AcousticalParamGroup[];
 
   @state()
   private initialized = false;
@@ -64,14 +58,14 @@ export class AppUI extends LitElement {
   private discardAllDialog!: DiscardAllDialog;
 
   constructor(
-    params: (SingleFigureParamDefinition | OctaveBandParamDefinition)[],
-    paramGroups: AcousticalParamGroupDefinition[],
+    params: AcousticalParam[],
+    paramGroups: AcousticalParamGroup[],
     appLogic: AppLogic,
     exporter: JSONFileExporter
   ) {
     super();
 
-    this.singleFigureParams = params;
+    this.params = params;
     this.paramGroups = paramGroups;
 
     this.appLogic = appLogic;
@@ -87,7 +81,7 @@ export class AppUI extends LitElement {
     this.appLogic.addEventListener('file-removed', ({ id }) =>
       this.onImpulseResponseFileRemoved(id)
     );
-    this.appLogic.addEventListener('results-available', () =>
+    this.appLogic.addEventListener('file-results-available', () =>
       this.requestUpdate()
     );
     this.appLogic.addEventListener(
@@ -253,7 +247,7 @@ export class AppUI extends LitElement {
   private renderSingleFigureResults() {
     const files = this.getEnabledFilesWithAssociatedColor();
 
-    const results = this.singleFigureParams.map(param => ({
+    const results = this.params.map(param => ({
       id: param.id,
       name: param.name,
       description: param.description,
@@ -309,24 +303,14 @@ export class AppUI extends LitElement {
         .map(param => ({
           key: param.id,
           label: html`${param.name()}${param.symbol
-            ? html`, <i>${param.symbol}</i>`
+            ? html`, <i>${param.symbol()}</i>`
             : null}` as TemplateResult,
           datasets: files
-            .map(file => {
-              const lala = this.appLogic.getOctaveBandParamResult(
-                param.id,
-                file.id
-              );
-
-              return {
-                id: file.id,
-                fileName: file.fileName,
-                result: this.appLogic.getOctaveBandParamResult(
-                  param.id,
-                  file.id
-                ),
-              };
-            })
+            .map(file => ({
+              id: file.id,
+              fileName: file.fileName,
+              result: this.appLogic.getOctaveBandParamResult(param.id, file.id),
+            }))
             .filter(r => r.result)
             .map(r => ({
               // can use '!' because of previous filter() call

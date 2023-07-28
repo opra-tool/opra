@@ -19,7 +19,7 @@ export function calcRAQIScore(
       r => r.paramId === name
     )?.singleFigure;
 
-    if (!singleFigureResult) {
+    if (singleFigureResult === undefined) {
       throw new Error(
         `cannot find single-figure result for param '${name}' while calculating RAQI score`
       );

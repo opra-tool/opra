@@ -66,26 +66,29 @@ Built files are stored in `src/localization/`
 
 ## Defining acoustical params
 
-Acoustical params are defined in `acoustical-params/`, see this directory for example param configurations.
+Acoustical params are defined in two parts.
+First, a definition used for presentation to the user has to be put in `acoustical-param-definition/`, see this directory for example params.
+It also has to be added to the list in `main.ts` if it is to be displayed to the user.
+Params not included in this list will still be calculated and included in exports.
+
+Param groups are used to render graphs containing multiple different params.
+All params in a group need to be of the same unit.
+Membership in a group has no effect on param calculation.
+
+Second, an implementation for the parameter's calculation has to be put in `acoustical-param-analyzing/param-implementation`.
 A param definition requires a `forType` attribute, which can be `omnidirectional`, `binaural` or `mid-side`.
 The analyzing logic then makes sure to supply the calculation function(s) with the appropriate octave bands.
 A `omnidirectional` param will thus receive single-channel octave bands, while params of the other types will receive dual-channel octave bands.
 
 **NOTE:** currently, `omnidirectional` and `mid-side` will receive **squared** octave bands, while `binaural` will receive **non-squared** octave bands. This is subject to change in the future for consistency.
 
-If `environmentDependent` is set to `true`, the param will be recalculated when the user changes environment values like temperature or humidity.
+A parameter implementation has to be added to the `ALL_PARAMS` list in `acoustical-param-analyzing/params.ts` to be picked up by the application.
+If the parameter implementation depends on environment parameters like temperature or humidity, it additionally has to be added to the `ENVIRONMENT_DEPENDENT_PARAMS` list. 
 
 Params can use other params as a basis for their calculation.
 Lookup functions for single-figure and octave band results are passed into the calculation functions.
 These accept a param ID and throw an error when no result is found.
 The analyzing logic guarantees, that no old results are read, for example from before an environment values update.
-
-Param groups are used to render graphs containing multiple different params.
-All params in a group need to be of the same unit.
-Membership in a group has no effect on param calculation.
-
-The `main.ts` file contains lists of params for the applicatio to calculate and separate lists for params and param groups to display in the UI.
-A newly created param should be added to one or all of these lists.
 
 **NOTE:** params, which depend on others, need to be listed **after** these params, otherwise the requested result will not be available, yet
 
@@ -96,9 +99,9 @@ Some thought has been put into an architecture, which are outlined in this secti
 It is by no means finalized and will evolve while the application growths. 
 Some directories and files are listed here along with their purpose:
 
-- `acoustical-params/` Holds definitions of acoustical parameters - and groups thereof - calculated in the application. A Definition consists of a human-readable parameter name and description, as well as a technical implementation of the associated formula ([learn more](#defining-acoustical-params)).
 - `app-logic.ts` - in lack of a better name - is the primary coordinator of all (non-UI) functionality.
-- `acoustical-params-analyzing/` holds code to (re-)calculate parameters defined in `acoustical-params/` for impulse response files.
+- `acoustical-param-analyzing/` holds code to (re-)calculate parameters for impulse response files.
+- `acoustical-param-definition/` Holds definitions of acoustical parameters - and groups thereof - shown to users of the application. A Definition consists of a human-readable parameter name and description, the associated formula implementation is found in `acoustical-param-analyzing/` ([learn more](#defining-acoustical-params)).
 - `transfer-objects/` defines data objects used across the application, such as an `ImpulseResponseFile`. These generally hold little logic and can be imported freely from any other file.
 - `ui/components` contains reusable, not strictly application-specific web components, like a card or file drop component.
 - `ui/app-ui.ts` coordinates the UI logic in the application. It passes data to the app logic and updates the interface based on received events.
@@ -106,8 +109,6 @@ Some directories and files are listed here along with their purpose:
 *(all paths are relative to `src/`)*
 
 Generally, it was tried to separate presentation logic from the analyzing logic.
-A notable exception are acoustical parameter definitions:
-it has been decided to place presentation code (localized strings, formula formatting) close to the calculation logic to keep a parameter's definition to a single file.
 
 ### Import recommendations
 
@@ -116,7 +117,7 @@ This is by no means a rulebook or exhaustive list, but rather recommendations wh
 
 Files in `acoustical-params/` should not import any logic from the rest of the application apart from helpers like `math/` or `transfer-objects/`.
 
-Files in `acoustical-params-analyzing/` should not import code outside of previously mentioned helpers.
+Files in `acoustical-param-analyzing/` should not import code outside of previously mentioned helpers.
 
 Files in `localization/` should not import other modules apart from helpers.
 

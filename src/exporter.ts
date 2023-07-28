@@ -7,10 +7,6 @@ import {
   OctaveBandValues,
 } from './transfer-objects/octave-bands';
 import { EnvironmentValues } from './transfer-objects/environment-values';
-import {
-  SingleFigureParamDefinition,
-  OctaveBandParamDefinition,
-} from './acoustical-params/param-definition';
 
 interface DataSource {
   getAllImpulseResponseFiles(): ImpulseResponseFile[];
@@ -39,18 +35,12 @@ type ExportData = {
 };
 
 export class JSONFileExporter {
-  private exportParams: (
-    | SingleFigureParamDefinition
-    | OctaveBandParamDefinition
-  )[];
+  private exportParamIds: string[];
 
   private dataSource: DataSource;
 
-  constructor(
-    params: (SingleFigureParamDefinition | OctaveBandParamDefinition)[],
-    dataSource: DataSource
-  ) {
-    this.exportParams = params;
+  constructor(exportParamIds: string[], dataSource: DataSource) {
+    this.exportParamIds = exportParamIds;
     this.dataSource = dataSource;
   }
 
@@ -94,26 +84,26 @@ export class JSONFileExporter {
   private getExportableResults() {
     return this.dataSource.getAllImpulseResponseFiles().map(file => ({
       file,
-      singleFigureResults: this.exportParams.reduce((acc, param) => {
+      singleFigureResults: this.exportParamIds.reduce((acc, paramId) => {
         const result = this.dataSource.getSingleFigureParamResult(
-          param.id,
+          paramId,
           file.id
         );
 
         if (result) {
-          acc[param.id] = result;
+          acc[paramId] = result;
         }
 
         return acc;
       }, {} as Record<string, number>),
-      octaveBandResults: this.exportParams.reduce((acc, param) => {
+      octaveBandResults: this.exportParamIds.reduce((acc, paramId) => {
         const result = this.dataSource.getOctaveBandParamResult(
-          param.id,
+          paramId,
           file.id
         );
 
         if (result) {
-          acc[param.id] = result.raw();
+          acc[paramId] = result.raw();
         }
 
         return acc;

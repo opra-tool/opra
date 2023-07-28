@@ -1,5 +1,5 @@
 import { expect } from '@esm-bundle/chai';
-import { soundDamping } from '../../src/acoustical-params-analyzing/sound-damping';
+import { soundDamping } from '../../src/acoustical-param-analyzing/sound-damping';
 import { expectArraysApproximatelyEqual } from '../arrays-approx-equality';
 
 it('fails for frequencies < 50Hz and > 10kHz', () => {
