@@ -18,12 +18,12 @@ it('is not possible to create buffer with channels of different lengths', () => 
   ).to.throw();
 });
 
-it('sum() on a stereo buffer will throw', () => {
+it('squaredSum() on a stereo buffer will throw', () => {
   expect(() =>
     new CustomAudioBuffer(
       [new Float32Array(), new Float32Array()],
       48_000
-    ).sum()
+    ).squaredSum()
   ).to.throw();
 });
 

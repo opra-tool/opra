@@ -5,7 +5,7 @@ export const CENTRE_TIME = createSingleFigureParameterImplementation(
   'omnidirectional',
   bands => {
     const centreTimes = [bands.band(500), bands.band(1000)].map(band => {
-      const samples = band.getChannel(0);
+      const samples = band.squared().getChannel(0);
 
       let numerator = 0;
       let denominator = 0;

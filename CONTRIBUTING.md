@@ -80,8 +80,6 @@ A param definition requires a `forType` attribute, which can be `omnidirectional
 The analyzing logic then makes sure to supply the calculation function(s) with the appropriate octave bands.
 A `omnidirectional` param will thus receive single-channel octave bands, while params of the other types will receive dual-channel octave bands.
 
-**NOTE:** currently, `omnidirectional` and `mid-side` will receive **squared** octave bands, while `binaural` will receive **non-squared** octave bands. This is subject to change in the future for consistency.
-
 A parameter implementation has to be added to the `ALL_PARAMS` list in `acoustical-param-analyzing/params.ts` to be picked up by the application.
 If the parameter implementation depends on environment parameters like temperature or humidity, it additionally has to be added to the `ENVIRONMENT_DEPENDENT_PARAMS` list. 
 

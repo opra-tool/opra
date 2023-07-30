@@ -29,8 +29,8 @@ export const SOUND_STRENGTH = createOctaveBandParameterImplementation(
   'omnidirectional',
   (bands, _, lpe10) =>
     bands.collect(
-      (buffer, centerFrequency) =>
-        10 * safeLog10(buffer.sum()) - lpe10.band(centerFrequency)
+      (band, centerFrequency) =>
+        10 * safeLog10(band.squaredSum()) - lpe10.band(centerFrequency)
     ),
   octaveBandValues =>
     meanDecibel(octaveBandValues.band(500), octaveBandValues.band(1000))
@@ -41,8 +41,8 @@ export const EARLY_SOUND_STRENGTH = createOctaveBandParameterImplementation(
   'omnidirectional',
   (bands, _, lpe10) =>
     bands.collect(
-      (buffer, centerFrequency) =>
-        10 * safeLog10(e80Calc(buffer).sum()) - lpe10.band(centerFrequency)
+      (band, centerFrequency) =>
+        10 * safeLog10(e80Calc(band).squaredSum()) - lpe10.band(centerFrequency)
     ),
   octaveBandValues =>
     meanDecibel(octaveBandValues.band(500), octaveBandValues.band(1000))
@@ -53,8 +53,8 @@ export const LATE_SOUND_STRENGTH = createOctaveBandParameterImplementation(
   'omnidirectional',
   (bands, _, lpe10) =>
     bands.collect(
-      (buffer, centerFrequency) =>
-        10 * safeLog10(l80Calc(buffer).sum()) - lpe10.band(centerFrequency)
+      (band, centerFrequency) =>
+        10 * safeLog10(l80Calc(band).squaredSum()) - lpe10.band(centerFrequency)
     ),
   octaveBandValues =>
     meanDecibel(octaveBandValues.band(500), octaveBandValues.band(1000))
@@ -95,7 +95,7 @@ export const EARLY_BASS_LEVEL = createSingleFigureParameterImplementation(
   (bands, _, lpe10) => {
     const e50SoundStrength = bands.collect(
       (band, centerFrequency) =>
-        10 * safeLog10(e50Calc(band).sum()) - lpe10.band(centerFrequency)
+        10 * safeLog10(e50Calc(band).squaredSum()) - lpe10.band(centerFrequency)
     );
 
     return meanDecibel(

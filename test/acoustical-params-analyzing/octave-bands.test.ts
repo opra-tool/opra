@@ -60,7 +60,7 @@ it('collects octave bands', () => {
   );
   const bands = new OctaveBands(buffers);
 
-  const transformed = bands.collect(value => value.sum() + 1);
+  const transformed = bands.collect(value => value.raw()[0][0] + 1);
 
   expect(transformed.band(500)).to.equal(501);
   expect(transformed.band(8000)).to.equal(8001);

@@ -7,8 +7,8 @@ export const C50 = createOctaveBandParameterImplementation(
   'omnidirectional',
   bands =>
     bands.collect(band => {
-      const e50Sum = e50Calc(band).sum();
-      const l50Sum = l50Calc(band).sum();
+      const e50Sum = e50Calc(band).squaredSum();
+      const l50Sum = l50Calc(band).squaredSum();
 
       return 10 * safeLog10(e50Sum / l50Sum);
     }),
@@ -21,8 +21,8 @@ export const C80 = createOctaveBandParameterImplementation(
   'omnidirectional',
   bands =>
     bands.collect(band => {
-      const e80Sum = e80Calc(band).sum();
-      const l80Sum = l80Calc(band).sum();
+      const e80Sum = e80Calc(band).squaredSum();
+      const l80Sum = l80Calc(band).squaredSum();
 
       return 10 * safeLog10(e80Sum / l80Sum);
     }),

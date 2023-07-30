@@ -1,4 +1,4 @@
-import { arraySum } from '../math/arrays';
+import { arraySquared, arraySquaredSum } from '../math/arrays';
 
 export class CustomAudioBuffer {
   readonly sampleRate: number;
@@ -46,12 +46,21 @@ export class CustomAudioBuffer {
     return new CustomAudioBuffer(this.channels.map(callback), this.sampleRate);
   }
 
-  sum(): number {
+  squared(): CustomAudioBuffer {
+    return new CustomAudioBuffer(
+      this.channels.map(arraySquared),
+      this.sampleRate
+    );
+  }
+
+  squaredSum(): number {
     if (this.channels.length !== 1) {
-      throw new Error('expected buffer to be mono');
+      throw new Error(
+        'squaredSum() is only supported for single-channel audio'
+      );
     }
 
-    return arraySum(this.channels[0]);
+    return arraySquaredSum(this.channels[0]);
   }
 
   raw(): Float32Array[] {

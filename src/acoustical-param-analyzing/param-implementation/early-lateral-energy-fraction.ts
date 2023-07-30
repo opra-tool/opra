@@ -10,7 +10,7 @@ export const EARLY_LATERAL_ENERGY_FRACTION =
       bands.collect(band => {
         const startTime = Math.round(0.005 * band.sampleRate);
 
-        const e80 = e80Calc(band);
+        const e80 = e80Calc(band.squared());
 
         const numerator = arraySum(e80.getChannel(1).subarray(startTime));
         const denominator = arraySum(e80.getChannel(0));

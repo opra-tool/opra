@@ -10,13 +10,13 @@ export const EARLY_LATERAL_SOUND_LEVEL =
     'mid-side',
     (bands, _, lpe10) =>
       bands.collect((band, centerFrequency) => {
-        const sideBand = new CustomAudioBuffer(
+        const sideBands = new CustomAudioBuffer(
           band.getChannel(1),
           band.sampleRate
         );
-        const e80 = e80Calc(sideBand);
+        const e80SquaredSum = e80Calc(sideBands).squaredSum();
 
-        return 10 * safeLog10(e80.sum()) - lpe10.band(centerFrequency);
+        return 10 * safeLog10(e80SquaredSum) - lpe10.band(centerFrequency);
       }),
     octaveBandValues =>
       meanDecibelEnergetic(
@@ -32,13 +32,13 @@ export const LATE_LATERAL_SOUND_LEVEL = createOctaveBandParameterImplementation(
   'mid-side',
   (bands, _, lpe10) =>
     bands.collect((band, centerFrequency) => {
-      const sideBand = new CustomAudioBuffer(
+      const sideBands = new CustomAudioBuffer(
         band.getChannel(1),
         band.sampleRate
       );
-      const l80 = l80Calc(sideBand);
+      const l80SquaredSum = l80Calc(sideBands).squaredSum();
 
-      return 10 * safeLog10(l80.sum()) - lpe10.band(centerFrequency);
+      return 10 * safeLog10(l80SquaredSum) - lpe10.band(centerFrequency);
     }),
   octaveBandValues =>
     meanDecibelEnergetic(

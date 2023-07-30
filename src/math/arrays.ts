@@ -1,4 +1,4 @@
-export function arraySum(array: Float32Array | Float64Array): number {
+export function arraySum(array: Float32Array): number {
   let sum = 0;
 
   for (const el of array) {
@@ -8,7 +8,17 @@ export function arraySum(array: Float32Array | Float64Array): number {
   return sum;
 }
 
-export function arraySquaredSum(array: Float32Array | Float64Array): number {
+export function arraySquared(array: Float32Array): Float32Array {
+  const squared = new Float32Array(array.length);
+
+  for (let i = 0; i < array.length; i++) {
+    squared[i] = array[i] ** 2;
+  }
+
+  return squared;
+}
+
+export function arraySquaredSum(array: Float32Array): number {
   let sum = 0;
 
   for (const el of array) {
@@ -18,7 +28,7 @@ export function arraySquaredSum(array: Float32Array | Float64Array): number {
   return sum;
 }
 
-export function arrayMax(array: Float32Array | Float64Array): number {
+export function arrayMax(array: Float32Array): number {
   let max = -Infinity;
 
   for (let i = 0; i < array.length; i++) {
@@ -30,7 +40,7 @@ export function arrayMax(array: Float32Array | Float64Array): number {
   return max;
 }
 
-export function arrayMaxAbs(array: Float32Array | Float64Array): number {
+export function arrayMaxAbs(array: Float32Array): number {
   let max = -Infinity;
 
   for (let i = 0; i < array.length; i++) {

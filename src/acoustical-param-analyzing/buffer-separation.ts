@@ -29,13 +29,8 @@ async function omnidirectional(buffer: CustomAudioBuffer) {
   const starttimeCorrected = correctStarttime(buffer);
   const omnidirectionalBands = await octfilt(starttimeCorrected);
 
-  // TODO: do not square, square in params, instead
-  const omnidirectionalBandsSquared = omnidirectionalBands.transform(band =>
-    band.transform(calculateSquaredIR)
-  );
-
   return {
-    omnidirectionalBands: omnidirectionalBandsSquared,
+    omnidirectionalBands,
     squaredIRSamples: calculateSquaredIR(buffer.getChannel(0)),
   };
 }
@@ -48,18 +43,12 @@ async function binaural(buffer: CustomAudioBuffer) {
     starttimeCorrected
   );
 
-  // TODO: do not square, square in params, instead
-  const omnidirectionalBandsSquared = (
-    await octfilt(omnidirectionalBuffer)
-  ).transform(band => band.transform(calculateSquaredIR));
+  const omnidirectionalBands = await octfilt(omnidirectionalBuffer);
 
-  // TODO: do not square, square in params, instead
-  const midSideBandsSquared = binauralBands
-    .transform(binauralToMidSide)
-    .transform(band => band.transform(calculateSquaredIR));
+  const midSideBandsSquared = binauralBands.transform(binauralToMidSide);
 
   return {
-    omnidirectionalBands: omnidirectionalBandsSquared,
+    omnidirectionalBands,
     binauralBands,
     midSideBands: midSideBandsSquared,
     squaredIRSamples: calculateSquaredIR(omnidirectionalBuffer.getChannel(0)),
@@ -69,18 +58,15 @@ async function binaural(buffer: CustomAudioBuffer) {
 async function midSide(buffer: CustomAudioBuffer) {
   const starttimeCorrected = correctStarttime(buffer);
 
-  // TODO: do not square, square in params, instead
-  const midSideBandsSquared = (await octfilt(starttimeCorrected)).transform(
-    band => band.transform(calculateSquaredIR)
-  );
+  const midSideBands = await octfilt(starttimeCorrected);
 
-  const omnidirectionalBandsSquared = midSideBandsSquared.transform(
+  const omnidirectionalBands = midSideBands.transform(
     band => new CustomAudioBuffer(band.getChannel(0), band.sampleRate)
   );
 
   return {
-    omnidirectionalBands: omnidirectionalBandsSquared,
-    midSideBands: midSideBandsSquared,
+    omnidirectionalBands,
+    midSideBands,
     squaredIRSamples: calculateSquaredIR(buffer.getChannel(0)),
   };
 }
