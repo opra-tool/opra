@@ -44,28 +44,34 @@ export async function calculateLpe10(
 
 function createDiracImpulse(
   buffer: CustomAudioBuffer,
-  { airTemperature, referencePressure, sourcePower }: EnvironmentValues
+  environmentValues: EnvironmentValues
 ): CustomAudioBuffer {
-  let diracEnergy;
-  if (sourcePower !== undefined && referencePressure !== undefined) {
-    const airDensity = 1.2;
-    const speedOfSound = 331.3 * Math.sqrt(1 + airTemperature / 273.15);
-    diracEnergy =
-      referencePressure *
-      Math.sqrt(
-        sourcePower * airDensity * ((speedOfSound / 4) * Math.PI * 10 ** 2)
-      );
-  } else {
-    diracEnergy = arrayMaxAbs(buffer.getChannel(0)) / Math.SQRT2;
-  }
-
   // one second dirac impulse with its spike placed at the approximate
   // time it takes for sound waves to travel a distance of 10m
   const dirac = new Float32Array(buffer.sampleRate);
   const spikeIndex = Math.floor(0.03 * buffer.sampleRate);
-  dirac[spikeIndex] = diracEnergy;
+  dirac[spikeIndex] = calculateDiracEnergy(buffer, environmentValues);
 
   return new CustomAudioBuffer(dirac, buffer.sampleRate);
+}
+
+function calculateDiracEnergy(
+  buffer: CustomAudioBuffer,
+  { airTemperature, referencePressure, sourcePower }: EnvironmentValues
+): number {
+  if (sourcePower !== undefined && referencePressure !== undefined) {
+    const airDensity = 1.2;
+    const speedOfSound = 331.3 * Math.sqrt(1 + airTemperature / 273.15);
+
+    return (
+      referencePressure *
+      Math.sqrt(
+        sourcePower * airDensity * ((speedOfSound / 4) * Math.PI * 10 ** 2)
+      )
+    );
+  }
+
+  return arrayMaxAbs(buffer.getChannel(0)) / Math.SQRT2;
 }
 
 function calculateAirDampingCompensation(airDamping: OctaveBandValues) {
