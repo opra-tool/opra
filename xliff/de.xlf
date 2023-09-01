@@ -332,10 +332,6 @@
   <source>Discard all responses</source>
   <target>Alle Impulsantworten entfernen</target>
 </trans-unit>
-<trans-unit id="sf8942e17b918112e">
-  <source>RAQI Parameters</source>
-  <target>RAQI Parameter</target>
-</trans-unit>
 <trans-unit id="s568d76d1ddcd938e">
   <source>Select a stimulus</source>
   <target>Stimulus auswählen</target>
@@ -466,22 +462,26 @@
           Die frühe Abklingzeit wird auf ähnliche Weise berechnet, wobei 0 und -10 dB zur Anpassung der Regressionslinie verwendet werden.
         </target>
 </trans-unit>
-<trans-unit id="h8752ced8d075f7eb">
+<trans-unit id="s8ef36c85badd467c">
+  <source>RAQI Factor Scores</source>
+  <target>RAQI Faktoren</target>
+</trans-unit>
+<trans-unit id="he373ba2da4db6f91">
   <source>
-              An early prediction model uses calculated technical parameters to
-              infer Room Acoustical Quality Inventory (RAQI) parameters
+              A prediction model uses calculated technical parameters to
+              infer Room Acoustical Quality Inventory (RAQI) factor scores
               <x id="0" equiv-text="${raqiPaper}"/>. Different coefficients are used for omnidirectional,
               binaural and mid/side impulse responses. Optimizing for specific
-              stimuli allows for more accurat results. Select a stimulus, which
+              stimuli allows for more accurate results. Select a stimulus, which
               best matches your needs.
             </source>
   <target>
-              Ein frühes Vorhersagemodell verwendet berechnete technische Parameter, um
-              Parameter des Room Acoustical Quality Inventory (RAQI) abzuleiten
+              Ein Vorhersagemodell verwendet berechnete technische Parameter, um
+              Faktoren des Room Acoustical Quality Inventory (RAQI) abzuleiten
               <x id="0" equiv-text="${raqiPaper}"/>. Es werden unterschiedliche Koeffizienten für omnidirektionale,
               binaurale und Mitten/Seiten-Impulsantworten verwendet. Die Optimierung für bestimmte
               Stimuli ermöglicht genauere Ergebnisse. Wähle einen Stimulus, der
-              deinen Anforderungen am besten entspricht.
+              deinen Anforderungen entspricht.
             </target>
 </trans-unit>
 </body>

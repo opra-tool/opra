@@ -18,19 +18,19 @@ export const templates = {
     <code>normalize</code> Attribut der verwendeten <code>ConvolverNode</code>.
     Eine Änderung dieser Einstellung hat keinen Einfluss auf die aktuelle
     Wiedergabe.`,
-  h8752ced8d075f7eb: html`
-    Ein frühes Vorhersagemodell verwendet berechnete technische Parameter, um
-    Parameter des Room Acoustical Quality Inventory (RAQI) abzuleiten ${0}. Es
-    werden unterschiedliche Koeffizienten für omnidirektionale, binaurale und
-    Mitten/Seiten-Impulsantworten verwendet. Die Optimierung für bestimmte
-    Stimuli ermöglicht genauere Ergebnisse. Wähle einen Stimulus, der deinen
-    Anforderungen am besten entspricht.
-  `,
   hc26c472a258dca99: html`
     ${0} und ${1} beschreiben die Balance zwischen dem frühen und späten
     Schallanteil einer Raumimpulsantwort. ${2} wird hauptsächlich zur Bewertung
     von Sprache herangezogen, während ${3} für Musik verwendet wird. Beide
     Parameter sind in ISO 3382-1 definiert durch
+  `,
+  he373ba2da4db6f91: html`
+    Ein Vorhersagemodell verwendet berechnete technische Parameter, um Faktoren
+    des Room Acoustical Quality Inventory (RAQI) abzuleiten ${0}. Es werden
+    unterschiedliche Koeffizienten für omnidirektionale, binaurale und
+    Mitten/Seiten-Impulsantworten verwendet. Die Optimierung für bestimmte
+    Stimuli ermöglicht genauere Ergebnisse. Wähle einen Stimulus, der deinen
+    Anforderungen entspricht.
   `,
   s001d4f16b5820bf0: `Raumeindruck`,
   s01b3b23ccba74fd8: `Lufttemperatur [°C]`,
@@ -106,6 +106,7 @@ export const templates = {
   s8cf4c19d9e6341c2: `Empfundene Klarheit des Klangs, insbesondere Musik`,
   s8cf84c09568b1264: `Für dieses Element gibt es noch keine Hilfe.`,
   s8e8396b2db5b7c6c: `Nein, doch nicht`,
+  s8ef36c85badd467c: `RAQI Faktoren`,
   s9224ed62985fbd03: `Kein Effekt`,
   s97128b8913cdfc3b: `Impulsantwort`,
   s979ceb45938c45d4: `Analysiere Datei(en) ...`,
@@ -145,7 +146,6 @@ export const templates = {
   sf43ea2ac6e5ce802: `Bei binauralen Raumimpulsantworten wird eine Mittelung beider Kanäle vorgenommen
           und aus dieser Mittelung dann omnidirektionale Parameter berechnet.
           Die Head-Related Transfer Function kann Einfluss auf omnidirektionale Parameter haben.`,
-  sf8942e17b918112e: `RAQI Parameter`,
   sfba93af00dca196b: `Luftdichte`,
   sfcb0080cab096498: `Bist du sicher, dass alle Raumimpulsantworten entfernt werden sollen?`,
   sfd396ad5707a3135: `Bass-Verhältnis`,

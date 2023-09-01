@@ -57,15 +57,15 @@ export class RAQICard extends LitElement {
     ></reference-paper>`;
 
     return html`
-      <base-card cardTitle=${msg('RAQI Parameters')}>
+      <base-card cardTitle=${msg('RAQI Factor Scores')}>
         <header>
           <p>
             ${msg(html`
-              An early prediction model uses calculated technical parameters to
-              infer Room Acoustical Quality Inventory (RAQI) parameters
+              A prediction model uses calculated technical parameters to infer
+              Room Acoustical Quality Inventory (RAQI) factor scores
               ${raqiPaper}. Different coefficients are used for omnidirectional,
               binaural and mid/side impulse responses. Optimizing for specific
-              stimuli allows for more accurat results. Select a stimulus, which
+              stimuli allows for more accurate results. Select a stimulus, which
               best matches your needs.
             `)}
           </p>
