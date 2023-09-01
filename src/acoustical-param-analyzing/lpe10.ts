@@ -8,8 +8,10 @@ import {
 import { soundDamping } from './sound-damping';
 import { arrayMaxAbs, arraySquaredSum } from '../math/arrays';
 import { CustomAudioBuffer } from '../transfer-objects/audio-buffer';
+import { ImpulseResponseType } from '../transfer-objects/impulse-response-file';
 
 export async function calculateLpe10(
+  type: ImpulseResponseType,
   buffer: CustomAudioBuffer,
   environmentValues: EnvironmentValues
 ): Promise<OctaveBandValues> {
@@ -28,11 +30,10 @@ export async function calculateLpe10(
   );
   const airDampingCompensation = calculateAirDampingCompensation(airDampingX);
 
-  const dirac = createDiracImpulse(buffer, environmentValues);
+  const dirac = createDiracImpulse(type, buffer, environmentValues);
 
   const bands = await octfilt(dirac);
 
-  // FIXME: using getChannel(0) here could lead to problems with binaural files
   return bands.collect(
     (band, centerFrequency) =>
       10 * safeLog10(arraySquaredSum(band.getChannel(0))) +
@@ -43,6 +44,7 @@ export async function calculateLpe10(
 }
 
 function createDiracImpulse(
+  type: ImpulseResponseType,
   buffer: CustomAudioBuffer,
   environmentValues: EnvironmentValues
 ): CustomAudioBuffer {
@@ -50,12 +52,13 @@ function createDiracImpulse(
   // time it takes for sound waves to travel a distance of 10m
   const dirac = new Float32Array(buffer.sampleRate);
   const spikeIndex = Math.floor(0.03 * buffer.sampleRate);
-  dirac[spikeIndex] = calculateDiracEnergy(buffer, environmentValues);
+  dirac[spikeIndex] = calculateDiracEnergy(type, buffer, environmentValues);
 
   return new CustomAudioBuffer(dirac, buffer.sampleRate);
 }
 
 function calculateDiracEnergy(
+  type: ImpulseResponseType,
   buffer: CustomAudioBuffer,
   { airTemperature, referencePressure, sourcePower }: EnvironmentValues
 ): number {
@@ -71,7 +74,21 @@ function calculateDiracEnergy(
     );
   }
 
-  return arrayMaxAbs(buffer.getChannel(0)) / Math.SQRT2;
+  return impulseResponseMaxAbs(type, buffer) / Math.SQRT2;
+}
+
+function impulseResponseMaxAbs(
+  type: ImpulseResponseType,
+  buffer: CustomAudioBuffer
+): number {
+  if (type === 'binaural') {
+    return Math.max(
+      arrayMaxAbs(buffer.getChannel(0)),
+      arrayMaxAbs(buffer.getChannel(1))
+    );
+  }
+
+  return arrayMaxAbs(buffer.getChannel(0));
 }
 
 function calculateAirDampingCompensation(airDamping: OctaveBandValues) {

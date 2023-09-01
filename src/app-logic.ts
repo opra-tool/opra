@@ -214,7 +214,11 @@ export class AppLogic extends EventEmitter<EventMap> {
       const previousResults = this.results.get(file.id) || [];
 
       const buffer = CustomAudioBuffer.fromNativeAudioBuffer(file.buffer);
-      const lpe10 = await calculateLpe10(buffer, this.environmentValues);
+      const lpe10 = await calculateLpe10(
+        file.type,
+        buffer,
+        this.environmentValues
+      );
       const { squaredIRSamples, ...bands } =
         await separateIntoBandsAndSquaredIR(file.type, buffer);
 
