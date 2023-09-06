@@ -52,6 +52,18 @@ const makeDataSource = () => ({
       c80: new OctaveBandValues([8, 7, 6, 5, 4, 3, 2, 1]),
     }[paramId];
   },
+  getRAQIFactorScores(
+    paramId: string,
+    fileId: string
+  ): Record<string, number> | undefined {
+    return paramId === 'quality'
+      ? {
+          soloInstrument: 0.1,
+          orchestra: 0.2,
+          speech: 0.3,
+        }
+      : undefined;
+  },
 });
 
 const EXPECTED_EXPORT = `{
@@ -77,6 +89,13 @@ const EXPECTED_EXPORT = `{
         "airDensity": 1.2,
         "referencePressure": 0.01,
         "sourcePower": 1
+      },
+      "raqiFactorScores": {
+        "quality": {
+          "soloInstrument": 0.1,
+          "orchestra": 0.2,
+          "speech": 0.3
+        }
       }
     }
   ]

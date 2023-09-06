@@ -97,7 +97,7 @@ export class AppLogic extends EventEmitter<EventMap> {
       ?.octaveBandValues;
   }
 
-  getRAQIResults(
+  getRAQIFactorScores(
     paramId: string,
     fileId: string
   ): Record<string, number> | undefined {

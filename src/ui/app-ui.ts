@@ -271,12 +271,15 @@ export class AppUI extends LitElement {
       nameEnglish: param.nameEnglish,
       nameGerman: param.nameGerman,
       irResults: files
-        .filter(file => this.appLogic.getRAQIResults(param.id, file.id))
+        .filter(file => this.appLogic.getRAQIFactorScores(param.id, file.id))
         .map(file => ({
           fileName: file.fileName,
           color: file.color,
           // can use '!' because of previous filter() call
-          scorePerStimulus: this.appLogic.getRAQIResults(param.id, file.id)!,
+          scorePerStimulus: this.appLogic.getRAQIFactorScores(
+            param.id,
+            file.id
+          )!,
         })),
     }));
 
