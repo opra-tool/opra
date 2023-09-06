@@ -1,6 +1,7 @@
 import { msg, localized } from '@lit/localize';
-import { LitElement, html, css, TemplateResult } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { SlSelect } from '@shoelace-style/shoelace';
+import { LitElement, html, css, TemplateResult, PropertyValueMap } from 'lit';
+import { customElement, property, query, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 
 type Parameter = {
@@ -40,43 +41,88 @@ export class ParametersCard extends LitElement {
   @property({ type: Array })
   results: Results = [];
 
+  @query('#param-select')
+  private paramSelect!: SlSelect;
+
+  @state()
+  private enabledParams: string[] = [];
+
+  protected willUpdate(_changedProperties: PropertyValueMap<this>): void {
+    if (
+      _changedProperties.has('results') &&
+      this.results.length > 0 &&
+      this.enabledParams.length === 0
+    ) {
+      this.enabledParams = this.results.map(r => r.id);
+    }
+  }
+
   render() {
     if (!this.results.length) {
       return null;
     }
 
-    const parameters: Parameter[] = this.results.map(parameterResult => ({
-      name: parameterResult.name(),
-      description: parameterResult.description(),
-      source: parameterResult.source,
-      unit: parameterResult.unit,
-      symbol: parameterResult.symbol ? parameterResult.symbol() : undefined,
-      responseValues: parameterResult.irResults.map(r => r.result),
-    }));
+    const parameters: Parameter[] = this.results
+      .filter(r => this.enabledParams.includes(r.id))
+      .map(r => ({
+        name: r.name(),
+        description: r.description(),
+        source: r.source,
+        unit: r.unit,
+        symbol: r.symbol ? r.symbol() : undefined,
+        responseValues: r.irResults.map(res => res.result),
+      }));
 
     const { irResults: firstResponseResults } = this.results[0];
 
     return html`
       <base-card cardTitle=${msg('Single-Figure Parameters')}>
-        <div class="scroll-container">
-          <table>
-            ${firstResponseResults.length > 1
-              ? html`
-                  <thead>
-                    <tr>
-                      <th></th>
-                      ${firstResponseResults.map(ParametersCard.renderLegend)}
-                    </tr>
-                  </thead>
-                `
-              : null}
-            <tbody>
-              ${parameters.map(ParametersCard.renderParameter)}
-            </tbody>
-          </table>
+        <div class="container">
+          <sl-select
+            id="param-select"
+            label=${msg('Select parameters to display')}
+            value=${this.enabledParams.join(' ')}
+            multiple
+            max-options-visible="6"
+            size="small"
+            @sl-change=${this.onParamSelectChange}
+          >
+            ${this.results.map(
+              r =>
+                html`<sl-option value="${r.id}"
+                  >${ParametersCard.renderParameterName(
+                    r.name(),
+                    r.symbol ? r.symbol() : undefined
+                  )}</sl-option
+                >`
+            )}
+          </sl-select>
+          <sl-divider></sl-divider>
+          <div class="scroll-container">
+            <table>
+              ${firstResponseResults.length > 1
+                ? html`
+                    <thead>
+                      <tr>
+                        <th></th>
+                        ${firstResponseResults.map(ParametersCard.renderLegend)}
+                      </tr>
+                    </thead>
+                  `
+                : null}
+              <tbody>
+                ${parameters.map(ParametersCard.renderParameter)}
+              </tbody>
+            </table>
+          </div>
         </div>
       </base-card>
     `;
+  }
+
+  private onParamSelectChange() {
+    const { value } = this.paramSelect;
+    this.enabledParams = value instanceof Array ? value : [value];
   }
 
   private static renderLegend({
@@ -112,7 +158,7 @@ export class ParametersCard extends LitElement {
     return html`
       <tr class=${classes}>
         <td>
-          <span>${name}${symbol ? html`, <i>${symbol}</i>` : null}</span>
+          <span>${ParametersCard.renderParameterName(name, symbol)}</span>
           <br />
           <small
             >${description} •
@@ -131,6 +177,13 @@ export class ParametersCard extends LitElement {
     `;
   }
 
+  private static renderParameterName(
+    name: string | TemplateResult,
+    symbol: string | TemplateResult | undefined
+  ) {
+    return html`${name}${symbol ? html`, <i>${symbol}</i>` : null}`;
+  }
+
   private static renderUnit(unit: string | undefined) {
     if (!unit) {
       return null;
@@ -140,6 +193,11 @@ export class ParametersCard extends LitElement {
   }
 
   static styles = css`
+    .container {
+      display: grid;
+      gap: 1rem;
+    }
+
     .scroll-container {
       overflow-x: auto;
       max-width: 100%;

@@ -90,6 +90,7 @@ export const templates = {
   s78cb1ae8a1d79653: `Als Mitten/Seiten Impulsantwort behandeln`,
   s7918caa28313467f: `Spätes Stärkemaß`,
   s794bcbe84b9b3840: `Umgebungswerte setzen`,
+  s7bdd80b7501a62fa: `Wähle Parameter zum Anzeigen aus`,
   s7dd0d11d0666abc5: `Früher seitlicher Energieanteil`,
   s7f187fdac1f91f05: `Scheinbare Quellenbreite (ASW)`,
   s8074acfc94d2b637: `

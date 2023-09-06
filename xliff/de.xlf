@@ -488,6 +488,10 @@
   <source>Perceived clarity of sound, alternative to</source>
   <target>Empfundene Klarheit des Klangs, Alternative zu</target>
 </trans-unit>
+<trans-unit id="s7bdd80b7501a62fa">
+  <source>Select parameters to display</source>
+  <target>Wähle Parameter zum Anzeigen aus</target>
+</trans-unit>
 </body>
 </file>
 </xliff>
