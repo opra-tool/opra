@@ -56,6 +56,7 @@ export const templates = {
   s38beac14eccc0c6f: `Weitere Einstellungen für diese Impulsantwort`,
   s3b4111074880d540: `Omnidirektional`,
   s3df9c7b795b7e6c5: `ignoriert`,
+  s3f8f8504078b6900: `Empfundene Klarheit des Klangs, Alternative zu`,
   s40d760cc51e1ad71: `Für das Stärkemaß und verwandte Parameter werden Umgebungswerte angenommen.`,
   s44444cdb4765019f: `Kann nicht deaktiviert werden, da keine andere Impulsantwort aktiv ist.`,
   s4b3ab99331bfc6c7: `Nachhall`,

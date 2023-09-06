@@ -468,13 +468,13 @@
 </trans-unit>
 <trans-unit id="h069e69e27f378485">
   <source>
-          A prediction model uses calculated technical parameters to infer
-          Room Acoustical Quality Inventory (RAQI) factor scores
-          <x id="0" equiv-text="${raqiPaper}"/>. Different coefficients are used for omnidirectional,
-          binaural and mid/side impulse responses. Optimizing for specific
-          stimuli allows for more accurate results. Select a stimulus, which
-          best matches your needs.
-        </source>
+              A prediction model uses calculated technical parameters to infer
+              Room Acoustical Quality Inventory (RAQI) factor scores
+              <x id="0" equiv-text="${raqiPaper}"/>. Different coefficients are used for omnidirectional,
+              binaural and mid/side impulse responses. Optimizing for specific
+              stimuli allows for more accurate results. Select a stimulus, which
+              best matches your needs.
+            </source>
   <target>
           Ein Vorhersagemodell verwendet berechnete technische Parameter, um
           Faktoren des Room Acoustical Quality Inventory (RAQI) abzuleiten
@@ -483,6 +483,10 @@
           Stimuli ermöglicht genauere Ergebnisse. Wähle einen Stimulus, der
           deinen Anforderungen entspricht.
         </target>
+</trans-unit>
+<trans-unit id="s3f8f8504078b6900">
+  <source>Perceived clarity of sound, alternative to</source>
+  <target>Empfundene Klarheit des Klangs, Alternative zu</target>
 </trans-unit>
 </body>
 </file>

@@ -26,6 +26,7 @@ import {
   EARLY_BASS_LEVEL_PRESENTATION,
 } from './acoustical-param-definition/params/sound-strength';
 import { ALL_PARAMS } from './acoustical-param-analyzing/params';
+import { D50_PRESENTATION } from './acoustical-param-definition/params/d50';
 
 const displayedParams = [
   T20_PRESENTATION,
@@ -34,6 +35,7 @@ const displayedParams = [
   A_WEIGHTED_SOUND_STRENGTH_PRESENTATION,
   C50_PRESENTATION,
   C80_PRESENTATION,
+  D50_PRESENTATION,
   LEVEL_ADJUSTED_C80_PRESENTATION,
   TREBLE_RATIO_PRESENTATION,
   BASS_RATIO_PRESENTATION,
