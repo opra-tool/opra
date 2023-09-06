@@ -466,23 +466,23 @@
   <source>RAQI Factor Scores</source>
   <target>RAQI Faktoren</target>
 </trans-unit>
-<trans-unit id="he373ba2da4db6f91">
+<trans-unit id="h069e69e27f378485">
   <source>
-              A prediction model uses calculated technical parameters to
-              infer Room Acoustical Quality Inventory (RAQI) factor scores
-              <x id="0" equiv-text="${raqiPaper}"/>. Different coefficients are used for omnidirectional,
-              binaural and mid/side impulse responses. Optimizing for specific
-              stimuli allows for more accurate results. Select a stimulus, which
-              best matches your needs.
-            </source>
+          A prediction model uses calculated technical parameters to infer
+          Room Acoustical Quality Inventory (RAQI) factor scores
+          <x id="0" equiv-text="${raqiPaper}"/>. Different coefficients are used for omnidirectional,
+          binaural and mid/side impulse responses. Optimizing for specific
+          stimuli allows for more accurate results. Select a stimulus, which
+          best matches your needs.
+        </source>
   <target>
-              Ein Vorhersagemodell verwendet berechnete technische Parameter, um
-              Faktoren des Room Acoustical Quality Inventory (RAQI) abzuleiten
-              <x id="0" equiv-text="${raqiPaper}"/>. Es werden unterschiedliche Koeffizienten für omnidirektionale,
-              binaurale und Mitten/Seiten-Impulsantworten verwendet. Die Optimierung für bestimmte
-              Stimuli ermöglicht genauere Ergebnisse. Wähle einen Stimulus, der
-              deinen Anforderungen entspricht.
-            </target>
+          Ein Vorhersagemodell verwendet berechnete technische Parameter, um
+          Faktoren des Room Acoustical Quality Inventory (RAQI) abzuleiten
+          <x id="0" equiv-text="${raqiPaper}"/>. Es werden unterschiedliche Koeffizienten für omnidirektionale,
+          binaurale und Mitten/Seiten-Impulsantworten verwendet. Die Optimierung für bestimmte
+          Stimuli ermöglicht genauere Ergebnisse. Wähle einen Stimulus, der
+          deinen Anforderungen entspricht.
+        </target>
 </trans-unit>
 </body>
 </file>

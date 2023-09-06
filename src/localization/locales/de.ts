@@ -7,6 +7,14 @@ import { html } from 'lit';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 export const templates = {
+  h069e69e27f378485: html`
+    Ein Vorhersagemodell verwendet berechnete technische Parameter, um Faktoren
+    des Room Acoustical Quality Inventory (RAQI) abzuleiten ${0}. Es werden
+    unterschiedliche Koeffizienten für omnidirektionale, binaurale und
+    Mitten/Seiten-Impulsantworten verwendet. Die Optimierung für bestimmte
+    Stimuli ermöglicht genauere Ergebnisse. Wähle einen Stimulus, der deinen
+    Anforderungen entspricht.
+  `,
   h0a28f0f6730f02d0: html`
     In der Regel ist es nicht möglich, eine Abnahme der Schallenergie von 60 dB
     zu messen. Die Nachhallzeit wird daher durch Extrapolation einer linearen
@@ -23,14 +31,6 @@ export const templates = {
     Schallanteil einer Raumimpulsantwort. ${2} wird hauptsächlich zur Bewertung
     von Sprache herangezogen, während ${3} für Musik verwendet wird. Beide
     Parameter sind in ISO 3382-1 definiert durch
-  `,
-  he373ba2da4db6f91: html`
-    Ein Vorhersagemodell verwendet berechnete technische Parameter, um Faktoren
-    des Room Acoustical Quality Inventory (RAQI) abzuleiten ${0}. Es werden
-    unterschiedliche Koeffizienten für omnidirektionale, binaurale und
-    Mitten/Seiten-Impulsantworten verwendet. Die Optimierung für bestimmte
-    Stimuli ermöglicht genauere Ergebnisse. Wähle einen Stimulus, der deinen
-    Anforderungen entspricht.
   `,
   s001d4f16b5820bf0: `Raumeindruck`,
   s01b3b23ccba74fd8: `Lufttemperatur [°C]`,
