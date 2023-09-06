@@ -9,10 +9,10 @@ type OctaveBandsAndSquaredIR = {
   omnidirectionalBands: OctaveBands;
   binauralBands?: OctaveBands;
   midSideBands?: OctaveBands;
-  squaredIRSamples: Float32Array; // TODO: this is shown as log scale, is squaring necessary?
+  irSamples: Float32Array;
 };
 
-export function separateIntoBandsAndSquaredIR(
+export function separateIntoBandsAndIRSamples(
   fileType: ImpulseResponseType,
   buffer: CustomAudioBuffer
 ): Promise<OctaveBandsAndSquaredIR> {
@@ -31,7 +31,7 @@ async function omnidirectional(buffer: CustomAudioBuffer) {
 
   return {
     omnidirectionalBands,
-    squaredIRSamples: calculateSquaredIR(buffer.getChannel(0)),
+    irSamples: buffer.getChannel(0),
   };
 }
 
@@ -51,7 +51,7 @@ async function binaural(buffer: CustomAudioBuffer) {
     omnidirectionalBands,
     binauralBands,
     midSideBands: midSideBandsSquared,
-    squaredIRSamples: calculateSquaredIR(omnidirectionalBuffer.getChannel(0)),
+    irSamples: omnidirectionalBuffer.getChannel(0),
   };
 }
 
@@ -67,16 +67,6 @@ async function midSide(buffer: CustomAudioBuffer) {
   return {
     omnidirectionalBands,
     midSideBands,
-    squaredIRSamples: calculateSquaredIR(buffer.getChannel(0)),
+    irSamples: buffer.getChannel(0),
   };
-}
-
-function calculateSquaredIR(samples: Float32Array): Float32Array {
-  const newSamples = new Float32Array(samples.length);
-
-  for (let i = 0; i < samples.length; i++) {
-    newSamples[i] = samples[i] ** 2;
-  }
-
-  return newSamples;
 }

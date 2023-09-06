@@ -23,9 +23,9 @@ export class ImpulseResponseGraph extends LitElement {
 
   private chartDataHasChanged = false;
 
-  private decimatedIRSamples: {
+  private decimatedIRs: {
     fileColor: string;
-    squaredIR: Float32Array;
+    irSamples: Float32Array;
     decimatedPoints: { x: number; y: number }[];
   }[] = [];
 
@@ -52,7 +52,7 @@ export class ImpulseResponseGraph extends LitElement {
               min: LOWER_LIMIT,
               title: {
                 display: true,
-                text: 'dB',
+                text: 'dBFs',
               },
               type: 'logarithmic',
               ticks: {
@@ -61,7 +61,7 @@ export class ImpulseResponseGraph extends LitElement {
                     typeof val === 'number' &&
                     val.toExponential().startsWith('1e')
                   ) {
-                    return val.toExponential();
+                    return 10 * Math.log10(val);
                   }
 
                   return null;
@@ -123,7 +123,7 @@ export class ImpulseResponseGraph extends LitElement {
       throw new Error('expected graph to be defined');
     }
 
-    this.chart.data.datasets = this.decimatedIRSamples.map(
+    this.chart.data.datasets = this.decimatedIRs.map(
       ({ fileColor, decimatedPoints }) => ({
         data: decimatedPoints,
         fill: false,
@@ -137,26 +137,26 @@ export class ImpulseResponseGraph extends LitElement {
 
   private updateAllChanged() {
     const newList = this.impulseResponses.map(
-      ({ fileColor, irSamples: squaredIR, sampleRate }) => ({
-        ...this.updateDecimatedIRSamples(squaredIR, sampleRate),
+      ({ fileColor, irSamples, sampleRate }) => ({
+        ...this.updateDecimatedIRSamples(irSamples, sampleRate),
         fileColor,
-        squaredIR,
+        irSamples,
       })
     );
 
     this.chartDataHasChanged =
-      this.decimatedIRSamples.length !== newList.length ||
+      this.decimatedIRs.length !== newList.length ||
       newList.some(({ hasChanged }) => hasChanged);
 
-    this.decimatedIRSamples = newList.map(({ hasChanged, ...rest }) => rest);
+    this.decimatedIRs = newList.map(({ hasChanged, ...rest }) => rest);
   }
 
   private updateDecimatedIRSamples = (
-    squaredIR: Float32Array,
+    irSamples: Float32Array,
     sampleRate: number
   ): { decimatedPoints: { x: number; y: number }[]; hasChanged: boolean } => {
-    const existing = this.decimatedIRSamples.find(
-      item => item.squaredIR === squaredIR
+    const existing = this.decimatedIRs.find(
+      item => item.irSamples === irSamples
     );
 
     if (existing) {
@@ -168,21 +168,21 @@ export class ImpulseResponseGraph extends LitElement {
 
     const points = [];
 
-    let lastIndexOfInterest = squaredIR.length - 1;
-    for (let i = squaredIR.length - 1; i >= 0; i -= 1) {
-      if (squaredIR[i] < LOWER_LIMIT) {
+    let lastIndexOfInterest = irSamples.length - 1;
+    for (let i = irSamples.length - 1; i >= 0; i -= 1) {
+      if (irSamples[i] ** 2 < LOWER_LIMIT) {
         lastIndexOfInterest = i;
       } else {
         break;
       }
     }
 
-    const squaredIROfInterest = squaredIR.subarray(0, lastIndexOfInterest + 1);
+    const ofInterest = irSamples.subarray(0, lastIndexOfInterest + 1);
 
-    for (let i = 0; i < squaredIROfInterest.length; i++) {
+    for (let i = 0; i < ofInterest.length; i++) {
       points.push({
         x: (i + 1) / sampleRate,
-        y: squaredIROfInterest[i],
+        y: ofInterest[i] ** 2,
       });
     }
 

@@ -8,7 +8,7 @@ import { calcRAQIScore } from './raqi/raqi-calculation';
 import { RAQI_PARAMETERS } from './raqi/raqi-data';
 import { CustomAudioBuffer } from './transfer-objects/audio-buffer';
 import { calculateLpe10 } from './acoustical-param-analyzing/lpe10';
-import { separateIntoBandsAndSquaredIR } from './acoustical-param-analyzing/buffer-separation';
+import { separateIntoBandsAndIRSamples } from './acoustical-param-analyzing/buffer-separation';
 import { analyzingQueue } from './acoustical-param-analyzing/queue/analyzing-queue';
 
 const DEFAULT_RELATIVE_HUMIDITY = 50;
@@ -219,8 +219,8 @@ export class AppLogic extends EventEmitter<EventMap> {
         buffer,
         this.environmentValues
       );
-      const { squaredIRSamples, ...bands } =
-        await separateIntoBandsAndSquaredIR(file.type, buffer);
+      const { irSamples: squaredIRSamples, ...bands } =
+        await separateIntoBandsAndIRSamples(file.type, buffer);
 
       // do not await, so that others can start performing work
       this.analyzingQueue
