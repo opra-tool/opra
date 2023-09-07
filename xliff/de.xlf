@@ -492,6 +492,10 @@
   <source>Select parameters to display</source>
   <target>Wähle Parameter zum Anzeigen aus</target>
 </trans-unit>
+<trans-unit id="s7a05e55226ea7e48">
+  <source>Definition / Deutlichkeit</source>
+  <target>Deutlichkeit</target>
+</trans-unit>
 </body>
 </file>
 </xliff>

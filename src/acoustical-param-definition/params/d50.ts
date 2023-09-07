@@ -5,7 +5,7 @@ import { REFERENCE_ISO_3382_1_2009 } from '../references';
 
 export const D50_PRESENTATION = createParam({
   id: 'd50',
-  name: () => msg('Clarity'),
+  name: () => msg('Definition / Deutlichkeit'),
   description: () =>
     html`${msg('Perceived clarity of sound, alternative to')} C<sub>50</sub>`,
   symbol: () => html`D<sub>50</sub>`,
