@@ -26,9 +26,10 @@ Both tools were programmed at the [Institute of Sound and Vibration Engineering�
 [^4]: Prinz, L. J. (2021). *Entwicklung eines Werkzeugs für dieAuswertung von Impulsantworten zur Untersuchung raumakustischer Qualität*
 [^5]: Schwörer, P. (2023). *A web-based toolbox for analyzing acoustic room impulse responses*
 
-## Staging Environment
+## Using OPRA
 
-A staging environment reflecting the current state of the `main` branch is availabe at [raqi-staging.paulschwoerer.de](https://raqi-staging.paulschwoerer.de/).
+OPRA is available at [https://opra.isave.hs-duesseldorf.de](https://opra.isave.hs-duesseldorf.de/).
+All data is kept locally in your browser.
 
 ## Room impulse response files
 
